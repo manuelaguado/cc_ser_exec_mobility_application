@@ -1,0 +1,63 @@
+<?php
+define('DEVELOPMENT', true, true);
+define('DIR_FILES','/var/www/html/',true);
+
+define('DB_TYPE', 'mysql');
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'database');
+define('DB_USER', 'root');
+define('DB_PASS', 'XXXXXXXXXX');
+
+define('DOMAIN','HOST');
+define('URL_APP','https://'.DOMAIN.'/',true);
+define('SITE_NAME','D E V E L O P M E N T',true);
+define('SLOGAN_NAME','Activemedia & DCID Software',true);
+
+
+
+/*API DE GOOGLE MAPS*/
+define('GOOGLE_MAPS','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+
+/*SOCKET_PROVIDER: ABLY*/
+define('ABLY_API_KEY','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+define('ABLY_PRESENCE','activos',false);
+
+/*SOCKET_PROVIDER: PUBNUB*/
+define('PUBNUB_PUBLISH','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+define('PUBNUB_SUSCRIBE','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+define('PUBNUB_SECRET','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+define('PUBNUB_PRESENCE','presence-activos',false);
+
+/*SOCKET_PROVIDER: PUSHER*/
+define('PUSHER_APP_ID','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+define('PUSHER_KEY','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+define('PUSHER_SECRET','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
+define('PUSHER_PRESENCE','presence-activos',false);
+
+
+
+/*Seleccionar SOCKET_PROVIDER*/
+define('SOCKET_PROVIDER','PUSHER',false);
+
+/*Modo de operacion cron WEBHOOK ó CURL*/
+define('PRESENCE_GET','WEBHOOK',false);
+
+//no editar::
+/*Zona horaria*/
+date_default_timezone_set('America/Mexico_City');
+
+/*Variables*/
+define('URL_CONTROLADOR','../controladores/',true);
+define('URL_MODELO','../modelos/',true);
+define('URL_VISTA','../vistas/',true);
+define('URL_TEMPLATE','../vistas/plantilla/',true);
+define('URL_PUBLIC',URL_APP.'',true);
+define('ACE',URL_PUBLIC.'ace/',true);
+define('URL_EXTENSIONS','../extensiones/',true);
+define('URL_CONTROLLER_EXT',URL_APP.'extensions/',true);
+
+/*Móvil*/
+define('URL_TEMPLATE_FW7','../vistas/framework7/',true);
+define('FW7',URL_PUBLIC.'fw7/',true);
+define('MATERIAL',URL_PUBLIC.'material/',true);
+?>

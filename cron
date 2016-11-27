@@ -1,0 +1,33 @@
+*/1 * * * * curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 2s  && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 4s  && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 6s  && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 8s  && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 10s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 12s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 14s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 15s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 16s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 18s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 20s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 22s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 24s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 26s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 28s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 30s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 32s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 34s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 36s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 38s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 40s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 42s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 44s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 46s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 48s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 50s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 52s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 54s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 56s && curl https://51.15.49.243/operacion/cron
+*/1 * * * * sleep 58s && curl https://51.15.49.243/operacion/cron
+* 3 * * * curl https://51.15.49.243/operacion/clearGps
+

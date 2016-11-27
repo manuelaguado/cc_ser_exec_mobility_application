@@ -1,0 +1,1817 @@
+<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
+<?php
+use Pubnub\Pubnub;
+class MobileModel
+{
+    function __construct($db,$dbt) {
+        try {
+            $this->db = $db;
+			$this->dbt = $dbt;
+        } catch (PDOException $e) {
+            exit('No se ha podido establecer la conexión a la base de datos.');
+        }
+    }
+	function store($claves, OperacionModel $operacion){
+		$output[0] = array('resp' => false);
+		foreach($claves as $num => $clave){
+			$tokenStore = self::tokenStore($clave['token']);
+			if($tokenStore == 0){
+				switch ($clave['clave']) {
+					case 'A2':/*Servicio por tiempo*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'A10':/*Me dirijo al punto*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'A11':/*En el punto*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'A14':/*Abandono de servicio*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C1':/*Inicio de labores*/
+						
+						$clave['id_episodio'] = self::getEpisodio($clave['id_operador'],$clave['id_usuario']);
+						
+						$array = array(
+							'clave'					=> $clave['clave'],
+							'id_episodio' 			=> $clave['id_episodio'],
+							'id'					=> $clave['id'],
+							'viaje' 				=> array('Número' => 'IR002'),
+							'resp' 					=> true,
+							'token'					=> $clave['token']
+						);
+
+						self::setCveStore($clave['id_usuario'],$clave['token'],124,$clave['id_operador_unidad']);
+						$storeToSync = $clave + $array;
+						self::storeToSync($storeToSync, $num);
+						$output[$num] = $array;
+						break;
+					case 'C2':/*Fin de labores*/
+						$id_base = ($clave['estado2'] == 'B1')?1:2;
+						if($clave['id_episodio']){self::cerrarEpisodio($clave['id_episodio'],$clave['id_usuario']);}
+						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
+						self::setCveStore($clave['id_usuario'],$clave['token'],123,$clave['id_operador_unidad']);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C3':/*Inicio alimentos*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C6':/*Servicio cancelado*/
+						$output[$num] = self::storeToSync($clave, $num);
+						self::setCveStore($clave['id_usuario'],$clave['token'],117,$clave['id_operador_unidad']);
+						break;
+					case 'C8':/*Servicio abordo*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C9':/*Servicio concluido*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
+						
+						$setear_status_viaje['id_viaje'] = $clave['id_viaje'];
+						$setear_status_viaje['stat'] = 172;
+						$setear_status_viaje['origen'] = 'ModelMobile';
+						$operacion->setear_status_viaje($setear_status_viaje);
+						
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C10':/*inicio de escala*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C11':/*Fin de escala*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C12':/*Cambio de ruta*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C13':/*Fin de alimentos*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'C14':/*Destino parcial*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'F12':/*En cordon*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'F13':/*Salida por sitio*/
+						$output[$num]['clave'] = 'F13';
+						$output[$num] = self::storeToSync($clave, $num);					
+						break;
+					case 'F14':/*Solicitar cordon*/
+						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num]['clave'] = 'F14';
+						$output[$num]['base'] =  $clave['estado2']; 
+						self::setCveStore($clave['id_usuario'],$clave['token'],132,$clave['id_operador_unidad']);
+						break;
+					case 'F15':/*Servicio al aire*/
+						$output[$num] = self::storeToSync($clave, $num);
+						
+						$output[$num]['total'] = 14;
+						$output[$num]['turno'] = 14;
+						$output[$num]['estim'] = '90';
+						
+						break;
+					case 'F16':/*Modificar modo viaje*/
+						$output[$num] = self::storeToSync($clave, $num);
+						
+						$output[$num]['total'] = 14;
+						$output[$num]['turno'] = 14;
+						$output[$num]['estim'] = '90';
+						
+						break;
+					case 'F17':/*Marcar mensaje como leido*/
+						self::setMsgRead($clave['estado2'],$clave['id_usuario']);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R1':/*Establecer estado de la pantalla del movil*/
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R2':/*Acuse de recibo de cordon*/
+						self::firmarAcuseCordon($clave['id_operador_unidad']);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R5':/*Acuse de A10*/
+						$id_base = ($clave['estado2'] == 'B1')?1:2;
+						$id_viaje = $clave['id_viaje'];
+						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
+						self::servicioAsignado($id_viaje);
+						self::setCveStore($clave['id_usuario'],$clave['token'],156,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R6':/*Acuse de F15*/
+						$id_viaje = $clave['id_viaje'];
+						self::servicioAsignado($id_viaje);
+						self::setCveStore($clave['id_usuario'],$clave['token'],157,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R7':/*Acuse de F13*/
+						$id_base = ($clave['estado2'] == 'B1')?1:2;
+						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
+						$id_viaje = $clave['id_viaje'];
+						self::servicioAsignado($id_viaje);
+						self::setCveStore($clave['id_usuario'],$clave['token'],158,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R8':/*Acuse de F14*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],159,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R9':/*Acuse de F16*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],160,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R10':/*Acuse de C1*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],161,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					default:
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+				}
+			}else{
+				$output[$num] = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token']);
+			}
+		}
+		
+		$emitir =  json_encode($output);
+		self::transmitir($emitir,'sync'.$clave['id_operador']);
+	}
+	function servicioAsignado($id_viaje){
+		$sql = "
+			UPDATE vi_viaje
+			SET
+			 cat_status_viaje	= '179'
+			WHERE
+				id_viaje = ".$id_viaje."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}	
+	function getIdOperadorUnidadOp($id_operador){
+		$qry = "
+			SELECT
+				cou.id_operador_unidad
+			FROM
+				cr_operador_unidad AS cou
+			WHERE
+				cou.id_operador = $id_operador
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$data = $query->fetchAll();
+		$return =  false;
+		if($query->rowCount()>=1){
+			foreach ($data as $row) {
+				$id_operador_unidad = $row->id_operador_unidad;
+			}
+		}
+		return $id_operador_unidad;
+	}	
+	function getDataActual($id_operador_unidad){
+		$qry = "
+			SELECT
+				*
+			FROM
+				cr_sync
+			WHERE
+				(cr_sync.clave = 'F14'
+			OR cr_sync.clave = 'C2'
+			OR cr_sync.clave = 'C1')
+			AND cr_sync.id_operador_unidad = $id_operador_unidad
+			ORDER BY
+				cr_sync.id_sync DESC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array('clave' => 'XX');
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$array['clave'] 		     = $row->clave;
+				$array['base'] 		         = $row->estado2;
+				$array['id_base'] 	         = ($row->estado2 == 'B1')?1:2;
+				$array['id_operador'] 		 = $row->id_operador;	
+				$array['id_episodio'] 	     = $row->id_episodio;
+				$array['serie'] 	         = $row->serie;
+				$array['id_usuario'] 	     = self::getIdUsuario($row->id_operador_unidad);
+				$array['token'] 	     	 = $row->token;
+			}
+		}
+		return $array;
+	}
+	function getIdUsuario($id_operador_unidad){
+		$qry = "
+			SELECT
+				crop.id_usuario
+			FROM
+				cr_operador_unidad AS crou
+			INNER JOIN cr_operador AS crop ON crou.id_operador = crop.id_operador
+			WHERE
+				crou.id_operador_unidad = $id_operador_unidad
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$data = $query->fetchAll();
+		foreach ($data as $row) {
+			return $row->id_usuario;
+		}
+	}	
+	function Get_id_operador_unidad_con_id_episodio($id_episodio){
+		$qry = "
+			SELECT
+				cr_operador_unidad.id_operador_unidad
+			FROM
+				cr_episodios
+			INNER JOIN cr_operador ON cr_episodios.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			WHERE
+				cr_episodios.id_episodio = $id_episodio
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$fila = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->id_operador_unidad;
+			}
+		}
+	}	
+	function getIdEpisodio($id_operador_unidad){
+		$qry = "
+			SELECT
+				cr_episodios.id_episodio
+			FROM
+				cr_operador_unidad
+			INNER JOIN cr_episodios ON cr_operador_unidad.id_operador = cr_episodios.id_operador
+			WHERE
+				cr_operador_unidad.id_operador_unidad = ".$id_operador_unidad."
+			ORDER BY
+				cr_episodios.id_episodio DESC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$data = $query->fetchAll();
+		foreach ($data as $row) {
+			return $row->id_episodio;
+		}
+	}	
+	function initEpisodio($id_episodio){
+		$qry = "
+			SELECT
+				inicio
+			FROM
+				cr_episodios
+			WHERE
+				id_episodio = $id_episodio
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$fila = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->inicio;
+			}
+		}
+	}
+	static function diferenciaFechas($init,$end){
+		$datetime1 = new DateTime($init);
+		$datetime2 = new DateTime($end);
+		$dteDiff = $datetime1->diff($datetime2);
+		return $dteDiff->format("%H:%I:%S");
+	}
+	function cerrarEpisodio($id_episodio,$id_usuario){
+		$init = self::initEpisodio($id_episodio);
+		$fin = date("Y-m-d H:i:s");
+		$tiempo = self::diferenciaFechas($init , $fin);
+		$sql = "
+			UPDATE cr_episodios
+			SET 
+			 fin 			= '".$fin."',
+			 tiempo			= '".$tiempo."',
+			 user_mod 		= ".$id_usuario."
+			WHERE
+				id_episodio = ".$id_episodio."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}
+	function closeEpisodeOpen($id_operador,$id_usuario){
+		$qry = "
+			SELECT
+				ep.id_episodio
+			FROM
+				cr_episodios AS ep
+			WHERE
+				ep.id_operador = $id_operador
+			AND ep.fin IS NULL
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				self::cerrarEpisodio($row->id_episodio,$id_usuario);
+			}
+		}
+	}
+	function getEpisodio($id_operador,$id_usuario){
+		self::closeEpisodeOpen($id_operador,$id_usuario);
+		$sql = "
+			INSERT INTO cr_episodios (
+				id_operador,
+				inicio,
+				user_alta,
+				fecha_alta
+			) VALUES (
+				:id_operador,
+				:inicio,
+				:user_alta,
+				:fecha_alta
+			)";
+		$query = $this->db->prepare($sql);
+		$query->execute(
+			array(
+				':id_operador' 	=> 	$id_operador,
+				':inicio' 		=> 	date("Y-m-d H:i:s"),
+				':user_alta' 	=> 	$id_usuario,
+				':fecha_alta' 	=> 	date("Y-m-d H:i:s")
+			)
+		);
+		$lastInsertId = $this->db->lastInsertId();
+		return $lastInsertId;
+	}
+	function cve_store($id_operador_unidad){
+		$qry = "
+			SELECT
+				cm_catalogo.etiqueta,
+				cr_sync_ride.valor,
+				cr_sync_ride.token
+			FROM
+				cm_catalogo
+			INNER JOIN cr_sync_ride ON cr_sync_ride.cat_cve_store = cm_catalogo.id_cat
+			WHERE
+				cr_sync_ride.id_operador_unidad = $id_operador_unidad
+			AND cr_sync_ride.procesado = 0
+			ORDER BY
+				cr_sync_ride.id_sync_ride DESC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$array['etiqueta'] =  $row->etiqueta;
+				$array['valor'] =  $row->valor;
+				$array['token'] =  $row->token;
+			}
+		}
+		return $array;
+	}
+	function setCveStore($id_usuario,$token,$clave,$id_operador_unidad,$procesar_precedentes = true, $valor = false, $procesar = false){
+		try {
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->db->setAttribute(PDO::ATTR_PERSISTENT,true);
+			$this->db->beginTransaction();
+			if($procesar_precedentes){
+				date_default_timezone_set('America/Mexico_City');
+				$sqlupd = "
+					UPDATE `cr_sync_ride`
+					SET
+					 `procesado` = 1,
+					 `user_mod` = NULL
+					WHERE
+						`id_operador_unidad` = ".$id_operador_unidad." AND
+						`procesado` = 0
+				";
+				$queryupd = $this->db->prepare($sqlupd);
+				$queryupd->execute();
+			}
+			
+			$set = ($valor)?$valor:'';
+			$prc = ($procesar)?1:0;
+			date_default_timezone_set('America/Mexico_City');
+			$sql = "
+				INSERT INTO `cr_sync_ride` (
+					`token`,
+					`id_operador_unidad`,
+					`cat_cve_store`,
+					`valor`,
+					`procesado`,
+					`user_alta`,
+					`fecha_alta`
+				)
+				VALUES
+					(
+						'".$token."',
+						".$id_operador_unidad.",
+						".$clave.",
+						'".$set."',
+						'".$prc."',
+						".$id_usuario.",
+						'".date("Y-m-d H:i:s")."'
+					);
+			";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			$this->db->commit();
+		} catch (Exception $e) {
+			$this->db->rollBack();
+		}
+	}	
+	function cordon_operadores($base){
+		$qry = "
+			SELECT
+				cr_numeq.num,
+				concat(
+					fw_usuarios.nombres,
+					' ',
+					fw_usuarios.apellido_paterno,
+					' ',
+					fw_usuarios.apellido_materno
+				) AS nombre,
+				cr_modelos.modelo,
+				cr_unidades.color
+			FROM
+				cr_cordon
+			INNER JOIN cr_operador_unidad ON cr_cordon.id_operador_unidad = cr_operador_unidad.id_operador_unidad
+			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN fw_usuarios ON cr_operador.id_usuario = fw_usuarios.id_usuario
+			INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
+			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
+			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
+			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+			WHERE
+				cr_cordon.id_base = $base
+			AND (
+				cr_cordon.cat_statuscordon = 113
+				OR cr_cordon.cat_statuscordon = 115
+			)
+			ORDER BY
+				cr_cordon.cat_statuscordon DESC,
+				cr_cordon.id_cordon ASC
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$fila = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+
+			foreach ($data as $row) {
+				array_push($fila, '  [  '. $row->num .'  ] '. utf8_encode($row->nombre).', '. utf8_encode($row->modelo) . ' ' .  utf8_encode($row->color).'');
+			}
+		}
+		return $fila;
+	}
+	function signCordon($id_operador_unidad){
+		$qry = "
+			SELECT
+				valor
+			FROM
+				cr_sync_ride
+			WHERE
+				id_operador_unidad = $id_operador_unidad
+			AND procesado = 0
+			AND cat_cve_store = 122
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->valor;
+			}
+		}else{
+			return false;
+		}
+	}
+	function firmarAcuseCordon($id_operador_unidad){
+			date_default_timezone_set('America/Mexico_City');
+			$sql = "
+			UPDATE cr_sync_ride
+			SET 
+					valor	=	'SIGNED'
+			WHERE
+				cat_cve_store = 122
+				AND procesado = 0
+				AND id_operador_unidad = $id_operador_unidad
+			";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+	}	
+	function solicitarAcuseCordon(){
+			date_default_timezone_set('America/Mexico_City');
+			$sql = "
+			UPDATE cr_sync_ride
+			SET 
+					valor	=	'UNSIGNED'
+			WHERE
+				cat_cve_store = 122
+				AND procesado = 0
+			";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+	}
+	function cordonCompletado($id_usuario,$id_operador_unidad,$id_base){
+		if(self::turno($id_operador_unidad,$id_base) != 'No formado'){
+			$sql = "
+			UPDATE cr_cordon
+			SET 
+					cat_statuscordon	=	'". 114 ."',
+					salida				=	'".date("Y-m-d H:i:s")."',
+					user_mod 			= 	'".$id_usuario."'
+			WHERE
+				id_operador_unidad = ".$id_operador_unidad."
+				AND cat_statuscordon <> 114
+			";
+			$query = $this->db->prepare($sql);
+			$query_resp = $query->execute();
+			self::solicitarAcuseCordon();
+			self::firmarAcuseCordon($id_operador_unidad);
+		}
+	}
+	function verificaCveStore($id_operador_unidad){
+		$qry = "
+			SELECT
+				cmc.etiqueta
+			FROM
+				cm_catalogo AS cmc
+			INNER JOIN cr_sync_ride ON cr_sync_ride.cat_cve_store = cmc.id_cat
+			WHERE
+				cr_sync_ride.id_operador_unidad = ".$id_operador_unidad."
+			AND cr_sync_ride.procesado = 0
+			ORDER BY
+				cr_sync_ride.id_sync_ride DESC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$fila = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->etiqueta;
+			}
+		}
+	}
+	private function tokenStore($token){
+		$qry = "
+			SELECT
+				Count(cr_sync.token) AS tok_en
+			FROM
+				cr_sync
+			WHERE
+				cr_sync.token = '".$token."'
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->tok_en;
+			}
+		}
+	}
+	function formarse_directo($token,$id_operador_unidad,$id_base,$statuscordon){
+		$sql = "
+			INSERT INTO cr_cordon (
+				id_operador_unidad,
+				id_episodio,
+				id_base,
+				cat_statuscordon,
+				llegada,
+				token,
+				user_alta,
+				fecha_alta
+			) VALUES (
+				:id_operador_unidad,
+				:id_episodio,
+				:id_base,
+				:cat_statuscordon,
+				:llegada,
+				:token,
+				:user_alta,
+				:fecha_alta
+			)";
+		$query = $this->db->prepare($sql);
+		$query->execute(
+			array(
+				':id_operador_unidad' 	=> 	$id_operador_unidad,
+				':id_episodio' 			=> 	self::getIdEpisodio($id_operador_unidad),
+				':id_base' 				=> 	$id_base,
+				':cat_statuscordon' 	=> 	$statuscordon,
+				':llegada' 				=> 	date("Y-m-d H:i:s"),
+				':token' 				=> 	$token,
+				':user_alta' 			=> 	$_SESSION['id_usuario'],
+				':fecha_alta' 			=> 	date("Y-m-d H:i:s")
+			)
+		);
+		self::solicitarAcuseCordon();
+	}
+	function formarse($clave){
+		$id_base = ($clave['estado2'] == 'B1')?1:2;
+		
+		if(self::turno($clave['id_operador_unidad'],$id_base) == 'No formado'){
+			$cat_statuscordon = (self::verificaCveStore($clave['id_operador_unidad']) == 'C6')?115:113;
+
+			if($clave['id_operador_unidad']){
+				$id_operador_unidad = $clave['id_operador_unidad'];
+			}else if(!$clave['id_operador_unidad'] && $clave['id_episodio']){
+				$id_operador_unidad =  self::Get_id_operador_unidad_con_id_episodio($clave['id_episodio']);
+			}else if(!$clave['id_operador_unidad'] && !$clave['id_episodio']){
+				return 'Error MOD-MOB-01 notifique al administrador.';
+			}
+
+			$sql = "
+				INSERT INTO cr_cordon (
+					id_operador_unidad,
+					id_episodio,
+					id_base,
+					cat_statuscordon,
+					llegada,
+					token,
+					user_alta,
+					fecha_alta
+				) VALUES (
+					:id_operador_unidad,
+					:id_episodio,
+					:id_base,
+					:cat_statuscordon,
+					:llegada,
+					:token,
+					:user_alta,
+					:fecha_alta
+				)";
+			$query = $this->db->prepare($sql);
+			@$query->execute(
+				array(
+					':id_operador_unidad' 	=> 	$id_operador_unidad,
+					':id_episodio' 			=> 	$clave['id_episodio'],
+					':id_base' 				=> 	$id_base,
+					':cat_statuscordon' 	=> 	$cat_statuscordon,
+					':llegada' 				=> 	date("Y-m-d H:i:s"),
+					':token' 				=> 	$clave['token'],
+					':user_alta' 			=> 	$clave['id_usuario'],
+					':fecha_alta' 			=> 	date("Y-m-d H:i:s")
+				)
+			);
+			self::setCveStore($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
+			self::solicitarAcuseCordon();
+			return self::turno($id_operador_unidad,$id_base);
+		}else{
+			return 'Ya estaba formado';
+		}
+	}
+	function turno($id_operador_unidad,$id_base){
+		$qry = "
+			SELECT
+				id_cordon,
+				id_operador_unidad,
+				cat_statuscordon
+			FROM
+				cr_cordon
+			WHERE
+				cr_cordon.id_base = $id_base
+			AND (
+				cr_cordon.cat_statuscordon = 113
+				OR cr_cordon.cat_statuscordon = 115
+			)
+			ORDER BY
+				cr_cordon.cat_statuscordon DESC,
+				cr_cordon.id_cordon ASC
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$numero = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			$count = 1;
+			foreach ($data as $row) {
+				if($row->id_operador_unidad == $id_operador_unidad){
+					$numero = $count;
+				}
+				$count++;
+			}
+		}
+		if($numero != 0){
+			return $numero;
+		}else{
+			return 'No formado';
+		}
+	}
+	function set2enc6($id_base){
+		$qry = "
+			SELECT
+				id_cordon,
+				id_operador_unidad,
+				cat_statuscordon
+			FROM
+				cr_cordon
+			WHERE
+				cr_cordon.id_base = $id_base
+			AND (
+				cr_cordon.cat_statuscordon = 113
+				OR cr_cordon.cat_statuscordon = 115
+			)
+			ORDER BY
+				cr_cordon.cat_statuscordon DESC,
+				cr_cordon.id_cordon ASC
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			$count = 1;
+			foreach ($data as $row) {
+				if($count == 2){
+					self::setCordonStatus($row->id_operador_unidad,115);
+				}
+				$count++;
+			}
+		}
+	}
+	function setCordonStatus($id_operador_unidad,$stat){
+		$sql = "
+		UPDATE cr_cordon
+		SET 
+				cat_statuscordon	=	'".$stat."',
+				user_mod 			= 	'".$_SESSION['id_usuario']."'
+		WHERE
+			id_operador_unidad = ".$id_operador_unidad."
+			AND
+			cat_statuscordon = 113
+		";
+		$query = $this->db->prepare($sql);
+		$query_resp = $query->execute();
+	}
+	function ultimaPositionByIdOperador($id_operador){
+		$sql="
+			SELECT
+				gps.latitud,
+				gps.longitud,
+				gps.tiempo,
+				gps.`timestamp`,
+				gps.bateria
+			FROM
+				gps
+			WHERE
+				gps.id_operador = $id_operador
+			ORDER BY
+				gps.id_gps DESC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$point = $query->fetchAll();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($point as $row) {
+				return '{"lat":'.$row->latitud.',"lng":'.$row->longitud.',"time":"'.$row->timestamp.'","bateria":"'.$row->bateria.'","times":"'.$row->timestamp.'"}';
+			}
+		}
+	}
+	function enGeocercas($id_operador){
+			$position = self::ultimaPositionByIdOperador($id_operador);
+			$position = json_decode($position);
+			
+			$geoVars['latitud_act'] 	= @$position->lat;
+			$geoVars['longitud_act'] 	= @$position->lng;
+			
+			$ahora = date("Y-m-d H:i:s");
+			$timeFresh = self::minutosDiferencia(@$position->times,$ahora);
+				$time_return = ($timeFresh < 3)?true:false;
+				
+			$enGeocerca1 = self::enGeocercaNum($geoVars,'B1');
+				$ret_geo1 = ($enGeocerca1 == 'in')?true:false;
+				
+			$enGeocerca2 = self::enGeocercaNum($geoVars,'B2');
+				$ret_geo2 = ($enGeocerca2 == 'in')?true:false;
+				
+			return array('time' => $time_return, 'geo1' => $ret_geo1, 'geo2' => $ret_geo2);
+	}
+	function enGeocercaNum($geoVars,$base){
+		require_once( '../vendor/geocerca.php' );
+		$geoCerca = new geoCerca();
+		$poligono = self::getGeocerca($base);
+		return $geoCerca->puntoEnPoligono(''.$geoVars['latitud_act'].', '.$geoVars['longitud_act'].'', $poligono);
+	}	
+	function enGeocerca($clave){
+		require_once( '../vendor/geocerca.php' );
+		$geoCerca = new geoCerca();
+		$poligono = self::getGeocerca($clave['estado2']);
+		return $geoCerca->puntoEnPoligono(''.$clave['latitud_act'].', '.$clave['longitud_act'].'', $poligono);
+	}
+	function getGeocerca($clave){
+		$qry = "
+			SELECT
+				geocerca
+			FROM
+				cr_bases
+			WHERE
+				clave = '".$clave."'
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->geocerca;
+			}
+		}
+	}
+	function storeToSync($clave, $num){
+		$sql = "
+			INSERT INTO cr_sync (
+				accurate,
+				clave,
+				estado1,
+				estado2,
+				estado3,
+				estado4,
+				id_indexeddb,
+				id_episodio,
+				id_operador,
+				id_operador_unidad,
+				id_viaje,
+				latitud,
+				longitud,
+				motivo,
+				serie,
+				tiempo,
+				timestamp,
+				token,
+				origen
+			) VALUES (
+				:accurate,
+				:clave,
+				:estado1,
+				:estado2,
+				:estado3,
+				:estado4,
+				:id_indexeddb,
+				:id_episodio,
+				:id_operador,
+				:id_operador_unidad,
+				:id_viaje,
+				:latitud,
+				:longitud,
+				:motivo,
+				:serie,
+				:tiempo,
+				:timestamp,
+				:token,
+				:origen
+			)";
+		$query = $this->db->prepare($sql);
+		$query->execute(
+			array(
+				':accurate' => 			@$clave['accurate'],
+				':clave' => 			$clave['clave'],
+				':estado1' => 			$clave['estado1'],
+				':estado2' => 			$clave['estado2'],
+				':estado3' => 			$clave['estado3'],
+				':estado4' => 			$clave['estado4'],
+				':id_indexeddb' => 		$clave['id'],
+				':id_episodio' => 		@$clave['id_episodio'],
+				':id_operador' => 		$clave['id_operador'],
+				':id_operador_unidad' =>$clave['id_operador_unidad'],
+				':id_viaje' => 			@$clave['id_viaje'],
+				':latitud' => 			@$clave['latitud'],
+				':longitud' => 			@$clave['longitud'],
+				':motivo' => 			$clave['motivo'],
+				':serie' => 			$clave['serie'],
+				':tiempo' => 			@$clave['tiempo'],
+				':timestamp' => 		$clave['timestamp'],
+				':token' => 			$clave['token'],
+				':origen' => 			$clave['origen']
+			)
+		);
+		$id_sync = $this->db->lastInsertId();
+		$noStore = array('R1');
+		if(!in_array($clave['clave'], $noStore)){
+			self::updateEstadoOperador($id_sync,$clave['token'],$clave['id_operador_unidad'],$clave['id_usuario']);
+		}
+		
+		$output = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token']);
+		return $output;
+	}
+	function updateEstadoOperador($id_sync,$token,$id_operador_unidad,$id_usuario){
+		$sql = "
+			UPDATE cr_operador_unidad
+			SET 
+			 id_sync = :id_sync,
+			 sync_token = :sync_token,
+			 user_mod = :user_mod
+			WHERE
+				id_operador_unidad = :id_operador_unidad
+		";
+		$query = $this->db->prepare($sql);
+		$data = array(
+			':id_sync' => $id_sync, 
+			':sync_token' => $token, 
+			':user_mod' => $id_usuario,
+			':id_operador_unidad' => $id_operador_unidad
+		);
+		$query->execute($data);
+	}
+	function ponerEnC2($id_operador_unidad,$id_base,$id_operador){
+		$sql = "
+			INSERT INTO cr_sync (
+				accurate,
+				clave,
+				estado1,
+				estado2,
+				estado3,
+				estado4,
+				id_indexeddb,
+				id_episodio,
+				id_operador,
+				id_operador_unidad,
+				id_viaje,
+				latitud,
+				longitud,
+				motivo,
+				serie,
+				tiempo,
+				timestamp,
+				token,
+				origen
+			) VALUES (
+				:accurate,
+				:clave,
+				:estado1,
+				:estado2,
+				:estado3,
+				:estado4,
+				:id_indexeddb,
+				:id_episodio,
+				:id_operador,
+				:id_operador_unidad,
+				:id_viaje,
+				:latitud,
+				:longitud,
+				:motivo,
+				:serie,
+				:tiempo,
+				:timestamp,
+				:token,
+				:origen
+			)";
+		$query = $this->db->prepare($sql);
+		$base = self::getClaveBase($id_base);
+		$token = 'CN:'.self::token(62);
+		$query->execute(
+			array(
+				':accurate' => 			'1',
+				':clave' => 			'C2',
+				':estado1' => 			'C2',
+				':estado2' => 			$base['clave'],
+				':estado3' => 			'NULL',
+				':estado4' => 			'NULL',
+				':id_indexeddb' => 		1,
+				':id_episodio' => 		self::getIdEpisodio($id_operador_unidad),
+				':id_operador' => 		$id_operador,
+				':id_operador_unidad' =>$id_operador_unidad,
+				':id_viaje' => 			0,
+				':latitud' => 			$base['latitud'],
+				':longitud' => 			$base['longitud'],
+				':motivo' => 			'NO ACEPTAR LA CLAVE A10',
+				':serie' => 			self::getSerie($id_operador),
+				':tiempo' => 			date("Y-m-d H:i:s"),
+				':timestamp' => 		date("Y-m-d H:i:s"),
+				':token' => 			$token,
+				':origen' => 			'base'
+			)
+		);
+		$id_sync = $this->db->lastInsertId();
+		self::updateEstadoOperador($id_sync,$token,$id_operador_unidad,$_SESSION['id_usuario']);
+	}
+	static function token($long=25){
+		$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		mt_srand((double)microtime()*1000000); 
+		$i=0;
+		$pass = '';
+		while ($i != $long) {
+			$rand=mt_rand() % strlen($chars);
+			$tmp=$chars[$rand];
+			$pass=$pass . $tmp;
+			$chars=str_replace($tmp, "", $chars);
+			$i++;
+		}
+		return strrev($pass);
+	}
+	function getSerie($id_operador){
+		$qry = "
+			SELECT
+				cr_celulares.serie
+			FROM
+				cr_celulares
+			INNER JOIN cr_operador_celular ON cr_operador_celular.id_celular = cr_celulares.id_celular
+			WHERE
+				cr_operador_celular.id_operador = $id_operador
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->serie;
+			}
+		}
+	}	
+	function setMsgRead($id_mensaje,$id_usuario){
+		$sql = "
+			UPDATE `cr_mensajes`
+			SET 
+			 `read` = '1',
+			 `user_mod` = '".$id_usuario."',
+			 `fecha_mod` = '".date("Y-m-d H:i:s")."'
+			WHERE
+				(`id_mensaje` = '".$id_mensaje."');
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}		
+	function mensajeria($id_operador){
+		$qry = "
+			SELECT
+				cr_mensajes.id_mensaje,
+				cr_mensajes.mensaje
+			FROM
+				cr_mensajes
+			WHERE
+				cr_mensajes.id_operador = ".$id_operador."
+			AND cr_mensajes.`read` = 0
+			ORDER BY
+				cr_mensajes.id_mensaje ASC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$data = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$data['mensaje'] = $row->mensaje;
+				$data['id_mensaje'] = $row->id_mensaje;
+			}
+			return $data;
+		}else{
+			return false;
+		}
+	}
+	function getIdOperador($id_operador_unidad){
+		$qry = "
+			SELECT
+				id_operador
+			FROM
+				cr_operador_unidad
+			WHERE
+				id_operador_unidad = $id_operador_unidad
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->id_operador;
+			}
+		}
+	}
+	function getIdOperadorUnidad($id_usuario){
+		$qry = "
+			SELECT
+				crou.id_operador_unidad
+			FROM
+				fw_usuarios AS fwu
+			INNER JOIN cr_operador AS crop ON crop.id_usuario = fwu.id_usuario
+			INNER JOIN cr_operador_unidad AS crou ON crou.id_operador = crop.id_operador
+			WHERE
+				fwu.id_usuario = $id_usuario
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				return $row->id_operador_unidad;
+			}
+		}
+	}	
+	function getClaveBase($id_base){
+		$qry = "
+			SELECT
+				clave,
+				latitud,
+				longitud
+			FROM
+				cr_bases
+			WHERE
+				id_base = $id_base
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$array['clave'] = $row->clave;
+				$array['latitud'] = $row->latitud;
+				$array['longitud'] = $row->longitud;
+			}
+		}
+		return $array;
+	}
+	function storeGps($claves){
+		$output[0] = array('resp' => false);
+		foreach($claves as $num => $clave){
+			$output[$num] = self::storeToGps($clave, $num);
+		}
+		/*$emitir =  json_encode($output);
+		self::transmitir($emitir,'gps'.$clave['id_operador']);*/	
+	}	
+	function storeToGps($clave, $num){
+		date_default_timezone_set('America/Mexico_City');
+		$time = mktime(date("H"),  date("i"),  date("s"), date("m")  , date("d"), date("Y"));
+		$time = date("Y-m-d H:i:s", $time );	
+		$sql = "
+			INSERT INTO gps (
+				latitud,
+				longitud,
+				tiempo,
+				timestamp,
+				bateria,
+				id_android,
+				serie,
+				acurate,
+				version,
+				cc,
+				id_operador
+			)
+			VALUES
+			(
+				:latitud,
+				:longitud,
+				:tiempo,
+				:timestamp,
+				:bateria,
+				:id_android,
+				:serie,
+				:acurate,
+				:version,
+				:cc,
+				:id_operador
+			)
+		";
+		$stmt = $this->db->prepare($sql);
+		$insert = $stmt->execute(
+			array(
+				':latitud' => 	$clave['latitud'],
+				':longitud' => 	$clave['longitud'],
+				':tiempo' => 	$clave['tiempo'],
+				':timestamp' => $time,
+				':bateria' => 	'CCD',
+				':id_android' =>'CCD',
+				':serie' => 	$clave['serie'],
+				':acurate' => 	$clave['acurate'],
+				':version' => 	'CCD',
+				':cc' => 		$clave['cc'],
+				':id_operador' =>$clave['id_operador']
+			)
+		);
+		$output = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token']);
+		return $output;
+	}
+	function ultimaPosition($serie){
+		$sql="
+			SELECT
+				gps.latitud,
+				gps.longitud,
+				gps.tiempo,
+				gps.`timestamp`,
+				gps.bateria
+			FROM
+				gps
+			WHERE
+				gps.serie = '".$serie."'
+			ORDER BY
+				gps.id_gps DESC
+			LIMIT 0,
+			 1	
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$point = $query->fetchAll();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($point as $row) {
+				return '{"lat":'.$row->latitud.',"lng":'.$row->longitud.',"time":"'.$row->timestamp.'","bateria":"'.$row->bateria.'","times":"'.$row->timestamp.'"}';
+			}
+		}
+	}
+	public function minutosDiferencia($init,$ahora){
+		$res = strtotime($ahora) - strtotime($init);
+		return round($res/60);
+	}
+	public function getDataViaje($id_operador_unidad){
+		$sql = "
+			SELECT
+				viv.id_viaje,
+				vid.fecha_solicitud,
+				vid.fecha_asignacion,
+				vid.observaciones,
+				clc.nombre,
+				dir1.calle AS calleo,
+				dir1.num_ext AS exto,
+				dir1.num_int AS int_o,
+				dir1.telefono AS telo,
+				dir1.celular AS celo,
+				dir1.referencia AS refo,
+				dir1.geocodificacion_inversa AS invo,
+				dir1.geocoordenadas AS coodo,
+				dir2.calle AS called,
+				dir2.num_ext AS extd,
+				dir2.num_int AS int_d,
+				dir2.telefono AS teld,
+				dir2.celular AS celd,
+				dir2.referencia AS refd,
+				dir2.geocodificacion_inversa AS invd,
+				dir2.geocoordenadas AS coodd,
+				cm1.etiqueta AS status_viaje,
+				cm2.etiqueta AS tipo_servicio,
+				cm3.etiqueta AS forma_pago
+			FROM
+				vi_viaje AS viv
+			INNER JOIN cr_cordon AS crc ON viv.id_cordon = crc.id_cordon
+			INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
+			INNER JOIN vi_viaje_clientes AS vic ON vic.id_viaje = viv.id_viaje
+			INNER JOIN cl_clientes AS clc ON vic.id_cliente = clc.id_cliente
+			INNER JOIN it_cliente_origen AS clo ON viv.id_cliente_origen = clo.id_cliente_origen
+			INNER JOIN it_origenes AS ito ON clo.id_origen = ito.id_origen
+			INNER JOIN it_direcciones AS dir1 ON ito.id_direccion = dir1.id_direccion
+			INNER JOIN it_viaje_destino AS itvd ON itvd.id_viaje = viv.id_viaje
+			INNER JOIN it_cliente_destino AS itcd ON itvd.id_cliente_destino = itcd.id_cliente_destino
+			INNER JOIN it_destinos AS itd ON itcd.id_destino = itd.id_destino
+			INNER JOIN it_direcciones AS dir2 ON itd.id_direccion = dir2.id_direccion
+			INNER JOIN vi_viaje_formapago AS vfp ON vfp.id_viaje = viv.id_viaje
+			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
+			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
+			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
+			WHERE
+				crc.id_operador_unidad = $id_operador_unidad
+			ORDER BY
+				crc.id_cordon DESC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$data = $query->fetchAll();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($data as $row) {
+				$array['Número'] 					= $row->id_viaje;
+				$array['Forma de pago'] 			= $row->forma_pago;
+				$array['Status del viaje'] 			= $row->status_viaje;
+				$array['Tipo de servicio'] 			= $row->tipo_servicio;
+				$array['Solicitud'] 				= $row->fecha_solicitud;
+				$array['Asignación'] 				= $row->fecha_asignacion;
+				$array['Observaciones'] 			= $row->observaciones;
+				$array['Cliente'] 					= $row->nombre;
+				$array['Geolocalización origen'] 	= $row->invo;
+				$array['Referencia origen'] 		= $row->refo;
+				$array['Celular origen'] 			= $row->celo;
+				$array['Teléfono origen'] 			= $row->telo;
+				$array['Interior origen'] 			= $row->int_o;
+				$array['Exterior origen'] 			= $row->exto;
+				$array['Calle origen'] 				= $row->calleo;
+				$array['Coordenadas origen']		= $row->coodo;
+				$array['Calle Destino'] 			= $row->called;
+				$array['Exterior destino'] 			= $row->extd;
+				$array['Interior destino'] 			= $row->int_d;
+				$array['Teléfono destino'] 			= $row->teld;
+				$array['Celular destino'] 			= $row->celd;
+				$array['Referencia destino']		= $row->refd;
+				$array['Geolocalización destino'] 	=  $row->invd;
+				$array['Coordenadas destino'] 		= $row->coodd;
+			}
+		}
+		return $array;
+	}
+	public function getDataViajeAir($id_operador_unidad){
+		$sql = "
+			SELECT
+				viv.id_viaje,
+				vid.fecha_solicitud,
+				vid.fecha_asignacion,
+				vid.observaciones,
+				clc.nombre,
+				dir1.calle AS calleo,
+				dir1.num_ext AS exto,
+				dir1.num_int AS int_o,
+				dir1.telefono AS telo,
+				dir1.celular AS celo,
+				dir1.referencia AS refo,
+				dir1.geocodificacion_inversa AS invo,
+				dir1.geocoordenadas AS coodo,
+				dir2.calle AS called,
+				dir2.num_ext AS extd,
+				dir2.num_int AS int_d,
+				dir2.telefono AS teld,
+				dir2.celular AS celd,
+				dir2.referencia AS refd,
+				dir2.geocodificacion_inversa AS invd,
+				dir2.geocoordenadas AS coodd,
+				cm1.etiqueta AS status_viaje,
+				cm2.etiqueta AS tipo_servicio,
+				cm3.etiqueta AS forma_pago
+			FROM
+				vi_viaje AS viv
+			INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
+			INNER JOIN vi_viaje_clientes AS vic ON vic.id_viaje = viv.id_viaje
+			INNER JOIN cl_clientes AS clc ON vic.id_cliente = clc.id_cliente
+			INNER JOIN it_cliente_origen AS clo ON viv.id_cliente_origen = clo.id_cliente_origen
+			INNER JOIN it_origenes AS ito ON clo.id_origen = ito.id_origen
+			INNER JOIN it_direcciones AS dir1 ON ito.id_direccion = dir1.id_direccion
+			INNER JOIN it_viaje_destino AS itvd ON itvd.id_viaje = viv.id_viaje
+			INNER JOIN it_cliente_destino AS itcd ON itvd.id_cliente_destino = itcd.id_cliente_destino
+			INNER JOIN it_destinos AS itd ON itcd.id_destino = itd.id_destino
+			INNER JOIN it_direcciones AS dir2 ON itd.id_direccion = dir2.id_direccion
+			INNER JOIN vi_viaje_formapago AS vfp ON vfp.id_viaje = viv.id_viaje
+			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
+			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
+			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
+			WHERE
+				viv.id_operador_unidad = $id_operador_unidad
+			ORDER BY
+				viv.id_viaje DESC
+			LIMIT 0,
+			 1
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$data = $query->fetchAll();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($data as $row) {
+				$array['Número'] 					= $row->id_viaje;
+				$array['Forma de pago'] 			= $row->forma_pago;
+				$array['Status del viaje'] 			= $row->status_viaje;
+				$array['Tipo de servicio'] 			= $row->tipo_servicio;
+				$array['Solicitud'] 				= $row->fecha_solicitud;
+				$array['Asignación'] 				= $row->fecha_asignacion;
+				$array['Observaciones'] 			= $row->observaciones;
+				$array['Cliente'] 					= $row->nombre;
+				$array['Geolocalización origen'] 	= $row->invo;
+				$array['Referencia origen'] 		= $row->refo;
+				$array['Celular origen'] 			= $row->celo;
+				$array['Teléfono origen'] 			= $row->telo;
+				$array['Interior origen'] 			= $row->int_o;
+				$array['Exterior origen'] 			= $row->exto;
+				$array['Calle origen'] 				= $row->calleo;
+				$array['Coordenadas origen']		= $row->coodo;
+				$array['Calle Destino'] 			= $row->called;
+				$array['Exterior destino'] 			= $row->extd;
+				$array['Interior destino'] 			= $row->int_d;
+				$array['Teléfono destino'] 			= $row->teld;
+				$array['Celular destino'] 			= $row->celd;
+				$array['Referencia destino']		= $row->refd;
+				$array['Geolocalización destino'] 	= $row->invd;
+				$array['Coordenadas destino'] 		= $row->coodd;
+			}
+		}
+		return $array;
+	}	
+    public function broadcast($id_operador_unidad)
+    {
+		$current = self::getDataActual($id_operador_unidad);
+		if($current['clave'] != 'XX'){
+			$base 				= $current['base'];
+			$id_base 			= $current['id_base'];
+			$id_operador 		= $current['id_operador'];
+			$id_episodio 		= $current['id_episodio'];
+			$serie 				= $current['serie'];
+			$id_usuario 		= $current['id_usuario'];
+			$state 				= $current['clave'];
+			$cordon_sign		= '';
+					
+					$clave = self::cve_store($id_operador_unidad);
+					$new = false;
+					$ride_0 = array(
+						'clave'			=> $clave['etiqueta'],
+						'id_operador'	=> $id_operador,
+						'proceso'		=> 'ride'.$id_operador
+					);
+					self::send_msg($id_operador,$clave['etiqueta']);
+					$token = 'RD:'.$this->token(62);
+					switch ($clave['etiqueta']) {
+						
+						case 'R11':
+						case 'A10':
+						case 'F13':
+					
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							$ride_1 = array(
+								'new' 					=> true,
+								'viaje' 				=> self::getDataViaje($id_operador_unidad),
+								'id_operador_unidad' 	=> $id_operador_unidad,
+								'id_episodio' 			=> $id_episodio,
+								'serie' 				=> $serie,
+								'token' 				=> $token
+							);
+							
+							break;
+						
+						case 'F14':
+							
+							$position = self::ultimaPosition($serie);
+							$position = json_decode($position);
+							
+							$geoVars['estado2'] 		= $base;
+							$geoVars['latitud_act'] 	= @$position->lat;
+							$geoVars['longitud_act'] 	= @$position->lng;
+							
+							$ahora = date("Y-m-d H:i:s");
+							$timeFresh = self::minutosDiferencia(@$position->times,$ahora);
+							
+							$jumGeoposition = array(1,56,57);
+							
+							$enGeocerca = self::enGeocerca($geoVars);
+							
+								if(
+									(($enGeocerca == 'in')AND($timeFresh < 3)) OR
+									(in_array($id_usuario, $jumGeoposition))
+								){
+									
+									$queue['estado2'] 				= $base;
+									$queue['id_operador_unidad'] 	= $id_operador_unidad;
+									$queue['id_episodio'] 			= $id_episodio;
+									$queue['token'] 				= $clave['token'];
+									$queue['id_usuario'] 			= $id_usuario;
+									
+									$ride_1 = array(
+										'queue' 	=> true,
+										'turno' 	=> self::formarse($queue),
+										'cordon' 	=> self::cordon_operadores($id_base),
+										'base' 		=> $base
+									);
+									
+									self::setCveStore($id_usuario,$token,122,$id_operador_unidad);
+									
+								}else{
+									$geo_color = ($enGeocerca == 'out')?'#c11313':'#37b25c';
+									$geo_state = ($enGeocerca == 'out')?false:true;
+									
+									$tim_color = ($timeFresh >= 3)?'#c11313':'#37b25c';
+									$tim_state = ($timeFresh >= 3)?false:true;
+									
+									$ses_color = '#37b25c';
+									$soc_color = '#37b25c';
+									$oc1_color = '#37b25c';
+									$f14_color = '#37b25c';
+									$ride_1 = array(
+										'indicadores'	=> array(
+																array('color' => $geo_color, 'indicador' => 'Dentro de geocerca', 'estado' => $geo_state),
+																array('color' => $tim_color, 'indicador' => 'Geolocalización vigente', 'estado' => $tim_state),
+																array('color' => $ses_color, 'indicador' => 'Sesión activa', 'estado' => true),
+																array('color' => $soc_color, 'indicador' => 'WebSockets activos', 'estado' => true),
+																array('color' => $oc1_color, 'indicador' => 'Operador en C1', 'estado' => true),
+																array('color' => $f14_color, 'indicador' => 'Solicitud F14 recibida', 'estado' => true),
+															),
+										'queue' 		=> false
+									);
+								}
+							
+							break;
+							
+						case 'F15':
+						case 'F16':
+					
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							$ride_1 = array(
+								'new' 					=> true,
+								'viaje' 				=> self::getDataViajeAir($id_operador_unidad),
+								'id_operador_unidad' 	=> $id_operador_unidad,
+								'id_episodio' 			=> $id_episodio,
+								'serie' 				=> $serie,
+								'token' 				=> $token
+							);
+							
+							break;
+							
+						case 'F19':
+							
+							$ride_1 = array(
+								'new' 					=> false,
+								'cordon'				=> self::cordon_operadores($id_base),
+								'actual'				=> '',
+								'turno'					=> self::turno($id_operador_unidad,$id_base)
+							);
+							$clave['etiqueta'] = self::signCordon($id_operador_unidad);
+							break;
+							
+						case 'F20':
+
+							$ride_1 = array();
+							break;
+							
+						case 'F18':
+					
+							$ride_1 = array();
+							break;
+							
+						case 'C1':
+					
+							$ride_1 = array(
+								'id_operador_unidad' 	=> $id_operador_unidad,
+								'id_episodio' 			=> $id_episodio,
+								'serie' 				=> $serie,
+								'token' 				=> $token,
+								'viaje' 				=> array('Número' => 'IR001')
+							);
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							
+							break;
+						
+						case 'R1':
+						
+							$ride_1 = array(
+								'set_page'				=> $clave['valor']
+							);
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							break;
+						case 'R3':
+						
+							$ride_1 = array();
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							break;
+							
+						default:
+							$ride_1 = array();
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							break;
+							
+					}
+			
+			
+			$ride = $ride_0 + $ride_1;
+			
+			$no_emitir = array('F20','F18','SIGNED');
+			if(!in_array($clave['etiqueta'], $no_emitir)){
+				self::transmitir(json_encode($ride),$ride['proceso']);
+			}
+		}
+    }
+	public function send_msg($id_operador,$clave){
+			$ride = array(
+				'clave'			=> 'MSG',
+				'id_operador'	=> $id_operador,
+				'proceso'		=> 'ride'.$id_operador
+			);		
+			$vmensaje = self::mensajeria($id_operador);
+			$omitir = array('F18');
+			if(($vmensaje !== false)&&(!in_array($clave, $omitir))){
+				$mensaje = array(
+					'mensaje' => $vmensaje['mensaje'], 
+					'id_mensaje' => $vmensaje['id_mensaje'] 
+				);
+				$send = $ride + $mensaje;
+				self::transmitir(json_encode($send),$send['proceso']);
+			}
+	}		
+	function sync_ride(){
+		$operadores = (PRESENCE_GET == 'CURL')?self::onLink():self::onLinkWebHook();
+		$online = ' AND (';
+		foreach($operadores as $num => $oper){
+			$online .= '
+				(
+					op.id_operador = '.$oper['id_operador'].'
+					AND (
+						SELECT
+							syc.estado1
+						FROM
+							cr_operador_unidad AS oun
+						INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+						WHERE
+							oun.id_operador = '.$oper['id_operador'].'
+						ORDER BY
+							oun.id_operador_unidad DESC
+						LIMIT 0, 1
+					) = "C1"
+				)
+			OR ';
+		}
+		$online = rtrim($online, " OR ");
+		$online .= ')';
+		if(count($operadores)== 0){$online = 'AND op.id_operador = 0';}
+		
+		$qry = "
+			SELECT
+				syr.id_operador_unidad
+			FROM
+				cr_sync_ride AS syr
+				
+			INNER JOIN cr_operador_unidad AS opu ON syr.id_operador_unidad = opu.id_operador_unidad
+			INNER JOIN cr_operador AS op ON opu.id_operador = op.id_operador
+			INNER JOIN cr_sync ON opu.id_sync = cr_sync.id_sync
+
+			WHERE
+				syr.procesado = 0 
+				
+			    $online
+				
+			GROUP BY
+				syr.id_operador_unidad
+			ORDER BY
+				syr.user_alta DESC,
+				syr.id_operador_unidad DESC
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			$num = 0;
+			foreach ($data as $row) {
+				$array[$num]['id_operador_unidad'] =  $row->id_operador_unidad;
+				$num++;
+			}
+		}
+		return $array;
+	}
+	
+	
+	/*
+	SECCION DE WEBSOCKETS
+	*/
+	
+	
+	public function transmitir($emision,$proceso){
+		
+		if(SOCKET_PROVIDER == 'ABLY'){
+			
+			require_once ('../vendor/ably/ably-php/ably-loader.php');
+			$client = new Ably\AblyRest(ABLY_API_KEY);
+
+			$channel = $client->channel($proceso);
+			$channel->publish('BRDCST', $emision);
+			
+		}else if(SOCKET_PROVIDER == 'PUSHER'){
+			
+			require_once('../vendor/pusher/Pusher.php');
+
+			$options = array('encrypted' => true);
+			$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
+			
+			$emision = json_decode($emision,true);
+			$data['message'] = $emision;
+			$pusher->trigger($proceso, 'evento', $data);
+		
+		}else if(SOCKET_PROVIDER == 'PUBNUB'){
+			
+			require_once('../vendor/pubnub/autoloader.php');
+			$pubnub = new Pubnub(PUBNUB_PUBLISH,PUBNUB_SUSCRIBE,PUBNUB_SECRET,false);
+			$emision = json_decode($emision,true);
+			$publish_result = $pubnub->publish($proceso,$emision);
+			
+		}
+		
+	}
+	function inLinkedIn($id_operador){
+		$activos = (PRESENCE_GET == 'CURL')?self::onLink():self::onLinkWebHook();
+		$enlazados = array();
+		
+		foreach($activos as $num => $oper){
+			$enlazados[] = $oper['id_operador'];
+		}
+		
+		if(in_array($id_operador,$enlazados)){
+			$return = true;
+		}else{
+			$return = false;
+		}
+		
+		return $return;
+	}	
+	function linkedIn(){
+		if(SOCKET_PROVIDER == 'ABLY'){
+			
+			require_once ('../vendor/ably/ably-php/ably-loader.php');
+			$client = new Ably\AblyRest(ABLY_API_KEY);
+			$channel = $client->channel(ABLY_PRESENCE);
+			$response = $channel->presence->get();
+			
+		}else if(SOCKET_PROVIDER == 'PUSHER'){
+			
+			require_once('../vendor/pusher/Pusher.php');
+			$options = array('encrypted' => true);
+			$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
+			$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );	
+			
+		}else if(SOCKET_PROVIDER == 'PUBNUB'){
+			
+			require_once('../vendor/pubnub/autoloader.php');
+			$pubnub = new Pubnub(PUBNUB_PUBLISH,PUBNUB_SUSCRIBE,PUBNUB_SECRET,false);
+			$response = $pubnub->hereNow(PUSHER_PRESENCE);
+			
+		}
+		return $response;
+	}
+	public function onLink(){
+		$id_operadores = array();
+		$num = 0;
+		$response = self::linkedIn();
+		
+		if(SOCKET_PROVIDER == 'ABLY'){
+			
+			foreach($response->items as $num => $oper){
+				$id_operadores[$num]['id_operador'] = substr($oper->clientId, 3);
+				$num++;
+			}
+			
+		}else if(SOCKET_PROVIDER == 'PUSHER'){
+			
+			foreach($response['result']['users'] as $num => $oper){
+				foreach($oper as $it){
+					$id_operadores[$num]['id_operador'] = $it;
+					$num++;
+				}
+			}
+			
+		}else if(SOCKET_PROVIDER == 'PUBNUB'){
+
+			foreach($response['uuids'] as $num => $oper){
+				$id_operadores[$num]['id_operador'] = $oper;
+				$num++;
+			}
+			
+		}
+		return $id_operadores;
+	}
+	function onLinkWebHook(){
+		$qry = "SELECT id_operador FROM cr_presence";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$id_operadores = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$id_operadores[$num]['id_operador'] = $row->id_operador;
+				$num++;
+			}
+		}
+		return $id_operadores;
+	}	
+}
+?>

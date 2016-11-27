@@ -1,0 +1,74 @@
+@font-face {
+  font-family: 'mediasite';
+  src: url('../fonts/mediasite.eot?38446758');
+  src: url('../fonts/mediasite.eot?38446758#iefix') format('embedded-opentype'),
+       url('../fonts/mediasite.woff2?38446758') format('woff2'),
+       url('../fonts/mediasite.woff?38446758') format('woff'),
+       url('../fonts/mediasite.ttf?38446758') format('truetype'),
+       url('../fonts/mediasite.svg?38446758#mediasite') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'mediasite';
+    src: url('../fonts/mediasite.svg?344147#mediasite') format('svg');
+  }
+}
+*/
+ 
+ [class^="icon-centralcar"]:before, [class*=" icon-centralcar"]:before {
+  font-family: "mediasite";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+ 
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.icon-centralcar_geolocalizacion:before { content: '\e800'; } /* '' */
+.icon-centralcar_star_gradient:before { 
+		background: -webkit-linear-gradient(45deg, #c9c900 5%,#fefcea 36%,#c9c900 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		margin-right: 0em;
+		margin-left: 0em;
+		width:250px;
+		position:relative; left:-20px; font-size:4em;
+		content: '\e801'; 
+} /* '' */
+.icon-centralcar_star:before { content: '\e801'; } /* '' */
+.icon-centralcar:before { content: '\e802'; } /* '' */
+.icon-centralcar_font:before { content: '\e803'; } /* '' */
+.icon-centralcar_favicon:before { content: '\e804'; } /* '' */
+.icon-centralcar_logo:before { content: '\e805'; } /* '' */
+.icon-centralcar_path:before { content: '\e806'; } /* '' */
