@@ -15,10 +15,10 @@ class Desarrollador extends Controlador
 		$datamail['plantilla'] 	= 'basica';
 		$datamail['subject'] 	= 'Informe';
 		$datamail['body'] 		= array(
-			'fecha'			=>	'México D.F. a 16 de Noviembre de 2015',
-			'asunto'		=>	'Se le informa la finalización del plan',
-			'firma'			=>	'Ing Pocoyó',
-			'hospital'		=>	'Belisario Domínguez'
+			'fecha'			=>	'MÃ©xico D.F. a 16 de Noviembre de 2015',
+			'asunto'		=>	'Se le informa la finalizaciÃ³n del plan',
+			'firma'			=>	'Ing PocoyÃ³',
+			'hospital'		=>	'Belisario DomÃ­guez'
 		);
 		$this->sendMail($datamail);
 	}

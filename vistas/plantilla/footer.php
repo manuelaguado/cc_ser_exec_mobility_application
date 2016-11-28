@@ -196,4 +196,20 @@ if(SOCKET_PROVIDER == 'ABLY'){
 }
 ?>
 
-
+<?php if(DEVELOPMENT){ ?>
+<script>
+var cron = function () {
+    var cronjob = function () {
+    	setInterval('$.post( "<?=URL_PUBLIC?>operacion/cron" )',1000);
+    };
+    return {
+        init: function () {
+			cronjob();
+        }
+    };
+}();
+jQuery(document).ready(function() {
+	cron.init();
+});
+</script>
+<?php } ?>
