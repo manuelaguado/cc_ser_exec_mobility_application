@@ -7,6 +7,11 @@ span.input-icon {
 span.input-icon > textarea {
     padding-left: 24px;
 }
+#cordon_kpmg_wrapper > div:nth-child(1){display:none;}
+#cordon_ejnal_wrapper > div:nth-child(1){display:none;}
+#tabla_pendientes_wrapper > div:nth-child(1){display:none;}
+#tabla_proceso_wrapper > div:nth-child(1){display:none;}
+#tabla_asignados_wrapper > div:nth-child(1){display:none;}
 </style>
 <div class="main-content">
 	<div class="main-content-inner">
@@ -573,13 +578,11 @@ span.input-icon > textarea {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
 					},
-					"paging":   false,
 					"ordering": false,
-					"info":     false,
 					"processing": true,
 					"serverSide": true,
-					"pageLength": 5,
-					"dom": '<"top"i>rt<"bottom"><"clear">',
+					"pageLength": 20,
+
 					"ajax": {
 						"url": "operacion/cordon_kpmg_get",
 						"type": "POST"
@@ -602,13 +605,11 @@ span.input-icon > textarea {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
 					},
-					"paging":   false,
 					"ordering": false,
-					"info":     false,
 					"processing": true,
 					"serverSide": true,
-					"pageLength": 5,
-					"dom": '<"top"i>rt<"bottom"><"clear">',
+					"pageLength": 20,
+
 					"ajax": {
 						"url": "operacion/cordon_ejnal_get",
 						"type": "POST"
@@ -630,13 +631,10 @@ span.input-icon > textarea {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
 					},
-					"paging":   false,
 					"ordering": false,
-					"info":     false,
 					"processing": true,
 					"serverSide": true,
-					"pageLength": 5,
-					"dom": '<"top"i>rt<"bottom"><"clear">',
+					"pageLength": 20,
 					"ajax": {
 						"url": "operacion/servicios_pendientes",
 						"type": "POST"
@@ -653,13 +651,11 @@ span.input-icon > textarea {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
 					},
-					"paging":   false,
 					"ordering": false,
-					"info":     false,
 					"processing": true,
 					"serverSide": true,
-					"pageLength": 5,
-					"dom": '<"top"i>rt<"bottom"><"clear">',
+					"pageLength": 20,
+
 					"ajax": {
 						"url": "operacion/servicios_enProceso",
 						"type": "POST"
@@ -676,13 +672,11 @@ span.input-icon > textarea {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
 					},
-					"paging":   false,
 					"ordering": false,
-					"info":     false,
 					"processing": true,
 					"serverSide": true,
-					"pageLength": 5,
-					"dom": '<"top"i>rt<"bottom"><"clear">',
+					"pageLength": 20,
+
 					"ajax": {
 						"url": "operacion/servicios_asignados",
 						"type": "POST"
