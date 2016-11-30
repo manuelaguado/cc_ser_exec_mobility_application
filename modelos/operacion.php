@@ -418,6 +418,27 @@ class OperacionModel{
 			}
 		}
 		return $operadores;			
+	}
+	function getCurrentCveOperador($id_operador_unidad){
+		$qry = "
+			SELECT
+				syc.clave as llave
+			FROM
+				cr_operador_unidad AS oun
+			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
+			WHERE
+				oun.id_operador_unidad = $id_operador_unidad
+			AND cm_catalogo.catalogo = 'clavesitio'	
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row){
+				return	$row->llave;
+			}
+		}		
 	}	
 	function getTBUnits(){
 		self::adquirirTiemposBase();
@@ -1348,10 +1369,41 @@ class OperacionModel{
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
+	function serv_cve_hash($status){
+		$sql ="
+			SELECT
+				vi_viaje.id_viaje,
+				vi_viaje.id_operador_unidad
+			FROM
+				vi_viaje
+			WHERE
+				vi_viaje.cat_status_viaje = $status
+			ORDER BY
+				vi_viaje.id_viaje DESC		
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$output = '';
+		$token = self::getTokenStatusViaje($status);
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$output .=  $row->id_viaje.self::getCurrentCveOperador($row->id_operador_unidad);
+			}
+			$output = md5($output);
+			$change = ($output != $token)?true:false;
+		}else{
+			$output = md5(0);
+			$change = ($output != $token)?true:false;
+		}
+		if($change){self::tokenStatusViaje($status,$output);}
+		return $change;
+	}	
 	function servicio_hash($status){
 		$sql ="
 			SELECT
-				vi_viaje.id_viaje
+				vi_viaje.id_viaje,
+				vi_viaje.id_operador_unidad
 			FROM
 				vi_viaje
 			WHERE
@@ -1985,6 +2037,14 @@ class OperacionModel{
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 8
+			),
+			array( 
+				'db' => 'cr_operador_unidad.id_operador_unidad as id_operador_unidad',
+				'dbj' => 'cr_operador_unidad.id_operador_unidad',
+				'real' => 'cr_operador_unidad.id_operador_unidad',
+				'alias' => 'id_operador_unidad',
+				'typ' => 'int',
+				'dt' => 9
 			)			
 		);
 		$inner = '
@@ -3364,11 +3424,38 @@ class acciones_asignados extends SSP{
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
+					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
 					
-					$salida = '';
+					$salida = '<div class="line_force">';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'asignados\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-							
+					
+					$cveStat = self::getCurrentCveOperador($id_operador_unidad,$db);
+					
+					switch ($cveStat['clave']){
+						case 'R6':	$color = '9DBF00';	break;
+						case 'F15':	$color = '697F00';	break;
+						case 'A15':	$color = '001A40';	break;
+						case 'C10':	$color = '344000';	break;
+						case 'C11':	$color = 'BDE500';	break;
+						case 'C14':	$color = 'BF9A16';	break;
+						case 'C9':	$color = '403307';	break;
+						case 'C8':	$color = 'E5B81A';	break;
+						case 'X1':	$color = 'BF3000';	break;
+						case 'X2':	$color = '7F2000';	break;
+						case 'X3':	$color = '401000';	break;
+						case 'X4':	$color = 'E53A00';	break;
+						case 'X5':	$color = '004EBF';	break;
+						case 'X6':	$color = '00347F';	break;
+						case 'X7':	$color = '001A40';	break;
+						case 'X8':	$color = '005EE5';	break;
+						default:	$color = '000000';	break;
+					}
+					
+					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background: #'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
+					$salida .= '</div>';		
+					
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -3378,6 +3465,30 @@ class acciones_asignados extends SSP{
 			$out[] = $row;
 		}
 		return $out;
+	}
+	static function getCurrentCveOperador($id_operador_unidad,$db){
+		$qry = "
+			SELECT
+				syc.clave as llave,
+				cm_catalogo.valor as valor
+			FROM
+				cr_operador_unidad AS oun
+			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
+			WHERE
+				oun.id_operador_unidad = $id_operador_unidad
+			AND cm_catalogo.catalogo = 'clavesitio'	
+		";
+		$query = $db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row){
+				$array['clave']	=	$row['llave'];
+				$array['valor']	=	$row['valor'];
+			}
+		}
+		return $array;
 	}	
 }
 class acciones_tiempo_base extends SSP{

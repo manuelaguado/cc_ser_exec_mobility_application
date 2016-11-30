@@ -26,7 +26,7 @@ class Operacion extends Controlador
 		
 		if($operacion->servicio_hash(170)){$mobile->transmitir('doit','updpendientes');}
 		if($operacion->servicio_hash(171)){$mobile->transmitir('doit','updproceso');}
-		if($operacion->servicio_hash(179)){$mobile->transmitir('doit','updasignados');}
+		if($operacion->serv_cve_hash(179)){$mobile->transmitir('doit','updasignados');}
 		
 		$eventos = $mobile->sync_ride();
 		foreach ($eventos as $evento){
