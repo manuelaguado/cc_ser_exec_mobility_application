@@ -30,15 +30,15 @@ $("#allow_update").html(version_bd);
 				object7.createIndex('by_token', 'token', {unique: true});
 		};
 		dataBase.onsuccess = function (e) {
-			currentPage();
+			setStartPage();
 		};
 		dataBase.onerror = function (e) {
 			alert('Error loading database');
 		};
 	}
 
-/*OBTENER PAGINA ACTUAL*/
-function currentPage(){
+/*SETEAR PAGINA ACTUAL*/
+function setStartPage(){
 	var active = dataBase.result;
 	var data = active.transaction(["page"], "readwrite");
 	var object = data.objectStore("page");
@@ -140,7 +140,7 @@ function clearPageButtons(){
 	var object = data.objectStore("state_boton");
 	object.clear();
 }
-
+var currentPage;
 /*SETEAR PAGINA*/
 function setPage(page,returned){
 	var active = dataBase.result;
@@ -154,6 +154,7 @@ function setPage(page,returned){
 		actual: page,
 		origen: returned
 	});
+	currentPage = page;
 	storeClave('R1','INS','NULL','NULL','NULL','NULL',function(){});
 }
 function setPageWOR1(page,returned){
@@ -168,6 +169,7 @@ function setPageWOR1(page,returned){
 		actual: page,
 		origen: returned
 	});
+	currentPage = page;
 }
 function setInitPage(page,callback){
 	var active = dataBase.result;

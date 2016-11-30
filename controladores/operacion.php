@@ -12,6 +12,7 @@ class Operacion extends Controlador
 		$modelo->caducarGps();
 	}
 	public function cron(){
+		
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		

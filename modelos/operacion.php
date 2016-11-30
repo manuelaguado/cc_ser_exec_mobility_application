@@ -538,13 +538,14 @@ class OperacionModel{
 		
 		$stat_process = true;
 		$qrymissing = array();
+		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
 		switch($post['stat']){
 			case '170':
 				if(!isset($post['status_operador'])){
 					$qrymissing = array('qrymissing' => 'status_operador' );
 					$stat_process = false;
-					$sql = "UPDATE vi_viaje SET id_operador_unidad = NULL, id_episodio = NULL, id_cordon = NULL WHERE id_viaje = ".$post['id_viaje'];
 				}
+				$sql = "UPDATE vi_viaje SET id_operador_unidad = NULL, id_episodio = NULL, id_cordon = NULL WHERE id_viaje = ".$post['id_viaje'];
 			break;
 			case '173':
 				if(!$post['cat_cancelaciones']){
@@ -581,7 +582,7 @@ class OperacionModel{
 		if($success){
 			switch($post['stat']){
 				case '170':
-					$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
+					D::bug('170>> '.$id_operador_unidad);
 					$token = 'SOL:'.Controller::token(62);
 					switch($post['status_operador']){
 						case 'segundo':
@@ -610,7 +611,7 @@ class OperacionModel{
 				break;
 				case '173':
 					if($post['origen'] == 'asignados'){
-						$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
+						D::bug('173>> '.$id_operador_unidad);
 						$token = 'SOL:'.Controller::token(62);
 						switch($post['status_operador']){
 							case 'segundo':

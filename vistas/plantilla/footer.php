@@ -196,7 +196,7 @@ if(SOCKET_PROVIDER == 'ABLY'){
 }
 ?>
 
-<?php if(DEVELOPMENT){ ?>
+<?php if(CRONEXEC == 'JAVASCRIPT'){ ?>
 <script>
 var cron = function () {
     var cronjob = function () {

@@ -54,7 +54,7 @@ function loadUpdatedTemplate(template,returned){
 	eval("html = myApp." + template + "({origen: '" + returned + "' })");
 	mainView.loadContent(html);
 	updatePage(template, returned);
-	currentPage();
+	setStartPage();
 	eval(scheme_movil + "();");
 }
 /**********************************************************************************************************************************************CANCELACIONES**/

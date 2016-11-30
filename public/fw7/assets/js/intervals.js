@@ -107,7 +107,6 @@ function broadcastPlay(data){
 		timbre.pause();
 	});
 }
-
 function ride_ok(data) {
 	var resp_success = JSON.parse(data);
 	switch (resp_success['clave']) {
@@ -120,7 +119,14 @@ function ride_ok(data) {
 					finalizar_servicio();
 				}else if(resp_success['set_page'] == 'regreso'){
 					storeClave('C1','C1','F11','NULL','NULL','NULL',function(){
-						loadTemplateWOR1('regreso');
+
+						if(currentPage != 'regreso'){
+							loadTemplate('regreso');
+						}
+						$("#air_service_act").hide();
+						$("#air_service_des").show();							
+			
+						console.log(currentPage);
 					});
 				}else{
 					loadTemplate(resp_success['set_page']);

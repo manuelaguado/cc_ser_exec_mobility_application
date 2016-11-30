@@ -936,7 +936,7 @@ class MobileModel
 			)
 		);
 		$id_sync = $this->db->lastInsertId();
-		$noStore = array('R1');
+		$noStore = array('R1','F17');
 		if(!in_array($clave['clave'], $noStore)){
 			self::updateEstadoOperador($id_sync,$clave['token'],$clave['id_operador_unidad'],$clave['id_usuario']);
 		}
