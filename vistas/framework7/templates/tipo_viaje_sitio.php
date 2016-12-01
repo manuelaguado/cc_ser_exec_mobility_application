@@ -24,13 +24,13 @@
 							<span class="label_code">Servicio tabulado</span>
 						</a>
 					</div>
-					<div class="col-50" id="cancel_service_act" style="display: none;">
+					<div class="col-50" id="cancel_act_vsite" style="display: none;">
 						<a class="c6 menu-link" href="javascript:void(0)">
 							<span>C6</span>
 							<span class="label_code">Servicio cancelado</span>
 						</a>
 					</div>
-					<div class="col-50" id="cancel_service_des">
+					<div class="col-50" id="cancel_des_vsite">
 						<a class="code_disabled" href="javascript:void(0);" >
 							<span>C6</span>
 							<span class="label_code">Servicio cancelado</span>

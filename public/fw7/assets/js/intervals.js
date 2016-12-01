@@ -177,17 +177,17 @@ function ride_ok(data) {
 			break;
 		//////////////////////////////////////////////////////////////////////////////////////////////////// Activar boton para cancelar el servicio
 		case 'C6':
-				$("#cancel_service_des").hide();
-				$("#cancel_service_act").show();
-				updatePageButtons('cancel_service_des','cancel_service_act');
+				$('div[id ^= cancel_des_]').hide();
+				$('div[id ^= cancel_act_]').show();		
+				updatePageButtons('cancel_des_','cancel_act_');
 				myApp.alert('Se ha activado la opción para cancelar su servicio de manera remota, ahora puede cancelarlo', 'Solicitud de cancelación');
 				storeClave('R12','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE C6',function(){});
 			break;
 		//////////////////////////////////////////////////////////////////////////////////////////////////// Activar boton para abandonar el servicio
 		case 'A14':
-				$("#abandono_service_des").hide();
-				$("#abandono_service_act").show();
-				updatePageButtons('abandono_service_des','abandono_service_act');
+				$('div[id ^= abandono_des_]').hide();
+				$('div[id ^= abandono_act_]').show();
+				updatePageButtons('abandono_des_','abandono_act_');
 				myApp.alert('Se ha activado la opción para abandonar su servicio de manera remota, ahora puede abandonarlo', 'Solicitud de abandono');
 				storeClave('R13','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE A14',function(){});
 			break;
@@ -269,14 +269,12 @@ function ride_ok(data) {
 				
 				$('#update_cordon').css('display','none');
 				
-				myApp.confirm(
-					'Turno: ' + resp_success['turno'] + 
+						loadTemplate('base');
+						setStoreVariable('base',resp_success['base'],function(){});
+						
+				myApp.alert('Turno: ' + resp_success['turno'] + 
 					'<br><br>Verifique el cordón en el menú para conocer el estado.',
-					'Asignado al cordón',
-				function () {
-					loadTemplate('base');
-					setStoreVariable('base',resp_success['base'],function(){});
-				});
+					'Asignado al cordón');
 				
 				
 				$$('#data_cordon').html('');

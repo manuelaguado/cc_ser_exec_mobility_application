@@ -18,13 +18,13 @@
 					</div>
 				</div>
 				<div class="row text-center">
-					<div class="col-100" id="abandono_service_act" style="display: none;">
+					<div class="col-100" id="abandono_act_vtime" style="display: none;">
 						<a class="a14 menu-link" href="javascript:void(0)"  data-return="viaje_tiempo">
 							<span>A14</span>
 							<span class="label_code">Adandono de servicio</span>
 						</a>
 					</div>
-					<div class="col-100" id="abandono_service_des">
+					<div class="col-100" id="abandono_des_vtime">
 						<a class="code_disabled" href="javascript:void(0);" >
 							<span>A14</span>
 							<span class="label_code">Adandono de servicio</span>

@@ -129,6 +129,10 @@ function loadStateBoton(){
 			$("#" + elements[key].data_show).show();
 			$("#" + elements[key].data_hide).hide();
 		}
+		for (var key in elements) {
+			$('div[id ^= '+elements[key].data_show+']').show();
+			$('div[id ^= '+elements[key].data_hide+']').hide();
+		}
 		elements = [];
 	};
 }
