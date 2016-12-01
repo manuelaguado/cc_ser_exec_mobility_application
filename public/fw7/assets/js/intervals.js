@@ -185,9 +185,9 @@ function ride_ok(data) {
 			break;
 		//////////////////////////////////////////////////////////////////////////////////////////////////// Activar boton para abandonar el servicio
 		case 'A14':
-				$("#air_service_des").hide();
-				$("#air_service_act").show();
-				updatePageButtons('air_service_des','air_service_act');
+				$("#abandono_service_des").hide();
+				$("#abandono_service_act").show();
+				updatePageButtons('abandono_service_des','abandono_service_act');
 				myApp.alert('Se ha activado la opción para abandonar su servicio de manera remota, ahora puede abandonarlo', 'Solicitud de abandono');
 				storeClave('R13','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE A14',function(){});
 			break;

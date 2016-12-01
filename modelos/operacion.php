@@ -690,7 +690,7 @@ class OperacionModel{
 			FROM
 				vi_viaje AS viv
 			WHERE
-				viv.cat_status_viaje = 170
+				(viv.cat_status_viaje = 170 OR viv.cat_status_viaje = 188)
 				AND
 				viv.cat_tipotemporicidad = 184
 				AND
@@ -2260,7 +2260,7 @@ class OperacionModel{
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat				
 		';
 		$where = '
-			viv.cat_status_viaje = 170
+			(viv.cat_status_viaje = 170 OR viv.cat_status_viaje = 188)
 			AND
 			viv.cat_tipotemporicidad = 184
 		';

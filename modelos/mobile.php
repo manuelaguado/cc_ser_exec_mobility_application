@@ -27,6 +27,13 @@ class MobileModel
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'A14':/*Abandono de servicio*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
+						
+						$setear_status_viaje['id_viaje'] = $clave['id_viaje'];
+						$setear_status_viaje['stat'] = 188;
+						$setear_status_viaje['origen'] = 'ModelMobile';
+						$operacion->setear_status_viaje($setear_status_viaje);
+						
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'C1':/*Inicio de labores*/
@@ -41,7 +48,7 @@ class MobileModel
 							'resp' 					=> true,
 							'token'					=> $clave['token']
 						);
-
+						
 						self::setCveStore($clave['id_usuario'],$clave['token'],124,$clave['id_operador_unidad']);
 						$storeToSync = $clave + $array;
 						self::storeToSync($storeToSync, $num);

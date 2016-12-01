@@ -25,6 +25,7 @@ class Operacion extends Controlador
 		if($operacion->cordon_hash(2)){$mobile->transmitir('doit','updcrd2');}
 		
 		if($operacion->servicio_hash(170)){$mobile->transmitir('doit','updpendientes');}
+		if($operacion->servicio_hash(188)){$mobile->transmitir('doit','updpendientes');}
 		if($operacion->servicio_hash(171)){$mobile->transmitir('doit','updproceso');}
 		if($operacion->serv_cve_hash(179)){$mobile->transmitir('doit','updasignados');}
 		
@@ -154,17 +155,6 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/mapCoordSelect_destino.php';
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public function activar_cancelacion($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/activar_cancelacion.php';
@@ -181,9 +171,6 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/cambiar_tarifa.php';
 	}
-
-	
-	
 	public function activar_cancelacion_do($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$mobile = $this->loadModel('Mobile');
@@ -214,18 +201,6 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->cambiar_tarifa($_POST);
 	}	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public function solicitud(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$tiposServicios = $this->selectCatalog('tipo_servicio',null);
