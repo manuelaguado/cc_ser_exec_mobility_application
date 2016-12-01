@@ -154,6 +154,78 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/mapCoordSelect_destino.php';
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public function activar_cancelacion($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		require URL_VISTA.'modales/operacion/activar_cancelacion.php';
+	}
+	public function activar_abandono($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		require URL_VISTA.'modales/operacion/activar_abandono.php';
+	}
+	public function costos_adicionales($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		require URL_VISTA.'modales/operacion/costos_adicionales.php';
+	}
+	public function cambiar_tarifa($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		require URL_VISTA.'modales/operacion/cambiar_tarifa.php';
+	}
+
+	
+	
+	public function activar_cancelacion_do($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$mobile = $this->loadModel('Mobile');
+		$operacion = $this->loadModel('Operacion');
+		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		$token = 'OP:'.$this->token(62);
+		$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+		$mobile->broadcast($id_operador_unidad);
+		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
+	}
+	public function activar_abandono_do($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$mobile = $this->loadModel('Mobile');
+		$operacion = $this->loadModel('Operacion');
+		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		$token = 'OP:'.$this->token(62);
+		$mobile->setCveStore($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
+		$mobile->broadcast($id_operador_unidad);
+		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
+	}
+	public function costos_adicionales_do(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Operacion');
+		print $modelo->costos_adicionales($_POST);
+	}
+	public function cambiar_tarifa_do(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Operacion');
+		print $modelo->cambiar_tarifa($_POST);
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public function solicitud(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$tiposServicios = $this->selectCatalog('tipo_servicio',null);

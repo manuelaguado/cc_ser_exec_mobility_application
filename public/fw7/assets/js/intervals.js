@@ -125,8 +125,7 @@ function ride_ok(data) {
 						}
 						$("#air_service_act").hide();
 						$("#air_service_des").show();							
-			
-						console.log(currentPage);
+
 					});
 				}else{
 					loadTemplate(resp_success['set_page']);
@@ -176,7 +175,22 @@ function ride_ok(data) {
 			
 			//console.log('RIDE A10 OK');
 			break;
-			
+		//////////////////////////////////////////////////////////////////////////////////////////////////// Activar boton para cancelar el servicio
+		case 'C6':
+				$("#cancel_service_des").hide();
+				$("#cancel_service_act").show();
+				updatePageButtons('cancel_service_des','cancel_service_act');
+				myApp.alert('Se ha activado la opción para cancelar su servicio de manera remota, ahora puede cancelarlo', 'Solicitud de cancelación');
+				storeClave('R12','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE C6',function(){});
+			break;
+		//////////////////////////////////////////////////////////////////////////////////////////////////// Activar boton para abandonar el servicio
+		case 'A14':
+				$("#air_service_des").hide();
+				$("#air_service_act").show();
+				updatePageButtons('air_service_des','air_service_act');
+				myApp.alert('Se ha activado la opción para abandonar su servicio de manera remota, ahora puede abandonarlo', 'Solicitud de abandono');
+				storeClave('R13','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE A14',function(){});
+			break;
 		//////////////////////////////////////////////////////////////////////////////////////////////////// viaje on air
 		case 'F15':
 			if (resp_success['new'] == true){

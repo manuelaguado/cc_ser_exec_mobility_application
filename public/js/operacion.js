@@ -970,3 +970,141 @@ function asignarViajeAlAire(id_operador_unidad,id_operador,id_viaje){
 		});
 	} );
 }
+
+function activar_cancelacion(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/activar_cancelacion/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-57');}	
+		});
+	} );
+}
+function activar_abandono(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/activar_abandono/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-58');}	
+		});
+	} );
+}
+function costos_adicionales(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/costos_adicionales/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-59');}	
+		});
+	} );
+}
+function cambiar_tarifa(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/cambiar_tarifa/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-60');}	
+		});
+	} );
+}
+
+function activar_cancelacion_do(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/activar_cancelacion_do/'+ id_viaje,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-61');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-62');}	
+		});
+	} );
+}
+function activar_abandono_do(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/activar_abandono_do/'+ id_viaje,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-63');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-64');}	
+		});
+	} );
+}
+function costos_adicionales_do(){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/costos_adicionales_do',
+			type: 'POST',
+			data: $("#costos_adicionales").serialize(),			
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-65');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-66');}	
+		});
+	} );
+}
+function cambiar_tarifa_do(){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/cambiar_tarifa_do',
+			type: 'POST',
+			data: $("#cambiar_tarifa").serialize(),			
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-67');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-68');}	
+		});
+	} );
+}

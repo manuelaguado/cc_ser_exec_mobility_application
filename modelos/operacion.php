@@ -588,7 +588,7 @@ class OperacionModel{
 
 				$this->db->beginTransaction();
 				$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '".$post['stat']."' WHERE id_viaje = ".$post['id_viaje']);
-				if(isset($sql)){$this->db->exec($sql); D::bug($sql);}
+				if(isset($sql)){$this->db->exec($sql);}
 				$this->db->commit();
 
 			} catch (Exception $e) {
@@ -603,7 +603,6 @@ class OperacionModel{
 		if($success){
 			switch($post['stat']){
 				case '170':
-					D::bug('170>> '.$id_operador_unidad);
 					$token = 'SOL:'.Controller::token(62);
 					switch($post['status_operador']){
 						case 'segundo':
@@ -632,7 +631,6 @@ class OperacionModel{
 				break;
 				case '173':
 					if($post['origen'] == 'asignados'){
-						D::bug('173>> '.$id_operador_unidad);
 						$token = 'SOL:'.Controller::token(62);
 						switch($post['status_operador']){
 							case 'segundo':
@@ -3368,7 +3366,7 @@ class acciones_pendientes extends SSP{
 					
 					$salida = '';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'pendientes\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="viajeAlAire('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Ofrecer servicio al aire"><i class="icofont icofont-swirl" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';		
+					$salida .= '<a onclick="viajeAlAire('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Ofrecer servicio al aire"><i class="icofont icofont-wind" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';		
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -3433,28 +3431,36 @@ class acciones_asignados extends SSP{
 					$cveStat = self::getCurrentCveOperador($id_operador_unidad,$db);
 					
 					switch ($cveStat['clave']){
-						case 'R6':	$color = '9DBF00';	break;
-						case 'F15':	$color = '697F00';	break;
-						case 'A15':	$color = '001A40';	break;
-						case 'C10':	$color = '344000';	break;
-						case 'C11':	$color = 'BDE500';	break;
-						case 'C14':	$color = 'BF9A16';	break;
-						case 'C9':	$color = '403307';	break;
-						case 'C8':	$color = 'E5B81A';	break;
-						case 'X1':	$color = 'BF3000';	break;
-						case 'X2':	$color = '7F2000';	break;
-						case 'X3':	$color = '401000';	break;
-						case 'X4':	$color = 'E53A00';	break;
-						case 'X5':	$color = '004EBF';	break;
-						case 'X6':	$color = '00347F';	break;
-						case 'X7':	$color = '001A40';	break;
-						case 'X8':	$color = '005EE5';	break;
-						default:	$color = '000000';	break;
+						case 'R6':	$color = '#9DBF00';	break;
+						case 'F15':	$color = '#697F00';	break;
+						case 'A15':	$color = '#001A40';	break;
+						case 'C10':	$color = '#344000';	break;
+						case 'C11':	$color = '#1a6600';	break;
+						case 'C14':	$color = '#BF9A16';	break;
+						case 'C9':	$color = '#403307';	break;
+						case 'C8':	$color = '#E5B81A';	break;
+						case 'A14':	$color = '#BF3000';	break;
+						case 'X2':	$color = '#7F2000';	break;
+						case 'X3':	$color = '#401000';	break;
+						case 'X4':	$color = '#E53A00';	break;
+						case 'X5':	$color = '#004EBF';	break;
+						case 'X6':	$color = '#00347F';	break;
+						case 'X7':	$color = '#001A40';	break;
+						case 'X8':	$color = '#005EE5';	break;
+						default:	$color = '#000000';	break;
 					}
 					
-					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background: #'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
-					$salida .= '</div>';		
+					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background:'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
+							
+					$salida .= '<a href="javascript:;" onclick="activar_cancelacion('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar cancelación en operador"><i class="fa fa-ban" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					
+					$salida .= '<a href="javascript:;" onclick="activar_abandono('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar abandono en operador"><i class="icofont icofont-offside" style="font-size:1.4em; color:#aa2424;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '</div>';
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{

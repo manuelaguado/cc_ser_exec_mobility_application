@@ -58,9 +58,16 @@ class MobileModel
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'C6':/*Servicio cancelado*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
+						
+						$setear_status_viaje['id_viaje'] = $clave['id_viaje'];
+						$setear_status_viaje['cat_cancelaciones'] = 175;
+						$setear_status_viaje['stat'] = 173;
+						$setear_status_viaje['origen'] = 'ModelMobile';
+						$operacion->setear_status_viaje($setear_status_viaje);
+						
 						$output[$num] = self::storeToSync($clave, $num);
-						self::setCveStore($clave['id_usuario'],$clave['token'],117,$clave['id_operador_unidad']);
-						break;
+						break;						
 					case 'C8':/*Servicio abordo*/
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
@@ -161,6 +168,14 @@ class MobileModel
 						break;
 					case 'R10':/*Acuse de C1*/
 						self::setCveStore($clave['id_usuario'],$clave['token'],161,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R12':/*Acuse de C6*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],186,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave, $num);
+						break;
+					case 'R13':/*Acuse de A14*/
+						self::setCveStore($clave['id_usuario'],$clave['token'],187,$clave['id_operador_unidad'],false,false,true);
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					default:
@@ -1548,7 +1563,14 @@ class MobileModel
 							);
 							
 							break;
-							
+						case 'C6':
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							$ride_1 = array();
+							break;
+						case 'A14':
+							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							$ride_1 = array();
+							break;
 						case 'F19':
 							
 							$ride_1 = array(

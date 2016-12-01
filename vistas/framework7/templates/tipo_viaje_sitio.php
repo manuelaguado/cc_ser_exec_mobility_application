@@ -24,12 +24,18 @@
 							<span class="label_code">Servicio tabulado</span>
 						</a>
 					</div>
-					<div class="col-50">
+					<div class="col-50" id="cancel_service_act" style="display: none;">
 						<a class="c6 menu-link" href="javascript:void(0)">
 							<span>C6</span>
 							<span class="label_code">Servicio cancelado</span>
 						</a>
 					</div>
+					<div class="col-50" id="cancel_service_des">
+						<a class="code_disabled" href="javascript:void(0);" >
+							<span>C6</span>
+							<span class="label_code">Servicio cancelado</span>
+						</a>
+					</div>	
 				</div>
 			</nav>
 		</div>
