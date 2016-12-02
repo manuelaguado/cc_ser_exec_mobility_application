@@ -412,3 +412,10 @@ function procesar_tarifa(){
 		});
 	} );
 }
+function switch_tabular(){
+	if($("#tabulado").is(':checked')) {  
+		$('#tabular').get(0).value = "1";
+	} else { 
+		$('#tabular').get(0).value = "0";	
+	} 
+}

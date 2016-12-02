@@ -1,6 +1,6 @@
 <?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="modal fade" id="myModal" tabindex="-1">
-	<div class="modal-dialog">
+	<div class="modal-dialog" style="width: 960px;">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"+ aria-hidden="true">x</button>
@@ -69,10 +69,19 @@
 										<?php echo utf8_encode($cat_tipo_tarifa); ?>
 										</select>
 									</div>									
-									<div class="col-md-12">
+									<div class="col-md-10">
 										  <div class="form-group">
 											<label for="descripcion">Descripción</label>
 											<textarea class="form-control text-field autosize-descripcion" id="descripcion" name="descripcion" placeholder="Descripción"></textarea>
+										  </div>									  
+									</div>
+									<div class="col-md-2">
+										  <div class="form-group">
+											<label for="tabulado">¿Tabulado?</label>
+											<br>
+											<input onchange="switch_tabular()" id="tabulado" name="tabulado" class="ace ace-switch ace-switch-5" type="checkbox"/>
+											<span class="lbl"></span>
+
 										  </div>									  
 									</div>
 									<div class="col-md-6">
@@ -91,6 +100,7 @@
 							</div>
 						</div>
 						<div id="error_alerta" > </div>
+						<input type="hidden" id="tabular" name="tabular" value="0">
 						<input type="hidden" id="id_cliente" name="id_cliente" value="<?=$id_cliente?>">
 						<div class="modal-footer">
 							<button  class="btn btn-ar btn-success" type="button" onclick="procesar_tarifa();">Procesar</button>
