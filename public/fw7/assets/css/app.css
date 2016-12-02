@@ -5883,8 +5883,8 @@ html:not(.watch-active-state) .list-block .item-link:active {
 	background-color: #00000F;
 }
 
-
-.crono_wrapper {text-align:center;color:#1C6C5F;font-size:4em;}
+.tab_wrapper {text-align:center;color:#1C6C5F;font-size:4em;}
+.crono_wrapper {text-align:center;color:#1C6C5F;font-size:6em;}
 .costo_wrapper {text-align:center;color:#1C6C5F;font-size:6em;}
 
 .list-block ul {background: #353535;}

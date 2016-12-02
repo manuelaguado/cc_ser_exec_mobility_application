@@ -11,7 +11,31 @@ class ClientesModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-	
+	function queryTarifas($id_cliente){
+		$queryTarifa="
+			SELECT
+				tc.nombre,
+				tc.descripcion,
+				tc.costo_base,
+				tc.km_adicional,
+				tc.inicio_vigencia,
+				tc.fin_vigencia,
+				cat.etiqueta AS `status`,
+				cat2.etiqueta AS `tipo`
+			FROM
+				cl_tarifas_clientes AS tc
+			INNER JOIN cm_catalogo AS cat ON tc.cat_statustarifa = cat.id_cat
+			INNER JOIN cm_catalogo AS cat2 ON tc.cat_tipo_tarifa = cat2.id_cat
+			WHERE
+				tc.id_cliente = $id_cliente
+		";
+		$query = $this->db->prepare($queryTarifa);
+		$query->execute();
+		$tarifas =  $query->fetchAll();
+		if($query->rowCount()>=1){
+			return $tarifas;
+		}
+	}
 	function insertDireccion($service,$tipo){
 		$id_asentamiento = ($tipo == 'origen')?$service->id_asentamiento_origen:$service->id_asentamiento_destino;
 		$calle 		= ($tipo == 'origen')?$service->origen_calle:$service->destino_calle;

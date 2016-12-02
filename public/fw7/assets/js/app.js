@@ -162,6 +162,7 @@ $$("body").on("click", ".a2", function() {
 		var time = new Date(new Date().toISOString().slice(0, 19)+'+0600').toISOString().slice(11, 19).replace('T', ' ');
 		storeClave('A2','C1','C8','A2','NULL',time,function(){
 			loadTemplate('viaje_tiempo');
+			empezarTimer();
 		});
 	});
 });

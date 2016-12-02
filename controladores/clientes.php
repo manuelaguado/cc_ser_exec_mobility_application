@@ -148,10 +148,25 @@ class Clientes extends Controlador
 			$roles = $modelo->selectRolesByTipo(26,$_SESSION['id_rol'],null);
 		require URL_VISTA.'modales/clientes/nuevo_cliente.php';
 	}
+	
+	
+	
+
+	
 	public function modal_establecer_tarifa($id_cliente){
 		$this->se_requiere_logueo(true,'Clientes|tarifas');
+		
+		$tarifa_data = $this->loadModel('Clientes');
+		$tarifas = $tarifa_data->queryTarifas($id_cliente);
+		$cat_tipo_tarifa = $this->selectCatalog('tipo_tarifa',null);
+		
 		require URL_VISTA.'modales/clientes/establecer_tarifa.php';
-	}	
+	}
+	
+	
+	
+	
+	
 	public function modal_editar_cliente($id_cliente){
 		$this->se_requiere_logueo(true,'Clientes|editar');
 		$model = $this->loadModel('Clientes');

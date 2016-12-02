@@ -51,6 +51,11 @@
 						</a>
 					</div>				
 				</div>
+				<div class="row text-center reduce">
+					<div class="col-100">
+						<div id='km_avance' class="tab_wrapper">Servicio Tabulado</div>
+					</div>	
+				</div>
 			</nav>
 		</div>
 	</div>

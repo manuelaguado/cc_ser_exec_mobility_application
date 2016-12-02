@@ -357,23 +357,32 @@ function edit_client(){
 		});
 	} );
 }
+
 function modal_establecer_tarifa(id_cliente){
 	$(document).ready(function() {
 		$.ajax({
 			url: 'clientes/modal_establecer_tarifa/' + id_cliente,
 			dataType: 'html',
-				success: function(resp_success){			
-					var modal =  resp_success;
-					$(modal).modal().on('shown.bs.modal',function(){
-						//console.log(modal);
-					}).on('hidden.bs.modal',function(){
-						$(this).remove();
+			success: function(resp_success){
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+					$('#tarifas').dataTable({
+						"dom": '<"top"p>'
 					});
-				},
+					$( "#add" ).click(function() {
+						$("#add_field").css({ display: "" });
+						$("#footer_main").css({ display: "none" });
+					});	
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-20');}	
 		});
 	} );
 }
+
+
 function procesar_tarifa(){
 	var msj_error="";
 	if( $('#nombre').get(0).value == "" ) 		msj_error+='Ingrese un nombre para identifcar la tarifa.<br />';

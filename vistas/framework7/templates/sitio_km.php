@@ -37,16 +37,6 @@
 						</a>
 					</div>
 				</div>
-				<div class="row text-center reduce">
-					<div class="col-100">
-						<div id='km_avance' class="crono_wrapper">00.00 km</div>
-					</div>	
-				</div>
-				<div class="row text-center reduce">
-					<div class="col-100">
-						<div id='costo_avance' class="costo_wrapper">$00.00</div>
-					</div>	
-				</div>	
 			</nav>
 		</div>
 	</div>
