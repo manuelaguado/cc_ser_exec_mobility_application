@@ -1090,16 +1090,15 @@ function costos_adicionales_do(){
 		});
 	} );
 }
-function cambiar_tarifa_do(){
+function cambiar_tarifa_do(id_tarifa_cliente,id_viaje){
 	$(document).ready(function() {
 		$.ajax({
-			url: 'operacion/cambiar_tarifa_do',
-			type: 'POST',
-			data: $("#cambiar_tarifa").serialize(),			
+			url: 'operacion/cambiar_tarifa_do/' + id_tarifa_cliente + '/' + id_viaje,		
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
-					$('#myModal').modal('hide');
+					$('a[id ^= fare_]').html('<i class="fa fa-square-o bigger-150"  aria-hidden="true"></i>');
+					$('#fare_'+id_tarifa_cliente).html('<i class="fa fa-check-square-o bigger-150 green" aria-hidden="true"></i>');
 				}else{
 					alerta('Alerta!','Error de conectividad de red OPRN-67');
 				}

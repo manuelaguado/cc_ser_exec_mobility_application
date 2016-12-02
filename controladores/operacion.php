@@ -12,7 +12,7 @@ class Operacion extends Controlador
 		$modelo->caducarGps();
 	}
 	public function cron(){
-		
+		/*
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		
@@ -33,7 +33,7 @@ class Operacion extends Controlador
 		foreach ($eventos as $evento){
 			$mobile->broadcast($evento['id_operador_unidad']);
 		}
-		
+		*/
 	}
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -169,6 +169,11 @@ class Operacion extends Controlador
 	}
 	public function cambiar_tarifa($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$id_cliente = $operacion->getIdCliente($id_viaje);
+		$current_tarifa = $operacion->currentTarifa($id_viaje);
+		$id_company = $operacion->id_company($id_cliente);
+		$tarifas = $operacion->queryTarifas($id_company);
 		require URL_VISTA.'modales/operacion/cambiar_tarifa.php';
 	}
 	public function activar_cancelacion_do($id_viaje){
@@ -196,10 +201,10 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->costos_adicionales($_POST);
 	}
-	public function cambiar_tarifa_do(){
+	public function cambiar_tarifa_do($id_tarifa_cliente,$id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
-		print $modelo->cambiar_tarifa($_POST);
+		$modelo->cambiar_tarifa($id_tarifa_cliente,$id_viaje);
 	}	
 	public function solicitud(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

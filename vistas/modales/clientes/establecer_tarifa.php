@@ -22,11 +22,13 @@
 										<th>Inicia</th>
 										<th>Tipo</th>
 										<th>Estado</th>
+										<th>Tabulado</th>
 									</tr>
 									<tbody>
 									<?php
 									if(count($tarifas)>0){
 										foreach ($tarifas as $row) {
+											if($row->tabulado == 1){$tab = "SI";}else{$tab = "NO";}
 											echo "
 												<tr>
 													<td><a title='".utf8_encode($row->descripcion)."'>".utf8_encode($row->nombre)."</a></td>
@@ -35,6 +37,7 @@
 													<td>".$row->inicio_vigencia."</td>
 													<td>".$row->tipo."</td>
 													<td>".$row->status."</td>
+													<td>".$tab."</td>
 												</tr>
 											";
 										}

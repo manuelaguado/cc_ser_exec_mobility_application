@@ -5,18 +5,62 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"+ aria-hidden="true">x</button>
 				<h4 class="modal-title" id="myModalLabel">
-					Agregar costos adicionales al viaje
+					Tarifas vigentes
 				</h4>
 			</div>
 			<div class="modal-body" id="modal_content">
-				<form id="cambiar_tarifa">
-					Aquí un form con las tarifas aplicables
-					<input type="hidden" id="id_viaje" name="id_viaje" value="<?=$id_viaje?>" />
-				</form>
-			</div>
-			<div class="modal-footer">					
-				<button onclick="cambiar_tarifa_do();" class="btn btn-ar btn-success" type="button" id="add">Cambiar tarifa</button>
-				<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cerrar</button>
+				<div class="row">
+					<div class="col-md-12 column">
+						<div class="table-responsive">
+							<table id="tarifas" class="table table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										
+										<th>Nombre</th>
+										<th>$ Base</th>
+										<th>$ km +</th>
+										<th>Tipo</th>
+										<th>Tabulado</th>
+										<th></th>
+									</tr>
+									<tbody>
+									<?php
+									if(count($tarifas)>0){
+										foreach ($tarifas as $row) {
+											if($row->tabulado == 1){$tab = "SI";}else{$tab = "NO";}
+											if($row->id_tarifa_cliente == $current_tarifa){
+												$select = '
+												<a href="javascript:;" onclick="cambiar_tarifa_do('.$row->id_tarifa_cliente.','.$id_viaje.');" id="fare_'.$row->id_tarifa_cliente.'">
+													<i class="fa fa-check-square-o bigger-150 green" aria-hidden="true"></i>
+												</a>';
+											}else{
+												$select = '
+												<a href="javascript:;" onclick="cambiar_tarifa_do('.$row->id_tarifa_cliente.','.$id_viaje.');" id="fare_'.$row->id_tarifa_cliente.'">
+													<i class="fa fa-square-o bigger-150"  aria-hidden="true"></i>
+												</a>';
+											}
+											echo "
+												<tr>
+													<td><a title='".utf8_encode($row->descripcion)."'>".utf8_encode($row->nombre)."</a></td>
+													<td>".utf8_encode($row->costo_base)."</td>
+													<td>".utf8_encode($row->km_adicional)."</td>
+													<td>".$row->tipo."</td>
+													<td>".$tab."</td>
+													<td>".$select."</td>
+												</tr>
+											";
+										}
+									}
+									?>
+									</tbody>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer" id="footer_main">					
+					<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cerrar</button>
+				</div>				
 			</div>
 		</div>
 	</div>

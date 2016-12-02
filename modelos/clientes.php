@@ -10,7 +10,7 @@ class ClientesModel
         } catch (PDOException $e) {
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
-    }
+    }	
 	function queryTarifas($id_cliente){
 		$queryTarifa="
 			SELECT
@@ -21,13 +21,15 @@ class ClientesModel
 				tc.inicio_vigencia,
 				tc.fin_vigencia,
 				cat.etiqueta AS `status`,
-				cat2.etiqueta AS `tipo`
+				cat2.etiqueta AS `tipo`,
+				tc.tabulado
 			FROM
 				cl_tarifas_clientes AS tc
 			INNER JOIN cm_catalogo AS cat ON tc.cat_statustarifa = cat.id_cat
 			INNER JOIN cm_catalogo AS cat2 ON tc.cat_tipo_tarifa = cat2.id_cat
 			WHERE
 				tc.id_cliente = $id_cliente
+			order by tc.id_tarifa_cliente desc
 		";
 		$query = $this->db->prepare($queryTarifa);
 		$query->execute();
@@ -250,7 +252,7 @@ class ClientesModel
 		}
 		return Controller::setOption($array,null);			
 	}
-	function caducarTarifa($id_cliente){
+	function caducarTarifa($id_cliente,$cat_tipo_tarifa){
 		$sql = "
 		UPDATE cl_tarifas_clientes SET 
 			fin_vigencia 		= :fin_vigencia,
@@ -260,12 +262,15 @@ class ClientesModel
 			id_cliente = :id_cliente
 			AND
 			cat_statustarifa = :cat_tarifa_old
+			AND
+			cat_tipo_tarifa = :cat_tipo_tarifa
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
 			':fin_vigencia'		=> date("Y-m-d H:i:s"),
 			':cat_statustarifa'	=> 169,
 			':cat_tarifa_old'	=> 168,
+			':cat_tipo_tarifa'	=> $cat_tipo_tarifa,
 			':id_cliente'		=> $id_cliente,
 			':user_mod'			=> $_SESSION['id_usuario']
 		);
@@ -275,7 +280,7 @@ class ClientesModel
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
-		self::caducarTarifa($this->id_cliente);
+		self::caducarTarifa($this->id_cliente,$this->cat_tipo_tarifa);
 		$sql = "
 			INSERT INTO cl_tarifas_clientes (
 				id_cliente,
@@ -285,6 +290,8 @@ class ClientesModel
 				nombre,
 				inicio_vigencia,
 				cat_statustarifa,
+				cat_tipo_tarifa,
+				tabulado,
 				user_alta,
 				fecha_alta
 			) VALUES (
@@ -295,6 +302,8 @@ class ClientesModel
 				:nombre,
 				:inicio_vigencia,
 				:cat_statustarifa,
+				:cat_tipo_tarifa,
+				:tabulado,
 				:user_alta,
 				:fecha_alta
 			)";
@@ -308,6 +317,8 @@ class ClientesModel
 				':nombre' => $this->nombre,
 				':inicio_vigencia' => date("Y-m-d H:i:s"),
 				':cat_statustarifa' => 168,
+				':cat_tipo_tarifa' => $this->cat_tipo_tarifa,
+				':tabulado' => $this->tabular,
 				':user_alta' => $_SESSION['id_usuario'],
 				':fecha_alta' => date("Y-m-d H:i:s")
 			)

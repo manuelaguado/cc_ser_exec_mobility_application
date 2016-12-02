@@ -27,6 +27,23 @@ class OperacionModel{
 			self::turnInsert($id_operador);
 		}
 	}
+	function cambiar_tarifa($id_tarifa_cliente,$id_viaje){
+		$qry = "
+			UPDATE `vi_viaje`
+			SET
+			 `id_tarifa_cliente` = ".$id_tarifa_cliente."
+			WHERE
+				(`id_viaje` = ".$id_viaje.");
+		";
+		$query = $this->db->prepare($qry);
+		$query_resp = $query->execute();
+		if($query_resp){
+			$respuesta = array('resp' =>  true , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
+		}else{
+			$respuesta = array('resp' => false , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
+		}
+		print json_encode($respuesta);
+	}
 	function apartUpdate($id_operador,$hit){
 		$isHit = ($hit)?1:0;
 		$increment = self::resetOrIncrement($id_operador);
@@ -671,6 +688,100 @@ class OperacionModel{
 			return false;
 		}
 	}
+	function queryTarifas($id_company){
+		$queryTarifa="
+			SELECT
+				tc.nombre,
+				tc.descripcion,
+				tc.costo_base,
+				tc.km_adicional,
+				tc.inicio_vigencia,
+				tc.fin_vigencia,
+				cat.etiqueta AS `status`,
+				cat2.etiqueta AS `tipo`,
+				tc.tabulado,
+				tc.id_tarifa_cliente
+			FROM
+				cl_tarifas_clientes AS tc
+			INNER JOIN cm_catalogo AS cat ON tc.cat_statustarifa = cat.id_cat
+			INNER JOIN cm_catalogo AS cat2 ON tc.cat_tipo_tarifa = cat2.id_cat
+			WHERE
+				tc.id_cliente = $id_company
+				AND
+				tc.cat_statustarifa = 168
+			order by tc.id_tarifa_cliente desc
+		";
+		$query = $this->db->prepare($queryTarifa);
+		$query->execute();
+		$tarifas =  $query->fetchAll();
+		if($query->rowCount()>=1){
+			return $tarifas;
+		}
+	}
+	function currentTarifa($id_viaje){
+		$sql ="
+			SELECT
+				viv.id_tarifa_cliente
+			FROM
+				vi_viaje AS viv
+			WHERE
+				viv.id_viaje = $id_viaje	
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row) {
+				return $row->id_tarifa_cliente;
+			}
+		}else{
+			return false;
+		}
+	}
+	function getIdCliente($id_viaje){
+		$sql ="
+			SELECT
+				vivc.id_cliente
+			FROM
+				vi_viaje AS viv
+			INNER JOIN vi_viaje_clientes AS vivc ON vivc.id_viaje = viv.id_viaje
+			WHERE
+				viv.id_viaje = $id_viaje
+			LIMIT 0,
+			 1		
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row) {
+				return $row->id_cliente;
+			}
+		}else{
+			return false;
+		}
+	}
+	function id_company($id_cliente){
+		$query = "
+			SELECT
+				clc.parent AS id_company
+			FROM
+				cl_tarifas_clientes AS tfcl
+			INNER JOIN cl_clientes AS clc ON tfcl.id_cliente = clc.parent
+			WHERE
+				clc.id_cliente = 2
+			AND tfcl.cat_statustarifa = 168
+			AND tfcl.cat_tipo_tarifa = 189
+		";
+		$query = $this->db->prepare($query);
+		$query->execute();
+		$result = $query->fetchAll();
+		$output = '';
+		if($query->rowCount()>=1){
+			foreach ($result as $row) {
+				$output =  $row->id_company;
+			}			
+		}
+		return $output;
+	}	
 	function set_fecha_asignacion($id_viaje){
 		$sql = "
 			UPDATE vi_viaje_detalle
@@ -831,6 +942,7 @@ class OperacionModel{
 			WHERE
 				clc.id_cliente = $id_cliente
 			AND tfcl.cat_statustarifa = 168
+			AND tfcl.cat_tipo_tarifa = 189
 		";
 		$query = $this->db->prepare($query);
 		$query->execute();
@@ -3634,7 +3746,9 @@ class acciones_completados extends SSP{
 					
 					$salida = '';
 					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-							
+					
+					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -3837,7 +3951,7 @@ class programados_completados extends SSP{
 					
 					$salida = '';
 					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Que quieres que haga"><i class="fa fa-question" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-							
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
