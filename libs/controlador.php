@@ -155,14 +155,31 @@ class Controlador extends Controller
     protected function se_requiere_logueo($requerido,$levels=0){
 		if($requerido == true){
 			if(!isset($_SESSION['token'])){
-				Header("Location: ".URL_APP."login");
+				require_once '../vendor/MobileDetect/Mobile_Detect.php';
+				$detect = new Mobile_Detect;
+				$array = array();
+				if($detect->isMobile()){
+					if($detect->isTablet()){
+						Header("Location: ".URL_APP."login");
+					}else{
+						if(isset(($_POST['sync']))OR(isset($_POST['gps']))){
+							print(json_encode(array('out'=>'login')));
+						}else{
+							Header("Location: ".URL_APP."login");
+						}
+					}
+				}else{
+					Header("Location: ".URL_APP."login");
+				}
+				exit();
 			}else{
 				if($_SESSION['tyc'] == 'SI'){
-					$_SESSION['hora_acceso']=time();
-					self::updateLogin();
 					if(!in_array($levels,$_SESSION['permisos'])){
 						require URL_TEMPLATE.'restringido.php';
 						exit();
+					}else{
+						$_SESSION['hora_acceso']=time();
+						self::updateLogin();						
 					}
 				}else{
 					require URL_TEMPLATE.'tyc.php';
@@ -172,6 +189,7 @@ class Controlador extends Controller
 		}elseif($requerido == false){
 			if(isset($_SESSION['token'])){
 				Header("Location: ".URL_APP."inicio");
+				exit();
 			}
 		}
     }

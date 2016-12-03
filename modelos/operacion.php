@@ -3745,7 +3745,6 @@ class acciones_completados extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					

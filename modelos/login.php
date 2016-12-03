@@ -404,6 +404,12 @@ class LoginModel
 	}
 	
 	public function getId_login($id_usuario = NULL){
+		if(!isset($_SESSION['id_usuario'])){
+			//si ya no existe la sesion no tiene caso continuar
+			$array[]=array('resp'=>"correcto",'stat'=>"Sesion inexistente, se envian variables de curso para login");
+			print json_encode($array);
+			exit();
+		}
 		$id_usuario =($id_usuario === NULL)?$_SESSION['id_usuario']:$id_usuario;
 		$sql = "
 			SELECT

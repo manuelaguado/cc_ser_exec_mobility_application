@@ -33,6 +33,7 @@ function startGps() {
 								eliminarClaveByToken(v.token,'gps');
 							});
 						}
+						if(resp_success['out'] == 'login'){dOut();}
 					},
 				});
 			}
@@ -69,6 +70,7 @@ function startSync(exec){
 				data: 'sync='+sendvar,
 				success: function(e){
 					exec();
+					if(e['out'] == 'login'){dOut();}
 				}
 			});
 		}else{

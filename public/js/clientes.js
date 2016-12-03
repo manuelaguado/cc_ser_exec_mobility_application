@@ -388,11 +388,13 @@ function procesar_tarifa(){
 	if( $('#nombre').get(0).value == "" ) 		msj_error+='Ingrese un nombre para identifcar la tarifa.<br />';
 	if( $('#descripcion').get(0).value == "" )	msj_error+='Describa la tarifa.<br />';
 	if( $('#costo_base').get(0).value == "") 	msj_error+='Ingrese el costo base de la tarifa.<br />';
-	if( $('#km_adicional').get(0).value == "" )	msj_error+='Ingrese el costo por kilómetro adicional de la tarifa.<br />';
+
 	if( $('#cat_tipo_tarifa').get(0).value == "" )	msj_error+='Seleccione el tipo de tarifa.<br />';
 	if( $('#tabular').get(0).value == "" )	msj_error+='Falta tabular, no deberia ocurrir esto.<br />';
 	if( $('#id_cliente').get(0).value == "" )	msj_error+='Falta id_cliente, no deberia ocurrir esto.<br />';
-
+	
+	if(( $('#tabular').get(0).value == "0" )&&( $('#km_adicional').get(0).value == "" )) msj_error+='Ingrese el costo por kilómetro adicional de la tarifa.<br />';
+	
 	if( !msj_error == "" ){
 		alerta('Alerta!',msj_error);
 		return false;

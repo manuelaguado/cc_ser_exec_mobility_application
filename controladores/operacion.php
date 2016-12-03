@@ -1,4 +1,4 @@
-	<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
+<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <?php
 class Operacion extends Controlador
 {
@@ -12,7 +12,7 @@ class Operacion extends Controlador
 		$modelo->caducarGps();
 	}
 	public function cron(){
-		/*
+		
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		
@@ -33,7 +33,7 @@ class Operacion extends Controlador
 		foreach ($eventos as $evento){
 			$mobile->broadcast($evento['id_operador_unidad']);
 		}
-		*/
+		
 	}
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

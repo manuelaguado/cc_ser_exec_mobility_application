@@ -1506,7 +1506,7 @@ class MobileModel
 							$ahora = date("Y-m-d H:i:s");
 							$timeFresh = self::minutosDiferencia(@$position->times,$ahora);
 							
-							$jumGeoposition = array(1,56,57);
+							$jumGeoposition = array(1,56);
 							
 							$enGeocerca = self::enGeocerca($geoVars);
 							

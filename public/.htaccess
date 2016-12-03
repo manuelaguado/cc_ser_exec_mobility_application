@@ -4,6 +4,10 @@ RewriteEngine on
 ErrorDocument 404 /
 ErrorDocument 403 /
 
+#tiempos de session
+php_value session.gc_maxlifetime 86400
+php_value session.cookie_lifetime 86400
+
 #evitar navegar entre directorios
 Options All -Indexes
 

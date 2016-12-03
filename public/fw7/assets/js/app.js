@@ -108,9 +108,10 @@ $$("body").on("click", ".c2", function() {
     myApp.confirm('','¿Está seguro de cerrar el episodio?', function () {
 		getBase(function () {
 			storeClave('C2','C2',globalBase,'NULL','NULL','NULL',function(){
-				setStoreVariable('base','',function(){});
+				setStoreVariable('base','',function(){
+					finalizar_servicio();
+				});
 				$('#data_cordon').html('NO HAY DATOS DE CORDON');
-				finalizar_servicio();
 			});
 		});
     });
@@ -364,6 +365,7 @@ function finalizar_servicio(){
 			type: 'POST',
 			dataType: "json",
 			success: function(respuesta){
+				console.log(respuesta);
 				if(respuesta[0].resp='correcto'){
 					dOut();
 				}else{
