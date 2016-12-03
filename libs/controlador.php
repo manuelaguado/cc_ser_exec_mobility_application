@@ -162,7 +162,7 @@ class Controlador extends Controller
 					if($detect->isTablet()){
 						Header("Location: ".URL_APP."login");
 					}else{
-						if(isset(($_POST['sync']))OR(isset($_POST['gps']))){
+						if(isset($_POST['sync'])OR(isset($_POST['gps']))){
 							print(json_encode(array('out'=>'login')));
 						}else{
 							Header("Location: ".URL_APP."login");
