@@ -165,7 +165,13 @@ class Operacion extends Controlador
 	}
 	public function costos_adicionales($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$cat_concepto = $this->selectCatalog('costos_adicionales',null);		
 		require URL_VISTA.'modales/operacion/costos_adicionales.php';
+	}
+	public function costos_adicionales_get($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		print $operacion->queryCostosAdicionales($_POST,$id_viaje);
 	}
 	public function cambiar_tarifa($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -199,7 +205,7 @@ class Operacion extends Controlador
 	public function costos_adicionales_do(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
-		print $modelo->costos_adicionales($_POST);
+		print json_encode($modelo->addCostoAdicional($_POST));
 	}
 	public function cambiar_tarifa_do($id_tarifa_cliente,$id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

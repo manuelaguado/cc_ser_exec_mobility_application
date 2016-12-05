@@ -1010,14 +1010,18 @@ function costos_adicionales(id_viaje){
 		$.ajax({
 			url: 'operacion/costos_adicionales/' + id_viaje,
 			dataType: 'html',
-				success: function(resp_success){			
-					var modal =  resp_success;
-					$(modal).modal().on('shown.bs.modal',function(){
-						//console.log(modal);
-					}).on('hidden.bs.modal',function(){
-						$(this).remove();
-					});
-				},
+			success: function(resp_success){
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+
+					$( "#add" ).click(function() {
+						$("#add_field").css({ display: "" });
+						$("#footer_main").css({ display: "none" });
+					});	
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-59');}	
 		});
 	} );
@@ -1073,20 +1077,33 @@ function activar_abandono_do(id_viaje){
 	} );
 }
 function costos_adicionales_do(){
+	var msj_error="";
+	if( $('#cat_concepto').get(0).value == "" )	msj_error+='Seleccione el concepto del costo adicional.<br />';
+	if( $('#costo').get(0).value == "" )		msj_error+='Ingrese el costo adicional.<br />';
+	if( $('#id_viaje').get(0).value == "" )	msj_error+='Falta id_viaje, no deberia ocurrir esto.<br />';
+	
+	if( !msj_error == "" ){
+		alerta('Alerta!',msj_error);
+		return false;
+	}
+
 	$(document).ready(function() {
 		$.ajax({
 			url: 'operacion/costos_adicionales_do',
 			type: 'POST',
-			data: $("#costos_adicionales").serialize(),			
+			data: $("#costos_adicionales").serialize(),
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
-					$('#myModal').modal('hide');
+					$('#costosAdicionales').DataTable().ajax.reload();
+					$('#cat_concepto').val('');
+					$('#costo').val('');
+					//$('#myModal').modal('hide');
 				}else{
-					alerta('Alerta!','Error de conectividad de red OPRN-65');
+					 alerta('Alerta!','Error de conectividad de red OPRN-85');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-66');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-86');}	
 		});
 	} );
 }

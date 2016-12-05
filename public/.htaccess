@@ -6,7 +6,7 @@ ErrorDocument 403 /
 
 #tiempos de session
 php_value session.gc_maxlifetime 86400
-php_value session.cookie_lifetime 86400
+php_value session.cookie_lifetime 0
 
 #evitar navegar entre directorios
 Options All -Indexes

@@ -1,6 +1,9 @@
 <?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="modal fade" id="myModal" tabindex="-1">
 	<div class="modal-dialog" style="width: 960px;">
+	<style>
+	#tarifas_wrapper > div:nth-child(1){display:none;}
+	</style>	
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"+ aria-hidden="true">x</button>
@@ -12,40 +15,51 @@
 				<div class="row">
 					<div class="col-md-12 column">
 						<div class="table-responsive">
-							<table id="tarifas" class="table table-striped table-bordered table-hover">
+							<table id="tarifas" class="display table table-striped" cellspacing="0" width="100%">
 								<thead>
 									<tr>
-										
 										<th>Nombre</th>
+										<th>descripcion</th>
 										<th>$ Base</th>
 										<th>$ km +</th>
 										<th>Inicia</th>
-										<th>Tipo</th>
+										<th>Finvigencia</th>
 										<th>Estado</th>
+										<th>Tipo</th>
 										<th>Tabulado</th>
 									</tr>
-									<tbody>
-									<?php
-									if(count($tarifas)>0){
-										foreach ($tarifas as $row) {
-											if($row->tabulado == 1){$tab = "SI";}else{$tab = "NO";}
-											echo "
-												<tr>
-													<td><a title='".utf8_encode($row->descripcion)."'>".utf8_encode($row->nombre)."</a></td>
-													<td>".utf8_encode($row->costo_base)."</td>
-													<td>".utf8_encode($row->km_adicional)."</td>
-													<td>".$row->inicio_vigencia."</td>
-													<td>".$row->tipo."</td>
-													<td>".$row->status."</td>
-													<td>".$tab."</td>
-												</tr>
-											";
-										}
-									}
-									?>
-									</tbody>
-								</thead>
-							</table>
+								</thead>									
+							</table>					
+							<script>
+								jQuery(function($) {							
+									$('#tarifas').dataTable( {
+										"fnDrawCallback": function( oSettings ) {
+										  $('[data-rel=tooltip]').tooltip();
+										},
+										"ordering": false,
+										"processing": true,
+										"serverSide": true,
+										"pageLength": 100,
+
+										"ajax": {
+											"url": "clientes/modal_establecer_tarifa_get/" + <?=$id_cliente?>,
+											"type": "POST"
+										},
+										"columnDefs": [
+											{
+												"targets": 1,
+												"visible": false,
+												"searchable":false
+											},
+											{
+												"targets": 5,
+												"visible": false,
+												"searchable":false
+											}
+										]
+									} );
+								});
+							</script>
 						</div>
 					</div>
 				</div>

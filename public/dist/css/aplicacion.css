@@ -584,3 +584,9 @@ table#tb_act_oper tbody > tr > td{
 .line_force{
 	display: -webkit-box;
 }
+.ca_flt_modal{
+	position: relative;
+	float: left;
+	font-size: 2em;
+	color:#008c00;
+}

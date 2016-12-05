@@ -155,14 +155,15 @@ class Clientes extends Controlador
 	
 	public function modal_establecer_tarifa($id_cliente){
 		$this->se_requiere_logueo(true,'Clientes|tarifas');
-		
-		$tarifa_data = $this->loadModel('Clientes');
-		$tarifas = $tarifa_data->queryTarifas($id_cliente);
 		$cat_tipo_tarifa = $this->selectCatalog('tipo_tarifa',null);
-		
 		require URL_VISTA.'modales/clientes/establecer_tarifa.php';
 	}
-	
+	public function modal_establecer_tarifa_get($id_cliente){
+		$this->se_requiere_logueo(true,'Clientes|tarifas');
+		
+		$Clientes = $this->loadModel('Clientes');
+		print $Clientes->queryTarifas($_POST,$id_cliente);
+	}
 	
 	
 	

@@ -366,9 +366,7 @@ function modal_establecer_tarifa(id_cliente){
 			success: function(resp_success){
 				var modal =  resp_success;
 				$(modal).modal().on('shown.bs.modal',function(){
-					$('#tarifas').dataTable({
-						"dom": '<"top"p>'
-					});
+
 					$( "#add" ).click(function() {
 						$("#add_field").css({ display: "" });
 						$("#footer_main").css({ display: "none" });
@@ -408,7 +406,15 @@ function procesar_tarifa(){
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
-					$('#myModal').modal('hide');
+					$('#tarifas').DataTable().ajax.reload();
+					$('#nombre').val('');
+					$('#descripcion').val('');
+					$('#costo_base').val('');
+					$('#cat_tipo_tarifa').val('');
+					$('#tabular').val('0');
+					$('#km_adicional').val('');
+					$("#tabulado").prop("checked", false);
+					//$('#myModal').modal('hide');					
 				}else{
 					 alerta('Alerta!','Error de conectividad de red CLI-21');
 				}

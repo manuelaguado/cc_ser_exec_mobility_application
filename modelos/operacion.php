@@ -10,6 +10,45 @@ class OperacionModel{
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+	
+	function addCostoAdicional($arreglo){
+		foreach ($arreglo as $key => $value) {
+			$this->$key = strip_tags($value);
+		}
+		$sql = "
+			INSERT INTO vi_costos_adicionales (
+				id_viaje,
+				cat_concepto,
+				costo,
+				user_alta,
+				user_mod,
+				fecha_alta
+			) VALUES (
+				:id_viaje,
+				:cat_concepto,
+				:costo,
+				:user_alta,
+				:user_mod,
+				:fecha_alta
+			)";
+		$query = $this->db->prepare($sql);
+		$query_resp = $query->execute(
+			array(
+				':id_viaje' =>  $this->id_viaje ,
+				':cat_concepto' =>  $this->cat_concepto ,
+				':costo' =>  substr($this->costo, 2) ,
+				':user_alta' =>  $_SESSION['id_usuario'] ,
+				':user_mod' => $_SESSION['id_usuario'] ,
+				':fecha_alta' => date("Y-m-d H:i:s")
+			)
+		);
+		if($query_resp){
+			$respuesta = array('resp' => true);
+		}else{
+			$respuesta = array('resp' => false);
+		}
+		return $respuesta;
+	}
 	function countApart($id_operador,$hit,$id_operador_turno){
 		if(!$hit){
 			self::setNoHit($id_operador_turno);
@@ -3459,6 +3498,97 @@ class OperacionModel{
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
+	}
+	function queryCostosAdicionales($array,$id_viaje){
+		ini_set('memory_limit', '256M');				
+		$table = 'vi_costos_adicionales AS vca';
+		$primaryKey = 'id_costos_adicionales';
+		$columns = array(
+			array( 
+				'db' => 'cat.etiqueta as etiqueta',
+				'dbj' => 'cat.etiqueta',
+				'real' => 'cat.etiqueta',
+				'alias' => 'etiqueta',
+				'typ' => 'txt',
+				'dt' => 0			
+			),
+			array( 
+				'db' => 'vca.costo as costo',
+				'dbj' => 'vca.costo',
+				'real' => 'vca.costo',
+				'alias' => 'costo',
+				'typ' => 'int',
+				'moneda' => true,
+				'dt' => 1
+			),
+			array( 
+				'db' => 'usr.usuario as usuario',
+				'dbj' => 'usr.usuario',
+				'real' => 'usr.usuario',
+				'alias' => 'usuario',
+				'typ' => 'txt',
+				'dt' => 2
+			),
+			array( 
+				'db' => 'vca.fecha as fecha',
+				'dbj' => 'vca.fecha',
+				'real' => 'vca.fecha',
+				'alias' => 'fecha',
+				'typ' => 'int',
+				'dt' => 3
+			)
+		);
+		$inner = '
+			INNER JOIN cm_catalogo AS cat ON vca.cat_concepto = cat.id_cat
+			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_mod			
+		';
+		$where = '
+			vca.id_viaje = '.$id_viaje.'
+		';
+		$orden = '
+			GROUP BY
+				vca.id_costos_adicionales DESC
+		';
+		$render_table = new acciones_costosAdicionales;
+		return json_encode(
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+		);
+	}	
+}
+class acciones_costosAdicionales extends SSP{
+	static function data_output ( $columns, $data, $db )
+	{
+		$out = array();
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
+
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+				
+				if ( isset( $column['acciones'] ) ) {
+					$id_cliente = $data[$i][ 'id_cliente' ];
+					$id_viaje = $data[$i][ 'id_viaje' ];
+					
+					$salida = '';
+					$salida .= '<a data-rel="tooltip" data-original-title="xxx"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';	
+					
+					$row[ $column['dt'] ] = $salida;
+				}else if ( isset( $column['moneda'] ) ){
+					
+					$cantidad = ($data[$i][ $column['alias'] ]);
+					$cantidad = money_format('%i',$cantidad);
+					$salida = $cantidad;		
+					
+					$row[ $column['dt'] ] = $salida;
+				}else{
+					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+				}
+				
+			}
+			$out[] = $row;
+		}
+		return $out;
 	}	
 }
 class acciones_pendientes extends SSP{

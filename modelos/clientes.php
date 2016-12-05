@@ -10,34 +10,7 @@ class ClientesModel
         } catch (PDOException $e) {
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
-    }	
-	function queryTarifas($id_cliente){
-		$queryTarifa="
-			SELECT
-				tc.nombre,
-				tc.descripcion,
-				tc.costo_base,
-				tc.km_adicional,
-				tc.inicio_vigencia,
-				tc.fin_vigencia,
-				cat.etiqueta AS `status`,
-				cat2.etiqueta AS `tipo`,
-				tc.tabulado
-			FROM
-				cl_tarifas_clientes AS tc
-			INNER JOIN cm_catalogo AS cat ON tc.cat_statustarifa = cat.id_cat
-			INNER JOIN cm_catalogo AS cat2 ON tc.cat_tipo_tarifa = cat2.id_cat
-			WHERE
-				tc.id_cliente = $id_cliente
-			order by tc.id_tarifa_cliente desc
-		";
-		$query = $this->db->prepare($queryTarifa);
-		$query->execute();
-		$tarifas =  $query->fetchAll();
-		if($query->rowCount()>=1){
-			return $tarifas;
-		}
-	}
+    }		
 	function insertDireccion($service,$tipo){
 		$id_asentamiento = ($tipo == 'origen')?$service->id_asentamiento_origen:$service->id_asentamiento_destino;
 		$calle 		= ($tipo == 'origen')?$service->origen_calle:$service->destino_calle;
@@ -1483,7 +1456,135 @@ class ClientesModel
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
+	}
+	function queryTarifas($array,$id_cliente){
+		ini_set('memory_limit', '256M');				
+		$table = 'cl_tarifas_clientes AS tc';
+		$primaryKey = 'id_cliente';
+		$columns = array(
+			array( 
+				'db' => 'tc.nombre as nombre',
+				'dbj' => 'tc.nombre',
+				'real' => 'tc.nombre',
+				'alias' => 'nombre',
+				'typ' => 'txt',
+				'dt' => 0
+			),
+			array( 
+				'db' => 'tc.descripcion as descripcion',
+				'dbj' => 'tc.descripcion',				
+				'real' => 'tc.descripcion',
+				'alias' => 'descripcion',
+				'typ' => 'txt',
+				'dt' => 1
+			),
+			array( 
+				'db' => 'tc.costo_base AS costo_base',
+				'dbj' => 'tc.costo_base',
+				'real' => 'tc.costo_base',
+				'alias' => 'costo_base',
+				'typ' => 'int',
+				'moneda' => true,
+				'dt' => 2				
+			),
+			array( 
+				'db' => 'tc.km_adicional AS km_adicional',
+				'dbj' => 'tc.km_adicional',
+				'real' => 'tc.km_adicional',
+				'alias' => 'km_adicional',
+				'typ' => 'int',
+				'moneda' => true,
+				'dt' => 3				
+			),
+			array( 
+				'db' => 'tc.inicio_vigencia AS inicio_vigencia',
+				'dbj' => 'tc.inicio_vigencia',
+				'real' => 'tc.inicio_vigencia',
+				'alias' => 'inicio_vigencia',
+				'typ' => 'int',
+				'dt' => 4				
+			),
+			array( 
+				'db' => 'tc.fin_vigencia fin_vigencia',
+				'dbj' => 'tc.fin_vigencia',	
+				'real' => 'tc.fin_vigencia',
+				'alias' => 'fin_vigencia',
+				'typ' => 'int',
+				'dt' => 5			
+			),
+			array( 
+				'db' => 'cat.etiqueta AS etiqueta1',
+				'dbj' => 'cat.etiqueta',	
+				'real' => 'cat.etiqueta',
+				'alias' => 'etiqueta1',
+				'typ' => 'txt',
+				'dt' => 6			
+			),
+			array( 
+				'db' => 'cat2.etiqueta AS etiqueta2',
+				'dbj' => 'cat2.etiqueta',	
+				'real' => 'cat2.etiqueta',
+				'alias' => 'etiqueta2',
+				'typ' => 'txt',
+				'dt' => 7			
+			),
+			array( 
+				'db' => 'tc.tabulado as tabulado',
+				'dbj' => 'tc.tabulado',	
+				'real' => 'tc.tabulado',
+				'alias' => 'tabulado',
+				'typ' => 'int',
+				'bin' => true,
+				'dt' => 8			
+			)
+		);
+		$render_table = new acciones_tarifas;
+		$inner = '
+			INNER JOIN cm_catalogo AS cat ON tc.cat_statustarifa = cat.id_cat
+			INNER JOIN cm_catalogo AS cat2 ON tc.cat_tipo_tarifa = cat2.id_cat
+		';
+		$where = '
+			tc.id_cliente = '.$id_cliente.'
+		';
+		$orden = '
+			order by tc.id_tarifa_cliente desc
+		';
+		return json_encode(
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+		);
 	}	
+}
+class acciones_tarifas extends SSP{ 
+	static function data_output ( $columns, $data, $db )
+	{
+		$out = array();
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
+
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+				$salida = "";
+				if ( isset( $column['moneda'] ) ) {
+
+					$cantidad = ($data[$i][ $column['alias'] ]);
+					$cantidad = money_format('%i',$cantidad);
+					$salida = $cantidad;	
+					
+					$row[ $column['dt'] ] = $salida;
+				}else if(isset( $column['bin'])){
+					
+					$bin = ($data[$i][ $column['alias'] ]);	
+					$salida = ($bin == 1)?'SI':'NO';
+					$row[ $column['dt'] ] = $salida;
+				}else{
+					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+				}
+			}
+			$out[] = $row;
+		}
+		return $out;
+	}
 }
 class acciones_usuario extends SSP{ /*Individual*/
 	static function data_output ( $columns, $data, $db )
