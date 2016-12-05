@@ -430,3 +430,7 @@ function switch_tabular(){
 		$('#tabular').get(0).value = "0";	
 	} 
 }
+function close_tarifa_form(){
+	$("#add_field").css({ display: "none" });
+	$("#footer_main").css({ display: "" });
+}

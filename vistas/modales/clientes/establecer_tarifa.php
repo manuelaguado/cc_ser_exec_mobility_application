@@ -121,7 +121,7 @@
 						<input type="hidden" id="id_cliente" name="id_cliente" value="<?=$id_cliente?>">
 						<div class="modal-footer">
 							<button  class="btn btn-ar btn-success" type="button" onclick="procesar_tarifa();">Procesar</button>
-							<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cancelar</button>
+							<button  onclick="close_tarifa_form();" class="btn btn-ar btn-default" type="button">Cancelar</button>
 						</div>
 					</form>
 					<script type="text/javascript">

@@ -44,7 +44,7 @@
 			<div class="content-block">
 				<div class="row">
 					<div class="col-33"></div>
-					<div class="col-33"><a href="javascript:void(0)" class="button button-big return" data-origen='{{origen}}' style="border:#08957D; background:#08957D; color:#ffffff;">Cancelar</a></div>
+					<div class="col-33"><a href="javascript:void(0)" class="button button-big return" data-origen='{{origen}}' style="border:#08957D; background:#08957D;">Cancelar</a></div>
 					<div class="col-33"></div>
 				</div>
 			</div>

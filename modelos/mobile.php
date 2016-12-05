@@ -24,6 +24,7 @@ class MobileModel
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'A11':/*En el punto*/
+						self::updateArribo($clave);
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'A14':/*Abandono de servicio*/
@@ -79,6 +80,7 @@ class MobileModel
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'C9':/*Servicio concluido*/
+						self::updateFinalizacion($clave);
 						self::setCveStore($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
 						
 						$setear_status_viaje['id_viaje'] = $clave['id_viaje'];
@@ -196,6 +198,28 @@ class MobileModel
 		
 		$emitir =  json_encode($output);
 		self::transmitir($emitir,'sync'.$clave['id_operador']);
+	}
+	function updateFinalizacion($clave){
+		$sql = "
+			UPDATE vi_viaje_detalle
+			SET
+			 fecha_finalizacion	= '".$clave['timestamp']."'
+			WHERE
+				id_viaje = ".$clave['id_viaje']."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}
+	function updateArribo($clave){
+		$sql = "
+			UPDATE vi_viaje_detalle
+			SET
+			 fecha_arribo	= '".$clave['timestamp']."'
+			WHERE
+				id_viaje = ".$clave['id_viaje']."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
 	}
 	function servicioAsignado($id_viaje){
 		$sql = "
@@ -936,22 +960,22 @@ class MobileModel
 		$query = $this->db->prepare($sql);
 		$query->execute(
 			array(
-				':accurate' => 			@$clave['accurate'],
+				':accurate' => 			$clave['accurate'],
 				':clave' => 			$clave['clave'],
 				':estado1' => 			$clave['estado1'],
 				':estado2' => 			$clave['estado2'],
 				':estado3' => 			$clave['estado3'],
 				':estado4' => 			$clave['estado4'],
 				':id_indexeddb' => 		$clave['id'],
-				':id_episodio' => 		@$clave['id_episodio'],
+				':id_episodio' => 		$clave['id_episodio'],
 				':id_operador' => 		$clave['id_operador'],
 				':id_operador_unidad' =>$clave['id_operador_unidad'],
-				':id_viaje' => 			@$clave['id_viaje'],
-				':latitud' => 			@$clave['latitud'],
-				':longitud' => 			@$clave['longitud'],
+				':id_viaje' => 			$clave['id_viaje'],
+				':latitud' => 			$clave['latitud'],
+				':longitud' => 			$clave['longitud'],
 				':motivo' => 			$clave['motivo'],
 				':serie' => 			$clave['serie'],
-				':tiempo' => 			@$clave['tiempo'],
+				':tiempo' => 			$clave['tiempo'],
 				':timestamp' => 		$clave['timestamp'],
 				':token' => 			$clave['token'],
 				':origen' => 			$clave['origen']

@@ -10,7 +10,7 @@
 							<span class="label_code">Inicio de escala</span>
 						</a>
 					</div>
-					<div class="col-50" id="abandono_des_stab" style="display: none;">
+					<div class="col-50" id="abandono_act_stab" style="display: none;">
 						<a class="a14 menu-link" href="javascript:void(0)"  data-return="sitio_km">
 							<span>A14</span>
 							<span class="label_code">Adandono de servicio</span>

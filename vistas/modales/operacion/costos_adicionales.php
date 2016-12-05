@@ -1,6 +1,6 @@
 <?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="modal fade" id="myModal" tabindex="-1">
-	<div class="modal-dialog" style="width: 960px;">
+	<div class="modal-dialog" style="width: 760px;">
 	<style>
 	#costosAdicionales_wrapper > div:nth-child(1){display:none;}
 	</style>
@@ -22,6 +22,7 @@
 										<th>Costo</th>
 										<th>Capturó</th>
 										<th>Fecha</th>
+										<th>Acciones</th>
 									</tr>
 								</thead>									
 							</table>					
@@ -73,6 +74,7 @@
 									</div>
 								</div>
 							</div>
+							
 						</div>
 						
 						<div id="error_alerta" > </div>
@@ -82,7 +84,7 @@
 						<div class="modal-footer">
 							<div class="ca_flt_modal" id="total2"></div>
 							<button  class="btn btn-ar btn-success" type="button" onclick="costos_adicionales_do();">Capturar</button>
-							<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cancelar</button>
+							<button  onclick="close_costos_form();" class="btn btn-ar btn-default" type="button">Cancelar</button>
 						</div>
 					</form>				
 				</div>

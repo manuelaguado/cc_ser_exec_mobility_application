@@ -36,6 +36,12 @@
 							<span class="label_code">Fin de labores</span>
 						</a>
 					</div>
+					<div class="col-50" id="fin_labores_des" style="display: none;">
+						<a class="code_disabled" href="javascript:void(0);">
+							<span>C2</span>
+							<span class="label_code">Fin de labores</span>
+						</a>
+					</div>
 					<div class="col-50" id="mod_viaje_act" style="display: none;">
 						<a href="javascript:void(0);" class="f16 menu-link">
 							<span>F16</span>

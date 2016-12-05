@@ -3536,6 +3536,16 @@ class OperacionModel{
 				'alias' => 'fecha',
 				'typ' => 'int',
 				'dt' => 3
+			),
+			array( 
+				'db' => 'vca.id_costos_adicionales as id_costos_adicionales',
+				'dbj' => 'vca.id_costos_adicionales',
+				'real' => 'vca.id_costos_adicionales',
+				'alias' => 'id_costos_adicionales',
+				'typ' => 'int',
+				'acciones' => true,
+				'id_viaje' => $id_viaje,
+				'dt' => 4
 			)
 		);
 		$inner = '
@@ -3547,7 +3557,7 @@ class OperacionModel{
 		';
 		$orden = '
 			GROUP BY
-				vca.id_costos_adicionales DESC
+				vca.id_costos_adicionales ASC
 		';
 		$render_table = new acciones_costosAdicionales;
 		return json_encode(
@@ -3567,11 +3577,12 @@ class acciones_costosAdicionales extends SSP{
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				
 				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
-					$id_viaje = $data[$i][ 'id_viaje' ];
+					$id_viaje = ($data[$i][ $column['alias'] ]);
+					$id_costos_adicionales = ($data[$i][ $column['alias'] ]);
 					
 					$salida = '';
-					$salida .= '<a data-rel="tooltip" data-original-title="xxx"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';	
+					$salida .= '<a onclick="eliminar_costoAdicional('.$id_costos_adicionales.')" data-rel="tooltip" data-original-title="Eliminar costo"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a onclick="editarel_costoAdicional('.$id_costos_adicionales.')" data-rel="tooltip" data-original-title="Editar costo"><i class="fa fa-pencil" style="font-size:1.4em; color:#00b359;"></i></a>&nbsp;&nbsp;';					
 					
 					$row[ $column['dt'] ] = $salida;
 				}else if ( isset( $column['moneda'] ) ){
@@ -3662,6 +3673,7 @@ class acciones_asignados extends SSP{
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				
 				if ( isset( $column['acciones'] ) ) {
+					
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
@@ -3682,7 +3694,7 @@ class acciones_asignados extends SSP{
 						case 'C9':	$color = '#403307';	break;
 						case 'C8':	$color = '#E5B81A';	break;
 						case 'A14':	$color = '#BF3000';	break;
-						case 'X2':	$color = '#7F2000';	break;
+						case 'R2':	$color = '#7F2000';	break;
 						case 'X3':	$color = '#401000';	break;
 						case 'X4':	$color = '#E53A00';	break;
 						case 'X5':	$color = '#004EBF';	break;
@@ -3693,7 +3705,7 @@ class acciones_asignados extends SSP{
 					}
 					
 					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background:'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
-							
+						
 					$salida .= '<a href="javascript:;" onclick="activar_cancelacion('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar cancelación en operador"><i class="fa fa-ban" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					
 					$salida .= '<a href="javascript:;" onclick="activar_abandono('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar abandono en operador"><i class="icofont icofont-offside" style="font-size:1.4em; color:#aa2424;"></i></a>&nbsp;&nbsp;';
@@ -3733,7 +3745,7 @@ class acciones_asignados extends SSP{
 		if($query->rowCount()>=1){
 			foreach ($query->fetchAll() as $row){
 				$array['clave']	=	$row['llave'];
-				$array['valor']	=	$row['valor'];
+				$array['valor']	=	utf8_encode($row['valor']);
 			}
 		}
 		return $array;
@@ -3871,12 +3883,11 @@ class acciones_completados extends SSP{
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				
 				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
 					
-					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -3901,11 +3912,10 @@ class acciones_cancelados extends SSP{
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				
 				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{

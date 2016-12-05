@@ -1124,3 +1124,13 @@ function cambiar_tarifa_do(id_tarifa_cliente,id_viaje){
 		});
 	} );
 }
+function close_costos_form(){
+	$("#add_field").css({ display: "none" });
+	$("#footer_main").css({ display: "" });
+}
+function eliminar_costoAdicional(id_costos_adicionales){
+	return;
+}
+function editarel_costoAdicional(id_costos_adicionales){
+	return;
+}

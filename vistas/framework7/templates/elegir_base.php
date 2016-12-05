@@ -23,7 +23,7 @@
 			<div class="content-block">
 				<div class="row">
 					<div class="col-33"></div>
-					<div class="col-33"><a href="#" class="button button-big return original_scheme" data-origen='{{origen}}'>Cancelar</a></div>
+					<div class="col-33"><a href="#" class="button button-big return original_scheme" data-origen='{{origen}}' style="border:#08957D; background:#08957D; color:#ffffff !important; ">Cancelar</a></div>
 					<div class="col-33"></div>
 				</div>
 			</div>

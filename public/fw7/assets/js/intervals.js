@@ -62,7 +62,7 @@ function startSync(exec){
 	data.oncomplete = function () {
 		var sendvar = JSON.stringify(elements);
 		if(jQuery.isPlainObject(elements[0])){
-			//console.log('SYNC SEND');
+			console.log(elements[0]);
 			$.ajax({
 				url: 'mobile/sync',
 				type: "POST",
@@ -201,6 +201,13 @@ function ride_ok(data) {
 				storeTravel(resp_success);
 				$("#air_service_des").hide();
 				$("#air_service_act").show();
+				
+				$("#request_queue_act").hide();
+				$("#request_queue_des").show();
+				
+				$("#fin_labores_act").hide();
+				$("#fin_labores_des").show();
+				
 				updatePageButtons('air_service_des','air_service_act');
 				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio al aire');
 				

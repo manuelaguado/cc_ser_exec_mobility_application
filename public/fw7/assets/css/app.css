@@ -4691,7 +4691,9 @@ blockquote {
 blockquote .author {
   font-family: 'robotobold_italic', sans-serif;
 }
-
+.button {
+    color: #ffffff !important;
+}
 .button.button-primary {
   border-color: #27ae60;
   color: #27ae60;
