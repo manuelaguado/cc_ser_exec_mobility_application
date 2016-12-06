@@ -62,7 +62,7 @@ function startSync(exec){
 	data.oncomplete = function () {
 		var sendvar = JSON.stringify(elements);
 		if(jQuery.isPlainObject(elements[0])){
-			console.log(elements[0]);
+			//console.log(elements[0]);
 			$.ajax({
 				url: 'mobile/sync',
 				type: "POST",

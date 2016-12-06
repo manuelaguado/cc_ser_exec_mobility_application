@@ -366,7 +366,7 @@ function finalizar_servicio(){
 			type: 'POST',
 			dataType: "json",
 			success: function(respuesta){
-				console.log(respuesta);
+				//console.log(respuesta);
 				if(respuesta[0].resp='correcto'){
 					dOut();
 				}else{

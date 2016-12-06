@@ -219,7 +219,7 @@ function storeTravel(datos){
 			iden:					1,
 			date:					(new Date).getTime(),
 			id_episodio:			datos['id_episodio'],
-			id_viaje:				datos['viaje']['Número']
+			id_viaje:				datos['viaje']['Numero']
 		});
 
 }
@@ -231,6 +231,11 @@ function clearTravel(){
 	var object = data.objectStore("viaje");
 	var objectStoreRequest = object.clear();
 }
+/*Convertir a formato mysql*/
+
+Date.prototype.toMysqlFormat = function() {
+    return this.getFullYear() + "-" + twoDigits(1 + this.getMonth()) + "-" + twoDigits(this.getDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getMinutes()) + ":" + twoDigits(this.getSeconds());	
+};
 
 /*GUARDAR CLAVE*/
 
@@ -260,36 +265,37 @@ function storeClave(cve,cve1,cve2,cve3,cve4,motivo,callback){
 						var data2 = active.transaction(["claves"], "readwrite");
 						var object2 = data2.objectStore("claves");
 						var time = new Date();
-						//object2.clear();				
-						object2.put({
-							accurate:		acc,
-							clave: 			cve,
-							estado1:		cve1,
-							estado2:		cve2,
-							estado3:		cve3,
-							estado4:		cve4,
-							timestamp:		time.toMysqlFormat(),
-							id_episodio:	result.id_episodio,
-							id_operador:	id_operador,
-							id_operador_unidad:id_operador_unidad,
-							id_viaje:		result.id_viaje,
-							latitud:		lat,
-							longitud: 		lon,
-							motivo:			motivo,
-							serie:			serie,
-							tiempo: 		tsp,
-							token:			token,
-							origen:			actual_page,
-							id_usuario:		id_usuario
-						});
-						callback();					
+						//object2.clear();
+							object2.put({
+								accurate:		acc,
+								clave: 			cve,
+								estado1:		cve1,
+								estado2:		cve2,
+								estado3:		cve3,
+								estado4:		cve4,
+								timestamp:		time.toMysqlFormat(),
+								id_episodio:	result.id_episodio,
+								id_operador:	id_operador,
+								id_operador_unidad:id_operador_unidad,
+								id_viaje:		result.id_viaje,
+								latitud:		lat,
+								longitud: 		lon,
+								motivo:			motivo,
+								serie:			serie,
+								tiempo: 		time.toMysqlFormat(),
+								token:			token,
+								origen:			actual_page,
+								id_usuario:		id_usuario
+							});
+						
+						callback();
 					}
 				}
 			}else{
 				storeClave(cve,cve1,cve2,cve3,cve4,'NULL',function(){});
 				
 				var num = new Object();
-				num.Número = 'IR003';
+				num.Numero = 'IR003';
 				var travel_0 = new Object();
 				travel_0.id_episodio = 0;
 				travel_0.viaje = num;
@@ -322,10 +328,18 @@ function storeGps(callback){
 			var active = dataBase.result;
 			var data = active.transaction(["gps"], "readwrite");
 			var object = data.objectStore("gps");
+			var time = new Date();
+			
+			if(
+				(typeof(acc) == "undefined")&&
+				(typeof(lat) == "undefined")&&
+				(typeof(lon) == "undefined")
+			){console.log('indexedDB Ln 343 variables de geolocalizacion sin definir');}
+			
 			object.put({
 				latitud:	lat,
 				longitud:   lon,
-				tiempo:	    tsp,
+				tiempo:	    time.toMysqlFormat(),
 				serie:	    serie,
 				acurate:	acc,
 				cc:    haversineDistance([last_lat,last_lon], [lat,lon]),

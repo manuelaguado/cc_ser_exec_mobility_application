@@ -28,17 +28,12 @@ function twoDigits(d) {
     if(-10 < d && d < 0) return "-0" + (-1*d).toString();
     return d.toString();
 }
-Date.prototype.toMysqlFormat = function() {
-    return this.getFullYear() + "-" + twoDigits(1 + this.getMonth()) + "-" + twoDigits(this.getDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getMinutes()) + ":" + twoDigits(this.getSeconds());	
-};
-var lat, lon, acc, tsp;
+var lat, lon, acc;
 function showPosition(position) {
 	var crd = position.coords;	
 	lat = crd.latitude;
 	lon = crd.longitude;
 	acc = crd.accuracy;
-	vr1 = new Date();
-	tsp = vr1.toMysqlFormat();
 }
 function error(){
 		console.warn('Geolocalización no soportada');

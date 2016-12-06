@@ -45,7 +45,7 @@ class MobileModel
 							'clave'					=> $clave['clave'],
 							'id_episodio' 			=> $clave['id_episodio'],
 							'id'					=> $clave['id'],
-							'viaje' 				=> array('Número' => 'IR002'),
+							'viaje' 				=> array('Numero' => 'IR002'),
 							'resp' 					=> true,
 							'token'					=> $clave['token']
 						);
@@ -960,7 +960,7 @@ class MobileModel
 		$query = $this->db->prepare($sql);
 		$query->execute(
 			array(
-				':accurate' => 			$clave['accurate'],
+				':accurate' => 			@$clave['accurate'],
 				':clave' => 			$clave['clave'],
 				':estado1' => 			$clave['estado1'],
 				':estado2' => 			$clave['estado2'],
@@ -971,8 +971,8 @@ class MobileModel
 				':id_operador' => 		$clave['id_operador'],
 				':id_operador_unidad' =>$clave['id_operador_unidad'],
 				':id_viaje' => 			$clave['id_viaje'],
-				':latitud' => 			$clave['latitud'],
-				':longitud' => 			$clave['longitud'],
+				':latitud' => 			@$clave['latitud'],
+				':longitud' => 			@$clave['longitud'],
 				':motivo' => 			$clave['motivo'],
 				':serie' => 			$clave['serie'],
 				':tiempo' => 			$clave['tiempo'],
@@ -1366,7 +1366,7 @@ class MobileModel
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($data as $row) {
-				$array['Número'] 					= $row->id_viaje;
+				$array['Numero'] 					= $row->id_viaje;
 				$array['Forma de pago'] 			= $row->forma_pago;
 				$array['Status del viaje'] 			= $row->status_viaje;
 				$array['Tipo de servicio'] 			= $row->tipo_servicio;
@@ -1450,7 +1450,7 @@ class MobileModel
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($data as $row) {
-				$array['Número'] 					= $row->id_viaje;
+				$array['Numero'] 					= $row->id_viaje;
 				$array['Forma de pago'] 			= $row->forma_pago;
 				$array['Status del viaje'] 			= $row->status_viaje;
 				$array['Tipo de servicio'] 			= $row->tipo_servicio;
@@ -1630,7 +1630,7 @@ class MobileModel
 								'id_episodio' 			=> $id_episodio,
 								'serie' 				=> $serie,
 								'token' 				=> $token,
-								'viaje' 				=> array('Número' => 'IR001')
+								'viaje' 				=> array('Numero' => 'IR001')
 							);
 							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
 							
