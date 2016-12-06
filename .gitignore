@@ -1,3 +1,5 @@
 config.php
 libs/config.php
 http/
+public/plugs/cache/
+public/tmp/
