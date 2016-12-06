@@ -1,6 +1,6 @@
 RewriteEngine on
 
-#Error 404 página personalizada
+#Error 404 pagina personalizada
 ErrorDocument 404 /
 ErrorDocument 403 /
 
