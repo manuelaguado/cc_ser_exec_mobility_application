@@ -577,6 +577,8 @@ class Operacion extends Controlador
 		$model = $this->loadModel('Mobile');
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$id_operador = $model->getIdOperador($id_operador_unidad);
+		$token = 'OP:'.$this->token(62);
+		$model->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}	

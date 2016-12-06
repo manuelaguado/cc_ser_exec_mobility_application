@@ -4156,13 +4156,28 @@ class acciones_cordon extends SSP{
 							<i class="fa fa-comment-o" style="font-size:1.8em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
+						/*
 						if(Controlador::tiene_permiso('Operacion|activar_f13')){
 							$turno = self::turno($id_operador_unidad,$column['base'],$db);
 							if($turno <= 2){
 								$salida .= '<a onclick="activar_f13('.$id_operador_unidad.')" data-rel="tooltip" class="btn btn-app btn-yellow btn-xs" data-original-title="Activar salida por sitio">F13</a>&nbsp;&nbsp;';
 							}
-						}						
+						}*/
+						
 						if(Controlador::tiene_permiso('Operacion|activar_a10')){
+							$turno = self::turno($id_operador_unidad,$column['base'],$db);
+							if($turno == 1){
+								$salida .= '<a id="aut_out" onclick="modal_activar_out('.$id_operador_unidad.','.$column['base'].')" data-rel="tooltip" class="btn btn-app btn-yellow btn-xs" data-original-title="Sacar del cordón">      OUT      </a>&nbsp;&nbsp;';
+							}
+							if($turno >= 4){
+								$salida .= '<a id="aut_out" style="display:none;" onclick="modal_activar_out('.$id_operador_unidad.','.$column['base'].')" data-rel="tooltip" class="btn btn-app btn-yellow btn-xs" data-original-title="Sacar del cordón">      OUT      </a>&nbsp;&nbsp;';
+							}
+						}
+
+
+
+						
+						/*if(Controlador::tiene_permiso('Operacion|activar_a10')){
 							$turno = self::turno($id_operador_unidad,$column['base'],$db);
 							if($turno == 1){
 								$salida .= '<a id="aut_a10" onclick="activar_a10('.$id_operador_unidad.','.$column['base'].')" data-rel="tooltip" class="btn btn-app btn-yellow btn-xs" data-original-title="Autorizar salida por central">A10</a>&nbsp;&nbsp;';
@@ -4182,7 +4197,9 @@ class acciones_cordon extends SSP{
 							if($turno >= 4){
 								$salida .= '<a id="aut_c02" onclick="modal_activar_c02('.$id_operador_unidad.','.$column['base'].')" data-rel="tooltip" class="btn btn-app btn-yellow btn-xs" data-original-title="Poner en C2">      C2      </a>&nbsp;&nbsp;';
 							}
-						}
+						}*/
+						
+						
 					$row[ $column['dt'] ] = $salida;
 				}else if ( isset( $column['turno'] ) ){
 					$row[ $column['dt'] ] = self::turno($data[$i][ 'id_operador_unidad' ],$column['base'],$db);

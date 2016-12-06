@@ -40,30 +40,32 @@ class LoginModel
 	public function signout($id_usuario){
 		
 		$id_login = self::getId_login($id_usuario);
-		$fecha_login = self::initLogin($id_login);
-		$fin = date("Y-m-d H:i:s");
-		$tiempo = Controller::diferenciaFechasD($fecha_login , $fin);
-		
-		$sql = "
-			UPDATE `fw_login`
-			SET
-			 `open` = '0',
-			 `fecha_logout` = '".$fin."',
-			 `tiempo_session` = '".$tiempo."',
-			 `user_mod` = '".$id_usuario."',
-			 `fecha_mod` = '".$fin."'
-			WHERE
-				(`id_login` = '".$id_login."');
-		";
-		
-		$session_id = self::getSession_id($id_login);
-		
-		if(file_exists(session_save_path().'/sess_'.$session_id)){
-			unlink(session_save_path().'/sess_'.$session_id);
+		if($id_login){
+			$fecha_login = self::initLogin($id_login);
+			$fin = date("Y-m-d H:i:s");
+			$tiempo = Controller::diferenciaFechasD($fecha_login , $fin);
+			
+			$sql = "
+				UPDATE `fw_login`
+				SET
+				 `open` = '0',
+				 `fecha_logout` = '".$fin."',
+				 `tiempo_session` = '".$tiempo."',
+				 `user_mod` = '".$id_usuario."',
+				 `fecha_mod` = '".$fin."'
+				WHERE
+					(`id_login` = '".$id_login."');
+			";
+			
+			$session_id = self::getSession_id($id_login);
+			
+			if(file_exists(session_save_path().'/sess_'.$session_id)){
+				unlink(session_save_path().'/sess_'.$session_id);
+			}
+			
+			$query = $this->db->prepare($sql);
+			$query->execute();
 		}
-		
-		$query = $this->db->prepare($sql);
-		$query->execute();
 		return json_encode(array('resp' => true )); 
 	}
 	public function session_duplicada($id_usuario, MobileModel $mobile){
@@ -431,41 +433,51 @@ class LoginModel
 		}
 	}
 	public function getSession_id($id_login){
-		$sql = "
-			SELECT
-				fw_login.session_id
-			FROM
-				fw_login
-			WHERE
-				fw_login.id_login = ".$id_login."
-		";
-				
-		$query = $this->db->prepare($sql);
-		$query->execute();
-		$result = $query->fetchAll();
-		if($query->rowCount()>=1){
-			foreach ($result as $num => $row) {
-				return $row->session_id;
+		if($id_login){
+			$sql = "
+				SELECT
+					fw_login.session_id
+				FROM
+					fw_login
+				WHERE
+					fw_login.id_login = ".$id_login."
+			";
+					
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			$result = $query->fetchAll();
+			if($query->rowCount()>=1){
+				foreach ($result as $num => $row) {
+					return $row->session_id;
+				}
 			}
+		}else{
+			/*Se limpio la db mientras el usuario estaba logueado?*/
+			return '2015-06-13 18:00:00';/* :) mi fecha especial*/
 		}
 	}
 	public function initLogin($id_login){
-		$sql = "
-			SELECT
-				fw_login.fecha_login
-			FROM
-				fw_login
-			WHERE
-				fw_login.id_login = ".$id_login."
-		";
-				
-		$query = $this->db->prepare($sql);
-		$query->execute();
-		$result = $query->fetchAll();
-		if($query->rowCount()>=1){
-			foreach ($result as $num => $row) {
-				return $row->fecha_login;
+		if($id_login){
+			$sql = "
+				SELECT
+					fw_login.fecha_login
+				FROM
+					fw_login
+				WHERE
+					fw_login.id_login = ".$id_login."
+			";
+					
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			$result = $query->fetchAll();
+			if($query->rowCount()>=1){
+				foreach ($result as $num => $row) {
+					return $row->fecha_login;
+				}
 			}
+		}else{
+			/*Se limpio la db mientras el usuario estaba logueado?*/
+			return '2014-03-17 19:44:00';/* :) mi fecha especial*/
 		}
 	}
 	public function getSerie($id_usuario){
