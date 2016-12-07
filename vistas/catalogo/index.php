@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <style>
 div.table-responsive div#catalogo_wrapper.dataTables_wrapper.form-inline.dt-bootstrap.no-footer div.row div.col-sm-12{
 	padding: 0px !important;

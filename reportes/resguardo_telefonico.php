@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <?php
 require_once('../vendor/fpdf/fpdf.php');
 require_once('../vendor/FPDI/fpdi.php');

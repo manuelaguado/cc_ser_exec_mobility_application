@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <script>var url_app = '<?=URL_APP?>';</script>
 <script>
 

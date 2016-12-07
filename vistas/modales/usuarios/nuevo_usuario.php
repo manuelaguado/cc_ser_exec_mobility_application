@@ -1,11 +1,10 @@
-ï»¿<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="modal fade" id="myModal" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"+ aria-hidden="true">x</button>
 				<h4 class="modal-title" id="myModalLabel">
-					AÃ±adir nuevo usuario:
+					Añadir nuevo usuario:
 				</h4>
 			</div>
 			<div class="modal-body" id="modal_content">
@@ -15,7 +14,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									  <div class="form-group">
-										<label for="id_ubicacion">UbicaciÃ³n</label>
+										<label for="id_ubicacion">Ubicación</label>
 										  <select  class="form-control" id="id_ubicacion" name="id_ubicacion">
 											<?php echo $ubicacion; ?>
 										  </select>
@@ -39,16 +38,16 @@
 								</div>
 								<div class="col-md-6">	
 									  <div class="form-group">
-										<label for="correo">Correo electrÃ³nico</label>
+										<label for="correo">Correo electrónico</label>
 										<input type="email" class="form-control" id="correo" name="correo" placeholder="Ingresar correo">
 									  </div>
 									  <div class="form-group">
-										<label for="password">ContraseÃ±a</label>
-										<input type="password" class="form-control" id="password" name="password" placeholder="ContraseÃ±a">
+										<label for="password">Contraseña</label>
+										<input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
 									  </div>
 									  <div class="form-group">
-										<label for="password2">Confirmar contraseÃ±a</label>
-										<input type="password" class="form-control" id="password2" name="password2" placeholder="Confirmar contraseÃ±a">
+										<label for="password2">Confirmar contraseña</label>
+										<input type="password" class="form-control" id="password2" name="password2" placeholder="Confirmar contraseña">
 									  </div>
 									  <div class="form-group">
 										<label for="id_rol">Rol</label>
@@ -58,7 +57,7 @@
 									  </div>
 									  <div class="form-group">
 										<label for="fecha_ingreso">Fecha de ingreso (AAAA-MM-DD)</label>
-										  <input type="text" class="form-control mask-date" id="fecha_ingreso" name="fecha_ingreso" placeholder="Seleccione la fecha en que ingresÃ³" value="">
+										  <input type="text" class="form-control mask-date" id="fecha_ingreso" name="fecha_ingreso" placeholder="Seleccione la fecha en que ingresó" value="">
 									  </div>
 										<script type="text/javascript">
 											jQuery(function($) {

@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <?php
 require( '../vendor/mysql_datatable.php' );
 class BasesModel

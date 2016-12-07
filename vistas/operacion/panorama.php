@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="page-header">
 	<h1>
 		Mapas Panorámicos

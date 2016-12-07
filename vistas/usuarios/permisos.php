@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 	
 <script src="<?=URL_PUBLIC?>js/dac_acl.js"></script>
 

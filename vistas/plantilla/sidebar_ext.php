@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <?php
 
 	include_once(URL_CONTROLADOR.'sidebar.php');

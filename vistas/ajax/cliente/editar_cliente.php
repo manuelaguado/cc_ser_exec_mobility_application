@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="col-sm-6">
 	<div class="panel-body">			
 		<div class="row">

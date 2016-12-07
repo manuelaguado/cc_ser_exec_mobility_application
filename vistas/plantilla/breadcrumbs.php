@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 					<!-- #section:basics/content.breadcrumbs -->
 					<div class="breadcrumbs" id="breadcrumbs">
 						<script type="text/javascript">

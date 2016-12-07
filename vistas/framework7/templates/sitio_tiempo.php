@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <script id="sitio_tiempo" type="text/template">
 	<div data-page="index" class="page page-bg">
 		<div class="page-content">

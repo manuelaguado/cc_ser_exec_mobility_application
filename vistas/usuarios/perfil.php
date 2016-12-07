@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="page-content">
 	<div id="user-profile-3" class="user-profile row">
 		<div class="col-sm-offset-1 col-sm-10">

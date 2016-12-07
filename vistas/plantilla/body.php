@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 	<body class="no-skin" onload="verifica_tiempo_session();">
 
 	

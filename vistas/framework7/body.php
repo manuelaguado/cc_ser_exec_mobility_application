@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <body>
 
 <div class="statusbar-overlay"></div>

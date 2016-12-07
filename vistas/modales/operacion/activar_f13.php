@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="modal fade" data-backdrop="" id="myModal" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content">

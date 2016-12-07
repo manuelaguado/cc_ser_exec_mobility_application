@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 Post.php<br>
 Activar server: <pre>php bin/push-server.php</pre><br>
 Activar server persistente: <pre>nohup php bin/push-server.php</pre><br>

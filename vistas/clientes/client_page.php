@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="main-content-inner">
 	<div class="page-content">
 		<div class="page-header">

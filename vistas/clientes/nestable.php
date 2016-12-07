@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="page-content">
 	<!-- /section:settings.box -->
 	<div class="page-header">

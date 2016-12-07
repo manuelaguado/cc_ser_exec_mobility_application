@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <style>
 .profile-info-row{
 	width:100% !important;

@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 
 <div class="popup detalle_viaje" style="background-color:#efeff4 !important;">
     <div class="content-block">

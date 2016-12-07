@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <?php
 use Pubnub\Pubnub;
 class Desarrollador extends Controlador

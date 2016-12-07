@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 			<div class="footer">
 				<div class="footer-inner">
 					<!-- #section:basics/footer -->

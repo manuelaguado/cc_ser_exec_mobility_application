@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <div class="panel panel-right panel-reveal">
     <div class="line"></div>
 

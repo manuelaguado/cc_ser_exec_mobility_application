@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <script id="cambio_ruta" type="text/template">
 	<div data-page="index" class="page page-bg">
 		<div class="page-content">

@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <?php
 class SSP {
 	static function data_output ( $columns, $data, $db )

@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <ul class="nav nav-list">
 	<?php
 	if(

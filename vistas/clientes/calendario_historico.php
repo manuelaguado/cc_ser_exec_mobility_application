@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 
 		<div style='width:100%; height:600px;'>
 			<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>

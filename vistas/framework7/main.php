@@ -1,4 +1,3 @@
-<?php if ( ! defined( 'URL_APP' ) ) { exit; } ?>
 <?php include('templates/bottom.php'); ?>
 <div class="views">
 	<div class="navbar" style="z-index:6000 !important;">
