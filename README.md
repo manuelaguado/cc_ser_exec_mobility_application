@@ -64,7 +64,7 @@ Apuntar webhooks a URL_SITE.webhook/presence
 
 
 /*Seleccionar SOCKET_PROVIDER*/
-define('SOCKET_PROVIDER','PUSHER',false);
+define('SOCKET_PROVIDER','AQUI EL SOCKET PROVIDER',false);
 	
 PHP-Console
 
