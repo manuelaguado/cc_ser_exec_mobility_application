@@ -1129,8 +1129,18 @@ function close_costos_form(){
 	$("#footer_main").css({ display: "" });
 }
 function eliminar_costoAdicional(id_costos_adicionales){
-	return;
-}
-function editarel_costoAdicional(id_costos_adicionales){
-	return;
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/eliminar_costoAdicional/' + id_costos_adicionales,		
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#costosAdicionales').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-69');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-70');}	
+		});
+	} );
 }

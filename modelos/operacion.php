@@ -49,6 +49,23 @@ class OperacionModel{
 		}
 		return $respuesta;
 	}
+	function eliminar_costoAdicional($id_costos_adicionales){
+		$qry = "
+			DELETE
+			FROM
+			vi_costos_adicionales
+			WHERE
+			id_costos_adicionales = '".$id_costos_adicionales."' 
+		";
+		$query = $this->db->prepare($qry);
+		$ok = $query->execute();
+		if($ok){
+			$array = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
+		}else{
+			$array = array('false' => true , 'mensaje' => 'Registro guardado correctamente.' );
+		}
+		return $array;
+	}
 	function countApart($id_operador,$hit,$id_operador_turno){
 		if(!$hit){
 			self::setNoHit($id_operador_turno);
@@ -3581,8 +3598,7 @@ class acciones_costosAdicionales extends SSP{
 					$id_costos_adicionales = ($data[$i][ $column['alias'] ]);
 					
 					$salida = '';
-					$salida .= '<a onclick="eliminar_costoAdicional('.$id_costos_adicionales.')" data-rel="tooltip" data-original-title="Eliminar costo"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="editarel_costoAdicional('.$id_costos_adicionales.')" data-rel="tooltip" data-original-title="Editar costo"><i class="fa fa-pencil" style="font-size:1.4em; color:#00b359;"></i></a>&nbsp;&nbsp;';					
+					$salida .= '<a onclick="eliminar_costoAdicional('.$id_costos_adicionales.')" data-rel="tooltip" data-original-title="Eliminar costo"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';				
 					
 					$row[ $column['dt'] ] = $salida;
 				}else if ( isset( $column['moneda'] ) ){
@@ -3888,6 +3904,8 @@ class acciones_completados extends SSP{
 					$salida = '';
 					
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{

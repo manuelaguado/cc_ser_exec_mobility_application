@@ -173,6 +173,12 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		print $operacion->queryCostosAdicionales($_POST,$id_viaje);
 	}
+	public function eliminar_costoAdicional($id_costos_adicionales){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$ok = $operacion->eliminar_costoAdicional($id_costos_adicionales);
+		print json_encode($ok);
+	}	
 	public function cambiar_tarifa($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$operacion = $this->loadModel('Operacion');
