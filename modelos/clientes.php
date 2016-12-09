@@ -1544,6 +1544,8 @@ class ClientesModel
 		';
 		$where = '
 			tc.id_cliente = '.$id_cliente.'
+			AND
+			tc.cat_statustarifa = 168
 		';
 		$orden = '
 			order by tc.id_tarifa_cliente desc

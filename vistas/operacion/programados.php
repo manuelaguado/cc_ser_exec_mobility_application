@@ -225,7 +225,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_rojo",
 			"type": "POST"
@@ -244,7 +244,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_naranja",
 			"type": "POST"
@@ -263,7 +263,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_amarillo",
 			"type": "POST"
@@ -282,7 +282,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_verde",
 			"type": "POST"
@@ -301,7 +301,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_gris",
 			"type": "POST"
@@ -320,7 +320,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_completados",
 			"type": "POST"
@@ -339,7 +339,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_cancelados",
 			"type": "POST"

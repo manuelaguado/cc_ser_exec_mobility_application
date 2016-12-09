@@ -730,7 +730,205 @@ class OperacionModel{
 			$print = $output + $qrymissing;
 			return json_encode($print);
 		}
+	}
+	function cancel_apartado_set($post, MobileModel $mobile=NULL){
+		
+		$stat_process = true;
+		$qrymissing = array();
+		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
+
+		if(!$post['cat_cancelaciones']){
+			$qrymissing = array('qrymissing' => 'cat_cancelaciones' );
+			$stat_process = false;
+		}		
+		if(($post['origen'] == 'rojo')&&(!isset($post['status_operador']))){
+			$qrymissing = array('qrymissing' => 'status_operador' );
+			$stat_process = false;
+		}
+		$sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
+		
+		if($stat_process){
+			$success = true;
+			try {  
+				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+				$this->db->beginTransaction();
+				$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '173' WHERE id_viaje = ".$post['id_viaje']);
+				if(isset($sql)){$this->db->exec($sql);}
+				$this->db->commit();
+
+			} catch (Exception $e) {
+				$this->db->rollBack();
+				$success = false;			
+			}
+			
+		}else{
+			$success = false;
+		}
+		
+		if($success){
+			
+			if($post['origen'] == 'rojo'){
+				$token = 'APA:'.Controller::token(62);
+				switch($post['status_operador']){
+					case 'segundo':
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+					break;
+					case 'cola':
+						$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+					break;
+					case 'omitir':
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+					break;
+				}
+
+			}
+
+			$output = array('resp' => true , 'mensaje' => 'se seteo a 173 satisfactoriamente' );
+			$print = $output + $qrymissing;
+			return json_encode($print);
+		}else{
+			$output = array('resp' => false , 'mensaje' => 'No se seteo a 173');
+			$print = $output + $qrymissing;
+			return json_encode($print);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	function apartado2pendientesDo($post, MobileModel $mobile=NULL){
+		
+		$qrymissing = array();
+		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
+		
+		$success = true;
+		try {  
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$this->db->beginTransaction();
+			$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '170' WHERE id_viaje = ".$post['id_viaje']);
+			if(isset($sql)){$this->db->exec($sql);}
+			$this->db->commit();
+
+		} catch (Exception $e) {
+			$this->db->rollBack();
+			$success = false;			
+		}
+		
+		if($success){
+			$output = array('resp' => true , 'mensaje' => 'se seteo a 170 satisfactoriamente' );
+			$print = $output + $qrymissing;
+			return json_encode($print);
+		}else{
+			$output = array('resp' => false , 'mensaje' => 'No se seteo a 170');
+			$print = $output + $qrymissing;
+			return json_encode($print);
+		}
 	}	
+	function procesarNormalDo($post, MobileModel $mobile=NULL){
+		
+		$stat_process = true;
+		$qrymissing = array();
+		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
+
+		if(!$post['cat_cancelaciones']){
+			$qrymissing = array('qrymissing' => 'cat_cancelaciones' );
+			$stat_process = false;
+		}		
+		if(($post['origen'] == 'rojo')&&(!isset($post['status_operador']))){
+			$qrymissing = array('qrymissing' => 'status_operador' );
+			$stat_process = false;
+		}
+		$sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
+		
+		if($stat_process){
+			$success = true;
+			try {  
+				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+				$this->db->beginTransaction();
+				$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '173' WHERE id_viaje = ".$post['id_viaje']);
+				if(isset($sql)){$this->db->exec($sql);}
+				$this->db->commit();
+
+			} catch (Exception $e) {
+				$this->db->rollBack();
+				$success = false;			
+			}
+			
+		}else{
+			$success = false;
+		}
+		
+		if($success){
+			
+			if($post['origen'] == 'rojo'){
+				$token = 'APA:'.Controller::token(62);
+				switch($post['status_operador']){
+					case 'segundo':
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+					break;
+					case 'cola':
+						$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+					break;
+					case 'omitir':
+						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+					break;
+				}
+
+			}
+
+			$output = array('resp' => true , 'mensaje' => 'se seteo a 173 satisfactoriamente' );
+			$print = $output + $qrymissing;
+			return json_encode($print);
+		}else{
+			$output = array('resp' => false , 'mensaje' => 'No se seteo a 173');
+			$print = $output + $qrymissing;
+			return json_encode($print);
+		}
+	}
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	function getIdOperadorUnidad($id_viaje){
 		$sql ="SELECT id_operador_unidad FROM vi_viaje WHERE id_viaje = ".$id_viaje;
 		$query = $this->db->prepare($sql);
@@ -1041,12 +1239,14 @@ class OperacionModel{
 	}
 	function insert_detallesViaje($service){
 		$redondo = (isset($service->viaje_redondo))?'1':'0';
+		$apartado = (($service->temporicidad)==162)?'1':'0';
 		$sql = "
 			INSERT INTO `vi_viaje_detalle` (
 				`id_viaje`,
 				`fecha_solicitud`,
 				`fecha_requerimiento`,
 				`redondo`,
+				`apartado`,
 				`observaciones`,
 				`msgPaqArray`,
 				`user_alta`,
@@ -1058,6 +1258,7 @@ class OperacionModel{
 					'".date("Y-m-d H:i:s")."',
 					'".$service->fecha_hora."',
 					'".$redondo."',
+					'".$apartado."',
 					'".$service->observaciones."',
 					'".$service->msgPaqArray."',
 					'".$_SESSION['id_usuario']."',
@@ -2464,10 +2665,10 @@ class OperacionModel{
 				'dt' => 1
 			),
 			array( 
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
+				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
+				'dbj' => 'vcd.fecha_requerimiento',
+				'real' => 'vcd.fecha_requerimiento',
+				'alias' => 'fecha_requerimiento',
 				'typ' => 'int',
 				'dt' => 2
 			),
@@ -2575,10 +2776,10 @@ class OperacionModel{
 				'dt' => 1
 			),
 			array( 
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
+				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
+				'dbj' => 'vcd.fecha_requerimiento',
+				'real' => 'vcd.fecha_requerimiento',
+				'alias' => 'fecha_requerimiento',
 				'typ' => 'int',
 				'dt' => 2
 			),
@@ -2686,10 +2887,10 @@ class OperacionModel{
 				'dt' => 1
 			),
 			array( 
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
+				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
+				'dbj' => 'vcd.fecha_requerimiento',
+				'real' => 'vcd.fecha_requerimiento',
+				'alias' => 'fecha_requerimiento',
 				'typ' => 'int',
 				'dt' => 2
 			),
@@ -2797,10 +2998,10 @@ class OperacionModel{
 				'dt' => 1
 			),
 			array( 
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
+				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
+				'dbj' => 'vcd.fecha_requerimiento',
+				'real' => 'vcd.fecha_requerimiento',
+				'alias' => 'fecha_requerimiento',
 				'typ' => 'int',
 				'dt' => 2
 			),
@@ -2906,10 +3107,10 @@ class OperacionModel{
 				'dt' => 1
 			),
 			array( 
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
+				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
+				'dbj' => 'vcd.fecha_requerimiento',
+				'real' => 'vcd.fecha_requerimiento',
+				'alias' => 'fecha_requerimiento',
 				'typ' => 'int',
 				'dt' => 2
 			),
@@ -3015,10 +3216,10 @@ class OperacionModel{
 				'dt' => 1
 			),
 			array( 
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
+				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
+				'dbj' => 'vcd.fecha_requerimiento',
+				'real' => 'vcd.fecha_requerimiento',
+				'alias' => 'fecha_requerimiento',
 				'typ' => 'int',
 				'dt' => 2
 			),
@@ -3122,10 +3323,10 @@ class OperacionModel{
 				'dt' => 1
 			),
 			array( 
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
+				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
+				'dbj' => 'vcd.fecha_requerimiento',
+				'real' => 'vcd.fecha_requerimiento',
+				'alias' => 'fecha_requerimiento',
 				'typ' => 'int',
 				'dt' => 2
 			),
@@ -3961,7 +4162,13 @@ class programados_rojo extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Enviar datos de viaje al operador"><i class="fa fa-paperclip" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '<a onclick="apartado2pendientes('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#d96c00;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '<a onclick="apartadoAlAire('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Enviar al aire"><i class="icofont icofont-wind" style="font-size:1.4em; color:#4d4cff;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '<a onclick="procesarNormal('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Procesar normalmente"><i class="fa fa-play-circle-o" style="font-size:1.4em; color:#00b32d;"></i></a>&nbsp;&nbsp;';
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -3990,7 +4197,7 @@ class programados_naranja extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Que quieres que haga"><i class="fa fa-question" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'naranja\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -4019,7 +4226,7 @@ class programados_amarillo extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Que quieres que haga"><i class="fa fa-question" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'amarillo\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -4048,7 +4255,7 @@ class programados_verde extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Que quieres que haga"><i class="fa fa-question" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'verde\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -4077,7 +4284,6 @@ class programados_gris extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Que quieres que haga"><i class="fa fa-question" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -4106,7 +4312,6 @@ class programados_completados extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Que quieres que haga"><i class="fa fa-question" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -4135,7 +4340,6 @@ class programados_cancelados extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-					$salida .= '<a href="javascript:;" data-rel="tooltip" data-original-title="Que quieres que haga"><i class="fa fa-question" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{

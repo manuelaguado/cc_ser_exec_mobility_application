@@ -11,7 +11,7 @@ class Operacion extends Controlador
 		$modelo->caducarGps();
 	}
 	public function cron(){
-		
+		/*
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		
@@ -32,7 +32,7 @@ class Operacion extends Controlador
 		foreach ($eventos as $evento){
 			$mobile->broadcast($evento['id_operador_unidad']);
 		}
-		
+		*/
 	}
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -337,6 +337,61 @@ class Operacion extends Controlador
 		$operadores = $this->loadModel('Operadores');
 		$login = $this->loadModel('Login');
 		print $modelo->setear_status_viaje($_POST, $mobil, $operadores, $login);	
+	}
+	public function cancel_apartado($id_viaje,$origen){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$razones_cancelacion = $this->selectCatalog('cancelaciones',null);
+		require URL_VISTA.'modales/operacion/cancel_apartado.php';
+	}
+	
+	
+	
+	
+	
+	
+	
+	public function apartado2pendientes($id_viaje,$origen){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		require URL_VISTA.'modales/operacion/apartado2pendientes.php';
+	}
+	public function apartado2pendientesDo(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Operacion');
+		$mobil = $this->loadModel('Mobile');
+		print $modelo->apartado2pendientesDo($_POST, $mobil);	
+	}
+
+	
+	public function apartadoAlAire($id_viaje,$origen){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$model = $this->loadModel('Operacion');
+		$operadores = $model->getTBUnits();
+		require URL_VISTA.'modales/operacion/viajeAlAire.php';
+	}
+	
+	public function procesarNormal($id_viaje,$origen){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		require URL_VISTA.'modales/operacion/procesarNormal.php';
+	}
+	public function procesarNormalDo(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Operacion');
+		$mobil = $this->loadModel('Mobile');
+		print $modelo->procesarNormalDo($_POST, $mobil);	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public function cancel_apartado_set(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Operacion');
+		$mobil = $this->loadModel('Mobile');
+		print $modelo->cancel_apartado_set($_POST, $mobil);	
 	}
 	public function setPageRemotly(){
 		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
