@@ -962,7 +962,6 @@ function asignarViajeAlAire(id_operador_unidad,id_operador,id_viaje){
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
 					$('#myModal').modal('hide');
-					$('#rojo').DataTable().ajax.reload();
 				}else{
 					alerta('Alerta!','Error de conectividad de red OPRN-55');
 				}
@@ -1245,7 +1244,23 @@ function apartadoAlAire(id_viaje,origen){
 		});
 	} );
 }
-
+function asignarApartadoAlAire(id_operador_unidad,id_operador,id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/asignarApartadoAlAire/' + id_operador_unidad + '/' + id_operador + '/' + id_viaje,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#rojo').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-78');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-79');}	
+		});
+	} );
+}
 
 
 function procesarNormal(id_viaje,origen){

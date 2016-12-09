@@ -83,7 +83,7 @@
 						<div class="modal-footer">
 							<div class="ca_flt_modal" id="total2"></div>
 							<button  class="btn btn-ar btn-success" type="button" onclick="costos_adicionales_do();">Capturar</button>
-							<button  onclick="close_costos_form();" class="btn btn-ar btn-default" type="button">Cancelar</button>
+							<button  onclick="close_costos_form();" class="btn btn-ar btn-default" type="button">Cerrar</button>
 						</div>
 					</form>				
 				</div>

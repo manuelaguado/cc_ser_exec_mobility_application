@@ -606,6 +606,47 @@ class OperacionModel{
 			}
 		}
 	}
+	
+	
+	function asignar_apartado($id_viaje,$operador){
+		self::relacionar_operador_apartado($id_viaje,$operador);
+		self::set_fecha_asignacion($id_viaje);
+	}
+	function relacionar_operador_apartado($id_viaje,$operador){
+		
+		$sql = "
+			UPDATE vi_viaje
+			SET 
+			 id_episodio 		= '".$operador['id_episodio']."',
+			 id_operador_unidad = '".$operador['id_operador_unidad']."',
+			 cat_status_viaje	= '195'
+			WHERE
+				id_viaje = ".$id_viaje."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		
+	}	
+	function asignarApartadoAlAire($id_viaje,$operador){
+		self::relacionar_apartadoAlAire($id_viaje,$operador);
+		self::set_fecha_asignacion($id_viaje);
+	}
+	function relacionar_apartadoAlAire($id_viaje,$operador){
+		
+		$sql = "
+			UPDATE vi_viaje
+			SET 
+			 id_episodio 		= '".$operador['id_episodio']."',
+			 id_operador_unidad = '".$operador['id_operador_unidad']."',
+			 cat_status_viaje	= '171',
+			 cat_tipotemporicidad = '184'
+			WHERE
+				id_viaje = ".$id_viaje."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		
+	}	
 	function asignar_viaje($id_viaje,$operador){
 		self::relacionar_operador_viaje($id_viaje,$operador);
 		self::set_fecha_asignacion($id_viaje);
@@ -827,7 +868,7 @@ class OperacionModel{
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 			$this->db->beginTransaction();
-			$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '170' WHERE id_viaje = ".$post['id_viaje']);
+			$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '170', cat_tipo_temporicidad = '184' WHERE id_viaje = ".$post['id_viaje']);
 			if(isset($sql)){$this->db->exec($sql);}
 			$this->db->commit();
 
@@ -2735,7 +2776,7 @@ class OperacionModel{
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
 		$where = '
-			viv.cat_status_viaje = 171
+			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
 			AND 
@@ -2846,7 +2887,7 @@ class OperacionModel{
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
 		$where = '
-			viv.cat_status_viaje = 171
+			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
 			AND 
@@ -2957,7 +2998,7 @@ class OperacionModel{
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
 		$where = '
-			viv.cat_status_viaje = 171
+			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
 			AND 

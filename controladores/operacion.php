@@ -11,7 +11,7 @@ class Operacion extends Controlador
 		$modelo->caducarGps();
 	}
 	public function cron(){
-		/*
+		
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		
@@ -32,7 +32,7 @@ class Operacion extends Controlador
 		foreach ($eventos as $evento){
 			$mobile->broadcast($evento['id_operador_unidad']);
 		}
-		*/
+		
 	}
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -366,8 +366,25 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');
 		$operadores = $model->getTBUnits();
-		require URL_VISTA.'modales/operacion/viajeAlAire.php';
+		require URL_VISTA.'modales/operacion/apartadoAlAire.php';
+	}	
+	public function asignarApartadoAlAire($id_operador_unidad, $id_operador, $id_viaje){
+		
+		$operacion = $this->loadModel('Operacion');
+		$mobile = $this->loadModel('Mobile');
+		
+		$operador = $operacion->unidadalAire($id_operador_unidad);
+		$operacion->asignarApartadoAlAire($id_viaje,$operador);
+		
+		$relTravel['id_operador_unidad'] = $id_operador_unidad;
+		$relTravel['id_viaje'] 	= $id_viaje;
+		$relTravel['salida'] 	= 120;
+		
+		self::asignacion_automatica($relTravel,$mobile);
+		
+		print json_encode(array('resp' => true ));
 	}
+	
 	
 	public function procesarNormal($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -1042,13 +1059,7 @@ class Operacion extends Controlador
 			self::setConfig($data);
 			
 			$operador = $operacion->unidadalAire($service->id_operador_unidad);
-			$operacion->asignar_viaje($service->id_viaje,$operador);
-			
-			//esto se asigna manualmente por el telefonista de acuerdo a un semaforo de tiempo
-			// $relTravel['id_operador_unidad'] = $service->id_operador_unidad;
-			// $relTravel['id_viaje'] 	= $service->id_viaje;
-			// $relTravel['salida'] 	= 118;
-			// self::asignacion_automatica($relTravel,$mobile);
+			$operacion->asignar_apartado($service->id_viaje,$operador);
 			
 		}
 		

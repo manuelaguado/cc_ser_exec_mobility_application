@@ -154,6 +154,7 @@ class MobileModel
 						break;
 					case 'R6':/*Acuse de F15*/
 						$id_viaje = $clave['id_viaje'];
+						
 						self::servicioAsignado($id_viaje);
 						self::setCveStore($clave['id_usuario'],$clave['token'],157,$clave['id_operador_unidad'],false,false,true);
 						$output[$num] = self::storeToSync($clave, $num);
@@ -1354,6 +1355,8 @@ class MobileModel
 			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
 			WHERE
 				crc.id_operador_unidad = $id_operador_unidad
+				AND
+				viv.cat_status_viaje = 171
 			ORDER BY
 				crc.id_cordon DESC
 			LIMIT 0,
@@ -1438,6 +1441,8 @@ class MobileModel
 			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
 			WHERE
 				viv.id_operador_unidad = $id_operador_unidad
+				AND
+				viv.cat_status_viaje = 171
 			ORDER BY
 				viv.id_viaje DESC
 			LIMIT 0,

@@ -126,7 +126,13 @@ function ride_ok(data) {
 							loadTemplate('regreso');
 						}
 						$("#air_service_act").hide();
-						$("#air_service_des").show();							
+						$("#air_service_des").show();
+						
+						$("#request_queue_des").hide();
+						$("#request_queue_act").show();
+						
+						$("#fin_labores_des").hide();
+						$("#fin_labores_act").show();
 
 					});
 				}else{
