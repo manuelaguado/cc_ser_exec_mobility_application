@@ -836,57 +836,40 @@ class OperacionModel{
 			return json_encode($print);
 		}
 	}
+	function apartado2pendientesDo($post){
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	function apartado2pendientesDo($post, MobileModel $mobile=NULL){
-		
-		$qrymissing = array();
-		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
-		
-		$success = true;
-		try {  
-			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-			$this->db->beginTransaction();
-			$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '170', cat_tipo_temporicidad = '184' WHERE id_viaje = ".$post['id_viaje']);
-			if(isset($sql)){$this->db->exec($sql);}
-			$this->db->commit();
-
-		} catch (Exception $e) {
-			$this->db->rollBack();
-			$success = false;			
-		}
+		$qry = "UPDATE vi_viaje SET cat_status_viaje = '170', cat_tipotemporicidad = '184' WHERE id_viaje = ".$post['id_viaje'];
+		$query = $this->db->prepare($qry);
+		$success = $query->execute();			
 		
 		if($success){
-			$output = array('resp' => true , 'mensaje' => 'se seteo a 170 satisfactoriamente' );
-			$print = $output + $qrymissing;
-			return json_encode($print);
+			return json_encode(array('resp' => true , 'mensaje' => 'se seteo a 170 satisfactoriamente' ));
 		}else{
-			$output = array('resp' => false , 'mensaje' => 'No se seteo a 170');
-			$print = $output + $qrymissing;
-			return json_encode($print);
+			return json_encode(array('resp' => false , 'mensaje' => 'No se seteo a 170'));
 		}
-	}	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+	
+	
+	
+	
+	
+	
+	
+		
 	function procesarNormalDo($post, MobileModel $mobile=NULL){
 		
 		$stat_process = true;

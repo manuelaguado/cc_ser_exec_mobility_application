@@ -357,8 +357,7 @@ class Operacion extends Controlador
 	public function apartado2pendientesDo(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
-		$mobil = $this->loadModel('Mobile');
-		print $modelo->apartado2pendientesDo($_POST, $mobil);	
+		print $modelo->apartado2pendientesDo($_POST);	
 	}
 
 	
