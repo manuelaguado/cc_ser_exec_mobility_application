@@ -212,3 +212,53 @@ jQuery(document).ready(function() {
 });
 </script>
 <?php } ?>
+
+<script type="text/javascript" language="javascript" class="init">
+<?php
+//Barra de notificaciones para apartados
+if(SOCKET_PROVIDER == 'ABLY'){
+?>
+	var conn = new Ably.Realtime('<?=ABLY_API_KEY?>');
+	conn.connection.on('connected', function() {
+	  console.log('✓ Servicio de notificaciones para apartados);
+	})
+
+	var updChannel = conn.channels.get('notificarApartados');
+	updChannel.subscribe(function(resp_success){
+		$('#cordon').DataTable().ajax.reload();
+	});
+<?php
+}elseif(SOCKET_PROVIDER == 'PUSHER'){
+?>
+	var pusher = new Pusher('<?=PUSHER_KEY?>', {
+		encrypted: true
+	});
+	
+	var updChannel = pusher.subscribe('notificarApartados');
+	
+	pusher.connection.bind('connected', function() {
+		console.log('✓ Servicio de notificaciones para apartados);
+	})
+	updChannel.bind('evento', function(data) {
+		$('#cordon').DataTable().ajax.reload();
+	});
+<?php
+}elseif(SOCKET_PROVIDER == 'PUBNUB'){
+?>
+	var WsPubNub = PUBNUB.init({
+		publish_key: '<?=PUBNUB_PUBLISH?>',
+		subscribe_key: '<?=PUBNUB_SUSCRIBE?>',
+		ssl: true
+	});
+	
+	WsPubNub.subscribe({
+		channel: 'notificarApartados',
+		message: function(m){
+			$('#cordon').DataTable().ajax.reload();
+		}
+	});
+	
+<?php
+}
+?>
+</script>

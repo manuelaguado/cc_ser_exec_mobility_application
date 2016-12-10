@@ -36,7 +36,7 @@
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 					<ul class="nav ace-nav">
 						
-						<?php //include('notificaciones.php'); ?>
+						<?php include('notificaciones.php'); ?>
 						
 						<!-- #section:basics/navbar.user_menu -->
 						<li class="light-blue">

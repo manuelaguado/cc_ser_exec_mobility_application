@@ -12841,7 +12841,8 @@ tr.detail-row > td {
   background-color: rgba(120, 110, 100, 0.4);
 }
 .blur-login {
-  background: #394557 url('images/meteorshower2.jpg') repeat;
+  background: #394557 url('images/meteorshower2.jpg');
+  background-size: cover;
 }
 .invoice-info {
   line-height: 24px !important;

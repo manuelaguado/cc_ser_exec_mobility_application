@@ -9,7 +9,59 @@ class OperacionModel{
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-	
+	function notificacionesApartados(){
+		$qry = "
+			SELECT
+				viv.id_viaje AS id_viaje,
+				vcd.fecha_requerimiento AS fecha_requerimiento,
+				clc.nombre AS cliente,
+				clp.nombre AS empresa,
+				service.etiqueta AS servicio,
+				num_eq.num AS numq,
+				vcl.id_cliente AS id_cliente
+			FROM
+				vi_viaje AS viv
+			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
+			INNER JOIN vi_viaje_clientes AS vcl ON vcl.id_viaje = viv.id_viaje
+			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
+			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
+			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
+			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
+			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
+			WHERE
+				viv.cat_status_viaje = 195
+			AND viv.cat_tipotemporicidad = 162
+			AND vcd.fecha_requerimiento > DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+			AND vcd.fecha_requerimiento < DATE_ADD(NOW(), INTERVAL 65 MINUTE)
+			GROUP BY
+				viv.id_viaje
+			ORDER BY
+				fecha_requerimiento ASC
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$notificacion = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row){
+				$notificacion[$num]['id_viaje']		= $row->id_viaje;
+				$notificacion[$num]['fecha']		= $row->fecha_requerimiento;
+				$notificacion[$num]['cliente']		= $row->cliente;
+				$notificacion[$num]['empresa']		= $row->empresa;
+				$notificacion[$num]['servicio']		= $row->servicio;
+				$notificacion[$num]['numq']			= $row->numq;
+				$notificacion[$num]['id_cliente']	= $row->id_cliente;
+				$notificacion[$num]['num']			= $num + 1;
+				$notificacion[$num]['total']		= $query->rowCount();
+		
+				$num++;
+			}
+		}
+		return $notificacion;	
+	}
 	function addCostoAdicional($arreglo){
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
