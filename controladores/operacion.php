@@ -11,7 +11,7 @@ class Operacion extends Controlador
 		$modelo->caducarGps();
 	}
 	public function cron(){
-		
+		/*
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		
@@ -32,7 +32,7 @@ class Operacion extends Controlador
 		foreach ($eventos as $evento){
 			$mobile->broadcast($evento['id_operador_unidad']);
 		}
-		
+		*/
 	}
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -89,7 +89,7 @@ class Operacion extends Controlador
 		$actual = $model->turnoApart($anterior['valor']);
 		
 		require URL_VISTA.'modales/operacion/paqueteriaSettings.php';
-	}
+	}	
 	public function asignacion_automatica($array,MobileModel $model){
 		$token = 'AAT:'.$this->token(62);
 		$model->setCveStore(1,$token,$array['salida'],$array['id_operador_unidad']);
@@ -118,15 +118,15 @@ class Operacion extends Controlador
 		require URL_VISTA.'operacion/listado_cancelados.php';
 	}	
 	
-	public function inmediatos_completados(){
+	public function completados(){
 		$this->se_requiere_logueo(true,'Operacion|listado_completados');
 		$modelo = $this->loadModel('Operacion');
-		print $modelo->inmediatos_completados($_POST);
+		print $modelo->completados($_POST);
 	}
-	public function inmediatos_cancelados(){
+	public function cancelados(){
 		$this->se_requiere_logueo(true,'Operacion|listado_cancelados');
 		$modelo = $this->loadModel('Operacion');
-		print $modelo->inmediatos_cancelados($_POST);
+		print $modelo->cancelados($_POST);
 	}
 	public function iframeFullModalD(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -281,16 +281,6 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->programados_gris($_POST);
 	}
-	public function programados_cancelados(){
-		$this->se_requiere_logueo(true,'Operacion|programados');
-		$modelo = $this->loadModel('Operacion');
-		print $modelo->programados_cancelados($_POST);
-	}
-	public function programados_completados(){
-		$this->se_requiere_logueo(true,'Operacion|programados');
-		$modelo = $this->loadModel('Operacion');
-		print $modelo->programados_completados($_POST);
-	}
 	public function set_page_remotly($id_operador){
 		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
 		require URL_VISTA.'modales/operacion/set_page_remotly.php';
@@ -390,10 +380,21 @@ class Operacion extends Controlador
 		require URL_VISTA.'modales/operacion/procesarNormal.php';
 	}
 	public function procesarNormalDo(){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$modelo = $this->loadModel('Operacion');
-		$mobil = $this->loadModel('Mobile');
-		print $modelo->procesarNormalDo($_POST, $mobil);	
+		$operacion = $this->loadModel('Operacion');
+		$mobile = $this->loadModel('Mobile');
+		$id_viaje = $_POST['id_viaje'];
+		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		
+		$operador = $operacion->unidadalAire($id_operador_unidad);
+		$operacion->activarApartado($id_viaje,$operador);
+		
+		$relTravel['id_operador_unidad'] = $id_operador_unidad;
+		$relTravel['id_viaje'] 	= $id_viaje;
+		$relTravel['salida'] 	= 120;
+		
+		self::asignacion_automatica($relTravel,$mobile);
+		
+		print json_encode(array('resp' => true ));
 	}
 	
 	
@@ -1086,6 +1087,7 @@ class Operacion extends Controlador
 			self::asignacion_automatica($relTravel,$mobile);
 		}
 		print json_encode(array('resp' => true ));
-	}	
+	}
+	
 }
 ?>

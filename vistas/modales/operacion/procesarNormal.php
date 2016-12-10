@@ -4,48 +4,23 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"+ aria-hidden="true">x</button>
 				<h4 class="modal-title" id="myModalLabel">
-					Otorgar viaje a operadores en Tiempo a la Base
+					Procesar apartado
 				</h4>
 			</div>
 			<div class="modal-body" id="modal_content">
-				<div class="row">
-					<div class="col-md-12 column">
-						<div class="table-responsive">
-							<table id="domicilios" class="table table-striped table-bordered table-hover">
-								<thead>
-									<tr>
-										
-										<th>Unidad</th>
-										<th>Operador</th>
-										<th>Status</th>
-										<th>Acciones</th>
-									</tr>
-									<tbody>
-									<?php
-									if(count($operadores)>0){
-										foreach ($operadores as $operador) {
-											echo "
-											<tr>
-												<td>".$operador['numeq']."</td>
-												<td>".utf8_encode($operador['nombre'])."</td>
-												<td>".utf8_encode($operador['marca'].' '.$operador['modelo'].' '.$operador['color'])."</td>
-												<td>
-													<button onclick='asignarViajeAlAire(".$operador['id_operador_unidad'].",".$operador['id_operador'].",".$id_viaje.")' class='btn btn-xs btn-success'>
-															Asignar
-														<i class='ace-icon fa fa-arrow-right icon-on-right'></i>
-													</button>												
-												</td>
-											</tr>
-											";
-										}
-									}
-									?>
-									</tbody>
-								</thead>
-							</table>
-						</div>
-					</div>
-				</div>			
+				<form id="procesarNormalDo">
+					La siguiente acción procesará normalmente el apartado N°: <?=$id_viaje?>
+					
+					<br><br>¿Está seguro de continuar con esta acción?
+				
+					<input type="hidden" id="id_viaje" name="id_viaje" value="<?=$id_viaje?>" />
+					<input type="hidden" id="origen" name="origen" value="<?=$origen?>" />
+				</form>
+			</div>
+			
+			<div class="modal-footer">					
+				<button onclick="procesarNormalDo();" class="btn btn-ar btn-success" type="button" id="add">Si, procesar apartado</button>
+				<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cerrar</button>
 			</div>
 		</div>
 	</div>

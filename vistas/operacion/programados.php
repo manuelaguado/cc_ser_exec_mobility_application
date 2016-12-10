@@ -70,19 +70,6 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 								<i class="fa fa-circle" style="color:#bfbfbf"></i>&nbsp;&nbsp;
 								Caducos</a>
 							</li>
-							
-							<li class="">
-								<a style="border-top-color:#2bbc2b; opacity: 0.3;" data-toggle="tab" href="#tcompletados" aria-expanded="false">
-								<i class="fa fa-circle" style="color:#2bbc2b"></i>&nbsp;&nbsp;
-								Completados</a>
-							</li>
-							
-							<li class="">
-								<a style="border-top-color:#c91c1c; opacity: 0.3;" data-toggle="tab" href="#tcancelados" aria-expanded="false">
-								<i class="fa fa-circle" style="color:#c91c1c"></i>&nbsp;&nbsp;
-								Cancelados</a>
-							</li>
-							
 						</ul>
 					</div>
 				</div>
@@ -159,40 +146,6 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 							</div>
 							<div id="tgris" class="tab-pane">
 								<table id="gris" class="display table table-striped" cellspacing="0" width="100%">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>[STATUS]</th>
-											<th>Hora</th>
-											<th>Usuario</th>
-											<th>Empresa</th>
-											<th>Servicio</th>
-											<th>Tipo</th>
-											<th>NUM</th>
-											<th>Acciones</th>
-										</tr>
-									</thead>
-								</table>							
-							</div>
-							<div id="tcompletados" class="tab-pane">
-								<table id="completados" class="display table table-striped" cellspacing="0" width="100%">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>[STATUS]</th>
-											<th>Hora</th>
-											<th>Usuario</th>
-											<th>Empresa</th>
-											<th>Servicio</th>
-											<th>Tipo</th>
-											<th>NUM</th>
-											<th>Acciones</th>
-										</tr>
-									</thead>
-								</table>							
-							</div>
-							<div id="tcancelados" class="tab-pane">
-								<table id="cancelados" class="display table table-striped" cellspacing="0" width="100%">
 									<thead>
 										<tr>
 											<th>ID</th>
@@ -304,44 +257,6 @@ $(document).ready(function() {
 		"pageLength": 30,
 		"ajax": {
 			"url": "operacion/programados_gris",
-			"type": "POST"
-		},
-		"columnDefs": [
-			{
-				"targets": 1,
-				"visible": false,
-				"searchable":false
-			}
-		]
-	} );
-	$('#completados').dataTable( {
-		"fnDrawCallback": function( oSettings ) {
-		  $('[data-rel=tooltip]').tooltip();
-		},
-		"processing": true,
-		"serverSide": true,
-		"pageLength": 30,
-		"ajax": {
-			"url": "operacion/programados_completados",
-			"type": "POST"
-		},
-		"columnDefs": [
-			{
-				"targets": 1,
-				"visible": false,
-				"searchable":false
-			}
-		]
-	} );
-	$('#cancelados').dataTable( {
-		"fnDrawCallback": function( oSettings ) {
-		  $('[data-rel=tooltip]').tooltip();
-		},
-		"processing": true,
-		"serverSide": true,
-		"pageLength": 30,
-		"ajax": {
-			"url": "operacion/programados_cancelados",
 			"type": "POST"
 		},
 		"columnDefs": [

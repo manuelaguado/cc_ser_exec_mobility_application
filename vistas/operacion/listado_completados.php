@@ -20,7 +20,7 @@ div.table-responsive div#completados_wrapper.dataTables_wrapper.form-inline.dt-b
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Listado de completados para salidas inmediatas
+					Listado de completados
 				</h1>
 			</div><!-- /.page-header -->
 		</div>
@@ -35,8 +35,8 @@ div.table-responsive div#completados_wrapper.dataTables_wrapper.form-inline.dt-b
 							<th>Usuario</th>
 							<th>Empresa</th>
 							<th>Servicio</th>
-							<th>Tipo</th>
 							<th>NUM</th>
+							<th>Apartado</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -53,9 +53,9 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
-			"url": "operacion/inmediatos_completados",
+			"url": "operacion/completados",
 			"type": "POST"
 		},
 		"columnDefs": [

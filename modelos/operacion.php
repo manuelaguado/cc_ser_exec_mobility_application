@@ -668,6 +668,20 @@ class OperacionModel{
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
+	function activarApartado($id_viaje,$operador){
+		$sql = "
+			UPDATE vi_viaje
+			SET 
+			 id_episodio 		= '".$operador['id_episodio']."',
+			 id_operador_unidad = '".$operador['id_operador_unidad']."',
+			 cat_status_viaje	= '171',
+			 cat_tipotemporicidad = '184'
+			WHERE
+				id_viaje = ".$id_viaje."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}
 	function setear_status_viaje($post, MobileModel $mobile=NULL, OperadoresModel $operadores = NULL, LoginModel $login = NULL){
 		
 		$stat_process = true;
@@ -848,111 +862,6 @@ class OperacionModel{
 			return json_encode(array('resp' => false , 'mensaje' => 'No se seteo a 170'));
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
-
-	
-	
-	
-	
-	
-	
-	
-		
-	function procesarNormalDo($post, MobileModel $mobile=NULL){
-		
-		$stat_process = true;
-		$qrymissing = array();
-		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
-
-		if(!$post['cat_cancelaciones']){
-			$qrymissing = array('qrymissing' => 'cat_cancelaciones' );
-			$stat_process = false;
-		}		
-		if(($post['origen'] == 'rojo')&&(!isset($post['status_operador']))){
-			$qrymissing = array('qrymissing' => 'status_operador' );
-			$stat_process = false;
-		}
-		$sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
-		
-		if($stat_process){
-			$success = true;
-			try {  
-				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-				$this->db->beginTransaction();
-				$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '173' WHERE id_viaje = ".$post['id_viaje']);
-				if(isset($sql)){$this->db->exec($sql);}
-				$this->db->commit();
-
-			} catch (Exception $e) {
-				$this->db->rollBack();
-				$success = false;			
-			}
-			
-		}else{
-			$success = false;
-		}
-		
-		if($success){
-			
-			if($post['origen'] == 'rojo'){
-				$token = 'APA:'.Controller::token(62);
-				switch($post['status_operador']){
-					case 'segundo':
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
-					break;
-					case 'cola':
-						$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
-					break;
-					case 'omitir':
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
-					break;
-				}
-
-			}
-
-			$output = array('resp' => true , 'mensaje' => 'se seteo a 173 satisfactoriamente' );
-			$print = $output + $qrymissing;
-			return json_encode($print);
-		}else{
-			$output = array('resp' => false , 'mensaje' => 'No se seteo a 173');
-			$print = $output + $qrymissing;
-			return json_encode($print);
-		}
-	}
-
-
-
-
-
-
-
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	function getIdOperadorUnidad($id_viaje){
 		$sql ="SELECT id_operador_unidad FROM vi_viaje WHERE id_viaje = ".$id_viaje;
 		$query = $this->db->prepare($sql);
@@ -3201,7 +3110,7 @@ class OperacionModel{
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
 		$where = '
-			viv.cat_status_viaje = 171
+			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
 			AND 
@@ -3218,221 +3127,7 @@ class OperacionModel{
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
 	}
-	function programados_cancelados($array){
-		ini_set('memory_limit', '256M');				
-		$table = 'vi_viaje AS viv';
-		$primaryKey = 'id_viaje';
-		$columns = array(
-			array( 
-				'db' => 'viv.id_viaje as id_viaje',
-				'dbj' => 'viv.id_viaje',
-				'real' => 'viv.id_viaje',
-				'alias' => 'id_viaje',
-				'typ' => 'int',
-				'dt' => 0			
-			),
-			array( 
-				'db' => 'viv.cat_status_viaje as status_viaje',
-				'dbj' => 'viv.cat_status_viaje',
-				'real' => 'viv.cat_status_viaje',
-				'alias' => 'status_viaje',
-				'typ' => 'int',
-				'dt' => 1
-			),
-			array( 
-				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
-				'dbj' => 'vcd.fecha_requerimiento',
-				'real' => 'vcd.fecha_requerimiento',
-				'alias' => 'fecha_requerimiento',
-				'typ' => 'int',
-				'dt' => 2
-			),
-			array( 
-				'db' => 'clc.nombre AS cliente',
-				'dbj' => 'clc.nombre',
-				'real' => 'clc.nombre',
-				'alias' => 'cliente',
-				'typ' => 'txt',
-				'dt' => 3
-			),
-			array( 
-				'db' => 'clp.nombre AS empresa',
-				'dbj' => 'clp.nombre',
-				'real' => 'clp.nombre',
-				'alias' => 'empresa',
-				'typ' => 'txt',
-				'dt' => 4
-			),
-			array( 
-				'db' => 'service.etiqueta AS servicio',
-				'dbj' => 'service.etiqueta',
-				'real' => 'service.etiqueta',
-				'alias' => 'servicio',
-				'typ' => 'txt',
-				'dt' => 5
-			),
-			array( 
-				'db' => 'tempo.etiqueta AS temporicidad',
-				'dbj' => 'tempo.etiqueta',
-				'real' => 'tempo.etiqueta',
-				'alias' => 'temporicidad',
-				'typ' => 'txt',
-				'dt' => 6
-			),
-			array( 
-				'db' => 'num_eq.num AS numq',
-				'dbj' => 'num_eq.num',
-				'real' => 'num_eq.num',
-				'alias' => 'numq',
-				'typ' => 'int',
-				'dt' => 7
-			),				
-			array( 
-				'db' => 'vcl.id_cliente AS id_cliente',
-				'dbj' => 'vcl.id_cliente',
-				'real' => 'vcl.id_cliente',
-				'alias' => 'id_cliente',
-				'typ' => 'int',
-				'acciones' => true,
-				'dt' => 8
-			)
-		);
-		$inner = '
-			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
-			INNER JOIN vi_viaje_clientes AS vcl ON vcl.id_viaje = viv.id_viaje
-			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
-			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
-			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
-			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
-			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
-		';
-		$where = '
-			viv.cat_status_viaje = 173
-			AND
-				viv.cat_tipotemporicidad = 162
-		';
-		$orden = '
-			GROUP BY
-				viv.id_viaje		
-			ORDER BY
-				viv.id_viaje DESC
-		';
-		$render_table = new programados_cancelados;
-		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
-		);
-	}
-	function programados_completados($array){
-		ini_set('memory_limit', '256M');				
-		$table = 'vi_viaje AS viv';
-		$primaryKey = 'id_viaje';
-		$columns = array(
-			array( 
-				'db' => 'viv.id_viaje as id_viaje',
-				'dbj' => 'viv.id_viaje',
-				'real' => 'viv.id_viaje',
-				'alias' => 'id_viaje',
-				'typ' => 'int',
-				'dt' => 0			
-			),
-			array( 
-				'db' => 'viv.cat_status_viaje as status_viaje',
-				'dbj' => 'viv.cat_status_viaje',
-				'real' => 'viv.cat_status_viaje',
-				'alias' => 'status_viaje',
-				'typ' => 'int',
-				'dt' => 1
-			),
-			array( 
-				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
-				'dbj' => 'vcd.fecha_requerimiento',
-				'real' => 'vcd.fecha_requerimiento',
-				'alias' => 'fecha_requerimiento',
-				'typ' => 'int',
-				'dt' => 2
-			),
-			array( 
-				'db' => 'clc.nombre AS cliente',
-				'dbj' => 'clc.nombre',
-				'real' => 'clc.nombre',
-				'alias' => 'cliente',
-				'typ' => 'txt',
-				'dt' => 3
-			),
-			array( 
-				'db' => 'clp.nombre AS empresa',
-				'dbj' => 'clp.nombre',
-				'real' => 'clp.nombre',
-				'alias' => 'empresa',
-				'typ' => 'txt',
-				'dt' => 4
-			),
-			array( 
-				'db' => 'service.etiqueta AS servicio',
-				'dbj' => 'service.etiqueta',
-				'real' => 'service.etiqueta',
-				'alias' => 'servicio',
-				'typ' => 'txt',
-				'dt' => 5
-			),
-			array( 
-				'db' => 'tempo.etiqueta AS temporicidad',
-				'dbj' => 'tempo.etiqueta',
-				'real' => 'tempo.etiqueta',
-				'alias' => 'temporicidad',
-				'typ' => 'txt',
-				'dt' => 6
-			),
-			array( 
-				'db' => 'num_eq.num AS numq',
-				'dbj' => 'num_eq.num',
-				'real' => 'num_eq.num',
-				'alias' => 'numq',
-				'typ' => 'int',
-				'dt' => 7
-			),				
-			array( 
-				'db' => 'vcl.id_cliente AS id_cliente',
-				'dbj' => 'vcl.id_cliente',
-				'real' => 'vcl.id_cliente',
-				'alias' => 'id_cliente',
-				'typ' => 'int',
-				'acciones' => true,
-				'dt' => 8
-			)
-		);
-		$inner = '
-			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
-			INNER JOIN vi_viaje_clientes AS vcl ON vcl.id_viaje = viv.id_viaje
-			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
-			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
-			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
-			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
-			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
-		';
-		$where = '
-			viv.cat_status_viaje = 172
-			AND
-				viv.cat_tipotemporicidad = 162
-		';
-		$orden = '
-			GROUP BY
-				viv.id_viaje		
-			ORDER BY
-				viv.id_viaje DESC
-		';
-		$render_table = new programados_completados;
-		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
-		);
-	}
-	function inmediatos_completados($array){
+	function completados($array){
 		ini_set('memory_limit', '256M');				
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
@@ -3486,21 +3181,22 @@ class OperacionModel{
 				'dt' => 5
 			),
 			array( 
-				'db' => 'tempo.etiqueta AS temporicidad',
-				'dbj' => 'tempo.etiqueta',
-				'real' => 'tempo.etiqueta',
-				'alias' => 'temporicidad',
-				'typ' => 'txt',
-				'dt' => 6
-			),
-			array( 
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
 				'alias' => 'numq',
 				'typ' => 'int',
+				'dt' => 6
+			),
+			array( 
+				'db' => 'vcd.apartado AS apartado',
+				'dbj' => 'vcd.apartado',
+				'real' => 'vcd.apartado',
+				'alias' => 'apartado',
+				'typ' => 'int',
+				'bin' => true,
 				'dt' => 7
-			),				
+			),
 			array( 
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
@@ -3525,21 +3221,17 @@ class OperacionModel{
 		';
 		$where = '
 			viv.cat_status_viaje = 172
-			AND
-				viv.cat_tipotemporicidad = 184
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
-			ORDER BY
-				viv.id_viaje DESC
+				viv.id_viaje
 		';
 		$render_table = new acciones_completados;
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
 	}
-	function inmediatos_cancelados($array){
+	function cancelados($array){
 		ini_set('memory_limit', '256M');				
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
@@ -3593,11 +3285,12 @@ class OperacionModel{
 				'dt' => 5
 			),
 			array( 
-				'db' => 'tempo.etiqueta AS temporicidad',
-				'dbj' => 'tempo.etiqueta',
-				'real' => 'tempo.etiqueta',
-				'alias' => 'temporicidad',
-				'typ' => 'txt',
+				'db' => 'vcd.apartado AS apartado',
+				'dbj' => 'vcd.apartado',
+				'real' => 'vcd.apartado',
+				'alias' => 'apartado',
+				'typ' => 'int',
+				'bin' => true,
 				'dt' => 6
 			),				
 			array( 
@@ -3620,14 +3313,10 @@ class OperacionModel{
 		';
 		$where = '
 			viv.cat_status_viaje = 173
-			AND
-				viv.cat_tipotemporicidad = 184
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
-			ORDER BY
-				viv.id_viaje DESC
+				viv.id_viaje
 		';
 		$render_table = new acciones_cancelados;
 		return json_encode(
@@ -4132,6 +3821,12 @@ class acciones_completados extends SSP{
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					
 					$row[ $column['dt'] ] = $salida;
+				}else if(isset( $column['bin'])){
+					
+					$a = ($data[$i][ 'apartado' ] == 1)? '<a data-rel="tooltip" data-original-title="Salida programada" href="javascript:;"><i class="icofont icofont-delivery-time bigger-200 brown darken-1"></i></a>':'<a data-rel="tooltip" data-original-title="Salida inmediata" href="javascript:;"><i class="icofont icofont-fast-delivery bigger-200 blue"></i></a>';
+
+					$salida = $a;
+					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
 				}
@@ -4159,6 +3854,12 @@ class acciones_cancelados extends SSP{
 					$salida = '';
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 							
+					$row[ $column['dt'] ] = $salida;
+				}else if(isset( $column['bin'])){
+					
+					$a = ($data[$i][ 'apartado' ] == 1)? '<a data-rel="tooltip" data-original-title="Salida programada" href="javascript:;"><i class="icofont icofont-delivery-time bigger-200 brown darken-1"></i></a>':'<a data-rel="tooltip" data-original-title="Salida inmediata" href="javascript:;"><i class="icofont icofont-fast-delivery bigger-200 blue"></i></a>';
+
+					$salida = $a;
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -4293,62 +3994,6 @@ class programados_verde extends SSP{
 	}	
 }
 class programados_gris extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
-
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
-				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
-					$id_viaje = $data[$i][ 'id_viaje' ];
-					
-					$salida = '';
-							
-					$row[ $column['dt'] ] = $salida;
-				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
-				}
-				
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}	
-}
-class programados_completados extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
-
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
-				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
-					$id_viaje = $data[$i][ 'id_viaje' ];
-					
-					$salida = '';
-					
-					$row[ $column['dt'] ] = $salida;
-				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
-				}
-				
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}	
-}
-class programados_cancelados extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{
 		$out = array();

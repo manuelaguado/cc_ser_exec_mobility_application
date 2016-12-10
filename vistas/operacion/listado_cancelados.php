@@ -20,7 +20,7 @@ div.table-responsive div#cancelados_wrapper.dataTables_wrapper.form-inline.dt-bo
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Listado de cancelaciones para salidas inmediatas
+					Listado de cancelaciones
 				</h1>
 			</div><!-- /.page-header -->
 		</div>
@@ -35,7 +35,7 @@ div.table-responsive div#cancelados_wrapper.dataTables_wrapper.form-inline.dt-bo
 							<th>Usuario</th>
 							<th>Empresa</th>
 							<th>Servicio</th>
-							<th>Tipo</th>
+							<th>Apartado</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -52,9 +52,9 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 5,
+		"pageLength": 30,
 		"ajax": {
-			"url": "operacion/inmediatos_cancelados",
+			"url": "operacion/cancelados",
 			"type": "POST"
 		},
 		"columnDefs": [
