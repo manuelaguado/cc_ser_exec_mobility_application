@@ -42,9 +42,13 @@ define('SOCKET_PROVIDER','PUSHER',false);
 /*Modo de operacion cron WEBHOOK ó CURL*/
 define('PRESENCE_GET','WEBHOOK',false);
 
+/*Modo de operacion ejecucion de cron JAVASCRIPT ó CRONJOB*/
+define('CRONEXEC','CRONJOB',false);
+
 //no editar::
 /*Zona horaria*/
 date_default_timezone_set('America/Mexico_City');
+setlocale(LC_MONETARY, 'es_MX.UTF-8');
 
 /*Variables*/
 define('URL_CONTROLADOR','../controladores/',true);

@@ -133,6 +133,9 @@ function ride_ok(data) {
 						
 						$("#fin_labores_des").hide();
 						$("#fin_labores_act").show();
+						
+						$("#tomar_apartado_des").show();
+						$("#tomar_apartado_act").hide();
 
 					});
 				}else{
@@ -145,7 +148,7 @@ function ride_ok(data) {
 		case 'R11':
 		case 'A10':
 			if (resp_success['new'] == true){
-				$$('#data_viaje').html('');
+				$('#data_viaje').html('');
 				$('#data_cordon').html('NO HAY DATOS DE CORDON');
 				storeTravel(resp_success);
 				$("#ride_false").hide();
@@ -160,13 +163,13 @@ function ride_ok(data) {
 					if(value != ''){
 						switch (key) {
 							case 'Coordenadas origen':
-								$$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
 								break;
 							case 'Coordenadas destino':
-								$$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
 								break;
 							default:
-								$$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
+								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
 						}
 					}
 				});
@@ -202,9 +205,12 @@ function ride_ok(data) {
 		//////////////////////////////////////////////////////////////////////////////////////////////////// viaje on air
 		case 'F15':
 			if (resp_success['new'] == true){
-				$$('#data_viaje').html('');
+				
+				$('#data_viaje').html('');
 				$('#data_cordon').html('NO HAY DATOS DE CORDON');
+				
 				storeTravel(resp_success);
+				
 				$("#air_service_des").hide();
 				$("#air_service_act").show();
 				
@@ -214,6 +220,9 @@ function ride_ok(data) {
 				$("#fin_labores_act").hide();
 				$("#fin_labores_des").show();
 				
+				$("#tomar_apartado_act").hide();
+				$("#tomar_apartado_des").show();				
+				
 				updatePageButtons('air_service_des','air_service_act');
 				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio al aire');
 				
@@ -221,13 +230,13 @@ function ride_ok(data) {
 					if(value != ''){
 						switch (key) {
 							case 'Coordenadas origen':
-								$$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
 								break;
 							case 'Coordenadas destino':
-								$$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
 								break;
 							default:
-								$$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
+								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
 						}
 					}	
 				});				
@@ -240,7 +249,54 @@ function ride_ok(data) {
 			
 			//console.log('RIDE F15 OK');
 			break;
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////// Tomar apartado
+		case 'A19':
+			if (resp_success['new'] == true){
+				
+				$('#data_viaje').html('');
+				$('#data_cordon').html('NO HAY DATOS DE CORDON');
+				
+				storeTravel(resp_success);
+				
+				$("#air_service_des").show();
+				$("#air_service_act").hide();
+				
+				$("#request_queue_act").hide();
+				$("#request_queue_des").show();
+				
+				$("#fin_labores_act").hide();
+				$("#fin_labores_des").show();
+				
+				$("#tomar_apartado_act").show();
+				$("#tomar_apartado_des").hide();				
+				
+				updatePageButtons('tomar_apartado_des','tomar_apartado_act');
+				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio programado');
+				
+				$.each(resp_success['viaje'], function( key, value ) {
+					if(value != ''){
+						switch (key) {
+							case 'Coordenadas origen':
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								break;
+							case 'Coordenadas destino':
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								break;
+							default:
+								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
+						}
+					}	
+				});				
+				storeClave('R14','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE F15',function(){});
+			}else{
+				$("#tomar_apartado_des").show();
+				$("#tomar_apartado_act").hide();
+				updatePageButtons('tomar_apartado_act','tomar_apartado_des');
+			}
 			
+			//console.log('RIDE A19 OK');
+			break;
 		////////////////////////////////////////////////////////////////////////////////////////////////// salida por sitio
 		case 'F13':
 			if (resp_success['new'] == true){
@@ -255,13 +311,13 @@ function ride_ok(data) {
 					if(value != ''){
 						switch (key) {
 							case 'Coordenadas origen':
-								$$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
 								break;
 							case 'Coordenadas destino':
-								$$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
+								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
 								break;
 							default:
-								$$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
+								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
 						}
 					}	
 				});					
@@ -292,11 +348,11 @@ function ride_ok(data) {
 					'Asignado al cordón');
 				
 				
-				$$('#data_cordon').html('');
-				$$('#data_viaje').html('');
+				$('#data_cordon').html('');
+				$('#data_viaje').html('');
 				$.each(resp_success['cordon'], function( key, value ) {
 					suma = parseInt(key) + parseInt(1);
-				  $$('#data_cordon').append('<div class="user-tail"><span id="ava-tail" class="circle_back"><img class="avatar_tail" src="'+url_app+'fw7/assets/img/driver-black.svg" alt="Operador"><div class="cordon_name">'+ suma +'.-'+value+'</div></span></div>');
+				  $('#data_cordon').append('<div class="user-tail"><span id="ava-tail" class="circle_back"><img class="avatar_tail" src="'+url_app+'fw7/assets/img/driver-black.svg" alt="Operador"><div class="cordon_name">'+ suma +'.-'+value+'</div></span></div>');
 				});
 				
 				
@@ -307,7 +363,7 @@ function ride_ok(data) {
 				$('#update_cordon').css('display','');
 				var data_ind = JSON.parse(JSON.stringify(resp_success['indicadores']));
 				var verify = myApp.indicadores(data_ind);
-				$$('#data_cordon').html(verify);
+				$('#data_cordon').html(verify);
 				
 			}	
 			//console.log('RIDE F14 OK');
@@ -316,10 +372,10 @@ function ride_ok(data) {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////// salida por sitio
 		case 'F19':
 			if (resp_success['new'] == false){
-				$$('#data_cordon').html('');
+				$('#data_cordon').html('');
 				$.each(resp_success['cordon'], function( key, value ) {
 					suma = parseInt(key) + parseInt(1);
-				  $$('#data_cordon').append('<div class="user-tail"><span id="ava-tail" class="circle_back"><img class="avatar_tail" src="'+url_app+'fw7/assets/img/driver-black.svg" alt="Operador"><div class="cordon_name">'+ suma +'.-'+value+'</div></span></div>');
+				  $('#data_cordon').append('<div class="user-tail"><span id="ava-tail" class="circle_back"><img class="avatar_tail" src="'+url_app+'fw7/assets/img/driver-black.svg" alt="Operador"><div class="cordon_name">'+ suma +'.-'+value+'</div></span></div>');
 				});
 			}
 			if(resp_success['turno'] <= 3){

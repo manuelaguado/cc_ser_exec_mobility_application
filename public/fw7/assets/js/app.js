@@ -223,6 +223,7 @@ $$("body").on("click", ".c9", function() {
 	myApp.confirm('','¿Confirma la finalización de este servicio?', function () {
 		storeClave('C9','C1','C9','F11','NULL','NULL',function(){
 			clearTravel();
+			$('#data_viaje').html('');
 			loadTemplate('regreso');
 		});
 	});
@@ -242,7 +243,11 @@ $$("body").on("click", ".f15", function() {
 $$("body").on("click", ".f14", function() {
 	loadUpdatedTemplate('elegir_base',$(".f14").attr('data-return'));
 });
-
+$$("body").on("click", ".a19", function() {
+	storeClave('A19','C1','A19','NULL','NULL','NULL',function(){
+		loadTemplate('acudir');
+	});
+});
 
 /***********************************************************************************************************************************SELECCION DE BASE**/
 $$("body").on("click", ".elegir_base1", function() {

@@ -54,6 +54,20 @@
 						</a>
 					</div>
 				</div>
+				<div class="row text-center">
+					<div class="col-100" id="tomar_apartado_act" style="display: none;">
+						<a href="javascript:void(0);" class="a19 menu-link">
+							<span>A19</span>
+							<span class="label_code">Tomar apartado</span>
+						</a>
+					</div>
+					<div class="col-100" id="tomar_apartado_des">
+						<a class="code_disabled" href="javascript:void(0);">
+							<span>A19</span>
+							<span class="label_code">Tomar apartado</span>
+						</a>
+					</div>
+				</div>
 			</nav>
 		</div>
 	</div>
