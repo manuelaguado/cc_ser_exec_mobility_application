@@ -1321,43 +1321,50 @@ $("body").on("click", ".notif-off", function() {
 function notifyRender(data) {
 	var resp_success = JSON.parse(data);
 	$('#notificaciones_body').html('');
-	if(resp_success[0]['total'] > 0){
-		notif.play();
-	}	
-	$.each(resp_success, function( key, value ) {
-		$('.badge-success').html(value['total']);
-		$('#notificaciones_count').html(value['total']);
-		
-		var time = new Date();
-		
-		if(value['fecha'] > time.toMysqlFormat()){
-			var classe = 'num_notif';
-		}else{
-			var classe = 'num_notif_red';
-		}
-		
-		$('#notificaciones_body').append('<li>'+
-			'<a href="#" class="clearfix">'+
-			'<span class="'+classe+'">'+value['id_viaje']+'</span>'+
-				'<span class="msg-body" style="margin-left: 50px">'+
-					'<span class="msg-title">'+
-						'<span class="blue">'+value['empresa']+': </span>'+
-						' '+value['cliente']+
-					'</span>'+
-					'<span class="msg-title">'+
-						'<span class="blue">Operador: </span>'+
-						' '+value['numq']+
-					'</span>'+
-					'<span class="msg-time">'+
-						'<i class="ace-icon fa fa-clock-o"></i>'+
-						'<span>  '+value['fecha']+'</span>'+
-					'</span>'+
-				'</span>'+
-			'</a>'+
-		'</li>');
-		
+	$('.badge-success').html('');
+	$('#notificaciones_count').html('');
+	if(resp_success[0] != undefined){
+		if(resp_success[0]['total'] > 0){
+			notif.play();
+			$.each(resp_success, function( key, value ) {
+				$('.badge-success').html(value['total']);
+				$('#notificaciones_count').html(value['total']);
+				
+				var time = new Date();
+				
+				if(value['fecha'] > time.toMysqlFormat()){
+					var classe = 'num_notif';
+				}else{
+					var classe = 'num_notif_red';
+				}
+				var salida = new Date(value['fecha']);
+				var options = {
+					weekday: "long",  hour: "numeric", minute: "numeric"
+				};
+				var print_date = salida.toLocaleDateString("es-mx", options)
+				$('#notificaciones_body').append('<li>'+
+					'<a onclick="carga_archivo(\'contenedor_principal\',\'operacion/programados\');" class="clearfix">'+
+					'<span class="'+classe+'">'+value['id_viaje']+'</span>'+
+						'<span class="msg-body" style="margin-left: 50px">'+
+							'<span class="msg-title">'+
+								'<span class="blue">'+value['empresa']+': </span>'+
+								' '+value['cliente']+
+							'</span>'+
+							'<span class="msg-title">'+
+								'<span class="blue">Operador: </span>'+
+								' '+value['numq']+
+							'</span>'+
+							'<span class="msg-time">'+
+								'<i class="ace-icon fa fa-clock-o"></i>'+
+								'<span>  '+print_date+'</span>'+
+							'</span>'+
+						'</span>'+
+					'</a>'+
+				'</li>');
+				
 
-	});
-	
+			});
+		}
+	}
 }
 

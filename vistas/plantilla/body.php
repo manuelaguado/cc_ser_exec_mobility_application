@@ -1,5 +1,7 @@
 	<body class="no-skin" onload="verifica_tiempo_session();">
-
+	<div id="initpreloader">;
+	   <div id="initloader"></div>
+	</div>
 	
 	<?php include ('navbar.php'); ?>
 		

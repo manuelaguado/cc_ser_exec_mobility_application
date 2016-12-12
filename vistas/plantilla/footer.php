@@ -40,13 +40,6 @@
 		<script src="<?=ACE?>js/html5shiv.js"></script>
 		<script src="<?=ACE?>js/respond.js"></script>
 		<![endif]-->
-		
-		<!--[if !IE]> -->
-		<script type="text/javascript">
-			window.jQuery || document.write("<script src='<?=URL_PUBLIC?>components/jquery/dist/jquery.js'>"+"<"+"/script>");
-		</script>
-
-		<!-- <![endif]-->
 
 		<!--[if IE]>
 		<script type="text/javascript">
@@ -177,15 +170,7 @@
 		<script src="<?=URL_PUBLIC?>dhtmlxScheduler/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>dhtmlxScheduler/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">	
 		<script src="<?=URL_PUBLIC?>dhtmlxScheduler/locale/locale_es.js" type="text/javascript" charset="utf-8"></script>
-
-<script>
-var intro;
-$(function() {
-	intro = new buzz.sound( "dist/audio/intro", {
-		formats: ['mp3']
-	}).setVolume(100).play();
-});  
-</script>		
+	
 <?php
 if(SOCKET_PROVIDER == 'ABLY'){	
 ?>

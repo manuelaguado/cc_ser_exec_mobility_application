@@ -7,15 +7,57 @@
 
 		<meta name="description" content="overview &amp; stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-		
+		<!--[if !IE]> -->
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='<?=URL_PUBLIC?>components/jquery/dist/jquery.js'>"+"<"+"/script>");
+		</script>
+		<style>
+		body {
+			overflow: hidden;
+		}
+		#initpreloader {
+			position: fixed;
+			top:0; left:0;
+			right:0; bottom:0;
+			background: #000;
+			z-index: 100;
+		}
+		#initloader {
+			width: 120px;
+			height: 120px;
+			position: absolute;
+			left:50%; top:50%;
+			background: url(dist/images/gears.svg) no-repeat center 0;
+			margin:-50px 0 0 -50px;
+		}
+		#initloader:before {
+			content: "CentralCar";
+			color: #FFFFFF;
+			position: relative;
+			font-size: 2em;
+			top: 120px;
+		}
+		</style>		
+		<script>
+		$(window).load(function() {
+			$('#initpreloader').fadeOut('slow');
+			$('body').css({'overflow':'visible'});
+			var intro;
+			$(function() {
+				intro = new buzz.sound( "dist/audio/intro", {
+					formats: ['mp3']
+				}).setVolume(100).play();
+			});
+		})
+		</script>
+		<!-- <![endif]-->
 		<!--[if lte IE 9]>
 			<link rel="stylesheet" href="<?=URL_PUBLIC?>assets/css/ace-part2.css" class="ace-main-stylesheet" />
 		<![endif]-->
 
 		<!--[if lte IE 9]>
 		 <link rel="stylesheet" href="<?=URL_PUBLIC?>assets/css/ace-ie.css" />
-		<![endif]-->
-
+		<![endif]-->		
 		<!--Component Styles-->
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/_mod/jquery-ui.custom/jquery-ui.custom.css" />
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/chosen/chosen.css" />
