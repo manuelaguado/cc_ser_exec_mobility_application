@@ -31,11 +31,16 @@
 			margin:-50px 0 0 -50px;
 		}
 		#initloader:before {
-			content: "CentralCar";
+			content: "<?=SITE_NAME?>";
+			display: inline-block;
 			color: #FFFFFF;
+			background-color: black;
 			position: relative;
 			font-size: 2em;
 			top: 120px;
+			width: 270px;
+			left: -70px;;
+			text-align: center;
 		}
 		</style>		
 		<script>
