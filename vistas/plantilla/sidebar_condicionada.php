@@ -18,7 +18,8 @@
 		($this->tiene_permiso('Operacion|suspendidas')) OR
 		($this->tiene_permiso('Usuarios|logueados')) OR
 		($this->tiene_permiso('Operacion|listado_completados')) OR
-		($this->tiene_permiso('Operacion|listado_cancelados'))
+		($this->tiene_permiso('Operacion|listado_cancelados')) OR
+		($this->tiene_permiso('Clientes|showtarifas'))
 		
 	)
 	{
@@ -432,7 +433,8 @@
 	<?php
 	if(
 		($this->tiene_permiso('Clientes|index')) OR
-		($this->tiene_permiso('Clientes|allthem'))
+		($this->tiene_permiso('Clientes|allthem')) OR
+		($this->tiene_permiso('Clientes|showtarifas'))
 	)
 	{
 	?>
@@ -455,6 +457,18 @@
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>clientes');">
 						<i class="menu-icon fa fa-users"></i>
 						<span class="menu-text"> Cuentas </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Clientes|showtarifas')){
+				?>								
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>clientes/showtarifas');">
+						<i class="menu-icon fa fa-credit-card-alt"></i>
+						<span class="menu-text"> Tarifas </span>
 					</a>
 				</li>
 				<?php

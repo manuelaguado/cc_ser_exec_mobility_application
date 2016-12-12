@@ -6,6 +6,16 @@ class Clientes extends Controlador
 		$this->se_requiere_logueo(true,'Clientes|index');
         require URL_VISTA.'clientes/index.php';
     }
+	function showtarifas(){
+		$this->se_requiere_logueo(true,'Clientes|showtarifas');
+		require URL_VISTA.'clientes/tarifas.php';
+	}
+	function getTarifas(){
+		$this->se_requiere_logueo(true,'Clientes|showtarifas');
+		$model = $this->loadModel('Clientes');
+		$result = $model->getTarifas($_POST);
+		print $result;
+	}
 	function calendario_historico($id_cliente){
 		$this->se_requiere_logueo(true,'Clientes|calendario_historico');
 		require URL_VISTA.'clientes/calendario_historico.php';

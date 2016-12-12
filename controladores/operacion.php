@@ -10,7 +10,7 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		$modelo->caducarGps();
 	}
-	public function cron(){
+	/*public function cron(){
 		
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
@@ -41,7 +41,7 @@ class Operacion extends Controlador
 		$notificaciones = $operacion->notificacionesApartados();
 		$mobile->transmitir(json_encode($notificaciones),'notificarApartados');
 		
-	}
+	}*/
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');

@@ -1456,6 +1456,112 @@ class ClientesModel
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
 	}
+	function getTarifas($array){
+		ini_set('memory_limit', '256M');				
+		$table = 'cl_tarifas_clientes AS cltc';
+		$primaryKey = 'id_tarifa_cliente';
+		$columns = array(
+			array( 
+				'db' => 'cltc.id_tarifa_cliente AS id_tarifa_cliente',
+				'dbj' => 'cltc.id_tarifa_cliente',
+				'real' => 'cltc.id_tarifa_cliente',
+				'alias' => 'id_tarifa_cliente',
+				'typ' => 'int',
+				'dt' => 0
+			),
+			array( 
+				'db' => 'cln.nombre AS cliente',
+				'dbj' => 'cln.nombre',
+				'real' => 'cln.nombre',
+				'alias' => 'cliente',
+				'typ' => 'txt',
+				'dt' => 1
+			),
+			array( 
+				'db' => 'cltc.costo_base AS costo_base',
+				'dbj' => 'cltc.costo_base',
+				'real' => 'cltc.costo_base',
+				'alias' => 'costo_base',
+				'typ' => 'int',
+				'dt' => 2
+			),
+			array( 
+				'db' => 'cltc.km_adicional AS km_adicional',
+				'dbj' => 'cltc.km_adicional',
+				'real' => 'cltc.km_adicional',
+				'alias' => 'km_adicional',
+				'typ' => 'int',
+				'dt' => 3
+			),
+			array( 
+				'db' => 'cltc.descripcion AS descripcion',
+				'dbj' => 'cltc.descripcion',
+				'real' => 'cltc.descripcion',
+				'alias' => 'descripcion',
+				'typ' => 'txt',
+				'dt' => 4
+			),
+			array(
+				'db' => 'cltc.nombre AS nombre',
+				'dbj' => 'cltc.nombre',
+				'real' => 'cltc.nombre',
+				'alias' => 'nombre',
+				'typ' => 'txt',
+				'dt' => 5
+			),
+			array( 
+				'db' => 'cltc.inicio_vigencia AS inicio_vigencia',
+				'dbj' => 'cltc.inicio_vigencia',
+				'real' => 'cltc.inicio_vigencia',
+				'alias' => 'inicio_vigencia',
+				'typ' => 'int',
+				'dt' => 6
+			),
+			array( 
+				'db' => 'cltc.fin_vigencia AS fin_vigencia',
+				'dbj' => 'cltc.fin_vigencia',
+				'real' => 'cltc.fin_vigencia',
+				'alias' => 'fin_vigencia',
+				'typ' => 'txt',
+				'dt' => 7
+			),
+			array( 
+				'db' => 'cat1.etiqueta AS estado',
+				'dbj' => 'cat1.etiqueta',
+				'real' => 'cat1.etiqueta',
+				'alias' => 'estado',
+				'typ' => 'txt',
+				'dt' => 8
+			),
+			array( 
+				'db' => 'cat2.etiqueta AS tipo',
+				'dbj' => 'cat2.etiqueta',
+				'real' => 'cat2.etiqueta',
+				'alias' => 'tipo',
+				'typ' => 'txt',
+				'dt' => 9
+			),
+			array( 
+				'db' => 'cltc.tabulado AS tabulado',
+				'dbj' => 'cltc.tabulado',
+				'real' => 'cltc.tabulado',
+				'alias' => 'tabulado',
+				'typ' => 'int',
+				'dt' => 10
+			)
+		);
+		$render_table = new SSP;
+		$inner = '
+			INNER JOIN cl_clientes AS cln ON cltc.id_cliente = cln.id_cliente
+			INNER JOIN cm_catalogo AS cat1 ON cltc.cat_statustarifa = cat1.id_cat
+			INNER JOIN cm_catalogo AS cat2 ON cltc.cat_tipo_tarifa = cat2.id_cat
+		';
+		$where = '';
+		$orden = '';
+		return json_encode(
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+		);
+	}	
 	function queryTarifas($array,$id_cliente){
 		ini_set('memory_limit', '256M');				
 		$table = 'cl_tarifas_clientes AS tc';
