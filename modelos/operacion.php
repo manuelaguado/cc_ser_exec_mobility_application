@@ -46,19 +46,17 @@ class OperacionModel{
 		$num = 0;
 		if($query->rowCount()>=1){
 			$data = $query->fetchAll();
+
 			foreach ($data as $row){
 				$notificacion[$num]['id_viaje']		= $row->id_viaje;
 				$notificacion[$num]['fecha']		= $row->fecha_requerimiento;
 				$notificacion[$num]['cliente']		= $row->cliente;
 				$notificacion[$num]['empresa']		= $row->empresa;
-				$notificacion[$num]['servicio']		= $row->servicio;
 				$notificacion[$num]['numq']			= $row->numq;
-				$notificacion[$num]['id_cliente']	= $row->id_cliente;
-				$notificacion[$num]['num']			= $num + 1;
 				$notificacion[$num]['total']		= $query->rowCount();
-		
 				$num++;
 			}
+			
 		}
 		return $notificacion;	
 	}

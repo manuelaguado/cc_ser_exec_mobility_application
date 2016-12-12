@@ -32,7 +32,6 @@
 			</a>
 		</div><!-- /.main-container -->
 
-
 		<script src="<?=URL_PUBLIC?>assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
@@ -168,32 +167,81 @@
 		<script src="<?=URL_PUBLIC?>js/kml.js"></script>
 		<script src="<?=URL_PUBLIC?>js/pdf.js"></script>
 		<script src="<?=URL_PUBLIC?>js/operacion.js"></script>
-		<script src="<?=URL_PUBLIC?>js/catalogo.js"></script>		
+		<script src="<?=URL_PUBLIC?>js/catalogo.js"></script>
+		
+		<script src="<?=URL_PUBLIC?>components/buzz/buzz.min.js"></script>
+		
 		<script src="<?=URL_PUBLIC?>dist/js/wow.min.js"></script>
 		
 		<!-- dhtmlxScheduler -->
 		<script src="<?=URL_PUBLIC?>dhtmlxScheduler/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>dhtmlxScheduler/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">	
 		<script src="<?=URL_PUBLIC?>dhtmlxScheduler/locale/locale_es.js" type="text/javascript" charset="utf-8"></script>
-		
+
+<script>
+var intro;
+$(function() {
+	intro = new buzz.sound( "dist/audio/intro", {
+		formats: ['mp3']
+	}).setVolume(100).play();
+});  
+</script>		
 <?php
-if(SOCKET_PROVIDER == 'ABLY'){
+if(SOCKET_PROVIDER == 'ABLY'){	
 ?>
-	<!--Ably-->
-	<script lang="text/javascript" src="//cdn.ably.io/lib/ably.min.js"></script>
+<script lang="text/javascript" src="//cdn.ably.io/lib/ably.min.js"></script>
+<script>
+	var conn = new Ably.Realtime('<?=ABLY_API_KEY?>');
+	conn.connection.on('connected', function() {
+	  console.log('✓ Servicio de notificaciones para apartados');
+	})
+
+	var updChannel = conn.channels.get('notificarApartados');
+	updChannel.subscribe(function(resp_success){
+		$('#cordon').DataTable().ajax.reload();
+	});
+</script>
 <?php
 }elseif(SOCKET_PROVIDER == 'PUSHER'){
 ?>
-	<!--Pusher-->
-	<script src="https://js.pusher.com/3.1/pusher.min.js"></script>
+<script src="https://js.pusher.com/3.1/pusher.min.js"></script>
+<script>
+	var pusher = new Pusher('<?=PUSHER_KEY?>', {
+		encrypted: true
+	});
+	
+	var updChannel = pusher.subscribe('notificarApartados');
+	
+	pusher.connection.bind('connected', function() {
+		console.log('✓ Servicio de notificaciones para apartados');
+	})
+	updChannel.bind('evento', function(data) {
+		var convert_json = JSON.stringify(data.message);
+		notifyRender(convert_json);
+	});
+</script>
 <?php	
 }elseif(SOCKET_PROVIDER == 'PUBNUB'){
 ?>
-	<!--PubNub-->
-	<script src="https://cdn.pubnub.com/pubnub-3.15.2.min.js"></script>
-<?php	
+<script src="https://cdn.pubnub.com/pubnub-3.15.2.min.js"></script>
+<script>	
+	var WsPubNub = PUBNUB.init({
+		publish_key: '<?=PUBNUB_PUBLISH?>',
+		subscribe_key: '<?=PUBNUB_SUSCRIBE?>',
+		ssl: true
+	});
+	
+	WsPubNub.subscribe({
+		channel: 'notificarApartados',
+		message: function(m){
+			$('#cordon').DataTable().ajax.reload();
+		}
+	});
+</script>	
+<?php
 }
 ?>
+
 
 <?php if(CRONEXEC == 'JAVASCRIPT'){ ?>
 <script>
@@ -212,53 +260,3 @@ jQuery(document).ready(function() {
 });
 </script>
 <?php } ?>
-
-<script type="text/javascript" language="javascript" class="init">
-<?php
-//Barra de notificaciones para apartados
-if(SOCKET_PROVIDER == 'ABLY'){
-?>
-	var conn = new Ably.Realtime('<?=ABLY_API_KEY?>');
-	conn.connection.on('connected', function() {
-	  console.log('✓ Servicio de notificaciones para apartados);
-	})
-
-	var updChannel = conn.channels.get('notificarApartados');
-	updChannel.subscribe(function(resp_success){
-		$('#cordon').DataTable().ajax.reload();
-	});
-<?php
-}elseif(SOCKET_PROVIDER == 'PUSHER'){
-?>
-	var pusher = new Pusher('<?=PUSHER_KEY?>', {
-		encrypted: true
-	});
-	
-	var updChannel = pusher.subscribe('notificarApartados');
-	
-	pusher.connection.bind('connected', function() {
-		console.log('✓ Servicio de notificaciones para apartados);
-	})
-	updChannel.bind('evento', function(data) {
-		$('#cordon').DataTable().ajax.reload();
-	});
-<?php
-}elseif(SOCKET_PROVIDER == 'PUBNUB'){
-?>
-	var WsPubNub = PUBNUB.init({
-		publish_key: '<?=PUBNUB_PUBLISH?>',
-		subscribe_key: '<?=PUBNUB_SUSCRIBE?>',
-		ssl: true
-	});
-	
-	WsPubNub.subscribe({
-		channel: 'notificarApartados',
-		message: function(m){
-			$('#cordon').DataTable().ajax.reload();
-		}
-	});
-	
-<?php
-}
-?>
-</script>

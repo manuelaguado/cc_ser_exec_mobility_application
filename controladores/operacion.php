@@ -35,10 +35,12 @@ class Operacion extends Controlador
 		*/
 	}
 	public function cron10(){
+		
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		$notificaciones = $operacion->notificacionesApartados();
 		$mobile->transmitir(json_encode($notificaciones),'notificarApartados');
+		
 	}
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

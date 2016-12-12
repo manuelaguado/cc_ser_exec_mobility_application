@@ -590,3 +590,33 @@ table#tb_act_oper tbody > tr > td{
 	font-size: 2em;
 	color:#008c00;
 }
+.num_notif{
+	font-size:2em;
+	background-color:#6C91C0;
+	position:relative;
+	float:left;
+	top:4px;
+	color:#FFFFFF;
+	text-align: center;
+	overflow: hidden;
+    padding: 10px 5px;
+    width: 40px;
+    position: relative;
+    border-radius: 9px;	
+	-webkit-box-shadow: 1px 1px 4px 0px #1e77c4;
+}
+.num_notif_red{
+	font-size:2em;
+	background-color:#C06C6C;
+	position:relative;
+	float:left;
+	top:4px;
+	color:#FFFFFF;
+	text-align: center;
+	overflow: hidden;
+    padding: 10px 5px;
+    width: 40px;
+    position: relative;
+    border-radius: 9px;	
+	-webkit-box-shadow: 1px 1px 4px 0px #1e77c4;
+}
