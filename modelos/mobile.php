@@ -756,9 +756,14 @@ class MobileModel
 					':fecha_alta' 			=> 	date("Y-m-d H:i:s")
 				)
 			);
-			self::setCveStore($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
-			self::solicitarAcuseCordon();
-			return self::turno($id_operador_unidad,$id_base);
+			$recursive = self::turno($id_operador_unidad,$id_base);
+			if($recursive == 'No formado'){
+				self::formarse($clave);
+			}else{
+				self::setCveStore($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
+				self::solicitarAcuseCordon();				
+				return $recursive;
+			}
 		}else{
 			return 'Ya estaba formado';
 		}

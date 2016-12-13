@@ -177,8 +177,10 @@ $$("body").on("click", ".a16", function() {
 
 /*******************************************************************************************************************************************VENTANAS DE VIAJE**/
 $$("body").on("click", ".c14", function() {
-	storeClave('C14','C1','C8','C14','NULL','NULL',function(){
-		myApp.alert('', 'Restan 4 Destinos');
+	myApp.confirm('','¿Desea establecer este punto como destino parcial?', function () {
+		storeClave('C14','C1','C8','C14','NULL','NULL',function(){
+			myApp.alert('', 'Se estableció el destino parcial');
+		});
 	});
 });
 $$("body").on("click", ".c12", function() {
