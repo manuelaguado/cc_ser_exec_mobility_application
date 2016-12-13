@@ -350,7 +350,7 @@ class Desarrollador extends Controlador
 	private function insertMarcas($marcas){
 		$conn = Controlador::direct_connectivity();
 		foreach($marcas as $marca){
-			$sql = "INSERT INTO cr_marcas (marca, slug) VALUES (:marca, :slug)";
+			$sql = "INSERT INTO AAAAMarca (marca, slug) VALUES (:marca, :slug)";
 			$query = $conn->prepare($sql);
 			$result = $query->execute(array(':marca' => utf8_decode($marca->Text), ':slug' => utf8_decode(self::slug($marca->Text))));
 			$id_marca = $conn->lastInsertId();
@@ -363,7 +363,7 @@ class Desarrollador extends Controlador
 			$modelos=curl_exec($ch);
 			$modelos = json_decode($modelos);
 			foreach($modelos as $modelo){
-				$sql = "INSERT INTO cr_modelos (id_marca, modelo, slug) VALUES (:id_marca, :modelo, :slug)";
+				$sql = "INSERT INTO AAAAModelo (id_marca, modelo, slug) VALUES (:id_marca, :modelo, :slug)";
 				$query = $conn->prepare($sql);
 				$query->execute(array(':id_marca' => $id_marca, ':modelo' => utf8_decode($modelo->Text), ':slug' => utf8_decode(self::slug($modelo->Text))));
 			}
