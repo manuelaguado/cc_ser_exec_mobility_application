@@ -618,6 +618,9 @@ function procesar_servicio(){
 	if(($('#cat_tiposervicio').val() == 164 )&&($('#paquetes').val() == ""))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Indispensable seleccionar la descripción de paquetes que se enviarán o bien seleccionar la opción "otro" de la lista.</li>';}
 	
+	if($('#exist_tarifa').val() == 0)
+		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>El cliente seleccionado no tiene tarifas activas para procesar el viaje</li>';} 
+	 
 	if( !msj_error == "" ){
 		alerta('Alerta','<ul class="list-unstyled spaced">'+msj_error+'</ul>');
 		return false;

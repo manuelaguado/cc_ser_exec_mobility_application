@@ -1026,6 +1026,12 @@ class Operacion extends Controlador
 		$modelo->adquirirTiemposBase();
 		print $modelo->tiempo_base_get($_POST);
 	}
+	public function getTarifa($id_cliente){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$tarifa = $operacion->id_tarifa_cliente($id_cliente);
+		print json_encode(array('resp' => true, 'tarifa' => $tarifa ));
+	}
 	public function procesar_servicio(){
 		////////////////////////////////////////////////////////////////////permisos y modelo
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

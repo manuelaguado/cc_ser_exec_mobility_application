@@ -47,6 +47,7 @@ span.input-icon > textarea {
 						<input type="hidden" id="msgPaqArray" name="msgPaqArray" value="" />
 						
 						<input type="hidden" id="temporicidad" name="temporicidad" value="184" />
+						<input type="hidden" id="exist_tarifa" name="exist_tarifa" value="0" />
 						
 						<span id="input_pasajeros"></span>
 					</h1>				
@@ -506,6 +507,20 @@ span.input-icon > textarea {
 								}
 								
 								if(destinos == 1){
+									$.ajax({
+										url: 'operacion/getTarifa/'+suggestion.id,
+										dataType: 'json',
+											success: function(resp_success){			
+												if (resp_success['resp'] == true) {
+													if(resp_success['tarifa'] == ''){
+														alerta('Cuenta sin tarifa','No existen tarifas relacionadas al cliente <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span>');
+													}else{
+														$("#exist_tarifa").val('1');
+													}
+												}
+											},
+										error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}
+									});
 									$.ajax({
 										url: 'operacion/selectOrigenes/'+suggestion.id,
 										dataType: 'html',
