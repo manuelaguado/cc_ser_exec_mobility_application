@@ -78,7 +78,7 @@ function getNotificaciones(){
 				}
 				
 			}, 
-			error: function(){alerta('Alerta!','Error de conectividad de red GNRL-03');}
+			error: function(){alerta('Alerta!','Error de conectividad de red GNRL-01');}
 		});
 
 	}, 100);

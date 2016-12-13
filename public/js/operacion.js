@@ -1309,13 +1309,13 @@ function procesarNormalDo(){
 
 var notif;
 $(function() {
-	notif = new buzz.sound( "dist/audio/notif", {
+	notif = new buzz.sound( "dist/audio/notif_loop", {
 		formats: ['mp3']
-	}).setVolume(100);
+	}).setVolume(0).play();
 });  
 
 $("body").on("click", ".notif-off", function() {
-	notif.pause();
+	notif.pause().fadeOut(3000);
 });
 
 function notifyRender(data) {
@@ -1325,7 +1325,7 @@ function notifyRender(data) {
 	$('#notificaciones_count').html('');
 	if(resp_success[0] != undefined){
 		if(resp_success[0]['total'] > 0){
-			notif.play();
+			notif.setVolume(100).loop().play();
 			$.each(resp_success, function( key, value ) {
 				$('.badge-success').html(value['total']);
 				$('#notificaciones_count').html(value['total']);

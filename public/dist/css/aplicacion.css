@@ -620,3 +620,12 @@ table#tb_act_oper tbody > tr > td{
     border-radius: 9px;	
 	-webkit-box-shadow: 1px 1px 4px 0px #1e77c4;
 }
+#websockets_switch{
+	position:relative;
+	top:10px;	
+}
+#websockets_switch > input[type=checkbox].ace.ace-switch.ace-switch-4:checked + .lbl::before,#websockets_switch >  input[type=checkbox].ace.ace-switch.ace-switch-5:checked + .lbl::before{
+    text-indent: 5px;
+    background-color: #000000;
+    border-color: #FFFFFF;
+}

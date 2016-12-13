@@ -10,7 +10,7 @@ function salir(){
 				alerta('Alerta!','Error en el sistema');
 			}
 		}, 
-		error: function(){alerta('Alerta!','Error de conectividad de red GNRL-01');}
+		error: function(){alerta('Alerta!','Error de conectividad de red CMMN-01');}
 	});
 }
 function salirAlternativo(){
@@ -25,7 +25,7 @@ function salirAlternativo(){
 				alerta('Alerta!','Error en el sistema');
 			}
 		}, 
-		error: function(){alerta('Alerta!','Error de conectividad de red GNRL-02');}
+		error: function(){alerta('Alerta!','Error de conectividad de red CMMN-02');}
 	});
 }
 function valida_logeo(e,decReq,boton){
@@ -65,7 +65,7 @@ function valida_logeo(e,decReq,boton){
 						alerta('Alerta!','Su cuenta está inhabilitada por exceder el número de intentos de acceso permitidos, notifíquelo a su administrador');  
 					}
                }, 
-               error: function(){ alerta('Alerta!','Error de conectividad de red GNRL-03');}
+               error: function(){ alerta('Alerta!','Error de conectividad de red CMMN-03');}
               });
             }
          }
@@ -91,7 +91,7 @@ function modal_sign_out(id_usuario){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red GNRL-04');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CMMN-04');}	
 		});
 	} );
 }
@@ -105,10 +105,10 @@ function sign_out(id_usuario){
 						$('#myModal').modal('hide');
 						$('#loginusr').DataTable().ajax.reload();
 					}else{
-						alerta('Alerta!','Error de conectividad de red GNRL-05');
+						alerta('Alerta!','Error de conectividad de red CMMN-05');
 					}
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red GNRL-06');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CMMN-06');}	
 		});
 	} );
 }
@@ -125,7 +125,7 @@ function force_all_sign_out(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red GNRL-07');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CMMN-07');}	
 		});
 	} );	
 }
@@ -139,10 +139,10 @@ function sign_all_out(){
 						$('#myModal').modal('hide');
 						location.reload();
 					}else{
-						alerta('Alerta!','Error de conectividad de red GNRL-08');
+						alerta('Alerta!','Error de conectividad de red CMMN-08');
 					}
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red GNRL-09');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CMMN-09');}	
 		});
 	} );
 }
@@ -157,7 +157,22 @@ function switch_login_op(){
 					//alerta('Alerta!','ok');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red GNRL-10');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CMMN-10');}	
+		});
+	} );
+}
+function websockets_control(){
+	$(document).ready(function() {
+		var estado = document.getElementById("websockets_control").checked;
+		$.ajax({
+			url: url_app + 'mobile/websockets_control/' + estado ,
+			dataType: 'json',
+			success: function(resp_success){			
+				if (resp_success['resp'] == true) {
+					//alerta('Alerta!','ok');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CMMN-11');}	
 		});
 	} );
 }

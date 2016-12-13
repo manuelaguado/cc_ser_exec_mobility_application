@@ -31,7 +31,6 @@
 
 					<!-- /section:basics/navbar.toggle -->
 				</div>
-
 				<!-- #section:basics/navbar.dropdown -->
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 					<ul class="nav ace-nav">
@@ -110,7 +109,21 @@
 						<!-- /section:basics/navbar.user_menu -->
 					</ul>
 				</div>
-
+				<?php
+				if(DEVELOPMENT){
+					if($this->tiene_permiso('Mobile|websockets_control')){
+						$acceso = Controlador::getConfig(1,'websockets_control');
+						if($acceso['valor'] == 1){$checked = 'checked';}else{$checked = '';}
+						
+						?>
+						<div class="navbar-header pull-right" id="websockets_switch">					
+							<input onchange='websockets_control()' id="websockets_control" name="websockets_control" class="ace ace-switch ace-switch-5" type="checkbox" <?php echo $checked; ?>/>
+							<span class="lbl" data-lbl="WSS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSS">&nbsp;&nbsp;</span>
+						</div>
+						<?php
+					}
+				}
+				?>
 				<!-- /section:basics/navbar.dropdown -->
 			</div><!-- /.navbar-container -->
 		</div>

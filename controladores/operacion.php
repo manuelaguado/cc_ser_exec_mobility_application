@@ -10,7 +10,11 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		$modelo->caducarGps();
 	}
+	
 	public function cron(){
+		
+		$acceso = Controlador::getConfig(1,'websockets_control');
+		if($acceso['valor'] != 1){exit();}
 		
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
@@ -35,6 +39,8 @@ class Operacion extends Controlador
 		
 	}
 	public function cron10(){
+		$acceso = Controlador::getConfig(1,'websockets_control');
+		if($acceso['valor'] != 1){exit();}
 		
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
@@ -42,6 +48,7 @@ class Operacion extends Controlador
 		$mobile->transmitir(json_encode($notificaciones),'notificarApartados');
 		
 	}
+	
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');

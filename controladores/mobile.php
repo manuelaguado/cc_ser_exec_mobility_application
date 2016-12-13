@@ -39,5 +39,19 @@ class Mobile extends Controlador
 			$presence_data
 		);
 	}
+	public function websockets_control($estado){
+		$this->se_requiere_logueo(true,'Mobile|websockets_control');
+		
+		$state = ($estado == 'true')?'1':'0';
+		
+		$data['id_site']	= '1';
+		$data['descripcion']= 'websockets_control';
+		$data['valor']		= $state;
+		$data['tmp_val']	= '0';
+		$data['data']		= '0';
+		
+		Controlador::setConfig($data);
+		print json_encode(array('resp' => true));
+	}
 }
 ?>
