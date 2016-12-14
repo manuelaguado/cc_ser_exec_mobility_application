@@ -351,7 +351,7 @@ function delivery_stat(id_mensaje){
 }
 function guardar_mensaje(){
 	var msj_error="";
-	if( $('#id_operador').get(0).value == "" )	msj_error+='Error de conectividad de red OPRN-26';
+	if( $('#id_operador_msg_mod').get(0).value == "" )	msj_error+='Error de conectividad de red OPRN-26';
 	if( $('#mensaje').get(0).value == "")	msj_error+='Es necesario precisar el mensaje.<br />';
 	
 	if( !msj_error == "" ){

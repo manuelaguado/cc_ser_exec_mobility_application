@@ -11,6 +11,8 @@ span.input-icon > textarea {
 #tabla_pendientes_wrapper > div:nth-child(1){display:none;}
 #tabla_proceso_wrapper > div:nth-child(1){display:none;}
 #tabla_asignados_wrapper > div:nth-child(1){display:none;}
+#cordon_kpmg > tbody > tr > td:nth-child(8){padding: 0px;vertical-align: middle;}
+#cordon_kpmg > tbody > tr > td:nth-child(8) > a:nth-child(1){position:relative; top:-7px;}
 </style>
 <div class="main-content">
 	<div class="main-content-inner">
@@ -387,6 +389,7 @@ span.input-icon > textarea {
 												<th>Modelo</th>
 												<th>Color</th>
 												<th>Llegada/Espera</th>
+												<th></th>
 											</tr>
 										</thead>
 									</table>
@@ -604,11 +607,6 @@ span.input-icon > textarea {
 					"columnDefs": [
 						{
 							"targets": 8,
-							"visible": false,
-							"searchable":false
-						},
-						{
-							"targets": 7,
 							"visible": false,
 							"searchable":false
 						}

@@ -10,7 +10,7 @@
 			<div class="modal-body" id="modal_content">
 				<form role="form" id="nuevo_mensaje">
 					<div id="msj_info">
-						<input type="hidden" id="id_operador" name="id_operador" value="<?php echo $id_operador; ?>">
+						<input type="hidden" id="id_operador_msg_mod" name="id_operador_msg_mod" value="<?php echo $id_operador; ?>">
 						<textarea class="mensaje_box" id="mensaje" name="mensaje"></textarea>
 					</div>
 					<!--<div id="msj_verify" class="msj_verify" style="display:none">

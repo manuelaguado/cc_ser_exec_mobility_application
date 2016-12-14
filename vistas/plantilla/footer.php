@@ -256,6 +256,5 @@ jQuery(document).ready(function() {
         r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
         a.appendChild(r);
     })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-	$('#_hj_poll_container').hide();
 </script>
 <?php } ?>

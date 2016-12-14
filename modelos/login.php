@@ -236,17 +236,19 @@ class LoginModel
 	}
 	public function putLoggerLogin($usuario){
 		$id_usuario = self::getIdUsuario($usuario);
-		$ahora = date("Y-m-d H:i:s");
-		$logger = self::selectLoggerLogin($id_usuario);
-		if($logger['id_login_log'] !== NULL){
-			if($logger['intentos'] <= 4){
-				$segundos = Controller::diferenciaSegundos($logger['fecha'],$ahora);
-				($segundos <= 600)?self::updateLoggerLogin($logger['id_login_log']):self::insertLoggerLogin($id_usuario);
+		if($id_usuario){
+			$ahora = date("Y-m-d H:i:s");
+			$logger = self::selectLoggerLogin($id_usuario);
+			if($logger['id_login_log'] !== NULL){
+				if($logger['intentos'] <= 4){
+					$segundos = Controller::diferenciaSegundos($logger['fecha'],$ahora);
+					($segundos <= 600)?self::updateLoggerLogin($logger['id_login_log']):self::insertLoggerLogin($id_usuario);
+				}else{
+					self::inhabilitarUsuario($id_usuario);
+				}
 			}else{
-				self::inhabilitarUsuario($id_usuario);
+				self::insertLoggerLogin($id_usuario);
 			}
-		}else{
-			self::insertLoggerLogin($id_usuario);
 		}
 	}
 	public function inhabilitarUsuario($id_usuario){
