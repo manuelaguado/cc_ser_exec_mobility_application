@@ -11,4 +11,6 @@ UPDATE `centralcar`.`fw_config` SET `id_config`='6', `id_site`='1', `descripcion
 INSERT INTO `centralcar`.`fw_config` (`id_config`, `id_site`, `descripcion`, `valor`, `tmp_val`, `data`, `user_alta`, `user_mod`, `fecha_alta`, `fecha_mod`) VALUES ('7', '1', 'websockets_control', '1', '0', NULL, '1', '1', '2016-12-12 20:55:10', '2016-12-12 20:55:15');
 INSERT INTO `centralcar`.`fw_metodos` (`id_metodo`, `controlador`, `metodo`, `nombre`, `descripcion`, `user_alta`, `user_mod`, `fecha_alta`, `fecha_mod`) VALUES ('144', 'Mobile', 'websockets_control', 'Control de Websockets', 'Permite activar las tareas cronometradas para ahorrar el recurso de websockets, afecta todos los trabajos de cronjob', '1', NULL, '2016-12-12 21:10:18', '2016-12-12 21:10:18');
 
+-- eliminar de los moetodos el activar_f5 y activar_f16
+
 set FOREIGN_KEY_CHECKS=1;

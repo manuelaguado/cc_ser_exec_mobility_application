@@ -30,5 +30,5 @@
 */1 * * * * sleep 56s && curl https://centralcar.mx/operacion/cron
 */1 * * * * sleep 58s && curl https://centralcar.mx/operacion/cron
 * 3 * * * curl https://centralcar.mx/operacion/clearGps
-10 * * * * curl https://centralcar.mx/operacion/cron10
+*/10 * * * * curl https://centralcar.mx/operacion/cron10
 
