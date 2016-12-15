@@ -34,78 +34,6 @@ function activar_f13_do(id_operador_unidad){
 	} );
 }
 
-function activar_f15(id_operador_unidad){
-	$(document).ready(function() {
-		$.ajax({
-			url: 'operacion/modal_activar_f15/' + id_operador_unidad,
-			dataType: 'html',
-				success: function(resp_success){			
-					var modal =  resp_success;
-					$(modal).modal().on('shown.bs.modal',function(){
-						//console.log(modal);
-					}).on('hidden.bs.modal',function(){
-						$(this).remove();
-					});
-				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-04');}	
-		});
-	} );
-}
-
-function activar_f15_do(id_operador_unidad){
-	$(document).ready(function() {
-		$.ajax({
-			url: 'operacion/activar_f15/' + id_operador_unidad,
-			dataType: 'json',
-			success: function(resp_success){
-				if (resp_success['resp'] == true) {
-					$('#myModal').modal('hide');
-					setTimeout(function(){ $('#tiempoalabase').DataTable().ajax.reload(); }, 5000);
-				}else{
-					alerta('Alerta!','Error de conectividad de red OPRN-05');
-				}
-			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-06');}	
-		});
-	} );
-}
-
-function activar_f16(id_operador_unidad){
-	$(document).ready(function() {
-		$.ajax({
-			url: 'operacion/modal_activar_f16/' + id_operador_unidad,
-			dataType: 'html',
-				success: function(resp_success){			
-					var modal =  resp_success;
-					$(modal).modal().on('shown.bs.modal',function(){
-						//console.log(modal);
-					}).on('hidden.bs.modal',function(){
-						$(this).remove();
-					});
-				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-07');}	
-		});
-	} );
-}
-
-function activar_f16_do(id_operador_unidad){
-	$(document).ready(function() {
-		$.ajax({
-			url: 'operacion/activar_f16/' + id_operador_unidad,
-			dataType: 'json',
-			success: function(resp_success){
-				if (resp_success['resp'] == true) {
-					$('#myModal').modal('hide');
-					setTimeout(function(){ $('#tiempoalabase').DataTable().ajax.reload(); }, 5000);
-				}else{
-					alerta('Alerta!','Error de conectividad de red OPRN-08');
-				}
-			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-09');}	
-		});
-	} );
-}
-
 function activar_a10(id_operador_unidad,base){
 	$(document).ready(function() {
 		$.ajax({
@@ -1326,7 +1254,7 @@ function notifyRender(data) {
 	$('#notificaciones_body').html('');
 	$('.badge-success').html('');
 	$('#notificaciones_count').html('');
-	if(resp_success[0] != undefined){
+	if(resp_success.length > 0){
 		if(resp_success[0]['total'] > 0){
 			notif.setVolume(100).loop().play();
 			$.each(resp_success, function( key, value ) {

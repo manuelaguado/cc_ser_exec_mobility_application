@@ -629,3 +629,7 @@ table#tb_act_oper tbody > tr > td{
     background-color: #000000;
     border-color: #FFFFFF;
 }
+.icon_ztop{
+    z-index: 1;
+    position: relative;
+}

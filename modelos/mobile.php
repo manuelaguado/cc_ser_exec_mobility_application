@@ -171,10 +171,6 @@ class MobileModel
 						self::setCveStore($clave['id_usuario'],$clave['token'],159,$clave['id_operador_unidad'],false,false,true);
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
-					case 'R9':/*Acuse de F16*/
-						self::setCveStore($clave['id_usuario'],$clave['token'],160,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
-						break;
 					case 'R10':/*Acuse de C1*/
 						self::setCveStore($clave['id_usuario'],$clave['token'],161,$clave['id_operador_unidad'],false,false,true);
 						$output[$num] = self::storeToSync($clave, $num);
@@ -1597,7 +1593,6 @@ class MobileModel
 							break;
 							
 						case 'F15':
-						case 'F16':
 						case 'A19':
 					
 							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);

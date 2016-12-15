@@ -248,11 +248,39 @@ class ClientesModel
 		);
 		$query->execute($data);
 	}
+	function caducar_tarifa($id_tarifa_cliente){
+		$sql = "
+		UPDATE cl_tarifas_clientes SET 
+			fin_vigencia 		= :fin_vigencia,
+			cat_statustarifa	= :cat_statustarifa,
+			user_mod 			= :user_mod
+		WHERE 
+			id_tarifa_cliente = :id_tarifa_cliente 
+		";
+		$query = $this->db->prepare($sql);
+		$data = array(
+			':fin_vigencia'		=> date("Y-m-d H:i:s"),
+			':cat_statustarifa'	=> 169,
+			':id_tarifa_cliente'=> $id_tarifa_cliente,
+			':user_mod'			=> $_SESSION['id_usuario']
+		);
+		$query_resp = $query->execute($data);
+		if($query_resp){
+			$respuesta = array('resp' => true);
+		}else{
+			$respuesta = array('resp' => false);
+		}
+		return $respuesta;
+	}
 	function procesar_tarifa($arreglo){
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
-		self::caducarTarifa($this->id_cliente,$this->cat_tipo_tarifa);
+		
+		if($this->tabular == 0){
+			self::caducarTarifa($this->id_cliente,$this->cat_tipo_tarifa);
+		}
+		
 		$sql = "
 			INSERT INTO cl_tarifas_clientes (
 				id_cliente,
@@ -1565,7 +1593,7 @@ class ClientesModel
 	function queryTarifas($array,$id_cliente){
 		ini_set('memory_limit', '256M');				
 		$table = 'cl_tarifas_clientes AS tc';
-		$primaryKey = 'id_cliente';
+		$primaryKey = 'id_tarifa_cliente';
 		$columns = array(
 			array( 
 				'db' => 'tc.nombre as nombre',
@@ -1641,6 +1669,14 @@ class ClientesModel
 				'typ' => 'int',
 				'bin' => true,
 				'dt' => 8			
+			),
+			array( 
+				'db' => 'tc.id_tarifa_cliente as id_tarifa_cliente',
+				'dbj' => 'tc.id_tarifa_cliente',	
+				'real' => 'tc.id_tarifa_cliente',
+				'alias' => 'id_tarifa_cliente',
+				'typ' => 'int',
+				'dt' => 9		
 			)
 		);
 		$render_table = new acciones_tarifas;
@@ -1681,9 +1717,17 @@ class acciones_tarifas extends SSP{
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
 					
+					$id_tarifa_cliente = $data[$i][ 'id_tarifa_cliente' ];
+					
 					$bin = ($data[$i][ $column['alias'] ]);	
-					$salida = ($bin == 1)?'SI':'NO';
+					
+					$delete='<a href="javascript:;" data-rel="tooltip" data-original-title="Caducar tarifa" class="red tooltip-error" onclick="caducar_tarifa('.$id_tarifa_cliente.');"><i class="ace-icon fa fa-trash bigger-130"></i></a>';
+					
+					$vigente='<a href="javascript:;" data-rel="tooltip" data-original-title="Tarifa vigente" class="green tooltip-success"><i class="ace-icon fa fa-check bigger-130"></i></a>';
+					
+					$salida = ($bin == 1)?$delete:$vigente;
 					$row[ $column['dt'] ] = $salida;
+					
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
 				}

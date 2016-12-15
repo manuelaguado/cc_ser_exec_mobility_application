@@ -434,3 +434,20 @@ function close_tarifa_form(){
 	$("#add_field").css({ display: "none" });
 	$("#footer_main").css({ display: "" });
 }
+function caducar_tarifa(id_tarifa_cliente){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'clientes/caducar_tarifa/' + id_tarifa_cliente,
+			type: 'POST',
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#tarifas').DataTable().ajax.reload();				
+				}else{
+					 alerta('Alerta!','Error de conectividad de red CLI-23');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-24');}	
+		});
+	} );
+}

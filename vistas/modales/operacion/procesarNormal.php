@@ -12,7 +12,7 @@
 					La siguiente acción procesará normalmente el apartado N°: <?=$id_viaje?>
 					
 					<br><br>¿Está seguro de continuar con esta acción?
-				
+					
 					<input type="hidden" id="id_viaje" name="id_viaje" value="<?=$id_viaje?>" />
 					<input type="hidden" id="origen" name="origen" value="<?=$origen?>" />
 				</form>

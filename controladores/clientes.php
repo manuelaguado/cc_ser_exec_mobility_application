@@ -35,6 +35,12 @@ class Clientes extends Controlador
 		$result = $model->procesar_tarifa($_POST);
 		print json_encode($result);
 	}
+	public function caducar_tarifa($id_tarifa_cliente){
+		$this->se_requiere_logueo(true,'Clientes|tarifas');
+		$model = $this->loadModel('Clientes');
+		$result = $model->caducar_tarifa($id_tarifa_cliente);
+		print json_encode($result);
+	}
 	public function predeterminarUbicacion($id_datos_fiscales,$id_cliente){
 		$this->se_requiere_logueo(true,'Clientes|predeterminarUbicacion');
 		$model = $this->loadModel('Clientes');

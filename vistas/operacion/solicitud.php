@@ -130,7 +130,7 @@ span.input-icon > textarea {
 							<hr />
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-eye bigger-230 orange"></i>
+									<i class="ace-icon fa fa-eye bigger-230 orange icon_ztop"></i>
 								</label>
 								<div class="col-sm-11">
 									<span class="input-icon">
@@ -182,7 +182,7 @@ span.input-icon > textarea {
 							
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-bookmark bigger-230 orange"></i>
+									<i class="ace-icon fa fa-bookmark bigger-230 orange icon_ztop"></i>
 								</label>
 
 								<div class="col-sm-11">
@@ -195,7 +195,7 @@ span.input-icon > textarea {
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
 									<a onclick="formAsentamiento('asentamiento_origen','id_asentamiento_origen'); cleanSavedOrigen();" href="javascript:void(0);">
-										<i class="ace-icon fa fa-map-marker bigger-230 orange"></i>
+										<i class="ace-icon fa fa-map-marker bigger-230 orange icon_ztop"></i>
 									</a>
 								</label>						
 								<div class="col-sm-11">
@@ -210,7 +210,7 @@ span.input-icon > textarea {
 
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-question-circle bigger-230 orange"></i>
+									<i class="ace-icon fa fa-question-circle bigger-230 orange icon_ztop"></i>
 								</label>						
 								<div class="col-sm-11">
 									<span class="input-icon">
@@ -222,7 +222,7 @@ span.input-icon > textarea {
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
 									<a onclick="iframeSetReference(); cleanSavedOrigen();" href="javascript:void(0);">
-										<i class="ace-icon fa fa-globe bigger-230 orange"></i>
+										<i class="ace-icon fa fa-globe bigger-230 orange icon_ztop"></i>
 									</a>
 								</label>
 								<div class="col-sm-11">
@@ -234,7 +234,7 @@ span.input-icon > textarea {
 							</div>
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-thumb-tack bigger-230 orange"></i>
+									<i class="ace-icon fa fa-thumb-tack bigger-230 orange icon_ztop"></i>
 								</label>						
 								<div class="col-sm-11">
 									<span class="input-icon">
@@ -261,7 +261,7 @@ span.input-icon > textarea {
 							
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-bookmark bigger-230 green"></i>
+									<i class="ace-icon fa fa-bookmark bigger-230 green icon_ztop"></i>
 								</label>
 
 								<div class="col-sm-11">
@@ -274,7 +274,7 @@ span.input-icon > textarea {
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
 									<a onclick="formAsentamiento('asentamiento_destino','id_asentamiento_destino'); cleanSavedDestino();" href="#" class="blue">
-										<i class="ace-icon fa fa-map-marker bigger-230 green"></i>
+										<i class="ace-icon fa fa-map-marker bigger-230 green icon_ztop"></i>
 									</a>
 								</label>
 
@@ -290,7 +290,7 @@ span.input-icon > textarea {
 
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-question-circle bigger-230 green"></i>
+									<i class="ace-icon fa fa-question-circle bigger-230 green icon_ztop"></i>
 								</label>							
 								<div class="col-sm-11">
 									<span class="input-icon">
@@ -303,7 +303,7 @@ span.input-icon > textarea {
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
 									<a onclick="iframeSetReferenceD(); cleanSavedDestino();" href="javascript:void(0);">
-										<i class="ace-icon fa fa-globe bigger-230 green"></i>
+										<i class="ace-icon fa fa-globe bigger-230 green icon_ztop"></i>
 									</a>
 								</label>						
 								<div class="col-sm-11">
@@ -315,7 +315,7 @@ span.input-icon > textarea {
 							</div>
 							<div class="form-group">
 								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-thumb-tack bigger-230 green"></i>
+									<i class="ace-icon fa fa-thumb-tack bigger-230 green icon_ztop"></i>
 								</label>						
 								<div class="col-sm-11">
 									<span class="input-icon">
@@ -383,7 +383,7 @@ span.input-icon > textarea {
 										<thead>
 											<tr>
 												<th>Turno</th>
-												<th>NUM EQ</th>
+												<th>NUM&nbsp;EQ</th>
 												<th>Nombre</th>
 												<th>Marca</th>
 												<th>Modelo</th>
@@ -400,7 +400,7 @@ span.input-icon > textarea {
 										<thead>
 											<tr>
 												<th>Turno</th>
-												<th>NUM EQ</th>
+												<th>NUM&nbsp;EQ</th>
 												<th>Nombre</th>
 												<th>Marca</th>
 												<th>Modelo</th>
@@ -469,10 +469,8 @@ span.input-icon > textarea {
 	</div>
 </div>
 		<script type="text/javascript">
-		
 			var globalTypeUser = 'init';
 			var pasajeros = [];
-			
 			jQuery(function($) {
 				$('#user').autocomplete({
 					serviceUrl: 'operacion/busqueda_usuario',
@@ -594,6 +592,7 @@ span.input-icon > textarea {
 				$('#cordon_kpmg').dataTable( {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
+					  $('.dataTables_empty').attr('colspan',8);
 					},
 					"ordering": false,
 					"processing": true,
@@ -616,6 +615,7 @@ span.input-icon > textarea {
 				$('#cordon_ejnal').dataTable( {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
+					  $('.dataTables_empty').attr('colspan',8);
 					},
 					"ordering": false,
 					"processing": true,
@@ -642,6 +642,7 @@ span.input-icon > textarea {
 				$('#tabla_pendientes').dataTable( {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
+					  $('.dataTables_empty').attr('colspan',8);
 					},
 					"ordering": false,
 					"processing": true,
@@ -662,6 +663,7 @@ span.input-icon > textarea {
 				$('#tabla_proceso').dataTable( {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
+					  $('.dataTables_empty').attr('colspan',8);
 					},
 					"ordering": false,
 					"processing": true,
@@ -683,6 +685,7 @@ span.input-icon > textarea {
 				$('#tabla_asignados').dataTable( {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
+					  $('.dataTables_empty').attr('colspan',8);
 					},
 					"ordering": false,
 					"processing": true,
@@ -701,7 +704,6 @@ span.input-icon > textarea {
 						}
 					]
 				} );
-	
 			});
 			
 			<?php

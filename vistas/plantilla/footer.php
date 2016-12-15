@@ -181,8 +181,8 @@ if(SOCKET_PROVIDER == 'ABLY'){
 	  console.log('✓ Servicio de notificaciones para apartados');
 	})
 
-	var updChannel = conn.channels.get('notificarApartados');
-	updChannel.subscribe(function(resp_success){
+	var ntfChannel = conn.channels.get('notificarApartados');
+	ntfChannel.subscribe(function(resp_success){
 		$('#cordon').DataTable().ajax.reload();
 	});
 </script>
@@ -195,12 +195,12 @@ if(SOCKET_PROVIDER == 'ABLY'){
 		encrypted: true
 	});
 	
-	var updChannel = pusher.subscribe('notificarApartados');
+	var ntfChannel = pusher.subscribe('notificarApartados');
 	
 	pusher.connection.bind('connected', function() {
 		console.log('✓ Servicio de notificaciones para apartados');
 	})
-	updChannel.bind('evento', function(data) {
+	ntfChannel.bind('evento', function(data) {
 		var convert_json = JSON.stringify(data.message);
 		notifyRender(convert_json);
 	});
@@ -210,13 +210,13 @@ if(SOCKET_PROVIDER == 'ABLY'){
 ?>
 <script src="https://cdn.pubnub.com/pubnub-3.15.2.min.js"></script>
 <script>	
-	var WsPubNub = PUBNUB.init({
+	var ntfChannel = PUBNUB.init({
 		publish_key: '<?=PUBNUB_PUBLISH?>',
 		subscribe_key: '<?=PUBNUB_SUSCRIBE?>',
 		ssl: true
 	});
 	
-	WsPubNub.subscribe({
+	ntfChannel.subscribe({
 		channel: 'notificarApartados',
 		message: function(m){
 			$('#cordon').DataTable().ajax.reload();

@@ -362,7 +362,16 @@ class Operacion extends Controlador
 	
 	public function apartado2pendientes($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		require URL_VISTA.'modales/operacion/apartado2pendientes.php';
+		$model = $this->loadModel('Operacion');
+		$vigente = $model->viajeVigente($id_viaje);
+		$alAire = true;
+		$formado = false;
+		
+		if($vigente){
+			require URL_VISTA.'modales/operacion/apartado2pendientes.php';
+		}else{
+			require URL_VISTA.'modales/operacion/procesarException.php';
+		}
 	}
 	public function apartado2pendientesDo(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -375,7 +384,16 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');
 		$operadores = $model->getTBUnits();
-		require URL_VISTA.'modales/operacion/apartadoAlAire.php';
+		
+		$vigente = $model->viajeVigente($id_viaje);
+		$alAire = true;
+		$formado = false;
+		
+		if($vigente){
+			require URL_VISTA.'modales/operacion/apartadoAlAire.php';
+		}else{
+			require URL_VISTA.'modales/operacion/procesarException.php';
+		}
 	}	
 	public function asignarApartadoAlAire($id_operador_unidad, $id_operador, $id_viaje){
 		
@@ -393,11 +411,23 @@ class Operacion extends Controlador
 		
 		print json_encode(array('resp' => true ));
 	}
-	
-	
 	public function procesarNormal($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		require URL_VISTA.'modales/operacion/procesarNormal.php';
+		
+		$operacion = $this->loadModel('Operacion');
+		$bases = $this->loadModel('Bases');
+		
+		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		$alAire = $operacion->alAire($id_operador_unidad);
+		$formado = $operacion->formadoAnyBase($bases, $id_operador_unidad);
+		$vigente = $operacion->viajeVigente($id_viaje);
+		
+		
+		if(($alAire)&&(!$formado)&&($vigente)){
+			require URL_VISTA.'modales/operacion/procesarNormal.php';
+		}else{
+			require URL_VISTA.'modales/operacion/procesarException.php';
+		}
 	}
 	public function procesarNormalDo(){
 		$operacion = $this->loadModel('Operacion');
@@ -728,32 +758,6 @@ class Operacion extends Controlador
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
 		$model->setCveStore($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
-		$model->broadcast($id_operador_unidad);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}
-	
-	public function modal_activar_f15($id_operador_unidad){
-		$this->se_requiere_logueo(true,'Operacion|activar_f15');
-		require URL_VISTA.'modales/operacion/activar_f15.php';
-	}
-	public function activar_f15($id_operador_unidad){
-		$this->se_requiere_logueo(true,'Operacion|activar_f15');
-		$model = $this->loadModel('Mobile');
-		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,120,$id_operador_unidad);
-		$model->broadcast($id_operador_unidad);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}
-	
-	public function modal_activar_f16($id_operador_unidad){
-		$this->se_requiere_logueo(true,'Operacion|activar_f16');
-		require URL_VISTA.'modales/operacion/activar_f16.php';
-	}
-	public function activar_f16($id_operador_unidad){
-		$this->se_requiere_logueo(true,'Operacion|activar_f16');
-		$model = $this->loadModel('Mobile');
-		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,121,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}

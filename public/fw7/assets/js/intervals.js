@@ -399,23 +399,6 @@ function ride_ok(data) {
 				updatePageButtons('exit_false','exit_true');
 				//console.log('RIDE F20 OK');
 			break;
-		///////////////////////////////////////////////////////////////////////////////////////////////////// modificar modo de viaje
-		case 'F16':
-			if (resp_success['new'] == true){
-				$('#data_cordon').html('NO HAY DATOS DE CORDON');
-				storeTravel(resp_success);
-				$("#mod_viaje_des").hide();
-				$("#mod_viaje_act").show();
-				updatePageButtons('mod_viaje_des','mod_viaje_act');
-				myApp.alert('Se autorizó la modificación de su viaje', 'Viaje modificado');
-			}else{
-				$("#mod_viaje_act").hide();
-				$("#mod_viaje_des").show();
-				updatePageButtons('mod_viaje_act','mod_viaje_des');
-			}
-			storeClave('R9','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE F16',function(){});
-			//console.log('RIDE F16 OK');
-			break;
 		////////////////////////////////////////////////////////////////////////////////////////////////////////// inicio de labores
 		case 'C1':
 			storeTravel(resp_success);

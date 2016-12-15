@@ -41,27 +41,13 @@
 							<span class="label_code">Fin de labores</span>
 						</a>
 					</div>
-					<div class="col-50" id="mod_viaje_act" style="display: none;">
-						<a href="javascript:void(0);" class="f16 menu-link">
-							<span>F16</span>
-							<span class="label_code">Modificar modo viaje</span>
-						</a>
-					</div>
-					<div class="col-50" id="mod_viaje_des">
-						<a href="javascript:void(0);" class="code_disabled">
-							<span>F16</span>
-							<span class="label_code">Modificar modo viaje</span>
-						</a>
-					</div>
-				</div>
-				<div class="row text-center">
-					<div class="col-100" id="tomar_apartado_act" style="display: none;">
+					<div class="col-50" id="tomar_apartado_act" style="display: none;">
 						<a href="javascript:void(0);" class="a19 menu-link">
 							<span>A19</span>
 							<span class="label_code">Tomar apartado</span>
 						</a>
 					</div>
-					<div class="col-100" id="tomar_apartado_des">
+					<div class="col-50" id="tomar_apartado_des">
 						<a class="code_disabled" href="javascript:void(0);">
 							<span>A19</span>
 							<span class="label_code">Tomar apartado</span>

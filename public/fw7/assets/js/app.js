@@ -232,11 +232,6 @@ $$("body").on("click", ".c9", function() {
 });
 
 /*********************************************************************************************************************************************REGRESO**/
-$$("body").on("click", ".f16", function() {
-	storeClave('F16','C1','F16','NULL','NULL','NULL',function(){
-		loadTemplate('tipo_viaje_sitio');
-	});
-});
 $$("body").on("click", ".f15", function() {
 	storeClave('F15','C1','F15','NULL','NULL','NULL',function(){
 		loadTemplate('tipo_viaje_sitio');

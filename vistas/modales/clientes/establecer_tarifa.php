@@ -25,7 +25,7 @@
 										<th>Finvigencia</th>
 										<th>Estado</th>
 										<th>Tipo</th>
-										<th>Tabulado</th>
+										<th>&nbsp;</th>
 									</tr>
 								</thead>									
 							</table>					

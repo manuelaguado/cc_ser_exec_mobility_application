@@ -732,6 +732,16 @@ class OperacionModel{
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
+	function alAire($id_operador_unidad){
+		$operadores = self::getTBUnits();
+		$alAire = 0;
+		if(count($operadores)>0){
+			foreach ($operadores as $operador) {
+				if($id_operador_unidad == $operador['id_operador_unidad']){$alAire++;}
+			}
+		}
+		if($alAire == 0){return false;}else{return true;}
+	}
 	function setear_status_viaje($post, MobileModel $mobile=NULL, OperadoresModel $operadores = NULL, LoginModel $login = NULL){
 		
 		$stat_process = true;
@@ -1402,15 +1412,23 @@ class OperacionModel{
 		}
 		return $return;
 	}
-	function formadoenBase($id_operador,$base){
+	function formadoAnyBase(BasesModel $bases, $id_operador_unidad){
+		$return = false;
+		foreach($bases->listarBases() as $base){
+			$return .= self::formadoenBase($id_operador_unidad,$base->id_base);
+		}
+		return $return;
+	}
+	function formadoenBase($id_operador_unidad,$base){
 		$qry = "
 			SELECT
-				crc.id_cordon
+				cr_bases.descripcion
 			FROM
 				cr_cordon AS crc
 			INNER JOIN cr_operador_unidad AS cro ON crc.id_operador_unidad = cro.id_operador_unidad
+			INNER JOIN cr_bases ON crc.id_base = cr_bases.id_base
 			WHERE
-				cro.id_operador = $id_operador
+				cro.id_operador_unidad = $id_operador_unidad
 			AND (
 				crc.cat_statuscordon = 113
 				OR crc.cat_statuscordon = 115
@@ -1419,10 +1437,12 @@ class OperacionModel{
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
+		$data = $query->fetchAll();
+		$return = "";
 		if($query->rowCount()>=1){
-			$return = true;
-		}else{
-			$return = false;
+			foreach ($data as $row) {
+				$return .= $row->descripcion;
+			}
 		}
 		return $return;
 	}
@@ -3051,7 +3071,7 @@ class OperacionModel{
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
 		$where = '
-			viv.cat_status_viaje = 171
+			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
 			AND 
@@ -3067,6 +3087,27 @@ class OperacionModel{
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
+	}
+	function viajeVigente($id_viaje){
+		$sql = "
+			SELECT
+				vcd.fecha_requerimiento AS time
+			FROM
+				vi_viaje AS viv
+			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
+			WHERE
+				viv.id_viaje = $id_viaje
+			AND viv.cat_status_viaje = 195
+			AND viv.cat_tipotemporicidad = 162
+			AND NOW() < vcd.fecha_requerimiento		
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		if($query->rowCount()>=1){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	function programados_gris($array){
 		ini_set('memory_limit', '256M');				
@@ -3746,12 +3787,7 @@ class acciones_tiempo_base extends SSP{
 					$id_operador = $data[$i][ 'id_operador' ];
 					
 					$salida = '';
-						if(Controlador::tiene_permiso('Operacion|activar_f15')){
-							$salida .= '<a onclick="activar_f15('.$id_operador_unidad.')" data-rel="tooltip" class="btn btn-app btn-yellow btn-xs" data-original-title="Activar servicio al aire">F15</a>&nbsp;&nbsp;';
-						}
-						if(Controlador::tiene_permiso('Operacion|activar_f16')){
-							$salida .= '<a onclick="activar_f16('.$id_operador_unidad.')" data-rel="tooltip" class="btn btn-app btn-yellow btn-xs" data-original-title="Activar modificar modo de viaje">F16</a>&nbsp;&nbsp;';
-						}
+
 						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
 							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
 							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>

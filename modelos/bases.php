@@ -1,5 +1,5 @@
 <?php
-require( '../vendor/mysql_datatable.php' );
+require_once( '../vendor/mysql_datatable.php' );
 class BasesModel
 {
 	function getBaseData($id_base){
