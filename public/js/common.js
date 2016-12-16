@@ -63,6 +63,8 @@ function valida_logeo(e,decReq,boton){
 						$('#usuario').value="";
 						$('#password').value="";
 						alerta('Alerta!','Su cuenta está inhabilitada por exceder el número de intentos de acceso permitidos, notifíquelo a su administrador');  
+					}else if(respuesta[0].resp=="violacion_c2"){
+						alerta('Alerta!','<ul><li>Ingrese desde la aplicion del mobil.</li><li>El login de su cuenta esta inhabilitado por cerrar la aplicacion sin darse por C2, <strong>dirijase a las oficinas centrales</strong></li></ul>');  
 					}
                }, 
                error: function(){ alerta('Alerta!','Error de conectividad de red CMMN-03');}

@@ -38,6 +38,8 @@ function valida_logeo(e,decReq,boton){
 						showAlert('Usuario o password incorrecto');          	 	     
 					}else if(respuesta[0].resp=="inhabilitado"){
 						showAlert('Su cuenta está inhabilitada por exceder el número de intentos de acceso permitidos, notifíquelo a su administrador');  
+					}else if(respuesta[0].resp=="violacion_c2"){
+						showAlert('El login de su cuenta esta inhabilitado por cerrar la aplicacion sin darse por C2, <strong>dirijase a las oficinas centrales</strong>');  
 					}
 				}, 
 				error: function(){ showAlert('Error de conectividad de red CMMN-02');}
