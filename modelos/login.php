@@ -70,14 +70,14 @@ class LoginModel
 	public function session_duplicada($id_usuario, MobileModel $mobile){
 		$sql = "
 			SELECT
-				fw_login.id_login,
-				fw_login.session_id,
-				fw_login.fecha_login
+				fwl.id_login,
+				fwl.session_id,
+				fwl.fecha_login
 			FROM
-				fw_login
+				fw_login as fwl
 			WHERE
-				fw_login.id_usuario = ".$id_usuario." AND
-				fw_login.`open` = 1
+				fwl.id_usuario = ".$id_usuario." AND
+				fwl.`open` = 1
 		";
 				
 		$query = $this->db->prepare($sql);
@@ -90,7 +90,7 @@ class LoginModel
 					$token = 'DUP:'.Controlador::token(62);
 					$mobile->setCveStore($id_usuario,$token,155,$sess_oper['id_operador_unidad']);
 				}
-				self::closeSession($row->id_login,$id_usuario,$row->fecha_login,$row->session_id);
+				self::signout($id_usuario);
 			}
 		}
 	}	
@@ -301,16 +301,16 @@ class LoginModel
 	public function selectLoggerLogin($id_usuario){
 		$sql = "
 			SELECT
-				fw_login_log.id_login_log,
-				fw_login_log.ip,
-				fw_login_log.fecha,
-				fw_login_log.intentos
+				fwlg.id_login_log,
+				fwlg.ip,
+				fwlg.fecha,
+				fwlg.intentos
 			FROM
-				fw_login_log
+				fw_login_log as fwlg
 			WHERE
-				fw_login_log.id_usuario = '".$id_usuario."'
+				fwlg.id_usuario = '".$id_usuario."'
 			ORDER BY
-				fw_login_log.id_login_log DESC
+				fwlg.id_login_log DESC
 			LIMIT 0,
 			 1
 		";
@@ -378,34 +378,6 @@ class LoginModel
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
-	public function closeSession($id_login, $id_usuario, $fecha_login = NULL, $session_id = NULL){
-		
-		$fecha_login =($fecha_login === NULL)?self::initLogin($id_login):$fecha_login;
-		$fin = date("Y-m-d H:i:s");
-		$tiempo = Controller::diferenciaFechasD($fecha_login , $fin);
-		
-		$sql = "
-			UPDATE `fw_login`
-			SET
-			 `open` = '0',
-			 `fecha_logout` = '".$fin."',
-			 `tiempo_session` = '".$tiempo."',
-			 `user_mod` = '".$id_usuario."',
-			 `fecha_mod` = '".$fin."'
-			WHERE
-				(`id_login` = '".$id_login."');
-		";
-		
-		$session_id =($session_id === NULL)?self::getSession_id($id_login):$session_id;
-		
-		if(($session_id != session_id())&&(file_exists(session_save_path().'/sess_'.$session_id))){
-			unlink(session_save_path().'/sess_'.$session_id);
-		}
-		
-		$query = $this->db->prepare($sql);
-		$query->execute();
-	}
-	
 	public function getId_login($id_usuario = NULL){
 		if(!isset($_SESSION['id_usuario'])){
 			//si ya no existe la sesion no tiene caso continuar
@@ -416,12 +388,12 @@ class LoginModel
 		$id_usuario =($id_usuario === NULL)?$_SESSION['id_usuario']:$id_usuario;
 		$sql = "
 			SELECT
-				fw_login.id_login
+				fwl.id_login
 			FROM
-				fw_login
+				fw_login as fwl
 			WHERE
-				fw_login.id_usuario = ".$id_usuario." AND 
-				fw_login.open = 1
+				fwl.id_usuario = ".$id_usuario." AND 
+				fwl.open = 1
 		";
 				
 		$query = $this->db->prepare($sql);
@@ -437,11 +409,11 @@ class LoginModel
 		if($id_login){
 			$sql = "
 				SELECT
-					fw_login.session_id
+					fwl.session_id
 				FROM
-					fw_login
+					fw_login as fwl
 				WHERE
-					fw_login.id_login = ".$id_login."
+					fwl.id_login = ".$id_login."
 			";
 					
 			$query = $this->db->prepare($sql);
@@ -461,11 +433,11 @@ class LoginModel
 		if($id_login){
 			$sql = "
 				SELECT
-					fw_login.fecha_login
+					fwl.fecha_login
 				FROM
-					fw_login
+					fw_login as fwl
 				WHERE
-					fw_login.id_login = ".$id_login."
+					fwl.id_login = ".$id_login."
 			";
 					
 			$query = $this->db->prepare($sql);
@@ -617,7 +589,7 @@ class LoginModel
 			/*tiempo en segundos*/
 			if(isset($_SESSION['hora_acceso']) && ($resta>3600)){
 				$id_login = self::getId_login();
-				self::closeSession($id_login, $_SESSION['id_usuario']);
+				self::signout($_SESSION['id_usuario']);
 				session_destroy();
 				session_unset();
 				$array[]=array('resp'=>"timeout",'tiempo'=>$resta);
@@ -630,7 +602,7 @@ class LoginModel
 	}
 	public function salir(){
 		$id_login = self::getId_login();
-		self::closeSession($id_login, $_SESSION['id_usuario']);
+		self::signout($_SESSION['id_usuario']);
 		session_unset();
 		unset($_SESSION);
 		if(session_destroy()){

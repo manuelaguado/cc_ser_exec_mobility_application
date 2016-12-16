@@ -69,6 +69,7 @@ class OperacionModel{
 				id_viaje,
 				cat_concepto,
 				costo,
+				fecha,
 				user_alta,
 				user_mod,
 				fecha_alta
@@ -76,6 +77,7 @@ class OperacionModel{
 				:id_viaje,
 				:cat_concepto,
 				:costo,
+				:fecha,
 				:user_alta,
 				:user_mod,
 				:fecha_alta
@@ -86,6 +88,7 @@ class OperacionModel{
 				':id_viaje' =>  $this->id_viaje ,
 				':cat_concepto' =>  $this->cat_concepto ,
 				':costo' =>  substr($this->costo, 2) ,
+				':fecha' =>  date("Y-m-d H:i:s") ,
 				':user_alta' =>  $_SESSION['id_usuario'] ,
 				':user_mod' => $_SESSION['id_usuario'] ,
 				':fecha_alta' => date("Y-m-d H:i:s")

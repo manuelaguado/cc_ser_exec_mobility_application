@@ -205,12 +205,13 @@ class Desarrollador extends Controlador
 		}		
 	}	
 	public function difechas(){
-		$init = '2009-03-17 22:34:09';
-		$end  = '2014-03-18 02:36:49';
+		$init = '2016-12-16 09:27:02';
+		$end  = '2016-12-22 10:27:06';
 		$datetime1 = new DateTime($init);
 		$datetime2 = new DateTime($end);
 		$dteDiff = $datetime1->diff($datetime2);
-		echo $dteDiff->format("%Y-%M-%D %H:%I:%S");
+		echo $dteDiff->format("0000-%M-%D %H:%I:%S");
+		
 	}
 	public function difEnSegundos(){
 		$fechaInicial = '2013-04-11 00:00:00';
