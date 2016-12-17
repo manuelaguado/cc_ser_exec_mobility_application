@@ -1229,21 +1229,15 @@ class MobileModel
 	function storeGps($claves){
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
-			$output[$num] = self::storeToGps($clave, $num);
-		}
-		/*$emitir =  json_encode($output);
-		self::transmitir($emitir,'gps'.$clave['id_operador']);*/	
+			self::storeToGps($clave, $num);
+		}	
 	}	
 	function storeToGps($clave, $num){
-		date_default_timezone_set('America/Mexico_City');
-		$time = mktime(date("H"),  date("i"),  date("s"), date("m")  , date("d"), date("Y"));
-		$time = date("Y-m-d H:i:s", $time );	
 		$sql = "
 			INSERT INTO gps (
 				latitud,
 				longitud,
 				tiempo,
-				timestamp,
 				bateria,
 				id_android,
 				serie,
@@ -1257,7 +1251,6 @@ class MobileModel
 				:latitud,
 				:longitud,
 				:tiempo,
-				:timestamp,
 				:bateria,
 				:id_android,
 				:serie,
@@ -1273,7 +1266,6 @@ class MobileModel
 				':latitud' => 	$clave['latitud'],
 				':longitud' => 	$clave['longitud'],
 				':tiempo' => 	$clave['tiempo'],
-				':timestamp' => $time,
 				':bateria' => 	'CCD',
 				':id_android' =>'CCD',
 				':serie' => 	$clave['serie'],
@@ -1283,8 +1275,6 @@ class MobileModel
 				':id_operador' =>$clave['id_operador']
 			)
 		);
-		$output = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token']);
-		return $output;
 	}
 	function ultimaPosition($serie){
 		$sql="

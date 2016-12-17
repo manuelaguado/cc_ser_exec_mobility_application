@@ -37,7 +37,6 @@ class LoginModel
 		return $array;
 	}
 	public function signout($id_usuario){
-		
 		$id_login = self::getId_login($id_usuario);
 		if($id_login){
 			$fecha_login = self::initLogin($id_login);
@@ -379,8 +378,9 @@ class LoginModel
 		$query->execute();
 	}
 	public function getId_login($id_usuario = NULL){
-		if(!isset($_SESSION['id_usuario'])){
+		if((!isset($_SESSION['id_usuario']))&&($id_usuario == NULL)){
 			//si ya no existe la sesion no tiene caso continuar
+			//solo en caso de que no llegue del login
 			$array[]=array('resp'=>"violacion_c2",'stat'=>"Sesion inexistente, se envian variables de curso para login");
 			print json_encode($array);
 			exit();
