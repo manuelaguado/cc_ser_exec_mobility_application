@@ -28,6 +28,28 @@ poner al final:
 
         -sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 
+###Configuracion de la zona horaria
+
+		metodo 1
+		agregar al final de my.cnf
+			
+			default-time-zone='+00:00'
+		
+		metodo 2
+		reconfigurar el sistema
+		
+			dpkg-reconfigure tzdata
+			
+		en cualquiera de los dos casos reiniciar mysql
+		
+		verificar que mysql tome las variables del sistema:
+		
+			SELECT @@global.time_zone;
+			
+		Si no es asi setearlas:
+		
+			SET GLOBAL time_zone = 'SYSTEM';
+		
 instalar composer:
 
         -curl -sS https://getcomposer.org/installer | php
