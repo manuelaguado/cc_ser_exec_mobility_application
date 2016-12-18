@@ -44,7 +44,7 @@ class MobileModel
 							'clave'					=> $clave['clave'],
 							'id_episodio' 			=> $clave['id_episodio'],
 							'id'					=> $clave['id'],
-							'viaje' 				=> array('Numero' => 'IR002'),
+							'viaje' 				=> array('id_viaje' => 'IR002'),
 							'resp' 					=> true,
 							'token'					=> $clave['token']
 						);
@@ -753,13 +753,13 @@ class MobileModel
 				)
 			);
 			$recursive = self::turno($id_operador_unidad,$id_base);
-			if($recursive == 'No formado'){
+			/*if($recursive == 'No formado'){
 				self::formarse($clave);
-			}else{
+			}else{*/
 				self::setCveStore($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
 				self::solicitarAcuseCordon();				
 				return $recursive;
-			}
+			
 		}else{
 			return 'Ya estaba formado';
 		}
@@ -1307,7 +1307,14 @@ class MobileModel
 		$res = strtotime($ahora) - strtotime($init);
 		return round($res/60);
 	}
-	public function getDataViaje($id_operador_unidad){
+	public function getDataViaje($id_operador_unidad, $tipo){
+		if($tipo == 'base'){
+			$inner = 'INNER JOIN cr_cordon AS crc ON viv.id_cordon = crc.id_cordon';
+			$order = 'crc.id_cordon DESC';
+		}elseif($tipo == 'air'){
+			$inner = '';
+			$order = 'viv.id_viaje DESC';
+		}
 		$sql = "
 			SELECT
 				viv.id_viaje,
@@ -1333,10 +1340,38 @@ class MobileModel
 				dir2.geocoordenadas AS coodd,
 				cm1.etiqueta AS status_viaje,
 				cm2.etiqueta AS tipo_servicio,
-				cm3.etiqueta AS forma_pago
+				cm3.etiqueta AS forma_pago,
+
+				concat(
+					cp1.codigo_postal,
+					' ',
+					ta1.d_tipo_asenta,
+					' ',
+					as1.asentamiento,
+					' ',
+					mun1.municipio,
+					' ',
+					edo1.estado,
+					' ',
+					cid1.ciudad
+				) AS origen,
+				concat(
+					cp2.codigo_postal,
+					' ',
+					ta2.d_tipo_asenta,
+					' ',
+					as2.asentamiento,
+					' ',
+					mun2.municipio,
+					' ',
+					edo2.estado,
+					' ',
+					cid2.ciudad
+				) AS destino					
+				
 			FROM
 				vi_viaje AS viv
-			INNER JOIN cr_cordon AS crc ON viv.id_cordon = crc.id_cordon
+			$inner
 			INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
 			INNER JOIN vi_viaje_clientes AS vic ON vic.id_viaje = viv.id_viaje
 			INNER JOIN cl_clientes AS clc ON vic.id_cliente = clc.id_cliente
@@ -1351,12 +1386,26 @@ class MobileModel
 			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
 			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
 			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
+			
+			INNER JOIN it_asentamientos AS as1 ON dir1.id_asentamiento = as1.id_asentamiento
+			INNER JOIN it_asentamientos AS as2 ON dir2.id_asentamiento = as2.id_asentamiento
+			INNER JOIN it_codigos_postales AS cp1 ON as1.id_codigo_postal = cp1.id_codigo_postal
+			INNER JOIN it_codigos_postales AS cp2 ON as2.id_codigo_postal = cp2.id_codigo_postal
+			INNER JOIN it_tipo_asentamientos AS ta1 ON as1.id_tipo_asenta = ta1.id_tipo_asenta
+			INNER JOIN it_tipo_asentamientos AS ta2 ON as2.id_tipo_asenta = ta2.id_tipo_asenta
+			INNER JOIN it_municipios AS mun2 ON as2.id_municipio = mun2.id_municipio
+			INNER JOIN it_municipios AS mun1 ON as1.id_municipio = mun1.id_municipio
+			INNER JOIN it_estados AS edo1 ON as1.id_estado = edo1.id_estado
+			INNER JOIN it_estados AS edo2 ON as2.id_estado = edo2.id_estado
+			INNER JOIN it_ciudades as cid1 ON as1.id_ciudad = cid1.id_ciudad
+			INNER JOIN it_ciudades as cid2 ON as2.id_ciudad = cid2.id_ciudad			
+			
 			WHERE
 				crc.id_operador_unidad = $id_operador_unidad
 				AND
 				viv.cat_status_viaje = 171
 			ORDER BY
-				crc.id_cordon DESC
+				$order
 			LIMIT 0,
 			 1
 		";
@@ -1366,120 +1415,50 @@ class MobileModel
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($data as $row) {
-				$array['Numero'] 					= $row->id_viaje;
-				$array['Forma de pago'] 			= $row->forma_pago;
-				$array['Status del viaje'] 			= $row->status_viaje;
-				$array['Tipo de servicio'] 			= $row->tipo_servicio;
-				$array['Solicitud'] 				= $row->fecha_solicitud;
-				$array['Asignación'] 				= $row->fecha_asignacion;
-				$array['Observaciones'] 			= $row->observaciones;
-				$array['Cliente'] 					= $row->nombre;
-				$array['Geolocalización origen'] 	= $row->invo;
-				$array['Referencia origen'] 		= $row->refo;
-				$array['Celular origen'] 			= $row->celo;
-				$array['Teléfono origen'] 			= $row->telo;
-				$array['Interior origen'] 			= $row->int_o;
-				$array['Exterior origen'] 			= $row->exto;
-				$array['Calle origen'] 				= $row->calleo;
-				$array['Coordenadas origen']		= $row->coodo;
-				$array['Calle Destino'] 			= $row->called;
-				$array['Exterior destino'] 			= $row->extd;
-				$array['Interior destino'] 			= $row->int_d;
-				$array['Teléfono destino'] 			= $row->teld;
-				$array['Celular destino'] 			= $row->celd;
-				$array['Referencia destino']		= $row->refd;
-				$array['Geolocalización destino'] 	=  $row->invd;
-				$array['Coordenadas destino'] 		= $row->coodd;
+				$array['id_viaje'] 					= $row->id_viaje;
+				$array['status_viaje'] 				= $row->status_viaje;
+				$array['tipo_servicio'] 			= $row->tipo_servicio;
+				$array['fecha_solicitud'] 			= $row->fecha_solicitud;
+				$array['fecha_asignacion'] 			= $row->fecha_asignacion;
+				
+
+				
+				if($row->forma_pago == 'Vale'){$fp = '<i class="fa fa-file-text-o iconfloat"></i>';}
+				else if($row->forma_pago == 'Efectivo'){$fp = '<i class="fa fa-money iconfloat"></i>';}
+				else if($row->forma_pago == 'Tarjeta'){$fp = '<i class="fa fa-credit-card iconfloat"></i>';}
+
+				$array['Cliente'] = $fp.$row->nombre;
+
+				$o5 = ($row->celo != '')?'<br><strong>Cel:</strong> '.$row->celo:'';
+				$o4 = ($row->telo != '')?'<br><strong>Tel:</strong> '.$row->telo:'';
+				$o2 = ($row->int_o != '')?'<br><strong>Int:</strong> '.$row->int_o:'';
+				$o3 = ($row->exto != '')?'<br><strong>Ext:</strong> '.$row->exto:'';
+				$o1 = ($row->calleo != '')?'<br><br><strong>Calle:</strong> '.$row->calleo:'';
+
+				$d5 = ($row->celd != '')?'<br><strong>Cel:</strong> '.$row->celd:'';
+				$d4 = ($row->teld != '')?'<br><strong>Tel:</strong> '.$row->teld:'';
+				$d2 = ($row->int_d != '')?'<br><strong>Int:</strong> '.$row->int_d:'';
+				$d3 = ($row->extd != '')?'<br><strong>Ext:</strong> '.$row->extd:'';
+				$d1 = ($row->called != '')?'<br><br><strong>Calle:</strong> '.$row->called:'';				
+				
+				$dato =  $o1.$o2.$o3.$o4.$o5;
+				$datd =  $d1.$d2.$d3.$d4.$d5;
+				
+				
+				$mapo = '<a class="iconfloat" href="https://www.google.com.mx/maps/place/@'.$row->coodo.',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodo.'"><i class="fa fa-map"></i></a>';
+				$mapd = '<a class="iconfloat" href="https://www.google.com.mx/maps/place/@'.$row->coodd.',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodd.'"><i class="fa fa-map"></i></a>';			
+				
+				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
+				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
+				
+				$array['Origen'] 	= ($row->invo != '')?$mapo.$row->invo.$dato.$ro:utf8_encode($row->origen.$dato.$ro);
+				$array['Destino'] 	= ($row->invd != '')?$mapd.$row->invd.$datd.$rd:utf8_encode($row->destino.$datd.$rd);
+				
+				$array['Observaciones'] 			= $row->observaciones;		
 			}
 		}
 		return $array;
 	}
-	public function getDataViajeAir($id_operador_unidad){
-		$sql = "
-			SELECT
-				viv.id_viaje,
-				vid.fecha_solicitud,
-				vid.fecha_asignacion,
-				vid.observaciones,
-				clc.nombre,
-				dir1.calle AS calleo,
-				dir1.num_ext AS exto,
-				dir1.num_int AS int_o,
-				dir1.telefono AS telo,
-				dir1.celular AS celo,
-				dir1.referencia AS refo,
-				dir1.geocodificacion_inversa AS invo,
-				dir1.geocoordenadas AS coodo,
-				dir2.calle AS called,
-				dir2.num_ext AS extd,
-				dir2.num_int AS int_d,
-				dir2.telefono AS teld,
-				dir2.celular AS celd,
-				dir2.referencia AS refd,
-				dir2.geocodificacion_inversa AS invd,
-				dir2.geocoordenadas AS coodd,
-				cm1.etiqueta AS status_viaje,
-				cm2.etiqueta AS tipo_servicio,
-				cm3.etiqueta AS forma_pago
-			FROM
-				vi_viaje AS viv
-			INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
-			INNER JOIN vi_viaje_clientes AS vic ON vic.id_viaje = viv.id_viaje
-			INNER JOIN cl_clientes AS clc ON vic.id_cliente = clc.id_cliente
-			INNER JOIN it_cliente_origen AS clo ON viv.id_cliente_origen = clo.id_cliente_origen
-			INNER JOIN it_origenes AS ito ON clo.id_origen = ito.id_origen
-			INNER JOIN it_direcciones AS dir1 ON ito.id_direccion = dir1.id_direccion
-			INNER JOIN it_viaje_destino AS itvd ON itvd.id_viaje = viv.id_viaje
-			INNER JOIN it_cliente_destino AS itcd ON itvd.id_cliente_destino = itcd.id_cliente_destino
-			INNER JOIN it_destinos AS itd ON itcd.id_destino = itd.id_destino
-			INNER JOIN it_direcciones AS dir2 ON itd.id_direccion = dir2.id_direccion
-			INNER JOIN vi_viaje_formapago AS vfp ON vfp.id_viaje = viv.id_viaje
-			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
-			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
-			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
-			WHERE
-				viv.id_operador_unidad = $id_operador_unidad
-				AND
-				viv.cat_status_viaje = 171
-			ORDER BY
-				viv.id_viaje DESC
-			LIMIT 0,
-			 1
-		";
-		$query = $this->db->prepare($sql);
-		$query->execute();
-		$data = $query->fetchAll();
-		$array = array();
-		if($query->rowCount()>=1){
-			foreach ($data as $row) {
-				$array['Numero'] 					= $row->id_viaje;
-				$array['Forma de pago'] 			= $row->forma_pago;
-				$array['Status del viaje'] 			= $row->status_viaje;
-				$array['Tipo de servicio'] 			= $row->tipo_servicio;
-				$array['Solicitud'] 				= $row->fecha_solicitud;
-				$array['Asignación'] 				= $row->fecha_asignacion;
-				$array['Observaciones'] 			= $row->observaciones;
-				$array['Cliente'] 					= $row->nombre;
-				$array['Geolocalización origen'] 	= $row->invo;
-				$array['Referencia origen'] 		= $row->refo;
-				$array['Celular origen'] 			= $row->celo;
-				$array['Teléfono origen'] 			= $row->telo;
-				$array['Interior origen'] 			= $row->int_o;
-				$array['Exterior origen'] 			= $row->exto;
-				$array['Calle origen'] 				= $row->calleo;
-				$array['Coordenadas origen']		= $row->coodo;
-				$array['Calle Destino'] 			= $row->called;
-				$array['Exterior destino'] 			= $row->extd;
-				$array['Interior destino'] 			= $row->int_d;
-				$array['Teléfono destino'] 			= $row->teld;
-				$array['Celular destino'] 			= $row->celd;
-				$array['Referencia destino']		= $row->refd;
-				$array['Geolocalización destino'] 	= $row->invd;
-				$array['Coordenadas destino'] 		= $row->coodd;
-			}
-		}
-		return $array;
-	}	
     public function broadcast($id_operador_unidad)
     {
 		$current = self::getDataActual($id_operador_unidad);
@@ -1511,7 +1490,7 @@ class MobileModel
 							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
 							$ride_1 = array(
 								'new' 					=> true,
-								'viaje' 				=> self::getDataViaje($id_operador_unidad),
+								'viaje' 				=> self::getDataViaje($id_operador_unidad, 'base'),
 								'id_operador_unidad' 	=> $id_operador_unidad,
 								'id_episodio' 			=> $id_episodio,
 								'serie' 				=> $serie,
@@ -1588,7 +1567,7 @@ class MobileModel
 							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
 							$ride_1 = array(
 								'new' 					=> true,
-								'viaje' 				=> self::getDataViajeAir($id_operador_unidad),
+								'viaje' 				=> self::getDataViaje($id_operador_unidad, 'air'),
 								'id_operador_unidad' 	=> $id_operador_unidad,
 								'id_episodio' 			=> $id_episodio,
 								'serie' 				=> $serie,
@@ -1632,7 +1611,7 @@ class MobileModel
 								'id_episodio' 			=> $id_episodio,
 								'serie' 				=> $serie,
 								'token' 				=> $token,
-								'viaje' 				=> array('Numero' => 'IR001')
+								'viaje' 				=> array('id_viaje' => 'IR001')
 							);
 							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
 							

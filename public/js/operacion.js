@@ -766,8 +766,12 @@ function setIdens(numero_economico,id_operador,nombre){
 }
 function apartadoActive(){
 	var statApart = $('input[name="tipo_temporicidad"]:checked').val();
+	var time = new Date();
 	if(statApart == 1){
 		pop_apartado();
+		time.setSeconds(3600);
+		$('#fecha_hora').val(time.toMysqlFormat());
+		
 		$("#cat_tipo_salida option[value='180']").prop('selected', true);
 		$("#cat_tipo_salida option[value='180']").removeAttr('disabled');
 		$("#cat_tipo_salida option[value='181']").attr('disabled','disabled');
@@ -777,6 +781,7 @@ function apartadoActive(){
 		$("#cat_tipo_salida option[value='180']").prop('selected', false);
 		habilitar();
 		$('#temporicidad').val('184');
+		$('#fecha_hora').val(time.toMysqlFormat());		
 	}
 }
 function habilitar(){

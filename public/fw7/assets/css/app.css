@@ -6151,3 +6151,9 @@ html:not(.watch-active-state) .list-block .item-link:active {
     50% { opacity: 0.5; }
     100% { opacity: 1.0; }
 }
+.iconfloat{
+	float: right;
+    top: -55px;
+    position: relative;
+    font-size: 2em;
+}

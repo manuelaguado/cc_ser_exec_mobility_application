@@ -219,7 +219,7 @@ function storeTravel(datos){
 			iden:					1,
 			date:					(new Date).getTime(),
 			id_episodio:			datos['id_episodio'],
-			id_viaje:				datos['viaje']['Numero']
+			id_viaje:				datos['viaje']['id_viaje']
 		});
 
 }
@@ -295,7 +295,7 @@ function storeClave(cve,cve1,cve2,cve3,cve4,motivo,callback){
 				storeClave(cve,cve1,cve2,cve3,cve4,'NULL',function(){});
 				
 				var num = new Object();
-				num.Numero = 'IR003';
+				num.id_viaje = 'IR003';
 				var travel_0 = new Object();
 				travel_0.id_episodio = 0;
 				travel_0.viaje = num;

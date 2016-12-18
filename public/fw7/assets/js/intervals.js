@@ -109,6 +109,22 @@ function broadcastPlay(data){
 		timbre.pause();
 	});
 }
+function print_travel(travel){
+	$.each(travel, function( key, value ) {
+		if(value != ''){
+			switch (key) {
+				case 'id_viaje':
+				case 'tipo_servicio':
+				case 'status_viaje':
+				case 'fecha_solicitud':
+				case 'fecha_asignacion':
+					break;
+				default:
+					$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
+			}
+		}	
+	});	
+}
 function ride_ok(data) {
 	var resp_success = JSON.parse(data);
 	switch (resp_success['clave']) {
@@ -158,21 +174,7 @@ function ride_ok(data) {
 				$("#exit_false").show();
 				updatePageButtons('exit_true','exit_false');
 				myApp.alert('Vea los detalles de su destino en el menú', 'Nuevo destino');
-				
-				$.each(resp_success['viaje'], function( key, value ) {
-					if(value != ''){
-						switch (key) {
-							case 'Coordenadas origen':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							case 'Coordenadas destino':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							default:
-								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
-						}
-					}
-				});
+				print_travel(resp_success['viaje']);
 				
 				getBase(function () {	
 					storeClave('R5','C1',globalBase,'NULL','NULL','ACUSE DE RECEPCION DE A10',function(){});
@@ -225,21 +227,7 @@ function ride_ok(data) {
 				
 				updatePageButtons('air_service_des','air_service_act');
 				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio al aire');
-				
-				$.each(resp_success['viaje'], function( key, value ) {
-					if(value != ''){
-						switch (key) {
-							case 'Coordenadas origen':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							case 'Coordenadas destino':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							default:
-								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
-						}
-					}	
-				});				
+				print_travel(resp_success['viaje']);				
 				storeClave('R6','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE F15',function(){});
 			}else{
 				$("#air_service_act").hide();
@@ -273,21 +261,7 @@ function ride_ok(data) {
 				
 				updatePageButtons('tomar_apartado_des','tomar_apartado_act');
 				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio programado');
-				
-				$.each(resp_success['viaje'], function( key, value ) {
-					if(value != ''){
-						switch (key) {
-							case 'Coordenadas origen':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							case 'Coordenadas destino':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							default:
-								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
-						}
-					}	
-				});				
+				print_travel(resp_success['viaje']);				
 				storeClave('R14','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE F15',function(){});
 			}else{
 				$("#tomar_apartado_des").show();
@@ -306,22 +280,7 @@ function ride_ok(data) {
 				$("#salida_sitio_act").show();
 				updatePageButtons('salida_sitio_des','salida_sitio_act');
 				myApp.alert('Se autorizó la salida por sitio', 'Salida por sitio');
-				
-				$.each(resp_success['viaje'], function( key, value ) {
-					if(value != ''){
-						switch (key) {
-							case 'Coordenadas origen':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							case 'Coordenadas destino':
-								$('#data_viaje').append('<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner"><a href="https://www.google.com.mx/maps/place/@'+value+',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'+value+'">'+value+'</a></div></div></div>');
-								break;
-							default:
-								$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
-						}
-					}	
-				});					
-				
+				print_travel(resp_success['viaje']);
 				getBase(function () {	
 					storeClave('R7','C1',globalBase,'NULL','NULL','ACUSE DE RECEPCION DE F13',function(){});
 				});

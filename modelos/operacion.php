@@ -1192,6 +1192,7 @@ class OperacionModel{
 				clc.id_cliente = $id_cliente
 			AND tfcl.cat_statustarifa = 168
 			AND tfcl.cat_tipo_tarifa = 189
+			AND tfcl.tabulado = 0
 		";
 		$query = $this->db->prepare($query);
 		$query->execute();
