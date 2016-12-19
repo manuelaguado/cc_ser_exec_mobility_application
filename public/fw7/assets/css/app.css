@@ -6157,3 +6157,11 @@ html:not(.watch-active-state) .list-block .item-link:active {
     position: relative;
     font-size: 2em;
 }
+.id_head_key{
+	float:left;
+	top:-30px;
+	left: 20px;
+	position:absolute;
+	font-size:5em;
+	color:#cdcdcd;
+}

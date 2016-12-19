@@ -113,11 +113,13 @@ function print_travel(travel){
 	$.each(travel, function( key, value ) {
 		if(value != ''){
 			switch (key) {
-				case 'id_viaje':
 				case 'tipo_servicio':
 				case 'status_viaje':
 				case 'fecha_solicitud':
 				case 'fecha_asignacion':
+					break;
+				case 'id_viaje':
+					$('#data_viaje').append( '<div class="id_head_key">'+value+'</div>' );
 					break;
 				default:
 					$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );

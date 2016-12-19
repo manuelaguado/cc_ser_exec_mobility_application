@@ -1327,9 +1327,11 @@ class MobileModel
 	public function getDataViaje($id_operador_unidad, $tipo){
 		if($tipo == 'base'){
 			$inner = 'INNER JOIN cr_cordon AS crc ON viv.id_cordon = crc.id_cordon';
+			$where = "crc.id_operador_unidad = $id_operador_unidad";
 			$order = 'crc.id_cordon DESC';
 		}elseif($tipo == 'air'){
 			$inner = '';
+			$where = "viv.id_operador_unidad = $id_operador_unidad";
 			$order = 'viv.id_viaje DESC';
 		}
 		$sql = "
@@ -1384,7 +1386,8 @@ class MobileModel
 					edo2.estado,
 					' ',
 					cid2.ciudad
-				) AS destino					
+				) AS destino,
+				emp.nombre as empresa
 				
 			FROM
 				vi_viaje AS viv
@@ -1415,10 +1418,11 @@ class MobileModel
 			INNER JOIN it_estados AS edo1 ON as1.id_estado = edo1.id_estado
 			INNER JOIN it_estados AS edo2 ON as2.id_estado = edo2.id_estado
 			INNER JOIN it_ciudades as cid1 ON as1.id_ciudad = cid1.id_ciudad
-			INNER JOIN it_ciudades as cid2 ON as2.id_ciudad = cid2.id_ciudad			
+			INNER JOIN it_ciudades as cid2 ON as2.id_ciudad = cid2.id_ciudad
+			INNER JOIN cl_clientes AS emp ON clc.parent = emp.id_cliente
 			
 			WHERE
-				crc.id_operador_unidad = $id_operador_unidad
+				$where
 				AND
 				viv.cat_status_viaje = 171
 			ORDER BY
@@ -1432,19 +1436,20 @@ class MobileModel
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($data as $row) {
-				$array['id_viaje'] 					= $row->id_viaje;
+				
 				$array['status_viaje'] 				= $row->status_viaje;
 				$array['tipo_servicio'] 			= $row->tipo_servicio;
 				$array['fecha_solicitud'] 			= $row->fecha_solicitud;
 				$array['fecha_asignacion'] 			= $row->fecha_asignacion;
 				
 
+				$array['id_viaje'] 					= $row->id_viaje;
 				
 				if($row->forma_pago == 'Vale'){$fp = '<i class="fa fa-file-text-o iconfloat"></i>';}
 				else if($row->forma_pago == 'Efectivo'){$fp = '<i class="fa fa-money iconfloat"></i>';}
 				else if($row->forma_pago == 'Tarjeta'){$fp = '<i class="fa fa-credit-card iconfloat"></i>';}
 
-				$array['Cliente'] = $fp.$row->nombre;
+				$array['Cliente'] = $fp.$row->nombre.'<span class="pull-right">'.$row->empresa.'</span>';
 
 				$o5 = ($row->celo != '')?'<br><strong>Cel:</strong> '.$row->celo:'';
 				$o4 = ($row->telo != '')?'<br><strong>Tel:</strong> '.$row->telo:'';
