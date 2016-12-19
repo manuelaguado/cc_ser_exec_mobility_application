@@ -294,16 +294,50 @@ function storeClave(cve,cve1,cve2,cve3,cve4,motivo,callback){
 			}else{
 				storeClave(cve,cve1,cve2,cve3,cve4,'NULL',function(){});
 				
-				var num = new Object();
-				num.id_viaje = 'IR003';
-				var travel_0 = new Object();
-				travel_0.id_episodio = 0;
-				travel_0.viaje = num;
-				var a = JSON.stringify(travel_0);
-				var b = JSON.parse(a);
-				storeTravel(b);
+				getEpisodio(function(){
+					var num = new Object();
+					num.id_viaje = 'IR003';
+					var travel_0 = new Object();
+					travel_0.id_episodio = globalEpisodio;
+					travel_0.viaje = num;
+					var a = JSON.stringify(travel_0);
+					var b = JSON.parse(a);
+					storeTravel(b);
+				});
 			}
 		});
+	};
+}
+
+function setEpisodio(callback){
+	var active = dataBase.result;
+	var data = active.transaction(["viaje"], "readwrite");
+	var object = data.objectStore("viaje");
+	
+	var index = object.index("by_iden");
+	var request = index.get(1);
+	
+	request.onsuccess = function () {
+		setStoreVariable('episodio',request.result.id_episodio,function(){});
+	};
+	callback();
+}
+var globalEpisodio;
+function getEpisodio(callback){
+	var active = dataBase.result;
+	var data = active.transaction(["estados_variables"], "readwrite");
+	var object = data.objectStore("estados_variables");
+	var index = object.index("by_iden");
+	var request = index.get(1);
+	request.onsuccess = function () {
+		var result = request.result;
+		if (result !== undefined) {
+			globalEpisodio = result.episodio;
+			callback();
+		}else{
+			globalEpisodio = '0';
+			callback();
+		}
 	};
 }
 
@@ -334,7 +368,7 @@ function storeGps(callback){
 				(typeof(acc) == "undefined")&&
 				(typeof(lat) == "undefined")&&
 				(typeof(lon) == "undefined")
-			){console.log('indexedDB Ln 343 variables de geolocalizacion sin definir');}
+			){console.log('indexedDB Ln 371 variables de geolocalizacion sin definir');}
 			
 			object.put({
 				latitud:	lat,
@@ -350,7 +384,6 @@ function storeGps(callback){
 	}else{
 		//console.log('UNSTORAGE: distancia: '+distance+'  precision: '+acc+' adquiriendo: '+acquiring);
 	}
-	//console.log('aqui');
 	callback();
 }
 

@@ -114,7 +114,7 @@ class MobileModel
 					case 'F14':/*Solicitar cordon*/
 						$output[$num] = self::storeToSync($clave, $num);
 						$output[$num]['clave'] = 'F14';
-						$output[$num]['base'] =  $clave['estado2']; 
+						$output[$num]['base'] =  $clave['estado2'];
 						self::setCveStore($clave['id_usuario'],$clave['token'],132,$clave['id_operador_unidad']);
 						break;
 					case 'F15':/*Servicio al aire*/
@@ -595,7 +595,7 @@ class MobileModel
 			$query = $this->db->prepare($sql);
 			$query->execute();
 	}	
-	function solicitarAcuseCordon(){
+	function solicitarAcuseCordon($id_operador_unidad){
 			date_default_timezone_set('America/Mexico_City');
 			$sql = "
 			UPDATE cr_sync_ride
@@ -604,6 +604,7 @@ class MobileModel
 			WHERE
 				cat_cve_store = 122
 				AND procesado = 0
+				AND id_operador_unidad = $id_operador_unidad
 			";
 			$query = $this->db->prepare($sql);
 			$query->execute();
@@ -622,9 +623,25 @@ class MobileModel
 			";
 			$query = $this->db->prepare($sql);
 			$query_resp = $query->execute();
-			self::solicitarAcuseCordon();
+			self::solicitarAcuseCordon($id_operador_unidad);
 			self::firmarAcuseCordon($id_operador_unidad);
 		}
+	}
+	function exitCordonFromLogin($id_usuario,$id_operador_unidad){
+		$sql = "
+		UPDATE cr_cordon
+		SET 
+				cat_statuscordon	=	'". 114 ."',
+				salida				=	'".date("Y-m-d H:i:s")."',
+				user_mod 			= 	'".$id_usuario."'
+		WHERE
+			id_operador_unidad = ".$id_operador_unidad."
+			AND cat_statuscordon <> 114
+		";
+		$query = $this->db->prepare($sql);
+		$query_resp = $query->execute();
+		self::solicitarAcuseCordon($id_operador_unidad);
+		self::firmarAcuseCordon($id_operador_unidad);
 	}
 	function verificaCveStore($id_operador_unidad){
 		$qry = "
@@ -703,7 +720,7 @@ class MobileModel
 				':fecha_alta' 			=> 	date("Y-m-d H:i:s")
 			)
 		);
-		self::solicitarAcuseCordon();
+		self::solicitarAcuseCordon($id_operador_unidad);
 	}
 	function formarse($clave){
 		$id_base = ($clave['estado2'] == 'B1')?1:2;
@@ -757,7 +774,7 @@ class MobileModel
 				self::formarse($clave);
 			}else{*/
 				self::setCveStore($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
-				self::solicitarAcuseCordon();				
+				self::solicitarAcuseCordon($id_operador_unidad);				
 				return $recursive;
 			
 		}else{

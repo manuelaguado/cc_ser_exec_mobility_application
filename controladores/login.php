@@ -74,7 +74,18 @@ class Login extends Controlador
 		$obtener_modelo = $this->loadModel('Login');
 		$mobile = $this->loadModel('Mobile');
 		$loguear = $obtener_modelo->logear($mobile);
-        return $loguear;
+			
+			if(($loguear[1]['dispositivo'] == 'celular')&&($loguear[2]['via'] == 'correcta')){
+				$operacion = $this->loadModel('Operacion');
+				$bases = $this->loadModel('Bases');
+				$tail = $operacion->formadoAnyBase($bases, $_SESSION['id_operador_unidad']);
+				if($tail){
+					D::bug('Se quitó del cordon '.$tail);
+					$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
+				}
+			}
+			
+        print json_encode($loguear);
     }
 	public function verifica_session()
     {

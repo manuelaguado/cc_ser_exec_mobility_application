@@ -224,7 +224,7 @@ $$("body").on("click", ".c14_sitio", function() {
 $$("body").on("click", ".c9", function() {
 	myApp.confirm('','¿Confirma la finalización de este servicio?', function () {
 		storeClave('C9','C1','C9','F11','NULL','NULL',function(){
-			clearTravel();
+			setEpisodio(function(){clearTravel();});
 			$('#data_viaje').html('');
 			loadTemplate('regreso');
 		});
@@ -368,7 +368,6 @@ function finalizar_servicio(){
 			type: 'POST',
 			dataType: "json",
 			success: function(respuesta){
-				//console.log(respuesta);
 				if(respuesta[0].resp='correcto'){
 					dOut();
 				}else{

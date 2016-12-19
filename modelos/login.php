@@ -162,7 +162,8 @@ class LoginModel
 						}else{
 							$array[2] = array('via'=>"correcta");
 						}
-						self::storeSession($_SESSION['id_usuario']);	
+						self::storeSession($_SESSION['id_usuario']);
+						
 					}else{
 						session_unset();
 						unset($_SESSION);
@@ -187,7 +188,7 @@ class LoginModel
 			self::putLoggerLogin($_POST['usuario']);
 			$array[]=array('resp'=>"acceso_incorrecto");
 		}
-		print json_encode($array);
+		return $array;
 	}
 	private function openEpisodio($id_operador){
 		$qry = "
