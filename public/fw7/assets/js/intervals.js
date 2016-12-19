@@ -361,6 +361,7 @@ function ride_ok(data) {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////// inicio de labores
 		case 'C1':
 			storeTravel(resp_success);
+			setStoreVariable('episodio',resp_success['id_episodio'],function(){});
 			storeClave('R10','C1','F11','NULL','NULL','ACUSE DE RECEPCION DE C1',function(){});
 			//console.log('RIDE C1 OK');
 			break;

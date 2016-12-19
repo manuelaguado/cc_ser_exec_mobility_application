@@ -75,7 +75,7 @@ function setStoreVariable(variable,valor,callback){
 	var objectStoreRequest = object.clear();
 	request.onsuccess = function () {
 		var data = request.result;
-		eval("object.put({iden: 1, "+variable+": valor});");
+		eval("object.put({iden: 1,base:data.base,episodio:data.episodio, "+variable+": valor});");
 	};
 	callback();
 }
