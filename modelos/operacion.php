@@ -9,6 +9,138 @@ class OperacionModel{
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+	function dataViaje($id_viaje){
+		$qry = "
+			SELECT
+				viv.id_viaje,
+				vid.fecha_solicitud,
+				vid.fecha_asignacion,
+				vid.observaciones,
+				clc.nombre,
+				dir1.calle AS calleo,
+				dir1.num_ext AS exto,
+				dir1.num_int AS int_o,
+				dir1.telefono AS telo,
+				dir1.celular AS celo,
+				dir1.referencia AS refo,
+				dir1.geocodificacion_inversa AS invo,
+				dir1.geocoordenadas AS coodo,
+				dir2.calle AS called,
+				dir2.num_ext AS extd,
+				dir2.num_int AS int_d,
+				dir2.telefono AS teld,
+				dir2.celular AS celd,
+				dir2.referencia AS refd,
+				dir2.geocodificacion_inversa AS invd,
+				dir2.geocoordenadas AS coodd,
+				cm1.etiqueta AS status_viaje,
+				cm2.etiqueta AS tipo_servicio,
+				cm3.etiqueta AS forma_pago,
+				concat(
+					cp1.codigo_postal,
+					' ',
+					ta1.d_tipo_asenta,
+					' ',
+					as1.asentamiento,
+					' ',
+					mun1.municipio,
+					' ',
+					edo1.estado,
+					' ',
+					cid1.ciudad
+				) AS origen,
+				concat(
+					cp2.codigo_postal,
+					' ',
+					ta2.d_tipo_asenta,
+					' ',
+					as2.asentamiento,
+					' ',
+					mun2.municipio,
+					' ',
+					edo2.estado,
+					' ',
+					cid2.ciudad
+				) AS destino,
+				emp.nombre AS empresa,
+				vid.redondo AS redondo,
+				vid.apartado AS apartado
+			FROM
+				vi_viaje AS viv
+			INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
+			INNER JOIN vi_viaje_clientes AS vic ON vic.id_viaje = viv.id_viaje
+			INNER JOIN cl_clientes AS clc ON vic.id_cliente = clc.id_cliente
+			INNER JOIN it_cliente_origen AS clo ON viv.id_cliente_origen = clo.id_cliente_origen
+			INNER JOIN it_origenes AS ito ON clo.id_origen = ito.id_origen
+			INNER JOIN it_direcciones AS dir1 ON ito.id_direccion = dir1.id_direccion
+			INNER JOIN it_viaje_destino AS itvd ON itvd.id_viaje = viv.id_viaje
+			INNER JOIN it_cliente_destino AS itcd ON itvd.id_cliente_destino = itcd.id_cliente_destino
+			INNER JOIN it_destinos AS itd ON itcd.id_destino = itd.id_destino
+			INNER JOIN it_direcciones AS dir2 ON itd.id_direccion = dir2.id_direccion
+			INNER JOIN vi_viaje_formapago AS vfp ON vfp.id_viaje = viv.id_viaje
+			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
+			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
+			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
+			INNER JOIN it_asentamientos AS as1 ON dir1.id_asentamiento = as1.id_asentamiento
+			INNER JOIN it_asentamientos AS as2 ON dir2.id_asentamiento = as2.id_asentamiento
+			INNER JOIN it_codigos_postales AS cp1 ON as1.id_codigo_postal = cp1.id_codigo_postal
+			INNER JOIN it_codigos_postales AS cp2 ON as2.id_codigo_postal = cp2.id_codigo_postal
+			INNER JOIN it_tipo_asentamientos AS ta1 ON as1.id_tipo_asenta = ta1.id_tipo_asenta
+			INNER JOIN it_tipo_asentamientos AS ta2 ON as2.id_tipo_asenta = ta2.id_tipo_asenta
+			INNER JOIN it_municipios AS mun2 ON as2.id_municipio = mun2.id_municipio
+			INNER JOIN it_municipios AS mun1 ON as1.id_municipio = mun1.id_municipio
+			INNER JOIN it_estados AS edo1 ON as1.id_estado = edo1.id_estado
+			INNER JOIN it_estados AS edo2 ON as2.id_estado = edo2.id_estado
+			INNER JOIN it_ciudades AS cid1 ON as1.id_ciudad = cid1.id_ciudad
+			INNER JOIN it_ciudades AS cid2 ON as2.id_ciudad = cid2.id_ciudad
+			INNER JOIN cl_clientes AS emp ON clc.parent = emp.id_cliente
+			WHERE
+				viv.id_viaje = $id_viaje		
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$array['ID'] 					= $row->id_viaje;
+				$array['Status'] 				= $row->status_viaje;
+				$array['Tipo'] 			= $row->tipo_servicio;
+				$array['Solicitado el'] 			= $row->fecha_solicitud;
+				$array['Asignado el'] 			= $row->fecha_asignacion;
+				$array['Forma de pago'] 			= $row->forma_pago;
+				$array['Redondo'] 			= $row->redondo;
+				$array['Apartado'] 			= $row->apartado;
+				$array['Empresa'] 			= $row->empresa;
+				$array['Cliente'] =$row->nombre;
+
+				$o5 = ($row->celo != '')?'<br><strong>Cel:</strong> '.$row->celo:'';
+				$o4 = ($row->telo != '')?'<br><strong>Tel:</strong> '.$row->telo:'';
+				$o2 = ($row->int_o != '')?'<br><strong>Int:</strong> '.$row->int_o:'';
+				$o3 = ($row->exto != '')?'<br><strong>Ext:</strong> '.$row->exto:'';
+				$o1 = ($row->calleo != '')?'<br><br><strong>Calle:</strong> '.$row->calleo:'';
+
+				$d5 = ($row->celd != '')?'<br><strong>Cel:</strong> '.$row->celd:'';
+				$d4 = ($row->teld != '')?'<br><strong>Tel:</strong> '.$row->teld:'';
+				$d2 = ($row->int_d != '')?'<br><strong>Int:</strong> '.$row->int_d:'';
+				$d3 = ($row->extd != '')?'<br><strong>Ext:</strong> '.$row->extd:'';
+				$d1 = ($row->called != '')?'<br><br><strong>Calle:</strong> '.$row->called:'';				
+				
+				$dato =  $o1.$o2.$o3.$o4.$o5;
+				$datd =  $d1.$d2.$d3.$d4.$d5;
+				
+
+				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
+				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
+				
+				$array['Origen'] 	= ($row->invo != '')?$row->invo.$dato.$ro:utf8_encode($row->origen.$dato.$ro);
+				$array['Destino'] 	= ($row->invd != '')?$row->invd.$datd.$rd:utf8_encode($row->destino.$datd.$rd);
+				
+				$array['Observaciones'] 			= $row->observaciones;		
+			}
+		}
+		return $array;
+	}
 	function notificacionesApartados(){
 		$qry = "
 			SELECT
@@ -3644,6 +3776,7 @@ class acciones_pendientes extends SSP{
 					$salida = '';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'pendientes\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="viajeAlAire('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Ofrecer servicio al aire"><i class="icofont icofont-wind" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';		
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';	
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -3673,7 +3806,8 @@ class acciones_enproceso extends SSP{
 					$salida = '';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'proceso\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'proceso\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-							
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -3737,6 +3871,8 @@ class acciones_asignados extends SSP{
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 					
 					$salida .= '</div>';
 					
@@ -3910,6 +4046,8 @@ class acciones_completados extends SSP{
 					
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
 					
@@ -3943,7 +4081,8 @@ class acciones_cancelados extends SSP{
 					
 					$salida = '';
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-							
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
 					
@@ -3984,7 +4123,9 @@ class programados_rojo extends SSP{
 					$salida .= '<a onclick="apartadoAlAire('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Enviar al aire"><i class="icofont icofont-wind" style="font-size:1.4em; color:#4d4cff;"></i></a>&nbsp;&nbsp;';
 					
 					$salida .= '<a onclick="procesarNormal('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Procesar normalmente"><i class="fa fa-play-circle-o" style="font-size:1.4em; color:#00b32d;"></i></a>&nbsp;&nbsp;';
-							
+					
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -4013,7 +4154,7 @@ class programados_naranja extends SSP{
 					
 					$salida = '';
 					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'naranja\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-							
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';		
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -4042,7 +4183,8 @@ class programados_amarillo extends SSP{
 					
 					$salida = '';
 					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'amarillo\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-							
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -4071,7 +4213,8 @@ class programados_verde extends SSP{
 					
 					$salida = '';
 					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'verde\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-							
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
@@ -4099,7 +4242,8 @@ class programados_gris extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					
 					$salida = '';
-							
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+					
 					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	

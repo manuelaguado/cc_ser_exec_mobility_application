@@ -1387,7 +1387,9 @@ class MobileModel
 					' ',
 					cid2.ciudad
 				) AS destino,
-				emp.nombre as empresa
+				emp.nombre as empresa,
+				vid.redondo AS redondo,
+				vid.apartado AS apartado
 				
 			FROM
 				vi_viaje AS viv
@@ -1448,8 +1450,14 @@ class MobileModel
 				if($row->forma_pago == 'Vale'){$fp = '<i class="fa fa-file-text-o iconfloat"></i>';}
 				else if($row->forma_pago == 'Efectivo'){$fp = '<i class="fa fa-money iconfloat"></i>';}
 				else if($row->forma_pago == 'Tarjeta'){$fp = '<i class="fa fa-credit-card iconfloat"></i>';}
-
-				$array['Cliente'] = $fp.$row->nombre.'<span class="pull-right">'.$row->empresa.'</span>';
+				
+				if($row->redondo == '1'){$vr = '<i class="fa fa-exchange iconfloat"></i>';}
+				else{$vr = '';}
+				
+				if($row->apartado == '1'){$ap = '<i class="fa fa-clock-o iconfloat"></i>';}
+				else{$ap = '';}
+				
+				$array['Cliente'] = $ap.$vr.$fp.$row->nombre.'<span class="pull-right">'.$row->empresa.'</span>';
 
 				$o5 = ($row->celo != '')?'<br><strong>Cel:</strong> '.$row->celo:'';
 				$o4 = ($row->telo != '')?'<br><strong>Tel:</strong> '.$row->telo:'';

@@ -976,7 +976,12 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->cordon_get($_POST,1);
 	}
-	
+	public function dataViaje($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$data = $operacion->dataViaje($id_viaje);
+		require URL_VISTA.'modales/operacion/dataViaje.php';
+	}
 	public function cordon_ejnal(){
 		$this->se_requiere_logueo(true,'Operacion|cordon_ejnal');
 		$modelo = $this->loadModel('Operacion');

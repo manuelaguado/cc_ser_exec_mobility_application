@@ -17,324 +17,337 @@ span.input-icon > textarea {
 <div class="main-content">
 	<div class="main-content-inner">
 		<div class="page-content">
-			<form class="form-horizontal" role="form" id="nuevo_servicio">
-				<div class="page-header">
-					<h1>
+			<div class="widget-box transparent">
+				<div class="widget-header widget-header-flat">
+					<h1 class="widget-title lighter">
 						Solicitud de servicio
-						<a class="btn btn-info" href="#" onclick="procesar_servicio()" style="position:relative; float:right; top:-8px;">
-							<i class="ace-icon fa fa-gear bigger-110"></i>
-							Procesar
+					</h1>
+					<div class="widget-toolbar">
+						<a href="#" data-action="collapse">
+							<i class="ace-icon fa fa-chevron-up"></i>
 						</a>
-						<input type="hidden" id="id_asentamiento_origen" name="id_asentamiento_origen" value="" />
-						<input type="hidden" id="id_asentamiento_destino" name="id_asentamiento_destino" value="" />
-						
-						<input type="hidden" id="origen_calle" name="origen_calle" value="" />
-						<input type="hidden" id="origen_num_ext" name="origen_num_ext" value="" />
-						<input type="hidden" id="origen_num_int" name="origen_num_int" value="" />
-						<input type="hidden" id="origen_telefono" name="origen_telefono" value="" />
-						<input type="hidden" id="origen_celular" name="origen_celular" value="" />
-						
-						<input type="hidden" id="destino_calle" name="destino_calle" value="" />
-						<input type="hidden" id="destino_num_ext" name="destino_num_ext" value="" />
-						<input type="hidden" id="destino_num_int" name="destino_num_int" value="" />
-						<input type="hidden" id="destino_telefono" name="destino_telefono" value="" />
-						<input type="hidden" id="destino_celular" name="destino_celular" value="" />
-						
-						<input type="hidden" id="id_operador_unidad" name="id_operador_unidad" value="" />
-						<input type="hidden" id="id_operador" name="id_operador" value="" />
-						<input type="hidden" id="id_operador_turno" name="id_operador_turno" value="" />
-						<input type="hidden" id="turno_apartado" name="turno_apartado" value="" />
-						<input type="hidden" id="numero_economico" name="numero_economico" value="" />
-						
-						<input type="hidden" id="msgPaqArray" name="msgPaqArray" value="" />
-						
-						<input type="hidden" id="temporicidad" name="temporicidad" value="184" />
-						<input type="hidden" id="exist_tarifa" name="exist_tarifa" value="0" />
-						
-						<span id="input_pasajeros"></span>
-					</h1>				
+					</div>
 				</div>		
-				<div class="row">
-						<div class="col-sm-3">
-							<div class="widget-header widget-header-flat">
-								<h4 class="widget-title lighter">
-									<i class="ace-icon fa fa-user blue"></i>
-									<span id="dta_opt">Opciones</span>
-								</h4>
-							</div><br>
-							<div class="form-group">
-								<label class="col-sm-4 control-label no-padding-right" for="forma_pago"> Forma de pago </label>
+				<div class="widget-body">
+					<form class="form-horizontal" role="form" id="nuevo_servicio">
+						<div class="page-header" style="margin-bottom: 26px;">
+							<h1>&nbsp;<br>
+							<a class="btn btn-info" href="#" onclick="procesar_servicio()" style="position:relative; float:right; top:-30px;">
+								<i class="ace-icon fa fa-gear bigger-110"></i>
+								Procesar
+							</a>
+							<input type="hidden" id="id_asentamiento_origen" name="id_asentamiento_origen" value="" />
+							<input type="hidden" id="id_asentamiento_destino" name="id_asentamiento_destino" value="" />
+							
+							<input type="hidden" id="origen_calle" name="origen_calle" value="" />
+							<input type="hidden" id="origen_num_ext" name="origen_num_ext" value="" />
+							<input type="hidden" id="origen_num_int" name="origen_num_int" value="" />
+							<input type="hidden" id="origen_telefono" name="origen_telefono" value="" />
+							<input type="hidden" id="origen_celular" name="origen_celular" value="" />
+							
+							<input type="hidden" id="destino_calle" name="destino_calle" value="" />
+							<input type="hidden" id="destino_num_ext" name="destino_num_ext" value="" />
+							<input type="hidden" id="destino_num_int" name="destino_num_int" value="" />
+							<input type="hidden" id="destino_telefono" name="destino_telefono" value="" />
+							<input type="hidden" id="destino_celular" name="destino_celular" value="" />
+							
+							<input type="hidden" id="id_operador_unidad" name="id_operador_unidad" value="" />
+							<input type="hidden" id="id_operador" name="id_operador" value="" />
+							<input type="hidden" id="id_operador_turno" name="id_operador_turno" value="" />
+							<input type="hidden" id="turno_apartado" name="turno_apartado" value="" />
+							<input type="hidden" id="numero_economico" name="numero_economico" value="" />
+							
+							<input type="hidden" id="msgPaqArray" name="msgPaqArray" value="" />
+							
+							<input type="hidden" id="temporicidad" name="temporicidad" value="184" />
+							<input type="hidden" id="exist_tarifa" name="exist_tarifa" value="0" />
+							
+							<span id="input_pasajeros"></span>
+							</h1>
+						</div>		
+						<div class="row">
+								<div class="col-sm-3">
+									<div class="widget-header widget-header-flat">
+										<h4 class="widget-title lighter">
+											<i class="ace-icon fa fa-user blue"></i>
+											<span id="dta_opt">Opciones</span>
+										</h4>
+									</div><br>
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="forma_pago"> Forma de pago </label>
 
-								<div class="col-sm-8">
-									<select  class="form-control" id="forma_pago" name="forma_pago">
-										<?php echo $formaPago; ?>
-									</select>
-								</div>
-							</div>
-							<hr />
-							<div class="form-group">
-								<label class="col-sm-2 control-label no-padding-right" for="cat_tiposervicio"> Servicio </label>
-
-								<div class="col-sm-5">
-									<select onchange="verifyServicio();" class="form-control" id="cat_tiposervicio" name="cat_tiposervicio">
-										<?php echo $tiposServicios; ?>
-									</select>
-								</div>
-								
-								<div class="col-sm-5">
-									<label style="position:relative; top:5px;">
-										<input value="1" name="viaje_redondo" id="viaje_redondo" class="ace ace-switch ace-switch-6" type="checkbox" />
-										<span class="lbl">&nbsp;Redondo</span>
-									</label>
-									<label style="position:relative; top:5px;">
-										<input onchange="apartadoActive()" value="1" name="tipo_temporicidad" id="tipo_temporicidad" class="ace ace-switch ace-switch-6" type="checkbox" />
-										<span class="lbl">&nbsp;Apartado</span>
-									</label>
-								</div>	
-								
-							</div>
-							<hr />
-							<div class="form-group">
-								<label class="col-sm-4 control-label no-padding-right" for="cat_tipo_salida"> Salida </label>
-
-								<div class="col-sm-8">
-									<select onchange="verifySalida();" class="form-control" id="cat_tipo_salida" name="cat_tipo_salida">
-										<?php echo $tipoSalida; ?>
-									</select>
-								</div>
-								<div class="col-sm-offset-4 col-sm-12 radio hide" id="select_fs">
-									<label>
-										<input name="sitio_select_oper" id="sitio_select_oper1" value="1" type="radio" class="ace" />
-										<span class="lbl"> Primero</span>
-									</label>
-									<label>									
-										<input name="sitio_select_oper" id="sitio_select_oper2" value="2" type="radio" class="ace" />
-										<span class="lbl"> Segundo</span>
-									</label>
-								</div>								
-								
-							</div>
-							<hr />
-							<div class="form-group">
-								<label class="col-sm-4 control-label no-padding-right" for="fecha_hora"> Fecha & hora </label>
-
-								<div class="col-sm-8">
-									<div class="input-group">
-										<input id="fecha_hora" name="fecha_hora" type="text" class="form-control" />
-										<span class="input-group-addon">
-											<i class="fa fa-clock-o bigger-110"></i>
-										</span>
+										<div class="col-sm-8">
+											<select  class="form-control" id="forma_pago" name="forma_pago">
+												<?php echo $formaPago; ?>
+											</select>
+										</div>
 									</div>
-								</div>
-							</div>
-							<hr />
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-eye bigger-230 orange icon_ztop"></i>
-								</label>
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<textarea type="text" id="observaciones" name="observaciones" placeholder="Observaciones" class="col-sm-12 autosize-transition form-control"></textarea>
-										<i class="ace-icon fa fa-question-circle blue"></i>
-									</span>
-								</div>
-							</div>	
-						</div>
-						<div class="col-sm-3">
-							<div class="widget-header widget-header-flat">
-								<h4 class="widget-title lighter">
-									<i class="ace-icon fa fa-user blue"></i>
-									<span id="dta_name">Usuario</span>
-								</h4>
-							</div><br>
-							
-							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right">Usuario</label>
-								<div class="col-sm-9">
-									<span class="input-icon">
-										<input value="" type="text" id="user" name="user" placeholder="Usuario" class="col-xs-12 col-sm-12" autocomplete="off"/>
-										<i class="ace-icon fa fa-user blue"></i>
-									</span>
-								</div>
-							</div>
-							
-							<div class="form-group hide" id="user_list">
-								<label class="col-sm-3 control-label no-padding-right">Pasajeros</label>
-								<div class="col-sm-9" id="pasajeros_list"></div>
-							</div>				
-							
-							
-							<div class="form-group hide" id="spinDestinos">
-								<label class="col-sm-3 control-label no-padding-right">Destinos</label>
-								<div class="col-sm-9">
-									<input readonly="" type="text" class="input-sm" id="spinDestino" name="spinDestino"/>
-								</div>
-							</div>	
-							
-						</div>
-						<div class="col-sm-3">
-							<div class="widget-header widget-header-flat">
-								<h4 class="widget-title lighter">
-									<i class="ace-icon fa fa-map-marker blue"></i>
-									Origen
-								</h4>
-							</div><br>
-							
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-bookmark bigger-230 orange icon_ztop"></i>
-								</label>
+									<hr />
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="cat_tiposervicio"> Servicio </label>
 
-								<div class="col-sm-11">
-									<select onchange="cleanOrigen();" class="form-control" id="id_cliente_origen" name="id_cliente_origen">
-										<option value="" disabled selected>Origenes guardados</option>
-									</select>
+										<div class="col-sm-5">
+											<select onchange="verifyServicio();" class="form-control" id="cat_tiposervicio" name="cat_tiposervicio">
+												<?php echo $tiposServicios; ?>
+											</select>
+										</div>
+										
+										<div class="col-sm-5">
+											<label style="position:relative; top:5px;">
+												<input value="1" name="viaje_redondo" id="viaje_redondo" class="ace ace-switch ace-switch-6" type="checkbox" />
+												<span class="lbl">&nbsp;Redondo</span>
+											</label>
+											<label style="position:relative; top:5px;">
+												<input onchange="apartadoActive()" value="1" name="tipo_temporicidad" id="tipo_temporicidad" class="ace ace-switch ace-switch-6" type="checkbox" />
+												<span class="lbl">&nbsp;Apartado</span>
+											</label>
+										</div>	
+										
+									</div>
+									<hr />
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="cat_tipo_salida"> Salida </label>
+
+										<div class="col-sm-8">
+											<select onchange="verifySalida();" class="form-control" id="cat_tipo_salida" name="cat_tipo_salida">
+												<?php echo $tipoSalida; ?>
+											</select>
+										</div>
+										<div class="col-sm-offset-4 col-sm-12 radio hide" id="select_fs">
+											<label>
+												<input name="sitio_select_oper" id="sitio_select_oper1" value="1" type="radio" class="ace" />
+												<span class="lbl"> Primero</span>
+											</label>
+											<label>									
+												<input name="sitio_select_oper" id="sitio_select_oper2" value="2" type="radio" class="ace" />
+												<span class="lbl"> Segundo</span>
+											</label>
+										</div>								
+										
+									</div>
+									<hr />
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="fecha_hora"> Fecha & hora </label>
+
+										<div class="col-sm-8">
+											<div class="input-group">
+												<input id="fecha_hora" name="fecha_hora" type="text" class="form-control" />
+												<span class="input-group-addon">
+													<i class="fa fa-clock-o bigger-110"></i>
+												</span>
+											</div>
+										</div>
+									</div>
+									<hr />
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-eye bigger-230 orange icon_ztop"></i>
+										</label>
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea type="text" id="observaciones" name="observaciones" placeholder="Observaciones" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-question-circle blue"></i>
+											</span>
+										</div>
+									</div>	
 								</div>
-							</div>							
-							
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<a onclick="formAsentamiento('asentamiento_origen','id_asentamiento_origen'); cleanSavedOrigen();" href="javascript:void(0);">
-										<i class="ace-icon fa fa-map-marker bigger-230 orange icon_ztop"></i>
+								<div class="col-sm-3">
+									<div class="widget-header widget-header-flat">
+										<h4 class="widget-title lighter">
+											<i class="ace-icon fa fa-user blue"></i>
+											<span id="dta_name">Usuario</span>
+										</h4>
+									</div><br>
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">Usuario</label>
+										<div class="col-sm-9">
+											<span class="input-icon">
+												<input value="" type="text" id="user" name="user" placeholder="Usuario" class="col-xs-12 col-sm-12" autocomplete="off"/>
+												<i class="ace-icon fa fa-user blue"></i>
+											</span>
+										</div>
+									</div>
+									
+									<div class="form-group hide" id="user_list">
+										<label class="col-sm-3 control-label no-padding-right">Pasajeros</label>
+										<div class="col-sm-9" id="pasajeros_list"></div>
+									</div>				
+									
+									
+									<div class="form-group hide" id="spinDestinos">
+										<label class="col-sm-3 control-label no-padding-right">Destinos</label>
+										<div class="col-sm-9">
+											<input readonly="" type="text" class="input-sm" id="spinDestino" name="spinDestino"/>
+										</div>
+									</div>	
+									
+								</div>
+								<div class="col-sm-3">
+									<div class="widget-header widget-header-flat">
+										<h4 class="widget-title lighter">
+											<i class="ace-icon fa fa-map-marker blue"></i>
+											Origen
+										</h4>
+									</div><br>
+									
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-bookmark bigger-230 orange icon_ztop"></i>
+										</label>
+
+										<div class="col-sm-11">
+											<select onchange="cleanOrigen();" class="form-control" id="id_cliente_origen" name="id_cliente_origen">
+												<option value="" disabled selected>Origenes guardados</option>
+											</select>
+										</div>
+									</div>							
+									
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<a onclick="formAsentamiento('asentamiento_origen','id_asentamiento_origen'); cleanSavedOrigen();" href="javascript:void(0);">
+												<i class="ace-icon fa fa-map-marker bigger-230 orange icon_ztop"></i>
+											</a>
+										</label>						
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea readonly="" id="asentamiento_origen" name="asentamiento_origen" placeholder="Estado, Ciudad, Colonia, CP." class="col-xs-10 col-sm-12"></textarea>
+												<i class="ace-icon fa fa-map-marker blue"></i>
+											</span>
+										</div>
+									</div>
+
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-question-circle bigger-230 orange icon_ztop"></i>
+										</label>						
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea  id="origen_referencia" onchange="cleanSavedOrigen();" name="origen_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-question-circle blue"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<a onclick="iframeSetReference(); cleanSavedOrigen();" href="javascript:void(0);">
+												<i class="ace-icon fa fa-globe bigger-230 orange icon_ztop"></i>
+											</a>
+										</label>
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea readonly="" id="geocodificacion_inversa_origen" name="geocodificacion_inversa_origen" placeholder="Geocodificacion inversa" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-globe blue"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-thumb-tack bigger-230 orange icon_ztop"></i>
+										</label>						
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<input readonly="" type="text" id="geocoordenadas_origen" name="geocoordenadas_origen" placeholder="Geocoordenadas" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-thumb-tack blue"></i>
+											</span>
+										</div>
+									</div>	
+									<div class="space-4"></div>
+									<a class="btn btn-light" href="#" onclick="modal_extra_origen();" style="position:relative; float:right; top:-8px;">
+										<i class="ace-icon fa fa-home bigger-110"></i>
+										Más datos
 									</a>
-								</label>						
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<textarea readonly="" id="asentamiento_origen" name="asentamiento_origen" placeholder="Estado, Ciudad, Colonia, CP." class="col-xs-10 col-sm-12"></textarea>
-										<i class="ace-icon fa fa-map-marker blue"></i>
-									</span>
+									<i id="origen_hide_ok" class="fa fa-check-circle-o origen_destiono_set hide" aria-hidden="true"></i>
+									
 								</div>
-							</div>
+								<div class="col-sm-3">
+									<div class="widget-header widget-header-flat">
+										<h4 class="widget-title lighter">
+											<i class="ace-icon fa fa-map-marker blue"></i>
+											Destino
+										</h4>
+									</div><br>
+									
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-bookmark bigger-230 green icon_ztop"></i>
+										</label>
 
-							<div class="space-4"></div>
+										<div class="col-sm-11">
+											<select onchange="cleanDestino();" class="form-control" id="id_cliente_destino" name="id_cliente_destino">
+												<option value="" disabled selected>Destinos guardados</option>
+											</select>
+										</div>
+									</div>								
+									
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<a onclick="formAsentamiento('asentamiento_destino','id_asentamiento_destino'); cleanSavedDestino();" href="#" class="blue">
+												<i class="ace-icon fa fa-map-marker bigger-230 green icon_ztop"></i>
+											</a>
+										</label>
 
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-question-circle bigger-230 orange icon_ztop"></i>
-								</label>						
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<textarea  id="origen_referencia" onchange="cleanSavedOrigen();" name="origen_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
-										<i class="ace-icon fa fa-question-circle blue"></i>
-									</span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<a onclick="iframeSetReference(); cleanSavedOrigen();" href="javascript:void(0);">
-										<i class="ace-icon fa fa-globe bigger-230 orange icon_ztop"></i>
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea readonly="" id="asentamiento_destino" name="asentamiento_destino" placeholder="Estado, Ciudad, Colonia, CP." class="col-xs-10 col-sm-12"></textarea>
+												<i class="ace-icon fa fa-map-marker blue"></i>
+											</span>
+										</div>
+									</div>
+
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-question-circle bigger-230 green icon_ztop"></i>
+										</label>							
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea id="destino_referencia" onchange="cleanSavedDestino();" name="destino_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-question-circle blue"></i>
+											</span>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<a onclick="iframeSetReferenceD(); cleanSavedDestino();" href="javascript:void(0);">
+												<i class="ace-icon fa fa-globe bigger-230 green icon_ztop"></i>
+											</a>
+										</label>						
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea readonly="" id="geocodificacion_inversa_destino" name="geocodificacion_inversa_destino" placeholder="Geocodificacion inversa" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-globe blue"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-thumb-tack bigger-230 green icon_ztop"></i>
+										</label>						
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<input readonly="" type="text" id="geocoordenadas_destino" name="geocoordenadas_destino" placeholder="Geocoordenadas" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-thumb-tack blue"></i>
+											</span>
+										</div>
+									</div>								
+									
+									<div class="space-4"></div>
+									<a class="btn btn-light" href="#" onclick="modal_extra_destino();" style="display:relative; float:right; top:-8px;">
+										<i class="ace-icon fa fa-home bigger-110"></i>
+										Más datos
 									</a>
-								</label>
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<textarea readonly="" id="geocodificacion_inversa_origen" name="geocodificacion_inversa_origen" placeholder="Geocodificacion inversa" class="col-sm-12 autosize-transition form-control"></textarea>
-										<i class="ace-icon fa fa-globe blue"></i>
-									</span>
+									<i id="destino_hide_ok" class="fa fa-check-circle-o origen_destiono_set hide" aria-hidden="true"></i>
+									
 								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-thumb-tack bigger-230 orange icon_ztop"></i>
-								</label>						
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<input readonly="" type="text" id="geocoordenadas_origen" name="geocoordenadas_origen" placeholder="Geocoordenadas" class="col-sm-12 autosize-transition form-control"></textarea>
-										<i class="ace-icon fa fa-thumb-tack blue"></i>
-									</span>
-								</div>
-							</div>	
-							<div class="space-4"></div>
-							<a class="btn btn-light" href="#" onclick="modal_extra_origen();" style="position:relative; float:right; top:-8px;">
-								<i class="ace-icon fa fa-home bigger-110"></i>
-								Más datos
-							</a>
-							<i id="origen_hide_ok" class="fa fa-check-circle-o origen_destiono_set hide" aria-hidden="true"></i>
-							
 						</div>
-						<div class="col-sm-3">
-							<div class="widget-header widget-header-flat">
-								<h4 class="widget-title lighter">
-									<i class="ace-icon fa fa-map-marker blue"></i>
-									Destino
-								</h4>
-							</div><br>
-							
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-bookmark bigger-230 green icon_ztop"></i>
-								</label>
-
-								<div class="col-sm-11">
-									<select onchange="cleanDestino();" class="form-control" id="id_cliente_destino" name="id_cliente_destino">
-										<option value="" disabled selected>Destinos guardados</option>
-									</select>
-								</div>
-							</div>								
-							
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<a onclick="formAsentamiento('asentamiento_destino','id_asentamiento_destino'); cleanSavedDestino();" href="#" class="blue">
-										<i class="ace-icon fa fa-map-marker bigger-230 green icon_ztop"></i>
-									</a>
-								</label>
-
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<textarea readonly="" id="asentamiento_destino" name="asentamiento_destino" placeholder="Estado, Ciudad, Colonia, CP." class="col-xs-10 col-sm-12"></textarea>
-										<i class="ace-icon fa fa-map-marker blue"></i>
-									</span>
-								</div>
-							</div>
-
-							<div class="space-4"></div>
-
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-question-circle bigger-230 green icon_ztop"></i>
-								</label>							
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<textarea id="destino_referencia" onchange="cleanSavedDestino();" name="destino_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
-										<i class="ace-icon fa fa-question-circle blue"></i>
-									</span>
-								</div>
-							</div>
-							
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<a onclick="iframeSetReferenceD(); cleanSavedDestino();" href="javascript:void(0);">
-										<i class="ace-icon fa fa-globe bigger-230 green icon_ztop"></i>
-									</a>
-								</label>						
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<textarea readonly="" id="geocodificacion_inversa_destino" name="geocodificacion_inversa_destino" placeholder="Geocodificacion inversa" class="col-sm-12 autosize-transition form-control"></textarea>
-										<i class="ace-icon fa fa-globe blue"></i>
-									</span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-									<i class="ace-icon fa fa-thumb-tack bigger-230 green icon_ztop"></i>
-								</label>						
-								<div class="col-sm-11">
-									<span class="input-icon">
-										<input readonly="" type="text" id="geocoordenadas_destino" name="geocoordenadas_destino" placeholder="Geocoordenadas" class="col-sm-12 autosize-transition form-control"></textarea>
-										<i class="ace-icon fa fa-thumb-tack blue"></i>
-									</span>
-								</div>
-							</div>								
-							
-							<div class="space-4"></div>
-							<a class="btn btn-light" href="#" onclick="modal_extra_destino();" style="display:relative; float:right; top:-8px;">
-								<i class="ace-icon fa fa-home bigger-110"></i>
-								Más datos
-							</a>
-							<i id="destino_hide_ok" class="fa fa-check-circle-o origen_destiono_set hide" aria-hidden="true"></i>
-							
-						</div>
+					</form>
 				</div>
-			</form>
+			</div>
 			<hr/>
 			<div class="col-sm-12">
 				<div class="widget-box transparent" id="recent-box">
@@ -406,6 +419,7 @@ span.input-icon > textarea {
 												<th>Modelo</th>
 												<th>Color</th>
 												<th>Llegada/Espera</th>
+												<th></th>
 											</tr>
 										</thead>
 									</table>
@@ -629,11 +643,6 @@ span.input-icon > textarea {
 					"columnDefs": [
 						{
 							"targets": 8,
-							"visible": false,
-							"searchable":false
-						},
-						{
-							"targets": 7,
 							"visible": false,
 							"searchable":false
 						}

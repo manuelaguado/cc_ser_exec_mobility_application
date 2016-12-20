@@ -143,6 +143,8 @@ function ride_ok(data) {
 						if(currentPage != 'regreso'){
 							loadTemplate('regreso');
 						}
+						$('#data_viaje').html('');
+						
 						$("#air_service_act").hide();
 						$("#air_service_des").show();
 						

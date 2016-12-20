@@ -4,7 +4,7 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"+ aria-hidden="true">x</button>
 				<h4 class="modal-title" id="myModalLabel">
-					Edición de <?php echo $usuario['nombres'].' '.$usuario['apellido_paterno'].' '.$usuario['apellido_materno']; ?>
+					EdiciÃ³n de <?php echo $usuario['nombres'].' '.$usuario['apellido_paterno'].' '.$usuario['apellido_materno']; ?>
 				</h4>
 			</div>
 			<div class="modal-body" id="modal_content">
@@ -14,7 +14,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									  <div class="form-group">
-										<label for="id_ubicacion">Ubicación</label>
+										<label for="id_ubicacion">UbicaciÃ³n</label>
 										  <select class="form-control" id="id_ubicacion" name="id_ubicacion">
 											<?php echo $ubicacion; ?>
 										  </select>
@@ -38,16 +38,16 @@
 								</div>
 								<div class="col-md-6">
 									  <div class="form-group">
-										<label for="correo">Correo electrónico</label>
+										<label for="correo">Correo electrÃ³nico</label>
 										<input id="correo" name="correo" type="email" class="form-control" placeholder="Ingresar correo" value="<?php echo $usuario['correo']; ?>">
 									  </div>
 									  <div class="form-group">
-										<label for="password">Contraseña</label>
+										<label for="password">ContraseÃ±a</label>
 										<input id="password" name="password" type="password" class="form-control"  placeholder="Ingrese solo si desea cambiarla">
 									  </div>
 									  <div class="form-group">
-										<label for="password2">Confirmar contraseña</label>
-										<input id="password2" name="password2" type="password" class="form-control" placeholder="Confirmar contraseña">
+										<label for="password2">Confirmar contraseÃ±a</label>
+										<input id="password2" name="password2" type="password" class="form-control" placeholder="Confirmar contraseÃ±a">
 									  </div>
 									  <div class="form-group">
 										<label for="id_rol">Rol</label>
@@ -57,7 +57,7 @@
 									  </div>
 									  <div class="form-group">
 										<label for="fecha_ingreso">Fecha de ingreso (AAAA-MM-DD)</label>
-										  <input type="text" class="form-control mask-date" id="fecha_ingreso" name="fecha_ingreso" placeholder="Seleccione la fecha en que ingresó" value="<?php echo $usuario['fecha_ingreso']; ?>">
+										  <input type="text" class="form-control mask-date" id="fecha_ingreso" name="fecha_ingreso" placeholder="Seleccione la fecha en que ingresÃ³" value="<?php echo $usuario['fecha_ingreso']; ?>">
 									  </div>
 										<script type="text/javascript">
 											jQuery(function($) {

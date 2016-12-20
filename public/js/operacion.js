@@ -781,7 +781,8 @@ function apartadoActive(){
 		$("#cat_tipo_salida option[value='180']").prop('selected', false);
 		habilitar();
 		$('#temporicidad').val('184');
-		$('#fecha_hora').val(time.toMysqlFormat());		
+		$('#fecha_hora').val(time.toMysqlFormat());
+		$('#dta_opt').html('Opciones');
 	}
 }
 function habilitar(){
@@ -1303,4 +1304,20 @@ function notifyRender(data) {
 		}
 	}
 }
-
+function dataViaje(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/dataViaje/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-83');}	
+		});
+	} );
+}

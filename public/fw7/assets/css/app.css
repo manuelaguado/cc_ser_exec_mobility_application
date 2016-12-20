@@ -6154,6 +6154,7 @@ html:not(.watch-active-state) .list-block .item-link:active {
 .iconfloat{
 	float: right;
     top: -55px;
+	margin-left: 10px;
     position: relative;
     font-size: 2em;
 }
