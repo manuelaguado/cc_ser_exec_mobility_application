@@ -144,6 +144,7 @@ function ride_ok(data) {
 							loadTemplate('regreso');
 						}
 						$('#data_viaje').html('');
+						$('#data_cordon').html('');
 						
 						$("#air_service_act").hide();
 						$("#air_service_des").show();

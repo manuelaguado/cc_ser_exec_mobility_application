@@ -595,7 +595,8 @@ class MobileModel
 			$query = $this->db->prepare($sql);
 			$query->execute();
 	}	
-	function solicitarAcuseCordon($id_operador_unidad){
+	function solicitarAcuseCordon(){
+			/*No lleva identificador por que se usa para actualizar el cordon en los celulares*/
 			date_default_timezone_set('America/Mexico_City');
 			$sql = "
 			UPDATE cr_sync_ride
@@ -604,7 +605,6 @@ class MobileModel
 			WHERE
 				cat_cve_store = 122
 				AND procesado = 0
-				AND id_operador_unidad = $id_operador_unidad
 			";
 			$query = $this->db->prepare($sql);
 			$query->execute();
@@ -623,7 +623,7 @@ class MobileModel
 			";
 			$query = $this->db->prepare($sql);
 			$query_resp = $query->execute();
-			self::solicitarAcuseCordon($id_operador_unidad);
+			self::solicitarAcuseCordon();
 			self::firmarAcuseCordon($id_operador_unidad);
 		}
 	}
@@ -640,7 +640,7 @@ class MobileModel
 		";
 		$query = $this->db->prepare($sql);
 		$query_resp = $query->execute();
-		self::solicitarAcuseCordon($id_operador_unidad);
+		self::solicitarAcuseCordon();
 		self::firmarAcuseCordon($id_operador_unidad);
 	}
 	function verificaCveStore($id_operador_unidad){
@@ -720,7 +720,7 @@ class MobileModel
 				':fecha_alta' 			=> 	date("Y-m-d H:i:s")
 			)
 		);
-		self::solicitarAcuseCordon($id_operador_unidad);
+		self::solicitarAcuseCordon();
 	}
 	function formarse($clave){
 		$id_base = ($clave['estado2'] == 'B1')?1:2;
@@ -774,7 +774,7 @@ class MobileModel
 				self::formarse($clave);
 			}else{*/
 				self::setCveStore($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
-				self::solicitarAcuseCordon($id_operador_unidad);				
+				self::solicitarAcuseCordon();				
 				return $recursive;
 			
 		}else{
