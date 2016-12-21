@@ -104,9 +104,9 @@ class LoginModel
 		
 		$password_md5=md5($_POST['password']);
         $sql = "
-		SELECT * FROM fw_usuarios 
-		INNER JOIN fw_usuarios_config ON fw_usuarios_config.id_usuario = fw_usuarios.id_usuario
-		WHERE usuario='{$_POST['usuario']}' and password = '{$password_md5}' and cat_status = '3'";
+		SELECT fwu.id_usuario, fwu.id_rol, fwu.usuario, fwu.id_ubicacion, fwu.correo, fwc.aceptar_tyc FROM fw_usuarios as fwu
+		INNER JOIN fw_usuarios_config as fwc ON fwc.id_usuario = fwu.id_usuario
+		WHERE fwu.usuario='{$_POST['usuario']}' and fwu.password = '{$password_md5}' and cat_status = '3'";
 		$query = $this->db->prepare($sql);
         $query->execute();
         $usuario = $query->fetchAll();

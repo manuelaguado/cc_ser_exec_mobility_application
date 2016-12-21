@@ -9,7 +9,67 @@ class UsuariosModel
         } catch (PDOException $e) {
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
-    }	
+    }
+	function poseer($id_usuario,$password){
+		
+		$pass = self::datos_usuario($id_usuario);
+		$passwd = $pass['password'];
+		
+		$sql0 = "UPDATE fw_usuarios_config SET password = '".$passwd."', poseido = '1', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
+		$query0 = $this->db->prepare($sql0);
+		$ok = $query0->execute();
+		
+		if($ok){
+			$sql1 = "UPDATE fw_usuarios SET password = '".md5($password)."', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
+			$query1 = $this->db->prepare($sql1);
+			$ok2 = $query_resp1 = $query1->execute();
+		}
+		
+		$respuesta = ($ok2)?array('resp' => true ):array('resp' => false );
+
+		return $respuesta;		
+		
+	}
+	function exorcizar($id_usuario){
+		
+		$passwd = self::get_config_usr($id_usuario,'password');
+		
+		$sql0 = "UPDATE fw_usuarios_config SET password = NULL, poseido = '0', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
+		$query0 = $this->db->prepare($sql0);
+		$ok = $query0->execute();
+		
+		if($ok){
+			$sql1 = "UPDATE fw_usuarios SET password = '".$passwd."', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
+			$query1 = $this->db->prepare($sql1);
+			$ok2 = $query_resp1 = $query1->execute();
+		}
+		
+		$respuesta = ($ok2)?array('resp' => true ):array('resp' => false );
+
+		return $respuesta;		
+		
+	}
+	public function get_config_usr($user_id,$data){
+		$user_id = intval($user_id);
+		$sql_usr="
+			SELECT
+				fwuc.".$data."
+			FROM
+				fw_usuarios_config as fwuc
+			WHERE
+				fwuc.id_usuario = ".$user_id."		
+		";
+
+		$query = $this->db->prepare($sql_usr);
+		$query->execute();
+		$usuario = $query->fetchAll();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($usuario as $row) {
+				return $row->{$data};
+			}
+		}
+	}	
 	function set_dac_acl($tercios,$estado,$user){
 		if($estado == 'true'){
 			$sql = "
@@ -181,76 +241,6 @@ class UsuariosModel
 			$respuesta = array('resp' => false, 'mensaje' => 'Sin resultados en busqueda.'  );
 		}
 		return $respuesta;
-	}
-	public function obtener_usuarios($array){
-		ini_set('memory_limit', '256M');				
-		$table = 'fw_usuarios';
-		$primaryKey = 'id_usuario';
-		$columns = array(
-			array( 
-				'db' => 'id_usuario',
-				'dbj' => 'id_usuario',
-				'real' => 'id_usuario',
-				'typ' => 'int',
-				'dt' => 0
-			),
-			array( 
-				'db' => 'usuario AS usuario',
-				'dbj' => 'usuario',	
-				'alias' => 'usuario',
-				'real' => 'usuario',
-				'typ' => 'txt',
-				'dt' => 1
-			),
-			array( 
-				'db' => 'correo AS correo',
-				'dbj' => 'correo',				
-				'real' => 'correo',
-				'alias' => 'correo',
-				'typ' => 'txt',
-				'dt' => 2
-			),
-			array( 
-				'db' => 'nombres AS nombres',
-				'dbj' => 'nombres',
-				'real' => 'nombres',
-				'alias' => 'nombres',
-				'typ' => 'int',
-				'dt' => 3				
-			),
-			array( 
-				'db' => 'apellido_paterno AS apellido_paterno',
-				'dbj' => 'apellido_paterno',
-				'real' => 'apellido_paterno',
-				'alias' => 'apellido_paterno',
-				'typ' => 'txt',
-				'dt' => 4				
-			),
-			array( 
-				'db' => 'apellido_materno AS apellido_materno',
-				'dbj' => 'apellido_materno',
-				'real' => 'apellido_materno',
-				'alias' => 'apellido_materno',
-				'typ' => 'txt',
-				'dt' => 5				
-			),
-			array( 
-				'db' => 'fw_roles.descripcion AS descripcion',
-				'dbj' => 'fw_roles.descripcion',
-				'real' => 'fw_roles.descripcion',
-				'alias' => 'descripcion',
-				'typ' => 'txt',
-				'dt' => 6				
-			),
-		);
-		$render_table = new SSP;
-		$inner = '
-			INNER JOIN fw_roles ON fw_usuarios.id_rol = fw_roles.id_rol
-		';
-		$where = '';
-		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
-		);
 	}
 	public function datos_usuario($user_id){
 		$user_id = intval($user_id);
@@ -613,7 +603,128 @@ class UsuariosModel
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
-	}	
+	}
+	public function obtener_usuarios($array){
+		ini_set('memory_limit', '256M');				
+		$table = 'fw_usuarios as fwu';
+		$primaryKey = 'id_usuario';
+		$columns = array(
+			array( 
+				'db' => 'fwu.id_usuario as id_usuario',
+				'dbj' => 'fwu.id_usuario',
+				'real' => 'fwu.id_usuario',
+				'alias' => 'id_usuario',
+				'typ' => 'int',
+				'dt' => 0
+			),
+			array( 
+				'db' => 'fwu.usuario AS usuario',
+				'dbj' => 'fwu.usuario',	
+				'real' => 'fwu.usuario',
+				'alias' => 'usuario',
+				'typ' => 'txt',
+				'dt' => 1
+			),
+			array( 
+				'db' => 'fwu.correo AS correo',
+				'dbj' => 'fwu.correo',				
+				'real' => 'fwu.correo',
+				'alias' => 'correo',
+				'typ' => 'txt',
+				'dt' => 2
+			),
+			array( 
+				'db' => 'fwu.nombres AS nombres',
+				'dbj' => 'fwu.nombres',
+				'real' => 'fwu.nombres',
+				'alias' => 'nombres',
+				'typ' => 'int',
+				'dt' => 3				
+			),
+			array( 
+				'db' => 'fwu.apellido_paterno AS apellido_paterno',
+				'dbj' => 'fwu.apellido_paterno',
+				'real' => 'fwu.apellido_paterno',
+				'alias' => 'apellido_paterno',
+				'typ' => 'txt',
+				'dt' => 4				
+			),
+			array( 
+				'db' => 'fwu.apellido_materno AS apellido_materno',
+				'dbj' => 'fwu.apellido_materno',
+				'real' => 'fwu.apellido_materno',
+				'alias' => 'apellido_materno',
+				'typ' => 'txt',
+				'dt' => 5				
+			),
+			array( 
+				'db' => 'fwr.descripcion AS descripcion',
+				'dbj' => 'fwr.descripcion',
+				'real' => 'fwr.descripcion',
+				'alias' => 'descripcion',
+				'typ' => 'txt',
+				'dt' => 6				
+			),
+			array( 
+				'db' => 'fwuc.poseido AS poseido',
+				'dbj' => 'fwuc.poseido',
+				'real' => 'fwuc.poseido',
+				'alias' => 'poseido',
+				'typ' => 'int',
+				'acciones' => true,
+				'dt' => 7				
+			)			
+		);
+		$render_table = new acciones_usuarios;
+		$inner = '
+			INNER JOIN fw_roles as fwr ON fwu.id_rol = fwr.id_rol
+			INNER JOIN fw_usuarios_config as fwuc ON fwu.id_usuario = fwuc.id_usuario
+		';
+		$where = '';
+		return json_encode(
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
+		);
+	}		
+}
+class acciones_usuarios extends SSP{
+	static function data_output ( $columns, $data, $db )
+	{
+		$out = array();
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
+
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+				
+				if ( isset( $column['acciones'] ) ) {
+					$id_usuario = $data[$i][ 'id_usuario' ];
+					$poseido = $data[$i][ 'poseido' ];
+					$color = ($poseido == 1)?'#2a6496':'#ffbf00';
+					$salida = '';
+						if(Controlador::tiene_permiso('Usuarios|editar_usuario')){
+							$salida .= '<a onclick="user_actions('.$id_usuario.');" data-rel="tooltip" data-original-title="Editar usuario">
+							<i class="fa fa-pencil" style="font-size:1.6em; color:#80ff00;"></i>
+							</a>&nbsp;&nbsp;';
+						}			
+						if(Controlador::tiene_permiso('Usuarios|posesion')){
+							if($poseido == 1){
+								$salida .= '<a onclick="liberar_posesion('.$id_usuario.');" data-rel="tooltip" data-original-title="Exorcizar"><i class="fa fa-snapchat-ghost" style="font-size:1.6em; color:'.$color.';"></i></a>&nbsp;&nbsp;';
+							}else{
+								$salida .= '<a onclick="tomar_posesion('.$id_usuario.');" data-rel="tooltip" data-original-title="Tomar posesión"><i class="fa fa-snapchat-ghost" style="font-size:1.6em; color:'.$color.';"></i></a>&nbsp;&nbsp;';
+							}
+						}
+						
+					$row[ $column['dt'] ] = $salida;
+				}else{
+					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+				}
+				
+			}
+			$out[] = $row;
+		}
+		return $out;
+	}
 }
 class acciones_login extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -706,3 +817,4 @@ class acciones_login extends SSP{
 		return $array;
 	}
 }
+?>

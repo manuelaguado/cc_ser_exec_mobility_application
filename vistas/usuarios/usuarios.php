@@ -34,6 +34,7 @@ body{
 								<th>Apellido Paterno</th>
 								<th>Apellido Materno</th>
 								<th>Rol</th>
+								<th>&nbsp;</th>
 						</tr>
 					</thead>
 				</table>
@@ -55,5 +56,4 @@ $(document).ready(function() {
         }
     } );
 } );
-accion_de_fila('usuarios');
 </script>

@@ -210,3 +210,91 @@ function tyc(stat) {
 		salirAlternativo();
 	}
 }
+function user_actions(id_usuario){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'usuarios/datos_usuario/' + id_usuario,
+			dataType: 'html',
+			success: function(resp_success){			
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+					//console.log(modal);
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-07');}	
+		});
+	} );
+}
+function tomar_posesion(id_usuario){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'usuarios/tomar_posesion/' + id_usuario,
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-08');}	
+		});
+	} );
+}
+function poseer(){
+	$(document).ready(function() {
+		var id = $('#id_usuario').get(0).value;
+		var pass = $('#password').get(0).value;
+		$.ajax({
+			url: 'usuarios/poseer/' + pass + '/' + id,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#usuarios').DataTable().ajax.reload();
+				}else{
+					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-09');}	
+		});
+	} );
+}
+function liberar_posesion(id_usuario){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'usuarios/liberar_posesion/' + id_usuario,
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-10');}	
+		});
+	} );
+}
+function exorcizar(){
+	$(document).ready(function() {
+		var id = $('#id_usuario').get(0).value;
+		$.ajax({
+			url: 'usuarios/exorcizar/' + id,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#usuarios').DataTable().ajax.reload();
+				}else{
+					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-11');}	
+		});
+	} );
+}

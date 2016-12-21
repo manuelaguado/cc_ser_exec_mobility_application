@@ -167,6 +167,27 @@ class Usuarios extends Controlador
 		
 		require URL_VISTA.'modales/usuarios/nuevo_usuario.php';
 	}
+	public function tomar_posesion($id_usuario){
+		$this->se_requiere_logueo(true,'Usuarios|posesion');
+		require URL_VISTA.'modales/usuarios/posesion.php';
+	}
+	public function poseer($password,$id_usuario){
+		$this->se_requiere_logueo(true,'Usuarios|posesion');
+		$usuario = $this->loadModel('Usuarios');
+		$poseido = $usuario->poseer($id_usuario,$password);
+		print json_encode($poseido);
+	}
+	public function liberar_posesion($id_usuario){
+		$this->se_requiere_logueo(true,'Usuarios|posesion');
+		require URL_VISTA.'modales/usuarios/liberar_posesion.php';
+	}
+	public function exorcizar($id_usuario){
+		$this->se_requiere_logueo(true,'Usuarios|posesion');
+		$usuario = $this->loadModel('Usuarios');
+		$exorcizar = $usuario->exorcizar($id_usuario);
+		print json_encode($exorcizar);
+	}
+	
 	public function agregar_usuario(){
 		$this->se_requiere_logueo(true,'Usuarios|agregar_usuario');
 		$usuario_model = $this->loadModel('Usuarios');
