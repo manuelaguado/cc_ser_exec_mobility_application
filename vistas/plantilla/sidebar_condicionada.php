@@ -231,51 +231,8 @@
 				</li>
 				<?php
 				}
-				?>			
+				?>
 				
-				<?php
-				if($this->tiene_permiso('Operacion|cordon_kpmg') || $this->tiene_permiso('Operacion|cordon_ejnal')){
-				?>
-				<li class="">
-					<a href="#" class="dropdown-toggle">
-						<i class="menu-icon fa fa-caret-right"></i>
-
-						Cordón
-						<b class="arrow fa fa-angle-down"></b>
-					</a>
-					<b class="arrow"></b>
-					<ul class="submenu nav-hide" style="display: none;">
-						<?php
-						if($this->tiene_permiso('Operacion|cordon_kpmg')){
-						?>					
-						<li class="">
-							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/cordon_kpmg');">
-								<i class="menu-icon fa fa-taxi green"></i>
-								KPMG
-							</a>
-							<b class="arrow"></b>
-						</li>
-						<?php
-						}
-						?>						
-						<?php
-						if($this->tiene_permiso('Operacion|cordon_ejnal')){
-						?>											
-						<li class="">
-							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/cordon_ejnal');">
-								<i class="menu-icon fa fa-taxi green"></i>
-								Ejercito Nacional
-							</a>
-							<b class="arrow"></b>
-						</li>
-						<?php
-						}
-						?>
-					</ul>
-				</li>				
-				<?php
-				}
-				?>
 				<?php
 				if($this->tiene_permiso('Operacion|tiempo_base')){
 				?>								

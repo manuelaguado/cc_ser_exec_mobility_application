@@ -4,6 +4,7 @@ class Login extends Controlador
     public function index()
     {	
 		$this->se_requiere_logueo(false);
+		setcookie("PHPSESSID",$this->token(32),time()+86400);
 		require_once '../vendor/MobileDetect/Mobile_Detect.php';
 		$detect = new Mobile_Detect;
 		if($detect->isMobile()){

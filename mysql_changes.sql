@@ -1,7 +1,6 @@
 -- Cambios para produccion
 set FOREIGN_KEY_CHECKS=0;
-ALTER TABLE `centralcar`.`cr_tiempo_base` ADD COLUMN `id_operador_unidad` int(32) UNSIGNED NULL AFTER `id_operador`;
-ALTER TABLE `centralcar`.`cr_tiempo_base` ADD CONSTRAINT `fk_cr_tiempo_base_cr_operador_unidad_1` FOREIGN KEY (`id_operador_unidad`) REFERENCES `centralcar`.`cr_operador_unidad` (`id_operador_unidad`);
+
 set FOREIGN_KEY_CHECKS=1;
 
 
