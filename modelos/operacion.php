@@ -491,7 +491,8 @@ class OperacionModel{
 					fw_usuarios.apellido_paterno,
 					' ',
 					fw_usuarios.apellido_materno
-				) AS nombre
+				) AS nombre,
+				count(DISTINCT id_operador_unidad) as multi
 			FROM
 			cr_operador
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
@@ -518,6 +519,7 @@ class OperacionModel{
 				$operadores[$num]['id_usuario'] 		= $row->id_usuario;
 				$operadores[$num]['nombre'] 			= $row->nombre;
 				$operadores[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$operadores[$num]['multi'] 				= $row->multi;
 				$operadores[$num]['mensual'] 			= $apartados['mensuales'];
 				$operadores[$num]['anual'] 				= $apartados['anuales'];
 				$operadores[$num]['status'] 			= $apartados['hit_anual'].'/'.$apartados['turnos_anuales'];
@@ -526,6 +528,57 @@ class OperacionModel{
 			}
 		}
 		return $operadores;			
+	}
+	function elegirVehiculo($id_operador){
+		$qry = "
+			SELECT
+				cr_marcas.marca,
+				cr_modelos.modelo,
+				cr_unidades.`year`,
+				cr_unidades.placas,
+				cr_unidades.color,
+				cr_operador_unidad.id_operador_unidad,
+				CONCAT(
+					fwu.nombres,
+					' ',
+					fwu.apellido_paterno,
+					' ',
+					fwu.apellido_materno
+				) AS nombre,
+				cr_numeq.num,
+				cr_operador.id_usuario
+			FROM
+				cr_operador_unidad
+			INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
+			INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
+			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
+			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN fw_usuarios AS fwu ON cr_operador.id_usuario = fwu.id_usuario
+			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
+			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+			WHERE
+				cr_operador_unidad.id_operador = $id_operador	
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$vehiculos = array();
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			$n = 0;
+			foreach ($data as $row){
+				$vehiculos[$n]['marca'] = utf8_encode($row->marca);
+				$vehiculos[$n]['modelo']= utf8_encode($row->modelo);
+				$vehiculos[$n]['year'] 	= $row->year;
+				$vehiculos[$n]['placas']= $row->placas;
+				$vehiculos[$n]['color']	= utf8_encode($row->color);
+				$vehiculos[$n]['id_operador_unidad']= $row->id_operador_unidad;
+				$vehiculos[$n]['nombre']= utf8_encode($row->nombre);
+				$vehiculos[$n]['num']= $row->num;
+				$vehiculos[$n]['id_usuario']= $row->id_usuario;
+				$n++;
+			}
+		}
+		return $vehiculos;	
 	}
 	function apartData($id_operador){
 		$qry = "
@@ -562,6 +615,7 @@ class OperacionModel{
 		$units = self::getTBUnitsRed();
 		self::vaciarTiempoBase();
 		$oper = array();
+		$oper_unit = array();
 		$coordsUnits = '';
 		foreach($units as $unit){
 			$qry = "
@@ -587,6 +641,7 @@ class OperacionModel{
 				foreach ($data as $row){
 					$coordsUnits .= $row->latitud.','.$row->longitud.'|';
 					$oper[] = $unit['id_operador'];
+					$oper_unit[] = $unit['id_operador_unidad'];
 					$latLng[] = $row->latitud.','.$row->longitud;
 				}
 			}		
@@ -601,6 +656,7 @@ class OperacionModel{
 				$array['min'] = $tb_units->elements[0]->duration->value;
 				$array['max'] = $tb_units->elements[0]->duration_in_traffic->value;
 				$array['id_operador'] = $oper[$n];
+				$array['id_operador_unidad'] = $oper_unit[$n];
 				$array['latLng'] = $latLng[$n];
 				self::storeTB($array);
 			}
@@ -625,6 +681,7 @@ class OperacionModel{
 		$sql = "
 			INSERT INTO `cr_tiempo_base` (
 				`id_operador`,
+				`id_operador_unidad`,
 				`distancia`,
 				`min_min`,
 				`min_max`,
@@ -633,6 +690,7 @@ class OperacionModel{
 			VALUES
 				(
 					'".$array['id_operador']."',
+					'".$array['id_operador_unidad']."',
 					'".$array['distancia']."',
 					'".$array['min']."',
 					'".$array['max']."',
@@ -727,7 +785,9 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cr_operador.id_operador
 			INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
 			INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
-			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo			
+			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
+			WHERE
+				cr_tiempo_base.id_operador_unidad = cr_operador_unidad.id_operador_unidad
 		';
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -872,6 +932,8 @@ class OperacionModel{
 		$alAire = 0;
 		if(count($operadores)>0){
 			foreach ($operadores as $operador) {
+				D::bug('1>>>'.$id_operador_unidad);
+				D::bug('2>>>'.$operador['id_operador_unidad']);
 				if($id_operador_unidad == $operador['id_operador_unidad']){$alAire++;}
 			}
 		}
@@ -3651,7 +3713,9 @@ class OperacionModel{
 			INNER JOIN cr_modelos AS crmd ON cru.id_modelo = crmd.id_modelo
 			INNER JOIN cr_marcas AS crmk ON cru.id_marca = crmk.id_marca
 		';
-		$where = "";
+		$where = "
+			crtb.id_operador_unidad = crou.id_operador_unidad
+		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);

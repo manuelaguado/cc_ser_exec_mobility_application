@@ -29,10 +29,10 @@ class Operacion extends Controlador
 		if($operacion->cordon_hash(1)){$mobile->transmitir('doit','updcrd1');}
 		if($operacion->cordon_hash(2)){$mobile->transmitir('doit','updcrd2');}
 		
+		if($operacion->serv_cve_hash(179)){$mobile->transmitir('doit','updasignados');}
+		if($operacion->servicio_hash(171)){$mobile->transmitir('doit','updproceso');}
 		if($operacion->servicio_hash(170)){$mobile->transmitir('doit','updpendientes');}
 		if($operacion->servicio_hash(188)){$mobile->transmitir('doit','updpendientes');}
-		if($operacion->servicio_hash(171)){$mobile->transmitir('doit','updproceso');}
-		if($operacion->serv_cve_hash(179)){$mobile->transmitir('doit','updasignados');}
 		
 		$eventos = $mobile->sync_ride();
 		foreach ($eventos as $evento){
@@ -89,6 +89,12 @@ class Operacion extends Controlador
 		$anterior = self::getConfig(1,'turno_apartados');
 		$actual = $model->turnoApart($anterior['valor']);
 		require URL_VISTA.'modales/operacion/pulledApart.php';
+	}
+	public function elegirVehiculo($id_operador){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$model = $this->loadModel('Operacion');
+		$vehiculos = $model->elegirVehiculo($id_operador);
+		require URL_VISTA.'modales/operacion/elegirVehiculo.php';
 	}
 	public function mensajeriaSettings(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

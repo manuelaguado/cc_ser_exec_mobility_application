@@ -1,4 +1,4 @@
-<div class="modal fade" id="myModal" tabindex="-1">
+<div class="modal fade" id="pulledApart" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -11,7 +11,7 @@
 				<div class="row">
 					<div class="col-md-12 column">
 						<div class="table-responsive">
-							<table id="domicilios" class="table table-striped table-bordered table-hover">
+							<table id="contentPullApart" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>
 										<th></th>
@@ -43,10 +43,23 @@
 												<td>".$operador['anual']."</td>
 												<td>".$operador['status']."</td>
 												<td>
+											";
+											if($operador['multi'] == 1){
+												echo "
 													<button onclick='asignarDirecto(".$operador['id_operador_unidad']."); setIdens(".$operador['num'].",".$operador['id_operador'].",\"".$operador['nombre']."\");' class='btn btn-xs btn-success'>
-															Seleccionar
+															Asignar
 														<i class='ace-icon fa fa-arrow-right icon-on-right'></i>
-													</button>												
+													</button>
+												";
+											}else{
+												echo "
+													<button onclick='elegirVehiculo(".$operador['id_operador'].");' class='btn btn-xs btn-warning'>
+															Elegir
+														<i class='ace-icon fa fa-arrow-right icon-on-right'></i>
+													</button>
+												";
+											}
+											echo "
 												</td>
 											</tr>
 											";

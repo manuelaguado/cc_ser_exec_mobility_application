@@ -695,6 +695,7 @@ function pop_alaire(){
 }
 function asignarDirecto(id_operador_unidad){
 	$('#id_operador_unidad').val(id_operador_unidad);
+	$('#pulledApart').modal('hide');
 	$('#myModal').modal('hide');
 }
 function verifySalida(){
@@ -1318,6 +1319,23 @@ function dataViaje(id_viaje){
 					});
 				},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-83');}	
+		});
+	} );
+}
+function elegirVehiculo(id_operador){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/elegirVehiculo/' + id_operador,
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						$('#pulledApart').modal('hide');
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-84');}	
 		});
 	} );
 }
