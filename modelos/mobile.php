@@ -554,7 +554,7 @@ class MobileModel
 			$data = $query->fetchAll();
 
 			foreach ($data as $row) {
-				array_push($fila, '  [  '. $row->num .'  ] '. utf8_encode($row->nombre).', '. utf8_encode($row->modelo) . ' ' .  utf8_encode($row->color).'');
+				array_push($fila, '  [  '. $row->num .'  ] '. $row->nombre.', '. $row->modelo . ' ' .  $row->color.'');
 			}
 		}
 		return $fila;
@@ -1540,7 +1540,7 @@ class MobileModel
 							
 							$ahora = date("Y-m-d H:i:s");
 							$timeFresh = self::minutosDiferencia(@$position->times,$ahora);
-							$timeFresh =1;
+							
 							$jumGeoposition = array(1,56);
 							
 							$enGeocerca = self::enGeocerca($geoVars);

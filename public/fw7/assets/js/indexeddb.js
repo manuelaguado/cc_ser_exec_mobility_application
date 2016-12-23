@@ -4,11 +4,11 @@ var dataBase = null;
 var version_bd = 'O1Se2';
 $("#allow_update").html(version_bd);
 
-//deleteDatabase('serexecutive2');
+deleteDatabase('serexecutive2');
 
 	/*INICIALIZAR LA BASE DE DATOS*/
 	function startDB() {
-		dataBase = indexedDB.open("serexecutive2", 1);
+		dataBase = indexedDB.open("serexecutive3", 1);
 		dataBase.onupgradeneeded = function (e) {
 			var active = dataBase.result;
 			var object1 = active.createObjectStore("claves", {keyPath: 'id', autoIncrement: true});
@@ -28,6 +28,10 @@ $("#allow_update").html(version_bd);
 			var object7 = active.createObjectStore("gps", {keyPath: 'id', autoIncrement: true});
 				object7.createIndex('by_iden', 'id', {unique: true});
 				object7.createIndex('by_token', 'token', {unique: true});
+			var object8 = active.createObjectStore("cordon", {keyPath: 'id', autoIncrement: true});
+				object8.createIndex('by_iden', 'iden', {unique: true});
+			var object9 = active.createObjectStore("ride", {keyPath: 'id', autoIncrement: true});
+				object9.createIndex('by_iden', 'iden', {unique: true});
 		};
 		dataBase.onsuccess = function (e) {
 			setStartPage();
@@ -36,6 +40,70 @@ $("#allow_update").html(version_bd);
 			alert('Error loading database');
 		};
 	}
+
+
+/*RECUPERAR RIDE*/
+function getRide(){
+	var active = dataBase.result;
+	var data = active.transaction(["ride"], "readwrite");
+	var object = data.objectStore("ride");
+	
+	var index = object.index("by_iden");
+	var request = index.get(1);
+	
+	request.onsuccess = function () {
+		var result = request.result;
+		print_travel(result.ride);
+	};
+}
+	
+/*GUARDAR RIDE*/
+function storageRide(response,callback){
+	var active = dataBase.result;
+	var data = active.transaction(["ride"], "readwrite");
+	var object = data.objectStore("ride");
+	var index = object.index("by_iden");
+	var request = index.get(1);
+	var objectStoreRequest = object.clear();
+	request.onsuccess = function () {
+		var request = object.put({
+			iden: 1,
+			ride: response
+		});
+		callback();
+	};
+}
+	
+/*RECUPERAR CORDON*/
+function getCordon(){
+	var active = dataBase.result;
+	var data = active.transaction(["cordon"], "readwrite");
+	var object = data.objectStore("cordon");
+	
+	var index = object.index("by_iden");
+	var request = index.get(1);
+	
+	request.onsuccess = function () {
+		var result = request.result;
+		setCordonDual(result.cordon);
+	};
+}	
+/*GUARDAR CORDON*/
+function storageCordon(response,callback){
+	var active = dataBase.result;
+	var data = active.transaction(["cordon"], "readwrite");
+	var object = data.objectStore("cordon");
+	var index = object.index("by_iden");
+	var request = index.get(1);
+	var objectStoreRequest = object.clear();
+	request.onsuccess = function () {
+		var request = object.put({
+			iden: 1,
+			cordon: response
+		});
+		callback();
+	};
+}
 
 /*SETEAR PAGINA ACTUAL*/
 function setStartPage(){
@@ -55,16 +123,24 @@ function setStartPage(){
 			}else{
 				eval("html = myApp." + result.actual + "({origen: '" + result.origen + "' })");
 				mainView.loadContent(html);
+				if(
+					(result.actual !== 'base')&&
+					(result.actual !== 'regreso_init')&&
+					(result.actual !== 'regreso')
+				){
+					getRide();
+				}
 				if(result.actual !== 'base'){
 					loadStateBoton();
-				}				
+				}else{
+					getCordon();
+				}
 			}
 		}else{
 			initEpisodioAuto();
 		}
 	};
 }
-
 /*SETEAR VARIABLES DINAMICAS*/
 function setStoreVariable(variable,valor,callback){
 	var active = dataBase.result;

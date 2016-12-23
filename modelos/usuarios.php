@@ -274,9 +274,9 @@ class UsuariosModel
 					$array['usuario'] 			= $row->usuario;
 					$array['correo' ]			= $row->correo;
 					$array['id_rol'] 			= $row->id_rol;
-					$array['nombres'] 			= utf8_encode($row->nombres);
-					$array['apellido_paterno'] 	= utf8_encode($row->apellido_paterno);
-					$array['apellido_materno'] 	= utf8_encode($row->apellido_materno);
+					$array['nombres'] 			= $row->nombres;
+					$array['apellido_paterno'] 	= $row->apellido_paterno;
+					$array['apellido_materno'] 	= $row->apellido_materno;
 					$array['id_ubicacion'] 		= $row->id_ubicacion;
 					$array['password'] 			= $row->password;
 					$array['cat_status'] 		= $row->cat_status;

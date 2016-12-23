@@ -110,6 +110,7 @@ function broadcastPlay(data){
 	});
 }
 function print_travel(travel){
+	$('#data_viaje').html('');
 	$.each(travel, function( key, value ) {
 		if(value != ''){
 			switch (key) {
@@ -125,7 +126,8 @@ function print_travel(travel){
 					$('#data_viaje').append( '<div class="card"><div class="card-header" style="color:#000000;">'+key+'</div><div class="card-content"><div class="card-content-inner">'+value+'</div></div></div>' );
 			}
 		}	
-	});	
+	});
+	storageRide(travel,function(){});	
 }
 function ride_ok(data) {
 	var resp_success = JSON.parse(data);
@@ -169,7 +171,7 @@ function ride_ok(data) {
 		case 'R11':
 		case 'A10':
 			if (resp_success['new'] == true){
-				$('#data_viaje').html('');
+				
 				$('#data_cordon').html('NO HAY DATOS DE CORDON');
 				storeTravel(resp_success);
 				$("#ride_false").hide();
@@ -213,7 +215,6 @@ function ride_ok(data) {
 		case 'F15':
 			if (resp_success['new'] == true){
 				
-				$('#data_viaje').html('');
 				$('#data_cordon').html('NO HAY DATOS DE CORDON');
 				
 				storeTravel(resp_success);
@@ -247,7 +248,6 @@ function ride_ok(data) {
 		case 'A19':
 			if (resp_success['new'] == true){
 				
-				$('#data_viaje').html('');
 				$('#data_cordon').html('NO HAY DATOS DE CORDON');
 				
 				storeTravel(resp_success);
@@ -335,22 +335,7 @@ function ride_ok(data) {
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////// salida por sitio
 		case 'F19':
-			if (resp_success['new'] == false){
-				$('#data_cordon').html('');
-				$.each(resp_success['cordon'], function( key, value ) {
-					suma = parseInt(key) + parseInt(1);
-				  $('#data_cordon').append('<div class="user-tail"><span id="ava-tail" class="circle_back"><img class="avatar_tail" src="'+url_app+'fw7/assets/img/driver-black.svg" alt="Operador"><div class="cordon_name">'+ suma +'.-'+value+'</div></span></div>');
-				});
-			}
-			if(resp_success['turno'] <= 3){
-				$("#exit_true").hide();
-				$("#exit_false").show();
-				updatePageButtons('exit_true','exit_false');
-			}else{
-				$("#exit_true").show();
-				$("#exit_false").hide();
-				updatePageButtons('exit_false','exit_true');
-			}
+			setCordonDual(resp_success);
 			
 			storeClave('R2','C1','NULL','NULL','NULL','ACUSE CORDON',function(){});
 			
@@ -387,6 +372,27 @@ function ride_ok(data) {
 			dOut();
 			break;
 	}
+}
+
+function setCordonDual(resp_success){
+	if (resp_success['new'] == false){
+		$('#data_cordon').html('');
+		$.each(resp_success['cordon'], function( key, value ) {
+			suma = parseInt(key) + parseInt(1);
+		  $('#data_cordon').append('<div class="user-tail"><span id="ava-tail" class="circle_back"><img class="avatar_tail" src="'+url_app+'fw7/assets/img/driver-black.svg" alt="Operador"><div class="cordon_name">'+ suma +'.-'+value+'</div></span></div>');
+		});
+		cordonSound.play();
+		storageCordon(resp_success,function(){})
+	}
+	if(resp_success['turno'] <= 3){
+		$("#exit_true").hide();
+		$("#exit_false").show();
+		updatePageButtons('exit_true','exit_false');
+	}else{
+		$("#exit_true").show();
+		$("#exit_false").hide();
+		updatePageButtons('exit_false','exit_true');
+	}	
 }
 	
 /*INTERVALS*/
