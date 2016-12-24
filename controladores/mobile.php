@@ -76,8 +76,7 @@ class Mobile extends Controlador
 				if($tail){
 					D::bug('Se quitó del cordon 2'.$tail);
 					$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
-				}		
-		
+				}
 		print json_encode(array('resp' => true ));
 	}
 }

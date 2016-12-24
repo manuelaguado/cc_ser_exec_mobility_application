@@ -791,6 +791,7 @@ class acciones_login extends SSP{
 				cr_operador.id_operador,
 				cr_numeq.num,
 				cr_sync.estado1,
+				count(cr_sync.estado1) as tot,
 				count(DISTINCT cr_sync.estado1) as C1				
 			FROM
 				cr_operador
@@ -808,7 +809,18 @@ class acciones_login extends SSP{
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
-				$stat = ($row['C1'] >= 2)?'C1':'C2';
+				if(($row['C1'] >= 2)&&($row['tot'] >= 2)){
+					$stat = 'C1';
+				}else if(($row['C1'] >= 1)&&($row['tot'] >= 2)){
+					$stat = 'C2';
+				}else if(($row['C1'] == 1)&&($row['tot'] == 1)&&($row['estado1'] == 'C1')){
+					$stat = 'C1';
+				}else if(($row['C1'] == 1)&&($row['tot'] == 1)&&($row['estado1'] == 'C2')){
+					$stat = 'C1';
+				}else{
+					$stat = 'C2';
+				}				
+				
 				if($row['C1'] == 0){
 					$stat = 'N/A';
 					$array['id_operador'] =  'N/A';
