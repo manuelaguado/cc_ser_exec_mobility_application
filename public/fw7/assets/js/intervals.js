@@ -109,7 +109,7 @@ function broadcastPlay(data){
 		timbre.pause();
 	});
 }
-function print_travel(travel){
+function print_travel(travel,sound=false){
 	$('#data_viaje').html('');
 	$.each(travel, function( key, value ) {
 		if(value != ''){
@@ -127,6 +127,9 @@ function print_travel(travel){
 			}
 		}	
 	});
+	if(sound){
+		rideSound.play();
+	}
 	storageRide(travel,function(){});	
 }
 function ride_ok(data) {
@@ -179,9 +182,12 @@ function ride_ok(data) {
 				updatePageButtons('ride_false','ride_true');
 				$("#exit_true").hide();
 				$("#exit_false").show();
-				updatePageButtons('exit_true','exit_false');
-				myApp.alert('Vea los detalles de su destino en el menú', 'Nuevo destino');
-				print_travel(resp_success['viaje']);
+				updatePageButtons('exit_true','exit_false');			
+				
+				print_travel(resp_success['viaje'],true);
+				myApp.alert('Vea los detalles de su destino en el menú', 'Nuevo destino',function(){
+					rideSound.pause();
+				});	
 				
 				getBase(function () {	
 					storeClave('R5','C1',globalBase,'NULL','NULL','ACUSE DE RECEPCION DE A10',function(){});
@@ -231,9 +237,12 @@ function ride_ok(data) {
 				$("#tomar_apartado_act").hide();
 				$("#tomar_apartado_des").show();				
 				
-				updatePageButtons('air_service_des','air_service_act');
-				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio al aire');
-				print_travel(resp_success['viaje']);				
+				updatePageButtons('air_service_des','air_service_act');				
+				
+				print_travel(resp_success['viaje'],true);
+				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio al aire',function(){
+					rideSound.pause();
+				});					
 				storeClave('R6','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE F15',function(){});
 			}else{
 				$("#air_service_act").hide();
@@ -265,8 +274,11 @@ function ride_ok(data) {
 				$("#tomar_apartado_des").hide();				
 				
 				updatePageButtons('tomar_apartado_des','tomar_apartado_act');
-				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio programado');
-				print_travel(resp_success['viaje']);				
+				
+				print_travel(resp_success['viaje'],true);
+				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio programado',function(){
+					rideSound.pause();
+				});								
 				storeClave('R14','C1','NULL','NULL','NULL','ACUSE DE RECEPCION DE F15',function(){});
 			}else{
 				$("#tomar_apartado_des").show();
@@ -283,9 +295,12 @@ function ride_ok(data) {
 				storeTravel(resp_success);
 				$("#salida_sitio_des").hide();
 				$("#salida_sitio_act").show();
-				updatePageButtons('salida_sitio_des','salida_sitio_act');
-				myApp.alert('Se autorizó la salida por sitio', 'Salida por sitio');
-				print_travel(resp_success['viaje']);
+				updatePageButtons('salida_sitio_des','salida_sitio_act');			
+				
+				print_travel(resp_success['viaje'],true);
+				myApp.alert('Se autorizó la salida por sitio', 'Salida por sitio',function(){
+					rideSound.pause();
+				});					
 				getBase(function () {	
 					storeClave('R7','C1',globalBase,'NULL','NULL','ACUSE DE RECEPCION DE F13',function(){});
 				});
@@ -394,7 +409,7 @@ function setCordonDual(resp_success){
 		updatePageButtons('exit_false','exit_true');
 	}	
 }
-	
+
 /*INTERVALS*/
 var initSync = setInterval("startSync(function(){})",1000);
 var initGps  = setInterval("startGps()",5000);

@@ -178,7 +178,7 @@ class Controlador extends Controller
 						exit();
 					}else{
 						$_SESSION['hora_acceso']=time();
-						self::updateLogin();						
+						self::updateLogin();					
 					}
 				}else{
 					require URL_TEMPLATE.'tyc.php';

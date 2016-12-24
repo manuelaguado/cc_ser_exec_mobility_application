@@ -791,13 +791,17 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|panorama_kpmg');
 		$mobile = $this->loadModel('Mobile');
 		$unitsIn = self::panorama_get_base($mobile,'B1');
-		$geoDraw = self::drawGeocerca($mobile,'B1');
+		$gt_goc = $mobile->getGeocerca('B1');
+		$geocerca = $gt_goc['geocerca'];
+		$geoDraw = self::dataGeocerca($geocerca);
 		require URL_VISTA.'operacion/panorama_kpmg.php';
 	}
 	public function panorama_kpmg_cordon(){
 		$this->se_requiere_logueo(true,'Operacion|panorama_kpmg_cordon');
 		$mobile = $this->loadModel('Mobile');
-		$geoDraw = self::drawGeocerca($mobile,'B1');
+		$gt_goc = $mobile->getGeocerca('B1');
+		$geocerca = $gt_goc['geocerca'];
+		$geoDraw = self::dataGeocerca($geocerca);
 		$unitsIn = self::panorama_get_cordon('1');
 		require URL_VISTA.'operacion/panorama_kpmg_cordon.php';
 	}
@@ -805,13 +809,17 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|panorama_ejnal');
 		$mobile = $this->loadModel('Mobile');
 		$unitsIn = self::panorama_get_base($mobile,'B2');
-		$geoDraw = self::drawGeocerca($mobile,'B2');
+		$gt_goc = $mobile->getGeocerca('B2');
+		$geocerca = $gt_goc['geocerca'];
+		$geoDraw = self::dataGeocerca($geocerca);
 		require URL_VISTA.'operacion/panorama_ejnal.php';
 	}
 	public function panorama_ejnal_cordon(){
 		$this->se_requiere_logueo(true,'Operacion|panorama_ejnal_cordon');
 		$mobile = $this->loadModel('Mobile');
-		$geoDraw = self::drawGeocerca($mobile,'B2');
+		$gt_goc = $mobile->getGeocerca('B2');
+		$geocerca = $gt_goc['geocerca'];		
+		$geoDraw = self::dataGeocerca($geocerca);
 		$unitsIn = self::panorama_get_cordon('2');
 		require URL_VISTA.'operacion/panorama_ejnal_cordon.php';
 	}	
@@ -839,8 +847,7 @@ class Operacion extends Controlador
 		}
 		return $unitState;
 	}	
-	public function drawGeocerca(MobileModel $mobile,$base){
-		$geocerca = $mobile->getGeocerca($base);
+	public function dataGeocerca($geocerca){
 		$geoarray = explode(' ',$geocerca);
 		$num = 0;
 		foreach($geoarray as $group){

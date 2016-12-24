@@ -29,6 +29,7 @@ myApp.regreso 			= 	Template7.compile($$('#regreso').html());
 myApp.elegir_base 		= 	Template7.compile($$('#elegir_base').html());
 myApp.cambio_ruta 		= 	Template7.compile($$('#cambio_ruta').html());
 myApp.abandono 			= 	Template7.compile($$('#abandono').html());
+myApp.choice_car 		= 	Template7.compile($$('#choice_car').html());
 
 myApp.indicadores 		= 	Template7.compile($$('#indicadores').html());
 
@@ -57,6 +58,27 @@ function loadUpdatedTemplate(template,returned){
 	setStartPage();
 	eval(scheme_movil + "();");
 }
+/**********************************************************************************************************************************************SELECT CAR**/
+$$("body").on("click", ".select_car", function() {
+	id_operador_unidad = $(this).attr('data-car');
+	$.ajax({
+		url: url_app + 'mobile/setIdOperadorUnidad/' + id_operador_unidad,
+		type: 'POST',
+		dataType: "json",
+		success: function(respuesta){
+			if (respuesta['resp'] == true) {
+				initEpisodioAuto();
+				var mvhc = 1;
+				window.location ="mobile";
+			}else{
+				myApp.alert('Intente seleccionar la unidad cuando tenga datos APP1', 'Sin conexión');
+			}
+		}, 
+		error: function(){
+			myApp.alert('Intente seleccionar la unidad cuando tenga datos APP2', 'Sin conexión');
+		}
+	});
+});
 /**********************************************************************************************************************************************CANCELACIONES**/
 $$("body").on("click", ".a14", function() {
 	loadUpdatedTemplate('abandono', $(".a14").attr('data-return'));

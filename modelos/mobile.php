@@ -912,18 +912,22 @@ class MobileModel
 	function enGeocercaNum($geoVars,$base){
 		require_once( '../vendor/geocerca.php' );
 		$geoCerca = new geoCerca();
-		$poligono = self::getGeocerca($base);
+		$gt_goc = self::getGeocerca($base);
+		$poligono = $gt_goc['geocerca'];
 		return $geoCerca->puntoEnPoligono(''.$geoVars['latitud_act'].', '.$geoVars['longitud_act'].'', $poligono);
 	}	
 	function enGeocerca($clave){
 		require_once( '../vendor/geocerca.php' );
 		$geoCerca = new geoCerca();
-		$poligono = self::getGeocerca($clave['estado2']);
+		$gt_goc = self::getGeocerca($clave['estado2']);
+		$poligono = $gt_goc['geocerca'];
 		return $geoCerca->puntoEnPoligono(''.$clave['latitud_act'].', '.$clave['longitud_act'].'', $poligono);
 	}
 	function getGeocerca($clave){
 		$qry = "
 			SELECT
+				latitud,
+				longitud,
 				geocerca
 			FROM
 				cr_bases
@@ -932,12 +936,16 @@ class MobileModel
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
+		$array = array();
 		if($query->rowCount()>=1){
 			$data = $query->fetchAll();
 			foreach ($data as $row) {
-				return $row->geocerca;
+				$array['latitud'] = $row->latitud;
+				$array['longitud'] = $row->longitud;
+				$array['geocerca'] = $row->geocerca;
 			}
 		}
+		return $array;
 	}
 	function storeToSync($clave, $num){
 		$sql = "
@@ -1876,6 +1884,42 @@ class MobileModel
 			}
 		}
 		return $id_operadores;
-	}	
+	}
+	function getVehiculosOperador($id_operador){
+		$qry = "
+			SELECT
+				crou.id_operador_unidad,
+				crm.marca,
+				cmod.modelo,
+				cru.`year`,
+				cru.placas,
+				cru.color
+			FROM
+				cr_operador_unidad AS crou
+			INNER JOIN cr_unidades AS cru ON cru.id_unidad = crou.id_unidad
+			INNER JOIN cr_marcas AS crm ON cru.id_marca = crm.id_marca
+			INNER JOIN cr_modelos AS cmod ON cru.id_modelo = cmod.id_modelo
+			WHERE
+				cru.cat_status_unidad = 14
+			AND crou.id_operador = ".$id_operador."		
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$vehiculos = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$vehiculos[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$vehiculos[$num]['marca'] = $row->marca;
+				$vehiculos[$num]['modelo'] = $row->modelo;
+				$vehiculos[$num]['year'] = $row->year;
+				$vehiculos[$num]['placas'] = $row->placas;
+				$vehiculos[$num]['color'] = $row->color;
+				$num++;
+			}
+		}
+		return $vehiculos;
+	}
 }
 ?>

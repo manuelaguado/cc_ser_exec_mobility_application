@@ -76,7 +76,7 @@ class Login extends Controlador
 		$mobile = $this->loadModel('Mobile');
 		$loguear = $obtener_modelo->logear($mobile);
 			
-			if(($loguear[1]['dispositivo'] == 'celular')&&($loguear[2]['via'] == 'correcta')){
+			if(($loguear[1]['dispositivo'] == 'celular')&&($loguear[2]['via'] == 'correcta')&&($_SESSION['id_operador_unidad'])!= 'select'){
 				$operacion = $this->loadModel('Operacion');
 				$bases = $this->loadModel('Bases');
 				$tail = $operacion->formadoAnyBase($bases, $_SESSION['id_operador_unidad']);

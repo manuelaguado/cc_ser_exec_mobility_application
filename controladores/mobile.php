@@ -5,6 +5,7 @@ class Mobile extends Controlador
     {
 		$this->se_requiere_logueo(true,'Mobile|index');
 		$token_cache = $this->token(5);
+		$mvhc = ($_SESSION['id_operador_unidad'] == 'select')?2:1;
 		require URL_TEMPLATE_FW7.'index.php';
     }
 	public function sync()
@@ -52,6 +53,32 @@ class Mobile extends Controlador
 		
 		Controlador::setConfig($data);
 		print json_encode(array('resp' => true));
+	}
+	public function multi(){
+		if($_SESSION['id_operador_unidad'] == 'select'){
+			
+			$mobile = $this->loadModel('Mobile');
+			$vehiculos = $mobile->getVehiculosOperador($_SESSION['id_operador']);
+			print(json_encode($vehiculos));
+			
+		}else{
+			exit();
+		}
+	}
+	public function setIdOperadorUnidad($id_operador_unidad){
+		$_SESSION['multi'] = 1;
+		$_SESSION['id_operador_unidad'] = $id_operador_unidad;
+		
+				$operacion = $this->loadModel('Operacion');
+				$bases = $this->loadModel('Bases');
+				$mobile = $this->loadModel('Mobile');
+				$tail = $operacion->formadoAnyBase($bases, $_SESSION['id_operador_unidad']);
+				if($tail){
+					D::bug('Se quitó del cordon 2'.$tail);
+					$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
+				}		
+		
+		print json_encode(array('resp' => true ));
 	}
 }
 ?>

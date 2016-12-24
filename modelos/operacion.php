@@ -1571,7 +1571,9 @@ class OperacionModel{
 	function c1orc2($id_operador){
 		$qry = "
 			SELECT
-				syc.estado1
+				syc.estado1,
+				count(syc.estado1) as tot,
+				count(DISTINCT syc.estado1) as C1
 			FROM
 				cr_operador_unidad AS oun
 			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
@@ -1584,7 +1586,17 @@ class OperacionModel{
 		$return =  false;
 		if($query->rowCount()>=1){
 			foreach ($data as $row) {
-				$return = $row->estado1;
+				if(($row->C1 >= 2)&&($row->tot >= 2)){
+					$return = 'C1';
+				}else if(($row->C1 >= 1)&&($row->tot >= 2)){
+					$return = 'C2';
+				}else if(($row->C1 == 1)&&($row->tot == 1)&&($row->estado1 == 'C1')){
+					$return = 'C1';
+				}else if(($row->C1 == 1)&&($row->tot == 1)&&($row->estado1 == 'C2')){
+					$return = 'C1';
+				}else{
+					$return = 'C2';
+				}
 			}
 		}
 		return $return;

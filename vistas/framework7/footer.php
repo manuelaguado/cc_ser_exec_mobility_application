@@ -2,8 +2,8 @@
 <script>
 
 	var id_operador = '<?=$_SESSION['id_operador']?>';
-	var id_operador_unidad = '<?=$_SESSION['id_operador_unidad']?>';
 	var serie = '<?=$_SESSION['serie']?>';
+	var id_operador_unidad = '<?=$_SESSION['id_operador_unidad']?>';
 	var id_usuario = '<?=$_SESSION['id_usuario']?>';
 	var domain = '<?=DOMAIN?>';
 	
@@ -48,13 +48,18 @@ if(SOCKET_PROVIDER == 'ABLY'){
 <?php
 }
 ?>
-
+<script>
+var mvhc = <?=$mvhc?>;
+</script>
 <script type="text/javascript" src="<?=FW7?>assets/js/app.js?v=<?=$token_cache?>"></script>
 <script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js?v=<?=$token_cache?>"></script>
 
 <script type="text/javascript" src="<?=FW7?>assets/js/intervals.js?v=<?=$token_cache?>"></script>
+
 <audio id="timbre" name="timbre" src="<?=FW7?>assets/audio/timbre.mp3?v=<?=$token_cache?>" preload="auto" loop></audio>
 <audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3?v=<?=$token_cache?>" preload="auto"></audio>
+<audio id="rideSound" name="rideSound" src="<?=FW7?>assets/audio/ride.mp3?v=<?=$token_cache?>" preload="auto" loop></audio>
+
 <img src="<?=FW7?>assets/img/driver_green.svg" style="display:none;">
 <img src="<?=FW7?>assets/img/driver_black.svg" style="display:none;">
 <img src="<?=FW7?>assets/img/driver_red.svg" style="display:none;">
@@ -64,4 +69,5 @@ if(SOCKET_PROVIDER == 'ABLY'){
 <script>
 var timbre = document.getElementsByTagName("audio")[0];
 var cordonSound = document.getElementsByTagName("audio")[1];
+var rideSound = document.getElementsByTagName("audio")[2];
 </script>

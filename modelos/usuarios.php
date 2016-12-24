@@ -790,7 +790,8 @@ class acciones_login extends SSP{
 			SELECT
 				cr_operador.id_operador,
 				cr_numeq.num,
-				cr_sync.estado1
+				cr_sync.estado1,
+				count(DISTINCT cr_sync.estado1) as C1				
 			FROM
 				cr_operador
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
@@ -807,12 +808,16 @@ class acciones_login extends SSP{
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
-				$array['id_operador'] =  $row['id_operador'];
+				$stat = ($row['C1'] >= 2)?'C1':'C2';
+				if($row['C1'] == 0){
+					$stat = 'N/A';
+					$array['id_operador'] =  'N/A';
+				}else{
+					$array['id_operador'] =  $row['id_operador'];
+				}
 				$array['num'] =  $row['num'];
-				$array['estado'] =  $row['estado1'];
+				$array['estado'] =  $stat;
 			}
-		}else{
-				$array['id_operador'] = 'N/A';
 		}
 		return $array;
 	}

@@ -17,7 +17,7 @@
 										
 										<th>Unidad</th>
 										<th>Operador</th>
-										<th>Status</th>
+										<th>Auto</th>
 										<th>Acciones</th>
 									</tr>
 									<tbody>

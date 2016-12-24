@@ -84,15 +84,34 @@ class LoginModel
 		$result = $query->fetchAll();
 		if($query->rowCount()>=1){
 			foreach ($result as $num => $row) {
-				$sess_oper = self::setIDOperadorSessions($id_usuario);
-				if(@$sess_oper['id_operador_unidad']){
+				$id_operador_unidad = self::getIdOperadorUnidadBySession($row->session_id);				
+				if(@$id_operador_unidad){
 					$token = 'DUP:'.Controlador::token(62);
-					$mobile->setCveStore($id_usuario,$token,155,$sess_oper['id_operador_unidad']);
+					$mobile->setCveStore($id_usuario,$token,155,$id_operador_unidad);
 				}
 				self::signout($id_usuario);
 			}
 		}
-	}	
+	}
+	private function getIdOperadorUnidadBySession($session_id){
+		if(file_exists(session_save_path().'/sess_'.$session_id)){
+			$fp = fopen(session_save_path().'/sess_'.$session_id, "r");
+			
+			while(!feof($fp)) {
+				$content .= fgets($fp);
+			}
+				$regex = '#.*(id_operador_unidad\|s:1:")#';
+				$replacement = '';
+				$result = preg_replace($regex, $replacement, $content);
+				
+				$regex = '#(";cat_statusoperador).*#';
+				$replacement = '';
+				$id_operador_unidad = preg_replace($regex, $replacement, $result);
+				
+			fclose($fp);
+		}
+		return $id_operador_unidad;
+	}
 	public function logear(MobileModel $mobile){
 		
 		$stat = self::getStatusUser($_POST['usuario']);
@@ -142,8 +161,15 @@ class LoginModel
 						
 						$sess_oper = self::setIDOperadorSessions($_SESSION['id_usuario']);
 						$_SESSION['id_operador'] = $sess_oper['id_operador'];
+						
+						/*no separar getIdOperadorUnidadBySession*/
 						$_SESSION['id_operador_unidad'] = $sess_oper['id_operador_unidad'];
 						$_SESSION['cat_statusoperador'] = $sess_oper['cat_statusoperador'];
+						/*no separar getIdOperadorUnidadBySession*/
+						
+						if($sess_oper['multi'] > 1){
+							$_SESSION['id_operador_unidad'] = 'select';
+						}
 						
 						$_SESSION['serie'] = self::getSerie($_SESSION['id_usuario']);
 						self::permisos($_SESSION['id_rol']);
@@ -481,13 +507,18 @@ class LoginModel
 			SELECT
 				crou.id_operador,
 				crou.id_operador_unidad,
-				cro.cat_statusoperador
+				cro.cat_statusoperador,
+				count(
+					DISTINCT crou.id_operador_unidad
+				) AS multi
 			FROM
 				cr_operador_unidad AS crou
 			INNER JOIN cr_operador AS cro ON crou.id_operador = cro.id_operador
 			INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario
+			INNER JOIN cr_unidades ON cr_unidades.id_unidad = crou.id_unidad
 			WHERE
 				fwu.id_usuario = ".$id_usuario."
+			AND cr_unidades.cat_status_unidad = 14
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -498,6 +529,7 @@ class LoginModel
 				$array['id_operador'] = $row->id_operador;
 				$array['id_operador_unidad'] = $row->id_operador_unidad;
 				$array['cat_statusoperador'] = $row->cat_statusoperador;
+				$array['multi'] = $row->multi;
 			}
 		}
 		return $array;

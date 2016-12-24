@@ -36,6 +36,8 @@ include_once('templates/abandono.php');
 /*Pops*/
 include_once('elements/pops.php');
 
+/*Otros*/
+include_once('templates/choice_car.php');
 
 include_once('footer.php');
 ?>

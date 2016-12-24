@@ -27,7 +27,7 @@
 	</style>
 	<script type="text/javascript">
 		function initMap() {
-			var centro_mapa = new google.maps.LatLng(19.434644,-99.212046);
+			var centro_mapa = new google.maps.LatLng(<?=$gt_goc['latitud']?>,<?=$gt_goc['longitud']?>);
 			
 			var map = new google.maps.Map(document.getElementById('map'), {
 				zoom: 17,
