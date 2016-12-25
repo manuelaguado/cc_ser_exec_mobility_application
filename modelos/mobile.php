@@ -260,14 +260,14 @@ class MobileModel
 			SELECT
 				*
 			FROM
-				cr_sync
+				cr_sync as syc
 			WHERE
-				(cr_sync.clave = 'F14'
-			OR cr_sync.clave = 'C2'
-			OR cr_sync.clave = 'C1')
-			AND cr_sync.id_operador_unidad = $id_operador_unidad
+				(syc.clave = 'F14'
+			OR syc.clave = 'C2'
+			OR syc.clave = 'C1')
+			AND syc.id_operador_unidad = $id_operador_unidad
 			ORDER BY
-				cr_sync.id_sync DESC
+				syc.id_sync DESC
 			LIMIT 0,
 			 1
 		";

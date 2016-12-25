@@ -3728,8 +3728,9 @@ class OperacionModel{
 		$where = "
 			crtb.id_operador_unidad = crou.id_operador_unidad
 		";
+		$orden = "";
 		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
 	}
 	function queryCostosAdicionales($array,$id_viaje){
