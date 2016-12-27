@@ -567,7 +567,7 @@ class OperacionModel{
 			$n = 0;
 			foreach ($data as $row){
 				$vehiculos[$n]['marca'] = $row->marca;
-				$vehiculos[$n]['modelo']= $row->modelo;
+				$vehiculos[$n]['modelo']= utf8_encode($row->modelo);
 				$vehiculos[$n]['year'] 	= $row->year;
 				$vehiculos[$n]['placas']= $row->placas;
 				$vehiculos[$n]['color']	= $row->color;
