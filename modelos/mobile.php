@@ -141,7 +141,9 @@ class MobileModel
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'R2':/*Acuse de recibo de cordon*/
-						self::firmarAcuseCordon($clave['id_operador_unidad']);
+						if($clave['id_operador_unidad'] != 'select'){
+							self::firmarAcuseCordon($clave['id_operador_unidad']);
+						}
 						$output[$num] = self::storeToSync($clave, $num);
 						break;
 					case 'R5':/*Acuse de A10*/
@@ -628,20 +630,39 @@ class MobileModel
 		}
 	}
 	function exitCordonFromLogin($id_usuario,$id_operador_unidad){
-		$sql = "
-		UPDATE cr_cordon
-		SET 
-				cat_statuscordon	=	'". 114 ."',
-				salida				=	'".date("Y-m-d H:i:s")."',
-				user_mod 			= 	'".$id_usuario."'
-		WHERE
-			id_operador_unidad = ".$id_operador_unidad."
-			AND cat_statuscordon <> 114
+		$dataFull = "
+			SELECT
+				cro.id_operador,
+				base.id_operador_unidad
+			FROM
+				cr_operador as cro
+			INNER JOIN cr_operador_unidad AS indice ON indice.id_operador = cro.id_operador
+			INNER JOIN cr_operador_unidad AS base ON base.id_operador = cro.id_operador
+			WHERE
+				indice.id_operador_unidad = $id_operador_unidad
 		";
-		$query = $this->db->prepare($sql);
-		$query_resp = $query->execute();
-		self::solicitarAcuseCordon();
-		self::firmarAcuseCordon($id_operador_unidad);
+		$datos = $this->db->prepare($dataFull);
+		$datos->execute();
+		$fila = array();
+		if($datos->rowCount()>=1){
+			$data = $datos->fetchAll();
+			foreach ($data as $row) {
+				$sql = "
+				UPDATE cr_cordon
+				SET 
+						cat_statuscordon	=	'". 114 ."',
+						salida				=	'".date("Y-m-d H:i:s")."',
+						user_mod 			= 	'".$id_usuario."'
+				WHERE
+					id_operador_unidad = ".$row->id_operador_unidad."
+					AND cat_statuscordon <> 114
+				";
+				$query = $this->db->prepare($sql);
+				@$query_resp = $query->execute();
+				self::solicitarAcuseCordon();
+				self::firmarAcuseCordon($row->id_operador_unidad);
+			}
+		}
 	}
 	function verificaCveStore($id_operador_unidad){
 		$qry = "
@@ -1601,7 +1622,6 @@ class MobileModel
 							
 						case 'F15':
 						case 'A19':
-					
 							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
 							$ride_1 = array(
 								'new' 					=> true,
@@ -1622,7 +1642,6 @@ class MobileModel
 							$ride_1 = array();
 							break;
 						case 'F19':
-							
 							$ride_1 = array(
 								'new' 					=> false,
 								'cordon'				=> self::cordon_operadores($id_base),
@@ -1700,29 +1719,45 @@ class MobileModel
 				$send = $ride + $mensaje;
 				self::transmitir(json_encode($send),$send['proceso']);
 			}
-	}		
+	}
+	function getIdOperadorUnidadActivo($id_operador){
+		$sql = "
+			SELECT
+				syc.id_operador_unidad
+			FROM
+				cr_sync as syc
+			WHERE
+				syc.clave = 'C1'
+			AND syc.id_operador = $id_operador
+			ORDER BY
+				syc.id_sync DESC
+			LIMIT 0,
+			 1		
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$return = '';
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$return = $row->id_operador_unidad;
+			}
+		}
+		return $return;		
+	}
 	function sync_ride(){
 		$operadores = (PRESENCE_GET == 'CURL')?self::onLink():self::onLinkWebHook();
 		$online = ' AND (';
 		foreach($operadores as $num => $oper){
-			$online .= '
+			$id_operador_unidad = self::getIdOperadorUnidadActivo($oper['id_operador']);
+			$online .= "
 				(
-					op.id_operador = '.$oper['id_operador'].'
-					AND (
-						SELECT
-							syc.estado1
-						FROM
-							cr_operador_unidad AS oun
-						INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
-						WHERE
-							oun.id_operador = '.$oper['id_operador'].'
-						ORDER BY
-							oun.id_operador_unidad DESC
-						LIMIT 0, 1
-					) = "C1"
+					opu.id_operador_unidad = ".$id_operador_unidad."
 				)
-			OR ';
+			OR ";
 		}
+		/*Elimine la verificacion de estado en c1 para priorizar el id_operador_unidad
+		toma el valor de presence sin importar que este en c2*/
 		$online = rtrim($online, " OR ");
 		$online .= ')';
 		if(count($operadores)== 0){$online = 'AND op.id_operador = 0';}
@@ -1828,7 +1863,7 @@ class MobileModel
 			require_once('../vendor/pusher/Pusher.php');
 			$options = array('encrypted' => true);
 			$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
-			$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );	
+			$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );
 			
 		}else if(SOCKET_PROVIDER == 'PUBNUB'){
 			

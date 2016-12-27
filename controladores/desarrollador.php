@@ -10,6 +10,13 @@ class Desarrollador extends Controlador
 		$this->se_requiere_logueo(false);
 		include (URL_TEMPLATE.'404_full.php');
     }
+	function pusherPresence(){
+		require_once('../vendor/pusher/Pusher.php');
+		$options = array('encrypted' => true);
+		$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
+		$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );
+		D::bug($response);
+	}
 	function cp_import(){
 		$db = Controlador::direct_connectivity();
 		

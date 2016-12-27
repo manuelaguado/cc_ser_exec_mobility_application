@@ -31,7 +31,7 @@ class Mobile extends Controlador
 		$pusher = new Pusher(PUSHER_KEY, PUSHER_SECRET, PUSHER_APP_ID);
 		$presence_data = array(
 			'name' => $_SESSION['usuario'],
-			'xxx' => $_SESSION['id_usuario']
+			'id_usuario' => $_SESSION['id_usuario']
 		);
 		echo $pusher->presence_auth(
 			$_POST['channel_name'], 
