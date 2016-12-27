@@ -566,13 +566,13 @@ class OperacionModel{
 			$data = $query->fetchAll();
 			$n = 0;
 			foreach ($data as $row){
-				$vehiculos[$n]['marca'] = utf8_encode($row->marca);
-				$vehiculos[$n]['modelo']= utf8_encode($row->modelo);
+				$vehiculos[$n]['marca'] = $row->marca;
+				$vehiculos[$n]['modelo']= $row->modelo;
 				$vehiculos[$n]['year'] 	= $row->year;
 				$vehiculos[$n]['placas']= $row->placas;
-				$vehiculos[$n]['color']	= utf8_encode($row->color);
+				$vehiculos[$n]['color']	= $row->color;
 				$vehiculos[$n]['id_operador_unidad']= $row->id_operador_unidad;
-				$vehiculos[$n]['nombre']= utf8_encode($row->nombre);
+				$vehiculos[$n]['nombre']= $row->nombre;
 				$vehiculos[$n]['num']= $row->num;
 				$vehiculos[$n]['id_usuario']= $row->id_usuario;
 				$n++;

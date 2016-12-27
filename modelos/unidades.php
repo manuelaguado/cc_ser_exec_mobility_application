@@ -106,7 +106,7 @@ class UnidadesModel
 	}
 	function selectMarca($id_marca){
 		$array = array();
-		$qry = "SELECT * FROM cr_marcas;";
+		$qry = "SELECT * FROM cr_marcas order by marca asc;";
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		if($query->rowCount()>=1){
@@ -114,7 +114,7 @@ class UnidadesModel
 			$cont = 0;
 			foreach ($areas as $row) {
 				$array[$cont]['value']=$row->id_marca;
-				$array[$cont]['valor']=utf8_encode($row->marca);
+				$array[$cont]['valor']=$row->marca;
 				$cont++;			
 			}
 		}		
@@ -122,7 +122,7 @@ class UnidadesModel
 	}
 	function selectModelo($id_marca,$id_modelo){
 		$array = array();
-		$qry = "SELECT * FROM cr_modelos where id_marca = ".$id_marca.";";
+		$qry = "SELECT * FROM cr_modelos where id_marca = ".$id_marca." order by modelo asc;";
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		if($query->rowCount()>=1){
@@ -130,7 +130,7 @@ class UnidadesModel
 			$cont = 0;
 			foreach ($areas as $row) {
 				$array[$cont]['value']=$row->id_modelo;
-				$array[$cont]['valor']=utf8_encode($row->modelo);
+				$array[$cont]['valor']=$row->modelo;
 				$cont++;			
 			}
 		}		
