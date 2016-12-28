@@ -1504,8 +1504,8 @@ class MobileModel
 				$datd =  $d1.$d2.$d3.$d4.$d5;
 				
 				
-				$mapo = '<a class="iconfloat" target="_blank" href="https://www.google.com.mx/maps/place//@'.$row->coodo.',17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodo.'"><i class="fa fa-map"></i></a>';
-				$mapd = '<a class="iconfloat" target="_blank" href="https://www.google.com.mx/maps/place//@'.$row->coodd.',17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodd.'"><i class="fa fa-map"></i></a>';			
+				$mapo = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodo.'"><i class="fa fa-map"></i></a>';
+				$mapd = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodd.'"><i class="fa fa-map"></i></a>';			
 				
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
 				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
@@ -1946,11 +1946,11 @@ class MobileModel
 			$data = $query->fetchAll();
 			foreach ($data as $row) {
 				$vehiculos[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$vehiculos[$num]['marca'] = $row->marca;
-				$vehiculos[$num]['modelo'] = $row->modelo;
+				$vehiculos[$num]['marca'] = utf8_encode($row->marca);
+				$vehiculos[$num]['modelo'] = utf8_encode($row->modelo);
 				$vehiculos[$num]['year'] = $row->year;
 				$vehiculos[$num]['placas'] = $row->placas;
-				$vehiculos[$num]['color'] = $row->color;
+				$vehiculos[$num]['color'] = utf8_encode($row->color);
 				$num++;
 			}
 		}
