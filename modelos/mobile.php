@@ -1504,8 +1504,8 @@ class MobileModel
 				$datd =  $d1.$d2.$d3.$d4.$d5;
 				
 				
-				$mapo = '<a class="iconfloat" href="https://www.google.com.mx/maps/place/@'.$row->coodo.',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodo.'"><i class="fa fa-map"></i></a>';
-				$mapd = '<a class="iconfloat" href="https://www.google.com.mx/maps/place/@'.$row->coodd.',19z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodd.'"><i class="fa fa-map"></i></a>';			
+				$mapo = '<a class="iconfloat" target="_blank" href="https://www.google.com.mx/maps/place//@'.$row->coodo.',17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodo.'"><i class="fa fa-map"></i></a>';
+				$mapd = '<a class="iconfloat" target="_blank" href="https://www.google.com.mx/maps/place//@'.$row->coodd.',17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d'.$row->coodd.'"><i class="fa fa-map"></i></a>';			
 				
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
 				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';

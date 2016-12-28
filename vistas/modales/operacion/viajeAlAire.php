@@ -15,9 +15,9 @@
 								<thead>
 									<tr>
 										
-										<th>Unidad</th>
+										<th>NUM</th>
 										<th>Operador</th>
-										<th>Status</th>
+										<th>Unidad</th>
 										<th>Acciones</th>
 									</tr>
 									<tbody>
@@ -28,7 +28,7 @@
 											<tr>
 												<td>".$operador['numeq']."</td>
 												<td>".utf8_encode($operador['nombre'])."</td>
-												<td>".utf8_encode($operador['marca'].' '.$operador['modelo'].' '.$operador['color'])."</td>
+												<td>".$operador['marca'].' '.$operador['modelo'].' '.$operador['color']."</td>
 												<td>
 													<button onclick='asignarViajeAlAire(".$operador['id_operador_unidad'].",".$operador['id_operador'].",".$id_viaje.")' class='btn btn-xs btn-success'>
 															Asignar
