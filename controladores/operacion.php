@@ -118,7 +118,7 @@ class Operacion extends Controlador
 	}	
 	public function asignacion_automatica($array,MobileModel $model){
 		$token = 'AAT:'.$this->token(62);
-		$model->setCveStore(1,$token,$array['salida'],$array['id_operador_unidad']);
+		$model->storeToSyncRide(1,$token,$array['salida'],$array['id_operador_unidad']);
 	}
 	public function servicios_asignados(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -219,7 +219,7 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
 		$token = 'OP:'.$this->token(62);
-		$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
 		$mobile->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -229,7 +229,7 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
 		$token = 'OP:'.$this->token(62);
-		$mobile->setCveStore($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
+		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
 		$mobile->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -471,7 +471,7 @@ class Operacion extends Controlador
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
 		$id_operador_unidad = $model->getIdOperadorUnidadOp($_POST['id_operador']);
-		$model->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
 		print json_encode(array('resp' => true ));
 	}
 	public function check_standinLine($id_operador){
@@ -645,7 +645,7 @@ class Operacion extends Controlador
 		$model->set2enc6($id_base);
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		$model->formarse_directo($token,$id_operador_unidad,$id_base,115);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
@@ -663,7 +663,7 @@ class Operacion extends Controlador
 		$model->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
 		$model->cerrarEpisodio($model->getIdEpisodio($id_operador_unidad),$_SESSION['id_usuario']);
 		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -677,7 +677,7 @@ class Operacion extends Controlador
 		$model = $this->loadModel('Mobile');
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		$model->formarse_directo($token,$id_operador_unidad,$id_base,113);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
@@ -696,7 +696,7 @@ class Operacion extends Controlador
 		$model2 = $this->loadModel('Operadores');
 		$model2->setearstatusoperador(array('cat_statusoperador'=>'10','id_operador'=>$id_operador));
 		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -711,7 +711,7 @@ class Operacion extends Controlador
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		
 		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}	
@@ -750,7 +750,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,118,$id_operador_unidad);
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,118,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -763,7 +763,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|activar_f13');
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
-		$model->setCveStore($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
+		$model->storeToSyncRide($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}

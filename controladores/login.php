@@ -35,7 +35,7 @@ class Login extends Controlador
 		foreach ($whosLogin as $logged){
 			$token = 'LGN:'.$this->token(62);
 			$id_operador_unidad = $mobile->getIdOperadorUnidad($logged['id_usuario']);
-			$mobile->setCveStore($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
+			$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
 			$login->signout($logged['id_usuario']);
 		}
 	}
@@ -64,7 +64,7 @@ class Login extends Controlador
 		$mobile = $this->loadModel('Mobile');
 		$token = 'LGN:'.$this->token(62);
 		$id_operador_unidad = $mobile->getIdOperadorUnidad($id_usuario);
-		$mobile->setCveStore($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);		
+		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);		
 		
 		$model = $this->loadModel('Login');
 		print $model->signout($id_usuario);

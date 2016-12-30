@@ -990,12 +990,12 @@ class OperacionModel{
 					$token = 'SOL:'.Controller::token(62);
 					switch($post['status_operador']){
 						case 'segundo':
-							$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-							$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 						break;
 						case 'cola':
 							$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-							$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 						break;
 						case 'suspender':
 							/*Setear en suspendido*/
@@ -1004,12 +1004,12 @@ class OperacionModel{
 							$operadores->setearstatusoperador($operador);
 							
 							/*desloguear*/
-							$mobile->setCveStore($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
+							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
 							$id_usuario = $mobile->getIdUsuario($id_operador_unidad);
 							$login->signout($id_usuario);
 						break;
 						case 'omitir':
-							$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 						break;
 					}
 				break;
@@ -1018,15 +1018,15 @@ class OperacionModel{
 						$token = 'SOL:'.Controller::token(62);
 						switch($post['status_operador']){
 							case 'segundo':
-								$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-								$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 							break;
 							case 'cola':
 								$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-								$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 							break;
 							case 'omitir':
-								$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 							break;
 						}
 
@@ -1084,15 +1084,15 @@ class OperacionModel{
 				$token = 'APA:'.Controller::token(62);
 				switch($post['status_operador']){
 					case 'segundo':
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 					break;
 					case 'cola':
 						$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 					break;
 					case 'omitir':
-						$mobile->setCveStore($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 					break;
 				}
 

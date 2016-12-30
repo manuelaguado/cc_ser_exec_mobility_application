@@ -84,8 +84,10 @@ function getRide(){
 	var request = index.get(1);
 	
 	request.onsuccess = function () {
-		var result = request.result;
-		print_travel(result.ride);
+		var rest = request.result;
+		if(rest !== undefined){
+			print_travel(rest.ride);
+		}
 	};
 }
 	
@@ -105,7 +107,18 @@ function storageRide(response,callback){
 		callback();
 	};
 }
-	
+
+/*GUARDAR RIDE*/
+function deleteRide(callback){
+	var active = dataBase.result;
+	var data = active.transaction(["ride"], "readwrite");
+	var object = data.objectStore("ride");
+	var index = object.index("by_iden");
+	var request = index.get(1);
+	var objectStoreRequest = object.clear();
+	callback();
+}
+
 /*RECUPERAR CORDON*/
 function getCordon(){
 	var active = dataBase.result;
@@ -156,9 +169,7 @@ function setStartPage(){
 				eval("html = myApp." + result.actual + "({origen: '" + result.origen + "' })");
 				mainView.loadContent(html);
 				if(
-					(result.actual !== 'base')&&
-					(result.actual !== 'regreso_init')&&
-					(result.actual !== 'regreso')
+					(result.actual !== 'base')
 				){
 					getRide();
 				}

@@ -87,7 +87,7 @@ class LoginModel
 				$id_operador_unidad = self::getIdOperadorUnidadBySession($row->session_id);				
 				if(@$id_operador_unidad){
 					$token = 'DUP:'.Controlador::token(62);
-					$mobile->setCveStore($id_usuario,$token,155,$id_operador_unidad);
+					$mobile->storeToSyncRide($id_usuario,$token,155,$id_operador_unidad);
 				}
 				self::signout($id_usuario);
 			}

@@ -17,24 +17,24 @@ class MobileModel
 			if($tokenStore == 0){
 				switch ($clave['clave']) {
 					case 'A2':/*Servicio por tiempo*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'A10':/*Me dirijo al punto*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'A11':/*En el punto*/
 						self::updateArribo($clave);
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'A14':/*Abandono de servicio*/
-						self::setCveStore($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
 						
 						$setear_status_viaje['id_viaje'] = $clave['id_viaje'];
 						$setear_status_viaje['stat'] = 188;
 						$setear_status_viaje['origen'] = 'ModelMobile';
 						$operacion->setear_status_viaje($setear_status_viaje);
 						
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C1':/*Inicio de labores*/
 						
@@ -49,23 +49,23 @@ class MobileModel
 							'token'					=> $clave['token']
 						);
 						
-						self::setCveStore($clave['id_usuario'],$clave['token'],124,$clave['id_operador_unidad']);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],124,$clave['id_operador_unidad']);
 						$storeToSync = $clave + $array;
-						self::storeToSync($storeToSync, $num);
+						self::storeToSync($storeToSync);
 						$output[$num] = $array;
 						break;
 					case 'C2':/*Fin de labores*/
 						$id_base = ($clave['estado2'] == 'B1')?1:2;
 						if($clave['id_episodio']){self::cerrarEpisodio($clave['id_episodio'],$clave['id_usuario']);}
 						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
-						self::setCveStore($clave['id_usuario'],$clave['token'],123,$clave['id_operador_unidad']);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],123,$clave['id_operador_unidad']);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C3':/*Inicio alimentos*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C6':/*Servicio cancelado*/
-						self::setCveStore($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
 						
 						$setear_status_viaje['id_viaje'] = $clave['id_viaje'];
 						$setear_status_viaje['cat_cancelaciones'] = 175;
@@ -73,52 +73,52 @@ class MobileModel
 						$setear_status_viaje['origen'] = 'ModelMobile';
 						$operacion->setear_status_viaje($setear_status_viaje);
 						
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;						
 					case 'C8':/*Servicio abordo*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C9':/*Servicio concluido*/
 						self::updateFinalizacion($clave);
-						self::setCveStore($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],116,$clave['id_operador_unidad']);
 						
 						$setear_status_viaje['id_viaje'] = $clave['id_viaje'];
 						$setear_status_viaje['stat'] = 172;
 						$setear_status_viaje['origen'] = 'ModelMobile';
 						$operacion->setear_status_viaje($setear_status_viaje);
 						
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C10':/*inicio de escala*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C11':/*Fin de escala*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C12':/*Cambio de ruta*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C13':/*Fin de alimentos*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'C14':/*Destino parcial*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'F12':/*En cordon*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'F13':/*Salida por sitio*/
 						$output[$num]['clave'] = 'F13';
-						$output[$num] = self::storeToSync($clave, $num);					
+						$output[$num] = self::storeToSync($clave);					
 						break;
 					case 'F14':/*Solicitar cordon*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						$output[$num]['clave'] = 'F14';
 						$output[$num]['base'] =  $clave['estado2'];
-						self::setCveStore($clave['id_usuario'],$clave['token'],132,$clave['id_operador_unidad']);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],132,$clave['id_operador_unidad']);
 						break;
 					case 'F15':/*Servicio al aire*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						
 						$output[$num]['total'] = 14;
 						$output[$num]['turno'] = 14;
@@ -126,7 +126,7 @@ class MobileModel
 						
 						break;
 					case 'F16':/*Modificar modo viaje*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						
 						$output[$num]['total'] = 14;
 						$output[$num]['turno'] = 14;
@@ -135,65 +135,65 @@ class MobileModel
 						break;
 					case 'F17':/*Marcar mensaje como leido*/
 						self::setMsgRead($clave['estado2'],$clave['id_usuario']);
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R1':/*Establecer estado de la pantalla del movil*/
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R2':/*Acuse de recibo de cordon*/
 						if($clave['id_operador_unidad'] != 'select'){
 							self::firmarAcuseCordon($clave['id_operador_unidad']);
 						}
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R5':/*Acuse de A10*/
 						$id_base = ($clave['estado2'] == 'B1')?1:2;
 						$id_viaje = $clave['id_viaje'];
 						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
 						self::servicioAsignado($id_viaje);
-						self::setCveStore($clave['id_usuario'],$clave['token'],156,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],156,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R6':/*Acuse de F15*/
 						$id_viaje = $clave['id_viaje'];
 						
 						self::servicioAsignado($id_viaje);
-						self::setCveStore($clave['id_usuario'],$clave['token'],157,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],157,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R7':/*Acuse de F13*/
 						$id_base = ($clave['estado2'] == 'B1')?1:2;
 						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
 						$id_viaje = $clave['id_viaje'];
 						self::servicioAsignado($id_viaje);
-						self::setCveStore($clave['id_usuario'],$clave['token'],158,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],158,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R8':/*Acuse de F14*/
-						self::setCveStore($clave['id_usuario'],$clave['token'],159,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],159,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R10':/*Acuse de C1*/
-						self::setCveStore($clave['id_usuario'],$clave['token'],161,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],161,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R12':/*Acuse de C6*/
-						self::setCveStore($clave['id_usuario'],$clave['token'],186,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],186,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R13':/*Acuse de A14*/
-						self::setCveStore($clave['id_usuario'],$clave['token'],187,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],187,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					case 'R14':/*Acuse de A19*/
 						$id_viaje = $clave['id_viaje'];
 						
 						self::servicioAsignado($id_viaje);
-						self::setCveStore($clave['id_usuario'],$clave['token'],196,$clave['id_operador_unidad'],false,false,true);
-						$output[$num] = self::storeToSync($clave, $num);
+						self::storeToSyncRide($clave['id_usuario'],$clave['token'],196,$clave['id_operador_unidad'],false,false,true);
+						$output[$num] = self::storeToSync($clave);
 						break;
 					default:
-						$output[$num] = self::storeToSync($clave, $num);
+						$output[$num] = self::storeToSync($clave);
 						break;
 				}
 			}else{
@@ -287,6 +287,7 @@ class MobileModel
 				$array['serie'] 	         = $row->serie;
 				$array['id_usuario'] 	     = self::getIdUsuario($row->id_operador_unidad);
 				$array['token'] 	     	 = $row->token;
+				$array['id_operador_unidad'] = $row->id_operador_unidad;
 			}
 		}
 		return $array;
@@ -466,7 +467,7 @@ class MobileModel
 		}
 		return $array;
 	}
-	function setCveStore($id_usuario,$token,$clave,$id_operador_unidad,$procesar_precedentes = true, $valor = false, $procesar = false){
+	function storeToSyncRide($id_usuario,$token,$clave,$id_operador_unidad,$procesar_precedentes = true, $valor = false, $procesar = false){
 		try {
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->db->setAttribute(PDO::ATTR_PERSISTENT,true);
@@ -515,6 +516,7 @@ class MobileModel
 			$this->db->commit();
 		} catch (Exception $e) {
 			$this->db->rollBack();
+			error_log('rollback en modelos/mobile function storeToSyncRide!! '.$token);
 		}
 	}	
 	function cordon_operadores($base){
@@ -556,7 +558,7 @@ class MobileModel
 			$data = $query->fetchAll();
 
 			foreach ($data as $row) {
-				array_push($fila, '  [  '. $row->num .'  ] '. $row->nombre.', '. $row->modelo . ' ' .  $row->color.'');
+				array_push($fila, '  [  '. $row->num .'  ] '. utf8_encode($row->nombre).', '. utf8_encode($row->modelo) . ' ' .  utf8_encode($row->color).'');
 			}
 		}
 		return $fila;
@@ -790,13 +792,12 @@ class MobileModel
 					':fecha_alta' 			=> 	date("Y-m-d H:i:s")
 				)
 			);
-			$recursive = self::turno($id_operador_unidad,$id_base);
-			/*if($recursive == 'No formado'){
-				self::formarse($clave);
-			}else{*/
-				self::setCveStore($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
-				self::solicitarAcuseCordon();				
-				return $recursive;
+			$turno = self::turno($id_operador_unidad,$id_base);
+
+			/*rollback ??*/
+			self::storeToSyncRide($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
+			self::solicitarAcuseCordon();				
+			return $turno;
 			
 		}else{
 			return 'Ya estaba formado';
@@ -968,7 +969,7 @@ class MobileModel
 		}
 		return $array;
 	}
-	function storeToSync($clave, $num){
+	function storeToSync($clave){
 		$sql = "
 			INSERT INTO cr_sync (
 				accurate,
@@ -1134,7 +1135,7 @@ class MobileModel
 		);
 		$id_sync = $this->db->lastInsertId();
 		self::updateEstadoOperador($id_sync,$token,$id_operador_unidad,$_SESSION['id_usuario']);
-	}
+	}	
 	static function token($long=25){
 		$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		mt_srand((double)microtime()*1000000); 
@@ -1148,6 +1149,39 @@ class MobileModel
 			$i++;
 		}
 		return strrev($pass);
+	}
+	function getIdensOperadorEnC2($id_operador){
+		$qry = "
+			SELECT
+				oun.id_operador_unidad
+			FROM
+				cr_operador_unidad AS oun
+			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			WHERE
+				(
+					(
+						syc.estado1 = 'C1'
+						AND syc.estado2 = 'F11'
+					)
+					OR (
+						syc.estado1 = 'C1'
+						AND syc.estado3 = 'F11'
+					)
+				)
+			AND oun.id_operador = $id_operador	
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$par = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$par[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$num++;
+			}
+		}
+		return $par;
 	}
 	function getSerie($id_operador){
 		$qry = "
@@ -1529,6 +1563,9 @@ class MobileModel
 			$serie 				= $current['serie'];
 			$id_usuario 		= $current['id_usuario'];
 			$state 				= $current['clave'];
+			if($id_operador_unidad != $current['id_operador_unidad']){
+				if(DEVELOPER){D::bug('Verificar estados de identificadores mobil 1534');}
+			}
 			$cordon_sign		= '';
 					
 					$clave = self::cve_store($id_operador_unidad);
@@ -1546,7 +1583,7 @@ class MobileModel
 						case 'A10':
 						case 'F13':
 					
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							$ride_1 = array(
 								'new' 					=> true,
 								'viaje' 				=> self::getDataViaje($id_operador_unidad, 'base'),
@@ -1592,7 +1629,7 @@ class MobileModel
 										'base' 		=> $base
 									);
 									
-									self::setCveStore($id_usuario,$token,122,$id_operador_unidad);
+									self::storeToSyncRide($id_usuario,$token,122,$id_operador_unidad);
 									
 								}else{
 									$geo_color = ($enGeocerca == 'out')?'#c11313':'#37b25c';
@@ -1622,7 +1659,7 @@ class MobileModel
 							
 						case 'F15':
 						case 'A19':
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							$ride_1 = array(
 								'new' 					=> true,
 								'viaje' 				=> self::getDataViaje($id_operador_unidad, 'air'),
@@ -1634,11 +1671,11 @@ class MobileModel
 							
 							break;
 						case 'C6':
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							$ride_1 = array();
 							break;
 						case 'A14':
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							$ride_1 = array();
 							break;
 						case 'F19':
@@ -1670,7 +1707,7 @@ class MobileModel
 								'token' 				=> $token,
 								'viaje' 				=> array('id_viaje' => 'IR001')
 							);
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							
 							break;
 						
@@ -1679,17 +1716,17 @@ class MobileModel
 							$ride_1 = array(
 								'set_page'				=> $clave['valor']
 							);
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							break;
 						case 'R3':
 						
 							$ride_1 = array();
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							break;
 							
 						default:
 							$ride_1 = array();
-							self::setCveStore($id_usuario,$token,116,$id_operador_unidad);
+							self::storeToSyncRide($id_usuario,$token,116,$id_operador_unidad);
 							break;
 							
 					}
@@ -1919,6 +1956,29 @@ class MobileModel
 			}
 		}
 		return $id_operadores;
+	}
+	function getAllIdenOperadorUnidad($id_operador_unidad){
+		$qry = "
+			SELECT
+				base.id_operador_unidad
+			FROM
+				cr_operador_unidad AS iden
+			INNER JOIN cr_operador_unidad AS base ON iden.id_operador = base.id_operador
+			WHERE
+				iden.id_operador_unidad = $id_operador_unidad	
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$ids = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$ids[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$num++;
+			}
+		}
+		return $ids;
 	}
 	function getVehiculosOperador($id_operador){
 		$qry = "

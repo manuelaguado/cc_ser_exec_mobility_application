@@ -72,11 +72,42 @@ class Mobile extends Controlador
 				$operacion = $this->loadModel('Operacion');
 				$bases = $this->loadModel('Bases');
 				$mobile = $this->loadModel('Mobile');
-				$tail = $operacion->formadoAnyBase($bases, $_SESSION['id_operador_unidad']);
-				if($tail){
-					D::bug('Se quitó del cordon 2'.$tail);
-					$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
+				
+				$idens = $mobile->getAllIdenOperadorUnidad($_SESSION['id_operador_unidad']);
+				foreach($idens as $iden){
+					$tail = $operacion->formadoAnyBase($bases, $iden['id_operador_unidad']);
+					if($tail){
+						D::bug('Se quitó del cordon 2 > '.$tail);
+						$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$iden['id_operador_unidad']);
+					}
 				}
+				
+				$timebase = $mobile->getIdensOperadorEnC2($_SESSION['id_operador']);
+				foreach($timebase as $unit){
+					$array = array(
+						'accurate' => '0',
+						'clave' => 'C2',
+						'estado1' => 'C2',
+						'estado2' => 'NULL',
+						'estado3' => 'NULL',
+						'estado4' => 'NULL',
+						'id_indexeddb' => '0',
+						'id_episodio' => '0',
+						'id_operador' => $_SESSION['id_operador'],
+						'id_operador_unidad' => $unit['id_operador_unidad'],
+						'id_viaje' => '0',
+						'latitud' => '0',
+						'longitud' => '0',
+						'motivo' => 'AUTO C2 SESION DUPLICADA',
+						'serie' => '0',
+						'tiempo' => date("Y-m-d H:i:s"),
+						'timestamp' => date("Y-m-d H:i:s"),
+						'token' => $this->token(62),
+						'origen' => 'system'
+					);
+					$mobile->storeToSync($array);
+				}
+				
 		print json_encode(array('resp' => true ));
 	}
 }

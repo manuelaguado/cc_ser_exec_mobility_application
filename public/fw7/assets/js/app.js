@@ -248,8 +248,10 @@ $$("body").on("click", ".c9", function() {
 	myApp.confirm('','¿Confirma la finalización de este servicio?', function () {
 		storeClave('C9','C1','C9','F11','NULL','NULL',function(){
 			setEpisodio(function(){clearTravel();});
-			$('#data_viaje').html('');
-			loadTemplate('regreso');
+			deleteRide(function(){
+				$('#data_viaje').html('');
+				loadTemplate('regreso');	
+			});
 		});
 	});
 });
