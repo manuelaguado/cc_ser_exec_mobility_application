@@ -1210,7 +1210,7 @@ class OperacionModel{
 				cl_tarifas_clientes AS tfcl
 			INNER JOIN cl_clientes AS clc ON tfcl.id_cliente = clc.parent
 			WHERE
-				clc.id_cliente = 2
+				clc.id_cliente = $id_cliente
 			AND tfcl.cat_statustarifa = 168
 			AND tfcl.cat_tipo_tarifa = 189
 		";
@@ -2117,6 +2117,34 @@ class OperacionModel{
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
 	}
+	function populate_presence(){
+		require_once('../vendor/pusher/Pusher.php');
+		$options = array('encrypted' => true);
+		$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
+		$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );
+		$ahora = date("Y-m-d H:i:s");
+		
+			$sql="TRUNCATE cr_presence";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+		foreach($response['result']['users'] as $num => $oper){
+			foreach($oper as $it){
+				$sql="
+					INSERT INTO cr_presence 
+					(
+						id_operador,
+						fecha
+					)VALUES(
+						'".$it."',
+						'".$ahora."'
+					);
+				";
+				$query = $this->db->prepare($sql);
+				$query->execute();	
+			}
+		}
+	}
 	function inactivos_get($array){
 		ini_set('memory_limit', '256M');				
 		$table = 'cr_operador_unidad AS oun';
@@ -2186,9 +2214,22 @@ class OperacionModel{
 			syc.estado1 = 'C2'
 			AND 
 			ope.cat_statusoperador = 8
+			AND
+			NOT EXISTS (
+				SELECT
+					1
+				FROM
+					cr_presence
+				WHERE
+					cr_presence.id_operador = oun.id_operador
+			)
+		";
+		$orden = "
+			GROUP BY
+				nombre
 		";
 		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden  )
 		);
 	}
 	function suspendidas_get($array){

@@ -11,12 +11,18 @@ class Desarrollador extends Controlador
 		include (URL_TEMPLATE.'404_full.php');
     }
 	function pusherPresence(){
-		require_once('../vendor/pusher/Pusher.php');
-		$options = array('encrypted' => true);
-		$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
-		$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );
-		D::bug($response);
+		
+			require_once('../vendor/pusher/Pusher.php');
+			$options = array('encrypted' => true);
+			$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
+			$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );
+			foreach($response['result']['users'] as $num => $oper){
+				foreach($oper as $it){
+					echo $it.'<br>';
+				}
+			}
 	}
+	
 	function cp_import(){
 		$db = Controlador::direct_connectivity();
 		

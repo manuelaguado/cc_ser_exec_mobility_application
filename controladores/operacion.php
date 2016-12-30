@@ -211,6 +211,7 @@ class Operacion extends Controlador
 		$current_tarifa = $operacion->currentTarifa($id_viaje);
 		$id_company = $operacion->id_company($id_cliente);
 		$tarifas = $operacion->queryTarifas($id_company);
+		
 		require URL_VISTA.'modales/operacion/cambiar_tarifa.php';
 	}
 	public function activar_cancelacion_do($id_viaje){
@@ -1036,6 +1037,7 @@ class Operacion extends Controlador
 	public function inactivos_get(){
 		$this->se_requiere_logueo(true,'Operacion|inactivos');
 		$modelo = $this->loadModel('Operacion');
+		if(PRESENCE_GET == 'CURL'){$modelo->populate_presence();}
 		print $modelo->inactivos_get($_POST);
 	}
 	public function tiempo_base(){

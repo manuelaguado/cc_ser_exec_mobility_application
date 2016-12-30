@@ -227,17 +227,20 @@ function ride_ok(data) {
 				
 				$("#air_service_des").hide();
 				$("#air_service_act").show();
+				updatePageButtons('air_service_des','air_service_act');
 				
 				$("#request_queue_act").hide();
 				$("#request_queue_des").show();
+				updatePageButtons('request_queue_act','request_queue_des');
 				
 				$("#fin_labores_act").hide();
 				$("#fin_labores_des").show();
+				updatePageButtons('fin_labores_act','fin_labores_des');
 				
 				$("#tomar_apartado_act").hide();
 				$("#tomar_apartado_des").show();				
-				
-				updatePageButtons('air_service_des','air_service_act');				
+				updatePageButtons('tomar_apartado_act','tomar_apartado_des');
+							
 				
 				print_travel(resp_success['viaje'],true);
 				myApp.alert('Vea los detalles de su destino en el menú', 'Servicio al aire',function(){
