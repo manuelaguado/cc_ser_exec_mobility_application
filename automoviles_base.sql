@@ -28,7 +28,7 @@ CREATE TABLE `cr_marcas` (
   `fecha_alta` datetime DEFAULT NULL,
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_marca`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of cr_marcas
@@ -111,7 +111,7 @@ CREATE TABLE `cr_modelos` (
   `fecha_alta` datetime DEFAULT NULL,
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_modelo`)
-) ENGINE=InnoDB AUTO_INCREMENT=730 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=730 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of cr_modelos
