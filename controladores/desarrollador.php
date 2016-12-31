@@ -135,7 +135,7 @@ class Desarrollador extends Controlador
 			$tercera = "UPDATE CPdescarga SET d_codigo = ".$lastInsertId." WHERE d_codigo = '".$row->cp."'";
 			$tercera_q = $db->prepare($tercera);
 			$tercera_q->execute();
-			echo "import ".utf8_encode($row->cp)."<br>";
+			echo "import ".$row->cp."<br>";
 		}
 	}	
 	
@@ -170,7 +170,7 @@ class Desarrollador extends Controlador
 			$tercera = "UPDATE CPdescarga SET D_mnpio = ".$lastInsertId." WHERE D_mnpio = '".$row->municipio."'";
 			$tercera_q = $db->prepare($tercera);
 			$tercera_q->execute();
-			echo "import ".utf8_encode($row->municipio)."<br>";
+			echo "import ".$row->municipio."<br>";
 		}
 	}	
 	
@@ -205,7 +205,7 @@ class Desarrollador extends Controlador
 			$tercera = "UPDATE CPdescarga SET d_ciudad = ".$lastInsertId." WHERE d_ciudad = '".$row->ciudad."'";
 			$tercera_q = $db->prepare($tercera);
 			$tercera_q->execute();
-			echo "import ".utf8_encode($row->ciudad)."<br>";
+			echo "import ".$row->ciudad."<br>";
 		}
 	}		
 	private function cp_tipo_asent($db){
@@ -239,7 +239,7 @@ class Desarrollador extends Controlador
 			$tercera = "UPDATE CPdescarga SET d_tipo_asenta = ".$lastInsertId." WHERE d_tipo_asenta = '".$row->tipo_asentamiento."'";
 			$tercera_q = $db->prepare($tercera);
 			$tercera_q->execute();
-			echo "import ".utf8_encode($row->tipo_asentamiento)."<br>";
+			echo "import ".$row->tipo_asentamiento."<br>";
 		}
 	}		
 	private function cp_estados($db){
@@ -273,7 +273,7 @@ class Desarrollador extends Controlador
 			$tercera = "UPDATE CPdescarga SET d_estado = ".$lastInsertId." WHERE d_estado = '".$row->estado."'";
 			$tercera_q = $db->prepare($tercera);
 			$tercera_q->execute();
-			echo "import ".utf8_encode($row->estado)."<br>";
+			echo "import ".$row->estado."<br>";
 		}
 	}	
 	private function cp_zonas($db){
@@ -653,7 +653,7 @@ class Desarrollador extends Controlador
 		foreach($marcas as $marca){
 			$sql = "INSERT INTO AAAAMarca (marca, slug) VALUES (:marca, :slug)";
 			$query = $conn->prepare($sql);
-			$result = $query->execute(array(':marca' => utf8_decode($marca->Text), ':slug' => utf8_decode(self::slug($marca->Text))));
+			$result = $query->execute(array(':marca' => $marca->Text, ':slug' => self::slug($marca->Text)));
 			$id_marca = $conn->lastInsertId();
 			echo $marca->Text.'Init....<br>';
 			$url = "http://www.autocosmos.com.mx/clasificados/getmodelos/".$marca->Value."";
@@ -666,7 +666,7 @@ class Desarrollador extends Controlador
 			foreach($modelos as $modelo){
 				$sql = "INSERT INTO AAAAModelo (id_marca, modelo, slug) VALUES (:id_marca, :modelo, :slug)";
 				$query = $conn->prepare($sql);
-				$query->execute(array(':id_marca' => $id_marca, ':modelo' => utf8_decode($modelo->Text), ':slug' => utf8_decode(self::slug($modelo->Text))));
+				$query->execute(array(':id_marca' => $id_marca, ':modelo' => $modelo->Text, ':slug' => self::slug($modelo->Text)));
 			}
 			echo $marca->Text.'Finish....<br>';
 		}

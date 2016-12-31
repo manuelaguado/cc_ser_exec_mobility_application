@@ -133,8 +133,8 @@ class OperacionModel{
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
 				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
 				
-				$array['Origen'] 	= ($row->invo != '')?$row->invo.$dato.$ro:utf8_encode($row->origen.$dato.$ro);
-				$array['Destino'] 	= ($row->invd != '')?$row->invd.$datd.$rd:utf8_encode($row->destino.$datd.$rd);
+				$array['Origen'] 	= ($row->invo != '')?$row->invo.$dato.$ro:$row->origen.$dato.$ro;
+				$array['Destino'] 	= ($row->invd != '')?$row->invd.$datd.$rd:$row->destino.$datd.$rd;
 				
 				$array['Observaciones'] 			= $row->observaciones;		
 			}
@@ -567,7 +567,7 @@ class OperacionModel{
 			$n = 0;
 			foreach ($data as $row){
 				$vehiculos[$n]['marca'] = $row->marca;
-				$vehiculos[$n]['modelo']= utf8_encode($row->modelo);
+				$vehiculos[$n]['modelo']= $row->modelo;
 				$vehiculos[$n]['year'] 	= $row->year;
 				$vehiculos[$n]['placas']= $row->placas;
 				$vehiculos[$n]['color']	= $row->color;
@@ -3867,7 +3867,7 @@ class acciones_costosAdicionales extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -3897,7 +3897,7 @@ class acciones_pendientes extends SSP{
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';	
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -3928,7 +3928,7 @@ class acciones_enproceso extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -3996,7 +3996,7 @@ class acciones_asignados extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4023,7 +4023,7 @@ class acciones_asignados extends SSP{
 		if($query->rowCount()>=1){
 			foreach ($query->fetchAll() as $row){
 				$array['clave']	=	$row['llave'];
-				$array['valor']	=	utf8_encode($row['valor']);
+				$array['valor']	=	$row['valor'];
 			}
 		}
 		return $array;
@@ -4077,7 +4077,7 @@ class acciones_tiempo_base extends SSP{
 					
 				}else{
 					
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 					
 				}
 			}
@@ -4106,7 +4106,7 @@ class acciones_asiggn extends SSP{
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4135,7 +4135,7 @@ class acciones_proceso extends SSP{
 							
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4174,7 +4174,7 @@ class acciones_completados extends SSP{
 					$salida = $a;
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4209,7 +4209,7 @@ class acciones_cancelados extends SSP{
 					$salida = $a;
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4246,7 +4246,7 @@ class programados_rojo extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4275,7 +4275,7 @@ class programados_naranja extends SSP{
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';		
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4305,7 +4305,7 @@ class programados_amarillo extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4335,7 +4335,7 @@ class programados_verde extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4364,7 +4364,7 @@ class programados_gris extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 				
 			}
@@ -4412,7 +4412,7 @@ class acciones_cordon extends SSP{
 					
 					$row[ $column['dt'] ] = substr($data[$i]['llegada'], 11, -3).'&nbsp;/&nbsp;'.substr($espera, 11, -3);
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -4475,7 +4475,7 @@ class acciones_activos extends SSP{
 						
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -4506,7 +4506,7 @@ class acciones_unidades_a11 extends SSP{
 						
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -4537,7 +4537,7 @@ class acciones_control extends SSP{
 						
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -4563,7 +4563,7 @@ class acciones_suspendidas extends SSP{
 						
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -4590,7 +4590,7 @@ class acciones_inactivos extends SSP{
 						
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;

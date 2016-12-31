@@ -37,17 +37,17 @@ class RESGUARDO extends FPDI
 		$this->SetTextColor(0, 0, 0);
 		$this->SetXY(120, 28.5);
 		setlocale(LC_TIME, 'es_MX.UTF-8');
-		$this->Write(0, utf8_decode(strftime('%A %d de %B de %Y', time())));
+		$this->Write(0, strftime('%A %d de %B de %Y', time()));
 		$this->SetXY(120, 28.5+136);
-		$this->Write(0, utf8_decode(strftime('%A %d de %B de %Y', time())));
+		$this->Write(0, strftime('%A %d de %B de %Y', time()));
 	}
 	function insertNombre(){
 		$this->SetFont('Helvetica','',10);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetXY(40, 40);
-		$this->Write(0, utf8_decode(utf8_decode($this->resguardo['nombre'])));
+		$this->Write(0, $this->resguardo['nombre']);
 		$this->SetXY(40, 40+136);
-		$this->Write(0, utf8_decode(utf8_decode($this->resguardo['nombre'])));
+		$this->Write(0, $this->resguardo['nombre']);
 	}
 	function insertDomicilio(){
 		$this->SetFont('Helvetica','',10);
@@ -62,9 +62,9 @@ class RESGUARDO extends FPDI
 		$this->SetTextColor(0, 0, 0);
 		$this->SetDrawColor(255,0,0);
 		$this->SetXY(18, 113);
-		$this->Cell(91,4,strtoupper(utf8_decode(utf8_decode($this->resguardo['nombre']))),0,0,'C');
+		$this->Cell(91,4,strtoupper($this->resguardo['nombre']),0,0,'C');
 		$this->SetXY(18, 115+135.5);
-		$this->Cell(91,4,strtoupper(utf8_decode(utf8_decode($this->resguardo['nombre']))),0,0,'C');
+		$this->Cell(91,4,strtoupper($this->resguardo['nombre']),0,0,'C');
 	}
 	function insertDigitalSign(){
 		$this->SetFont('Helvetica','',7);

@@ -40,9 +40,9 @@
 											}
 											echo "
 												<tr>
-													<td><a title='".utf8_encode($row->descripcion)."'>".utf8_encode($row->nombre)."</a></td>
-													<td>".utf8_encode($row->costo_base)."</td>
-													<td>".utf8_encode($row->km_adicional)."</td>
+													<td><a title='".$row->descripcion."'>".$row->nombre."</a></td>
+													<td>".$row->costo_base."</td>
+													<td>".$row->km_adicional."</td>
 													<td>".$row->tipo."</td>
 													<td>".$tab."</td>
 													<td>".$select."</td>

@@ -43,7 +43,7 @@
 								<img id="avatar_top" class="nav-user-photo" src="plugs/timthumb.php?src=<?=$avatar_usr_circ?>&w=32&h=32&a=t" alt="Avatar" />
 								<span class="user-info">
 									<div id="name_top"><?=$usuario_name?></div>
-									<span style="font-variant: small-caps; font-size:1em;"><?=utf8_encode(strtolower($credenciales_top['rol']))?></span>
+									<span style="font-variant: small-caps; font-size:1em;"><?=strtolower($credenciales_top['rol'])?></span>
 								</span>
 
 								<i class="ace-icon fa fa-caret-down"></i>

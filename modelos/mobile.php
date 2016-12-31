@@ -558,7 +558,7 @@ class MobileModel
 			$data = $query->fetchAll();
 
 			foreach ($data as $row) {
-				array_push($fila, '  [  '. $row->num .'  ] '. utf8_encode($row->nombre).', '. utf8_encode($row->modelo) . ' ' .  utf8_encode($row->color).'');
+				array_push($fila, '  [  '. $row->num .'  ] '. $row->nombre.', '. $row->modelo . ' ' .  $row->color.'');
 			}
 		}
 		return $fila;
@@ -1544,8 +1544,8 @@ class MobileModel
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
 				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
 				
-				$array['Origen'] 	= ($row->invo != '')?$mapo.$row->invo.$dato.$ro:utf8_encode($row->origen.$dato.$ro);
-				$array['Destino'] 	= ($row->invd != '')?$mapd.$row->invd.$datd.$rd:utf8_encode($row->destino.$datd.$rd);
+				$array['Origen'] 	= ($row->invo != '')?$mapo.$row->invo.$dato.$ro:$row->origen.$dato.$ro;
+				$array['Destino'] 	= ($row->invd != '')?$mapd.$row->invd.$datd.$rd:$row->destino.$datd.$rd;
 				
 				$array['Observaciones'] 			= $row->observaciones;		
 			}
@@ -2006,11 +2006,11 @@ class MobileModel
 			$data = $query->fetchAll();
 			foreach ($data as $row) {
 				$vehiculos[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$vehiculos[$num]['marca'] = utf8_encode($row->marca);
-				$vehiculos[$num]['modelo'] = utf8_encode($row->modelo);
+				$vehiculos[$num]['marca'] = $row->marca;
+				$vehiculos[$num]['modelo'] = $row->modelo;
 				$vehiculos[$num]['year'] = $row->year;
 				$vehiculos[$num]['placas'] = $row->placas;
-				$vehiculos[$num]['color'] = utf8_encode($row->color);
+				$vehiculos[$num]['color'] = $row->color;
 				$num++;
 			}
 		}

@@ -7,7 +7,7 @@ class AsentamientosModel
             $this->db = $db;
 			$this->dbt = $dbt;
         } catch (PDOException $e) {
-            exit('No se ha podido establecer la conexión a la base de datos.');
+            exit('No se ha podido establecer la conexiÃ³n a la base de datos.');
         }
     }
 	function busqueda_colonia($search){
@@ -41,12 +41,12 @@ class AsentamientosModel
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				$output['suggestions'][] = array(
-					'value'=> utf8_encode($row->coln),
-					'cp' => utf8_encode($row->cp),
-					'colonia' => utf8_encode($row->coln),
-					'estado' => utf8_encode($row->est),
-					'municipio' => utf8_encode($row->mnpio),
-					'ciudad' => utf8_encode($row->city),
+					'value'=> $row->coln,
+					'cp' => $row->cp,
+					'colonia' => $row->coln,
+					'estado' => $row->est,
+					'municipio' => $row->mnpio,
+					'ciudad' => $row->city,
 					'data'=>$row->id
 				);
 			}			
@@ -82,12 +82,12 @@ class AsentamientosModel
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				$output['suggestions'][] = array(
-					'value'=> $row->cp .'  >  '. utf8_encode($row->coln),
-					'cp' => utf8_encode($row->cp),
-					'colonia' => utf8_encode($row->coln),
-					'estado' => utf8_encode($row->est),
-					'municipio' => utf8_encode($row->mnpio),
-					'ciudad' => utf8_encode($row->city),
+					'value'=> $row->cp .'  >  '. $row->coln,
+					'cp' => $row->cp,
+					'colonia' => $row->coln,
+					'estado' => $row->est,
+					'municipio' => $row->mnpio,
+					'ciudad' => $row->city,
 					'data'=>$row->id
 				);
 			}			
@@ -118,10 +118,10 @@ class AsentamientosModel
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				$output['suggestions'][] = array(
-					'value'		=> 	utf8_encode($row->estado.' > '.$row->ciudad),
+					'value'		=> 	$row->estado.' > '.$row->ciudad,
 					'data'		=>	$row->id_ciudad,
-					'ciudad'	=> 	utf8_encode($row->ciudad),
-					'estado'	=>	utf8_encode($row->estado)
+					'ciudad'	=> 	$row->ciudad,
+					'estado'	=>	$row->estado
 				);
 			}			
 		}

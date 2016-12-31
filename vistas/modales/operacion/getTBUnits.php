@@ -27,8 +27,8 @@
 											echo "
 											<tr>
 												<td>".$operador['numeq']."</td>
-												<td>".utf8_encode($operador['nombre'])."</td>
-												<td>".utf8_encode($operador['marca'].' '.$operador['modelo'].' '.$operador['color'])."</td>
+												<td>".$operador['nombre']."</td>
+												<td>".$operador['marca'].' '.$operador['modelo'].' '.$operador['color']."</td>
 												<td>
 													<button onclick='asignarDirecto(".$operador['id_operador_unidad']."); setIdens(".$operador['numeq'].",".$operador['id_operador'].",\"".$operador['nombre']."\");' class='btn btn-xs btn-success'>
 															Seleccionar

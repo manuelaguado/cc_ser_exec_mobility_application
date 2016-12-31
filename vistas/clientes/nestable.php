@@ -13,7 +13,7 @@
 		}
 		?>
 		<h1>
-			<?=utf8_decode($cliente['nombre'])?>
+			<?=$cliente['nombre']?>
 			<small>
 				<i class="ace-icon fa fa-angle-double-right"></i>
 				Administración de usuarios

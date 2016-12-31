@@ -34,7 +34,7 @@ class UbicacionModel
 		if($ubicaciones){
 			foreach ($ubicaciones as $row) {
 				$array[$cont]['value']=$row->id_ubicacion;
-				$array[$cont]['valor']=strtoupper(utf8_encode($row->descripcion_ubicacion));
+				$array[$cont]['valor']=strtoupper($row->descripcion_ubicacion);
 				$cont++;			
 			}
 		}

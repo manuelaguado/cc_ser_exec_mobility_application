@@ -10,8 +10,12 @@ class Controlador extends Controller
     }
     private function openDatabaseConnection()
     {
-		$options1 = array( \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION );
-        $options2 = array(\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ, \PDO::ATTR_ERRMODE => \PDO::ERRMODE_WARNING);
+		#$options1 = array( \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION );
+        #$options2 = array(\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ, \PDO::ATTR_ERRMODE => \PDO::ERRMODE_WARNING);
+		
+		$options1 = array( PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES  \'UTF8\'');
+        $options2 = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES  \'UTF8\'');
+		
         $this->db = new \PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $options2);
 		$this->dbt = new \PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $options1);
 	
@@ -42,8 +46,8 @@ class Controlador extends Controller
 			$areas = $query->fetchAll();
 			$cont = 0;
 			foreach ($areas as $row) {
-				$array[$cont]['value']=utf8_decode($row->id_cat);
-				$array[$cont]['valor']=utf8_decode($row->etiqueta);
+				$array[$cont]['value']=$row->id_cat;
+				$array[$cont]['valor']=$row->etiqueta;
 				$cont++;			
 			}
 		}		
@@ -220,12 +224,12 @@ class Controller extends D{
 		$opciones = "<option value=''>Seleccione...</option>";
 		for($i=0;$i<count($arreglo);$i++){
 			if($id==""){
-					$opciones .=  "<option value='".$arreglo[$i]['value']."'>".utf8_encode(ucwords($arreglo[$i]['valor']))."</option>";
+					$opciones .=  "<option value='".$arreglo[$i]['value']."'>".ucwords($arreglo[$i]['valor'])."</option>";
 			}else{
 				if($id==$arreglo[$i]['value']){
-					$opciones .=  "<option value='".$arreglo[$i]['value']."' selected>".utf8_encode(ucwords($arreglo[$i]['valor']))."</option>";
+					$opciones .=  "<option value='".$arreglo[$i]['value']."' selected>".ucwords($arreglo[$i]['valor'])."</option>";
 				}else{
-					$opciones .=  "<option value='".$arreglo[$i]['value']."'>".utf8_encode(ucwords($arreglo[$i]['valor']))."</option>";
+					$opciones .=  "<option value='".$arreglo[$i]['value']."'>".ucwords($arreglo[$i]['valor'])."</option>";
 				}
 			}
 		}

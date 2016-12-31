@@ -24,7 +24,7 @@
 			 Direcciones&nbsp;
 			<small>
 				<i class="ace-icon fa fa-angle-double-right"></i>
-				<?=utf8_decode($cliente['nombre'])?>
+				<?=$cliente['nombre']?>
 			</small>
 		</h1>
 	</div><!-- /.page-header -->

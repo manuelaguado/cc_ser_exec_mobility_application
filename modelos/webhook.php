@@ -6,7 +6,7 @@ class WebhookModel
             $this->db = $db;
 			$this->dbt = $dbt;
         } catch (PDOException $e) {
-            exit('No se ha podido establecer la conexión a la base de datos.');
+            exit('No se ha podido establecer la conexiÃ³n a la base de datos.');
         }
     }
 	function member_added($user_id){

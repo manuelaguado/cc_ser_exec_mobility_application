@@ -470,19 +470,19 @@ class ClientesModel
 				$array[$num]['predeterminar'] 		= $row->predeterminar;
 				$array[$num]['eliminado'] 			= $row->eliminado;
 				$array[$num]['rfc'] 				= $row->rfc;
-				$array[$num]['calle'] 				= utf8_encode($row->calle);
-				$array[$num]['num_ext'] 			= utf8_encode($row->num_ext);
-				$array[$num]['num_int'] 			= utf8_encode($row->num_int);
-				$array[$num]['telefono'] 			= utf8_encode($row->telefono);
+				$array[$num]['calle'] 				= $row->calle;
+				$array[$num]['num_ext'] 			= $row->num_ext;
+				$array[$num]['num_int'] 			= $row->num_int;
+				$array[$num]['telefono'] 			= $row->telefono;
 				$array[$num]['celular'] 			= $row->celular;
 				$array[$num]['correo'] 				= $row->correo;
 				$array[$num]['id_asentamiento'] 	= $row->id_asn;
-				$array[$num]['asentamiento'] 		= utf8_encode($row->asentamiento);
+				$array[$num]['asentamiento'] 		= $row->asentamiento;
 				$array[$num]['codigo_postal'] 		= $row->codigo_postal;
-				$array[$num]['d_tipo_asenta'] 		= utf8_encode($row->d_tipo_asenta);
-				$array[$num]['municipio'] 			= utf8_encode($row->municipio);
-				$array[$num]['estado'] 				= utf8_encode($row->estado);
-				$array[$num]['ciudad'] 				= utf8_encode($row->ciudad);
+				$array[$num]['d_tipo_asenta'] 		= $row->d_tipo_asenta;
+				$array[$num]['municipio'] 			= $row->municipio;
+				$array[$num]['estado'] 				= $row->estado;
+				$array[$num]['ciudad'] 				= $row->ciudad;
 				$num++;
 			}
 		}
@@ -678,7 +678,7 @@ class ClientesModel
 				$array['id_rol'] 			= $row->id_rol;
 				$array['cat_tipocliente' ]	= $row->cat_tipocliente;
 				$array['cat_statuscliente'] = $row->cat_statuscliente;
-				$array['nombre'] 			= utf8_encode($row->nombre);
+				$array['nombre'] 			= $row->nombre;
 			}
 		}
 		return $array;
@@ -983,7 +983,7 @@ class ClientesModel
 		$output = array('suggestions'=>array());
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
-				$output['suggestions'][] = array('value'=> '['.utf8_encode($row->parent).'] - ['.utf8_encode($row->id_cliente).'] '.utf8_encode($row->nombre),'data'=>$row->id_cliente);
+				$output['suggestions'][] = array('value'=> '['.$row->parent.'] - ['.$row->id_cliente.'] '.$row->nombre,'data'=>$row->id_cliente);
 			}			
 		}		
 
@@ -1729,7 +1729,7 @@ class acciones_tarifas extends SSP{
 					$row[ $column['dt'] ] = $salida;
 					
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -1769,7 +1769,7 @@ class acciones_usuario extends SSP{ /*Individual*/
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -1817,7 +1817,7 @@ class acciones_cliente extends SSP{ /*Corporativo*/
 					}
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;

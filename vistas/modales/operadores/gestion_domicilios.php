@@ -28,8 +28,8 @@
 											<tr>
 												
 												<td>".$row->domicilio."</td>
-												<td>".utf8_encode($row->etiqueta1)."</td>
-												<td>".utf8_encode($row->etiqueta2)."</td>
+												<td>".$row->etiqueta1."</td>
+												<td>".$row->etiqueta2."</td>
 												<td>
 												<center>
 											";

@@ -880,7 +880,7 @@ class acciones_lista_opr extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -1008,7 +1008,7 @@ class acciones_operador extends SSP{
 					
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;
@@ -1079,7 +1079,7 @@ class acciones_tarifas extends SSP{
 						
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;

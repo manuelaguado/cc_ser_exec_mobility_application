@@ -62,7 +62,7 @@
 									<div class="col-md-6">
 										<label for="cat_concepto">Concepto</label>
 										<select  class="form-control" id="cat_concepto" name="cat_concepto">
-										<?php echo utf8_encode($cat_concepto); ?>
+										<?php echo $cat_concepto; ?>
 										</select>
 									</div>									
 									<div class="col-md-6">

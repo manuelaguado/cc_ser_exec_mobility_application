@@ -194,7 +194,7 @@ class RolesModel
 			$cont = 0;
 			foreach ($areas as $row) {
 				$array[$cont]['value']=$row->id_rol;
-				$array[$cont]['valor']=utf8_encode(strtoupper($row->descripcion));
+				$array[$cont]['valor']=strtoupper($row->descripcion);
 				$cont++;			
 			}
 		}		
@@ -374,8 +374,8 @@ class RolesModel
 			$cont = 0;
 			foreach ($roles as $row) {
 				$array[$cont]['value']=$row->id_rol;
-				$array[$cont]['valor']=strtoupper(utf8_encode($row->descripcion));
-				$array[$cont]['etiqueta']=strtoupper(utf8_encode($row->etiqueta));
+				$array[$cont]['valor']=strtoupper($row->descripcion);
+				$array[$cont]['etiqueta']=strtoupper($row->etiqueta);
 				$cont++;			
 			}
 			return $array;

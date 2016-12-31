@@ -66,7 +66,7 @@ class TelefoniaModel
 			$data = $query->fetchAll();
 			foreach ($data as $elm) {
 				$array['id_operador_celular']=$elm->id_operador_celular;
-				$array['nombre']=utf8_encode($elm->nombres.' '.$elm->apellido_paterno.' '.$elm->apellido_materno);
+				$array['nombre']=$elm->nombres.' '.$elm->apellido_paterno.' '.$elm->apellido_materno;
 				$array['marca']=$elm->marca;
 				$array['modelo']=$elm->modelo;
 				$array['imei']=$elm->imei;
@@ -152,7 +152,7 @@ class TelefoniaModel
 			$cont = 0;
 			foreach ($areas as $row) {
 				$array[$cont]['value']=$row->id_operador;
-				$array[$cont]['valor']=utf8_encode($row->nombres.' '.$row->apellido_paterno.' '.$row->apellido_materno);
+				$array[$cont]['valor']=$row->nombres.' '.$row->apellido_paterno.' '.$row->apellido_materno;
 				$cont++;			
 			}
 		}		
@@ -475,7 +475,7 @@ class acciones_celular extends SSP{
 
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;

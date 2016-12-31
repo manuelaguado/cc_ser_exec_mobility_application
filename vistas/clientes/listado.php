@@ -24,7 +24,7 @@ div.table-responsive div#listado_wrapper.dataTables_wrapper.form-inline.dt-boots
 				}
 				?>			
 				<h1>
-					Listado de usuarios para <?=utf8_decode($cliente['nombre'])?>
+					Listado de usuarios para <?=$cliente['nombre']?>
 				</h1>
 			</div><!-- /.page-header -->
 		</div>

@@ -56,8 +56,8 @@
 
 												</span>
 											</td>
-											<td><?=utf8_encode($auto->marca)?></td>
-											<td><?=utf8_encode($auto->modelo)?></td>
+											<td><?=$auto->marca?></td>
+											<td><?=$auto->modelo?></td>
 											<td><?=$auto->year?></td>
 											<td><?=$auto->placas?></td>
 											<td><?=$auto->motor?></td>

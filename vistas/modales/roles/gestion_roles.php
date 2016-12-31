@@ -25,8 +25,8 @@
 										echo "
 										<tr>
 											<td>".$row->id_rol."</td>
-											<td>".utf8_encode($row->descripcion)."</td>
-											<td>".utf8_encode($row->etiqueta)."</td>
+											<td>".$row->descripcion."</td>
+											<td>".$row->etiqueta."</td>
 											<td>
 											<center>
 											<a data-dismiss='modal' onclick=\"carga_archivo('contenedor_principal','roles/permisos/".$row->id_rol."')\" 

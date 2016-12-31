@@ -177,10 +177,10 @@ class UnidadesModel
 					$array['id_unidad'] =  $id_unidad;
 					$array['id_marca'] 	=  $row->id_marca;
 					$array['id_modelo'] =  $row->id_modelo;
-					$array['year' ]		=  utf8_encode($row->year);
-					$array['placas'] 	=  utf8_encode($row->placas);
-					$array['motor'] 	=  utf8_encode($row->motor);
-					$array['color'] 	=  utf8_encode($row->color);
+					$array['year' ]		=  $row->year;
+					$array['placas'] 	=  $row->placas;
+					$array['motor'] 	=  $row->motor;
+					$array['color'] 	=  $row->color;
 					$array['cat_status_unidad'] 	=  $row->cat_status_unidad;
 			}
 		}
@@ -341,7 +341,7 @@ class acciones_unidades extends SSP{
 						
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = ( self::detectUTF8($data[$i][$name_column]) )? $data[$i][$name_column] : utf8_encode($data[$i][$name_column]);	
+					$row[ $column['dt'] ] = $data[$i][$name_column];	
 				}
 			}
 			$out[] = $row;

@@ -24,7 +24,7 @@
 				  </div>
 				  <div class="form-group">
 					<label for="nombre">Nombre</label>
-					<input value="<?=utf8_decode($cliente['nombre'])?>" type="text" class="form-control text-field" id="nombre" name="nombre" placeholder="Nombre(s)" autocomplete="off">
+					<input value="<?=$cliente['nombre']?>" type="text" class="form-control text-field" id="nombre" name="nombre" placeholder="Nombre(s)" autocomplete="off">
 				  </div>										  
 			</div>
 		</div>

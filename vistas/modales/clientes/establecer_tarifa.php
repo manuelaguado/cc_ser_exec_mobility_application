@@ -82,7 +82,7 @@
 									<div class="form-group col-md-6 column">
 										<label for="cat_tipo_tarifa">Tipo</label>
 										<select  class="form-control" id="cat_tipo_tarifa" name="cat_tipo_tarifa">
-										<?php echo utf8_encode($cat_tipo_tarifa); ?>
+										<?php echo $cat_tipo_tarifa; ?>
 										</select>
 									</div>									
 									<div class="col-md-10">
