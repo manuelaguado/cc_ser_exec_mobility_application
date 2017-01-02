@@ -24,7 +24,7 @@ function startGps() {
 					url: 'mobile/gps',
 					type: "POST",
 					dataType: 'json',
-					data: 'gps='+sendvar,
+					data: 'gps='+sendvar+'&tknses='+token_session,
 					/*No se verifica el envio para ahorrar datos*/
 					success: function(resp_success){
 						if (resp_success['gps'] == 'ok') {
@@ -33,7 +33,7 @@ function startGps() {
 								eliminarClaveByToken(v.token,'gps');
 							});
 						}
-						if(resp_success['out'] == 'login'){dOut();}
+						//if(resp_success['out'] == 'login'){dOut();}
 					},
 				});
 			}
@@ -67,7 +67,7 @@ function startSync(exec){
 				url: 'mobile/sync',
 				type: "POST",
 				dataType: 'json',
-				data: 'sync='+sendvar,
+				data: 'sync='+sendvar+'&tknses='+token_session,
 				success: function(e){
 					exec();
 					if(e['out'] == 'login'){dOut();}

@@ -10,7 +10,7 @@ class MobileModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-	function store($claves, OperacionModel $operacion){
+	function store($claves, OperacionModel $operacion, $tknses){
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
 			$tokenStore = self::tokenStore($clave['token']);
@@ -203,6 +203,23 @@ class MobileModel
 		
 		$emitir =  json_encode($output);
 		self::transmitir($emitir,'sync'.$clave['id_operador']);
+	}
+	function verify_token($tknses){
+		$qry = "
+			SELECT
+				cre.id_episodio
+			FROM
+				cr_episodios AS cre
+			WHERE
+				cre.token_session = '$tknses'
+				AND
+				cre.fin IS NULL
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		if($query->rowCount() != 1){
+			exit();
+		}
 	}
 	function updateFinalizacion($clave){
 		$sql = "
@@ -417,11 +434,13 @@ class MobileModel
 			INSERT INTO cr_episodios (
 				id_operador,
 				inicio,
+				token_session,
 				user_alta,
 				fecha_alta
 			) VALUES (
 				:id_operador,
 				:inicio,
+				:token_session,
 				:user_alta,
 				:fecha_alta
 			)";
@@ -430,6 +449,7 @@ class MobileModel
 			array(
 				':id_operador' 	=> 	$id_operador,
 				':inicio' 		=> 	date("Y-m-d H:i:s"),
+				':token_session'=> 	$_SESSION['token'],
 				':user_alta' 	=> 	$id_usuario,
 				':fecha_alta' 	=> 	date("Y-m-d H:i:s")
 			)

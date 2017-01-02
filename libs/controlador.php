@@ -158,7 +158,7 @@ class Controlador extends Controller
     protected function se_requiere_logueo($requerido,$levels=0){
 		if($requerido == true){
 			if(!isset($_SESSION['token'])){
-				require_once '../vendor/MobileDetect/Mobile_Detect.php';
+				/*require_once '../vendor/MobileDetect/Mobile_Detect.php';
 				$detect = new Mobile_Detect;
 				$array = array();
 				if($detect->isMobile()){
@@ -173,7 +173,8 @@ class Controlador extends Controller
 					}
 				}else{
 					Header("Location: ".URL_APP."login");
-				}
+				}*/
+				Header("Location: ".URL_APP."login");
 				exit();
 			}else{
 				if($_SESSION['tyc'] == 'SI'){

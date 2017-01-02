@@ -535,6 +535,7 @@ CREATE TABLE `cr_episodios` (
   `inicio` datetime DEFAULT NULL,
   `fin` datetime DEFAULT NULL,
   `tiempo` time DEFAULT NULL,
+  `token_session` varchar(64) DEFAULT NULL,
   `user_alta` int(32) DEFAULT NULL,
   `user_mod` int(32) DEFAULT NULL,
   `fecha_alta` datetime DEFAULT NULL,

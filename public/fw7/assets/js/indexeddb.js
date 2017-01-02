@@ -416,7 +416,7 @@ function storeClave(cve,cve1,cve2,cve3,cve4,motivo,callback){
 			}else{
 				storeClave(cve,cve1,cve2,cve3,cve4,'NULL',function(){});
 				
-				getEpisodio(function(){
+				getEpisode(function(){
 					var num = new Object();
 					num.id_viaje = 'IR003';
 					var travel_0 = new Object();
@@ -445,7 +445,7 @@ function setEpisodio(callback){
 	callback();
 }
 var globalEpisodio;
-function getEpisodio(callback){
+function getEpisode(callback){
 	var active = dataBase.result;
 	var data = active.transaction(["estados_variables"], "readwrite");
 	var object = data.objectStore("estados_variables");

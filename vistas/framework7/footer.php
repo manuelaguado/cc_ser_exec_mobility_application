@@ -4,6 +4,7 @@
 	var id_operador = '<?=$_SESSION['id_operador']?>';
 	var serie = '<?=$_SESSION['serie']?>';
 	var id_operador_unidad = '<?=$_SESSION['id_operador_unidad']?>';
+	var token_session = '<?=$_SESSION['token']?>';
 	var id_usuario = '<?=$_SESSION['id_usuario']?>';
 	var domain = '<?=DOMAIN?>';
 	
