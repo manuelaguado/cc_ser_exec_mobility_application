@@ -218,7 +218,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
-		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$token = 'OP:'.$this->token(62);
 		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
 		$mobile->broadcast($id_operador_unidad);
@@ -228,7 +228,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
-		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$token = 'OP:'.$this->token(62);
 		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
 		$mobile->broadcast($id_operador_unidad);
@@ -307,10 +307,6 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|programados');
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->programados_gris($_POST);
-	}
-	public function set_page_remotly($id_operador){
-		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
-		require URL_VISTA.'modales/operacion/set_page_remotly.php';
 	}
 	public function set_status_viaje($id_viaje,$stat,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -424,7 +420,7 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$bases = $this->loadModel('Bases');
 		
-		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$alAire = $operacion->alAire($id_operador_unidad);
 		$formado = $operacion->formadoAnyBase($bases, $id_operador_unidad);
 		$vigente = $operacion->viajeVigente($id_viaje);
@@ -440,7 +436,7 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$mobile = $this->loadModel('Mobile');
 		$id_viaje = $_POST['id_viaje'];
-		$id_operador_unidad = $operacion->getIdOperadorUnidad($id_viaje);
+		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->activarApartado($id_viaje,$operador);
@@ -453,14 +449,6 @@ class Operacion extends Controlador
 		
 		print json_encode(array('resp' => true ));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	public function cancel_apartado_set(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
@@ -471,9 +459,13 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
-		$id_operador_unidad = $model->getIdOperadorUnidadOp($_POST['id_operador']);
+		$id_operador_unidad = $model->getIdOperadorUnidadEpisode($_POST['id_operador'],'id_operador');
 		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
 		print json_encode(array('resp' => true ));
+	}
+	public function set_page_remotly($id_operador){
+		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
+		require URL_VISTA.'modales/operacion/set_page_remotly.php';
 	}
 	public function check_standinLine($id_operador){
 		$this->se_requiere_logueo(true,'Operacion|check_standinLine');

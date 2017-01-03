@@ -825,7 +825,8 @@ class OperadoresModel
 			crun.cat_status_unidad = 14 AND
 			fwu.cat_status = 3 AND
 			crn.eq_status = 7 AND
-			cron.cat_status_oper_numeq = 12
+			cron.cat_status_oper_numeq = 12 AND
+			crou.status_operador_unidad = 198
 		';
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )

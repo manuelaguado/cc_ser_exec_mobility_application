@@ -332,8 +332,8 @@ class GpsModel
 			INNER JOIN cr_operador_numeq AS cron ON cron.id_operador = cro.id_operador
 			INNER JOIN cr_numeq AS crn ON cron.id_numeq = crn.id_numeq
 			INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario
-			INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cro.id_operador
-			INNER JOIN cr_unidades AS cru ON cr_operador_unidad.id_unidad = cru.id_unidad
+			INNER JOIN cr_operador_unidad as crou ON crou.id_operador = cro.id_operador
+			INNER JOIN cr_unidades AS cru ON crou.id_unidad = cru.id_unidad
 			INNER JOIN cr_marcas AS crmr ON cru.id_marca = crmr.id_marca
 			INNER JOIN cr_modelos AS crmd ON cru.id_modelo = crmd.id_modelo
 			INNER JOIN cr_operador_celular AS croc ON croc.id_operador = cro.id_operador
@@ -341,6 +341,8 @@ class GpsModel
 		';
 		$where = "
 			croc.cat_status_operador_celular = 31
+			and
+			crou.status_operador_unidad = 198
 		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
@@ -451,6 +453,7 @@ class GpsModel
 		$where = "
 			GPS.`timestamp` >= '".$desde."' 
 			AND croc.cat_status_operador_celular = 31 GROUP BY crc.serie
+			AND crou.status_operador_unidad = 198
 		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )

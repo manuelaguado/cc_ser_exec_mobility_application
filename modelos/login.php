@@ -519,6 +519,7 @@ class LoginModel
 			WHERE
 				fwu.id_usuario = ".$id_usuario."
 			AND cr_unidades.cat_status_unidad = 14
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();

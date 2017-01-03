@@ -253,27 +253,32 @@ class MobileModel
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
-	}	
-	function getIdOperadorUnidadOp($id_operador){
-		$qry = "
+	}
+	function getIdOperadorUnidadEpisode($id,$type){
+		$sql = "
 			SELECT
-				cou.id_operador_unidad
+				cre.id_operador_unidad
 			FROM
-				cr_operador_unidad AS cou
+				cr_episodios AS cre
 			WHERE
-				cou.id_operador = $id_operador
+				cre.$type = $id
+			AND cre.fin IS NULL
+			ORDER BY
+				cre.id_episodio DESC
+			LIMIT 0,
+			 1
 		";
-		$query = $this->db->prepare($qry);
+		$query = $this->db->prepare($sql);
 		$query->execute();
-		$data = $query->fetchAll();
-		$return =  false;
+		$return = '';
 		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
 			foreach ($data as $row) {
-				$id_operador_unidad = $row->id_operador_unidad;
+				$return = $row->id_operador_unidad;
 			}
 		}
-		return $id_operador_unidad;
-	}	
+		return $return;	
+	}
 	function getDataActual($id_operador_unidad){
 		$qry = "
 			SELECT
@@ -326,38 +331,18 @@ class MobileModel
 			return $row->id_usuario;
 		}
 	}	
-	function Get_id_operador_unidad_con_id_episodio($id_episodio){
-		$qry = "
-			SELECT
-				cr_operador_unidad.id_operador_unidad
-			FROM
-				cr_episodios
-			INNER JOIN cr_operador ON cr_episodios.id_operador = cr_operador.id_operador
-			INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cr_operador.id_operador
-			WHERE
-				cr_episodios.id_episodio = $id_episodio
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$fila = array();
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				return $row->id_operador_unidad;
-			}
-		}
-	}	
 	function getIdEpisodio($id_operador_unidad){
 		$qry = "
 			SELECT
-				cr_episodios.id_episodio
+				cre.id_episodio
 			FROM
-				cr_operador_unidad
-			INNER JOIN cr_episodios ON cr_operador_unidad.id_operador = cr_episodios.id_operador
+				cr_operador_unidad as crou
+			INNER JOIN cr_episodios as cre ON crou.id_operador = cre.id_operador
 			WHERE
-				cr_operador_unidad.id_operador_unidad = ".$id_operador_unidad."
+				crou.id_operador_unidad = ".$id_operador_unidad."
+				AND crou.status_operador_unidad = 198
 			ORDER BY
-				cr_episodios.id_episodio DESC
+				cre.id_episodio DESC
 			LIMIT 0,
 			 1
 		";
@@ -435,23 +420,26 @@ class MobileModel
 				id_operador,
 				inicio,
 				token_session,
+				id_operador_unidad,
 				user_alta,
 				fecha_alta
 			) VALUES (
 				:id_operador,
 				:inicio,
 				:token_session,
+				:id_operador_unidad,
 				:user_alta,
 				:fecha_alta
 			)";
 		$query = $this->db->prepare($sql);
 		$query->execute(
 			array(
-				':id_operador' 	=> 	$id_operador,
-				':inicio' 		=> 	date("Y-m-d H:i:s"),
-				':token_session'=> 	$_SESSION['token'],
-				':user_alta' 	=> 	$id_usuario,
-				':fecha_alta' 	=> 	date("Y-m-d H:i:s")
+				':id_operador' 			=> 	$id_operador,
+				':inicio' 				=> 	date("Y-m-d H:i:s"),
+				':token_session'		=> 	$_SESSION['token'],
+				':id_operador_unidad'	=> 	$_SESSION['id_operador_unidad'],
+				':user_alta' 			=> 	$id_usuario,
+				':fecha_alta' 			=> 	date("Y-m-d H:i:s")
 			)
 		);
 		$lastInsertId = $this->db->lastInsertId();
@@ -554,15 +542,16 @@ class MobileModel
 				cr_unidades.color
 			FROM
 				cr_cordon
-			INNER JOIN cr_operador_unidad ON cr_cordon.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON cr_cordon.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN fw_usuarios ON cr_operador.id_usuario = fw_usuarios.id_usuario
-			INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
+			INNER JOIN cr_unidades ON crou.id_unidad = cr_unidades.id_unidad
 			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
 			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
 			WHERE
 				cr_cordon.id_base = $base
+				AND crou.status_operador_unidad = 198
 			AND (
 				cr_cordon.cat_statuscordon = 113
 				OR cr_cordon.cat_statuscordon = 115
@@ -662,6 +651,7 @@ class MobileModel
 			INNER JOIN cr_operador_unidad AS base ON base.id_operador = cro.id_operador
 			WHERE
 				indice.id_operador_unidad = $id_operador_unidad
+				AND base.status_operador_unidad = 198
 		";
 		$datos = $this->db->prepare($dataFull);
 		$datos->execute();
@@ -771,13 +761,7 @@ class MobileModel
 		if(self::turno($clave['id_operador_unidad'],$id_base) == 'No formado'){
 			$cat_statuscordon = (self::verificaCveStore($clave['id_operador_unidad']) == 'C6')?115:113;
 
-			if($clave['id_operador_unidad']){
-				$id_operador_unidad = $clave['id_operador_unidad'];
-			}else if(!$clave['id_operador_unidad'] && $clave['id_episodio']){
-				$id_operador_unidad =  self::Get_id_operador_unidad_con_id_episodio($clave['id_episodio']);
-			}else if(!$clave['id_operador_unidad'] && !$clave['id_episodio']){
-				return 'Error MOD-MOB-01 notifique al administrador.';
-			}
+			$id_operador_unidad = $clave['id_operador_unidad'];
 
 			$sql = "
 				INSERT INTO cr_cordon (
@@ -1173,10 +1157,10 @@ class MobileModel
 	function getIdensOperadorEnC2($id_operador){
 		$qry = "
 			SELECT
-				oun.id_operador_unidad
+				crou.id_operador_unidad
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+				cr_operador_unidad AS crou
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			WHERE
 				(
 					(
@@ -1188,7 +1172,8 @@ class MobileModel
 						AND syc.estado3 = 'F11'
 					)
 				)
-			AND oun.id_operador = $id_operador	
+			AND crou.id_operador = $id_operador	
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1279,26 +1264,6 @@ class MobileModel
 			$data = $query->fetchAll();
 			foreach ($data as $row) {
 				return $row->id_operador;
-			}
-		}
-	}
-	function getIdOperadorUnidad($id_usuario){
-		$qry = "
-			SELECT
-				crou.id_operador_unidad
-			FROM
-				fw_usuarios AS fwu
-			INNER JOIN cr_operador AS crop ON crop.id_usuario = fwu.id_usuario
-			INNER JOIN cr_operador_unidad AS crou ON crou.id_operador = crop.id_operador
-			WHERE
-				fwu.id_usuario = $id_usuario
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				return $row->id_operador_unidad;
 			}
 		}
 	}	
@@ -1777,39 +1742,14 @@ class MobileModel
 				self::transmitir(json_encode($send),$send['proceso']);
 			}
 	}
-	function getIdOperadorUnidadActivo($id_operador){
-		$sql = "
-			SELECT
-				syc.id_operador_unidad
-			FROM
-				cr_sync as syc
-			WHERE
-				syc.clave = 'C1'
-			AND syc.id_operador = $id_operador
-			ORDER BY
-				syc.id_sync DESC
-			LIMIT 0,
-			 1		
-		";
-		$query = $this->db->prepare($sql);
-		$query->execute();
-		$return = '';
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				$return = $row->id_operador_unidad;
-			}
-		}
-		return $return;		
-	}
 	function sync_ride(){
 		$operadores = (PRESENCE_GET == 'CURL')?self::onLink():self::onLinkWebHook();
 		$online = ' AND (';
 		foreach($operadores as $num => $oper){
-			$id_operador_unidad = self::getIdOperadorUnidadActivo($oper['id_operador']);
+			$id_operador_unidad = self::getIdOperadorUnidadEpisode($oper['id_operador'],'id_operador');
 			$online .= "
 				(
-					opu.id_operador_unidad = ".$id_operador_unidad."
+					crou.id_operador_unidad = ".$id_operador_unidad."
 				)
 			OR ";
 		}
@@ -1825,12 +1765,13 @@ class MobileModel
 			FROM
 				cr_sync_ride AS syr
 				
-			INNER JOIN cr_operador_unidad AS opu ON syr.id_operador_unidad = opu.id_operador_unidad
-			INNER JOIN cr_operador AS op ON opu.id_operador = op.id_operador
-			INNER JOIN cr_sync ON opu.id_sync = cr_sync.id_sync
+			INNER JOIN cr_operador_unidad AS crou ON syr.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador AS op ON crou.id_operador = op.id_operador
+			INNER JOIN cr_sync ON crou.id_sync = cr_sync.id_sync
 
 			WHERE
 				syr.procesado = 0 
+				AND crou.status_operador_unidad = 198
 				
 			    $online
 				
@@ -1985,7 +1926,8 @@ class MobileModel
 				cr_operador_unidad AS iden
 			INNER JOIN cr_operador_unidad AS base ON iden.id_operador = base.id_operador
 			WHERE
-				iden.id_operador_unidad = $id_operador_unidad	
+				iden.id_operador_unidad = $id_operador_unidad
+				AND base.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -2016,7 +1958,8 @@ class MobileModel
 			INNER JOIN cr_modelos AS cmod ON cru.id_modelo = cmod.id_modelo
 			WHERE
 				cru.cat_status_unidad = 14
-			AND crou.id_operador = ".$id_operador."		
+			AND crou.id_operador = ".$id_operador."	
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();

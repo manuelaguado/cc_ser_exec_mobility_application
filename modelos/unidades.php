@@ -26,56 +26,79 @@ class UnidadesModel
 		}
 		return $array;
 	}
+	function existIdOperadorUnidad($id_operador,$id_unidad){
+		$qry = "SELECT id_operador_unidad FROM cr_operador_unidad WHERE id_operador = ".$id_operador." and id_unidad = ".$id_unidad.";";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()==1){
+			$par = $query->fetchAll();
+			foreach ($par as $row) {
+				$array['id_operador_unidad']=$row->id_operador_unidad;
+				$array['exist']=true;
+			}
+		}else{
+			$array['exist']=false;
+		}
+		return $array;
+	}
 	function asignarAutomovil( $id_operador,$id_unidad,$estado){
 		if(Controlador::tiene_permiso('Bases|asignar_bases')){$permiso = true;}else{$permiso = false;}
+		$par = self::existIdOperadorUnidad($id_operador,$id_unidad);
+		$array = array();
 		if($estado == 'true'){
-			$sql = "
-				INSERT INTO cr_operador_unidad (
-					id_operador,
-					id_unidad,
-					user_alta,
-					fecha_alta
-				) VALUES (
-					:id_operador,
-					:id_unidad,
-					:user_alta,
-					:fecha_alta
-				)";
-			$query = $this->db->prepare($sql);
-			$query_resp = $query->execute(
-				array(
-					':id_operador' => $id_operador,
-					':id_unidad' => $id_unidad,
-					':user_alta' => $_SESSION['id_usuario'],
-					':fecha_alta' => date("Y-m-d H:i:s")
-				)
-			);
-			$respuesta = array('resp' => true, 'id_operador_unidad' => $this->db->lastInsertId(), 'estado' => $estado, 'permiso' => $permiso);
-		}else if ($estado == 'false'){
-			$array = array();
-			$qry = "SELECT id_operador_unidad FROM cr_operador_unidad WHERE id_operador = ".$id_operador." and id_unidad = ".$id_unidad.";";
-			$query = $this->db->prepare($qry);
-			$query->execute();
-			if($query->rowCount()>=1){
-				$par = $query->fetchAll();
-				foreach ($par as $row) {
-					self::deleteBaseOperadorUnidad($row->id_operador_unidad);
-					self::deleteOperadorUnidad($row->id_operador_unidad);
-				}
+			if($par['exist']){
+				self::updateOperadorUnidad($par['id_operador_unidad'], 198);				
+				$respuesta = array('resp' => true, 'id_operador_unidad' => $par['id_operador_unidad'], 'estado' => $estado, 'permiso' => $permiso);
+			}else{
+				self::insertOperadorUnidad($id_operador,$id_unidad);
+				$respuesta = array('resp' => true, 'id_operador_unidad' => $this->db->lastInsertId(), 'estado' => $estado, 'permiso' => $permiso);
 			}
-			$respuesta = array('resp' => true, 'id_operador_unidad' => $this->db->lastInsertId(), 'estado' => $estado, 'permiso' => $permiso);
+		}else if ($estado == 'false'){
+			if($par['exist']){
+				self::deleteBaseOperadorUnidad($par['id_operador_unidad']);
+				self::updateOperadorUnidad($par['id_operador_unidad'], 199);
+				$respuesta = array('resp' => true, 'id_operador_unidad' => $par['id_operador_unidad'], 'estado' => $estado, 'permiso' => $permiso);
+			}else{
+				$respuesta = array('resp' => false, 'id_operador_unidad' => 'Inexistente', 'estado' => $estado, 'permiso' => false);
+			}
 		}
 		return $respuesta;
 	}
-	function deleteOperadorUnidad($iden_delete){
-        $sql = "DELETE FROM cr_operador_unidad WHERE id_operador_unidad = ".$iden_delete."";
-        $query = $this->db->exec('SET foreign_key_checks = 0');
+	function insertOperadorUnidad($id_operador,$id_unidad){
+		$sql = "
+			INSERT INTO cr_operador_unidad (
+				id_operador,
+				id_unidad,
+				status_operador_unidad,
+				user_alta,
+				fecha_alta
+			) VALUES (
+				:id_operador,
+				:id_unidad,
+				:status_operador_unidad,
+				:user_alta,
+				:fecha_alta
+			)";
 		$query = $this->db->prepare($sql);
-		$query->execute();
-		$query = $this->db->exec('SET foreign_key_checks = 1');
+		$ret = $query_resp = $query->execute(
+			array(
+				':id_operador' => $id_operador,
+				':id_unidad' => $id_unidad,
+				':status_operador_unidad' => 198,
+				':user_alta' => $_SESSION['id_usuario'],
+				':fecha_alta' => date("Y-m-d H:i:s")
+			)
+		);
+		return $ret;		
 	}
-	function deleteBaseOperadorUnidad($iden_delete){
-        $sql = "DELETE FROM cr_bases_operador_unidad WHERE id_operador_unidad = ".$iden_delete."";
+	function updateOperadorUnidad($id_operador_unidad, $stat){
+		$sql = "UPDATE cr_operador_unidad SET status_operador_unidad = '".$stat."' WHERE id_operador_unidad = '".$id_operador_unidad."'";
+		$query = $this->db->prepare($sql);
+		$query->execute();	
+	}
+	function deleteBaseOperadorUnidad($id_operador_unidad){
+        $sql = "DELETE FROM cr_bases_operador_unidad WHERE id_operador_unidad = ".$id_operador_unidad."";
         $query = $this->db->prepare($sql);
 		$query->execute();
 	}
@@ -355,7 +378,9 @@ class acciones_unidades extends SSP{
 			FROM
 				cr_operador_unidad
 			WHERE
-				id_unidad = $id_unidad		
+				id_unidad = $id_unidad
+				AND
+				cr_operador_unidad.status_operador_unidad = 198
 		";
 		
 		$query = $db->prepare($query);

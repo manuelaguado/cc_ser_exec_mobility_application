@@ -797,10 +797,12 @@ class acciones_login extends SSP{
 				cr_operador
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
 			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cr_operador.id_operador
-			INNER JOIN cr_sync ON cr_operador_unidad.sync_token = cr_sync.token
+			INNER JOIN cr_operador_unidad AS crou ON crou.id_operador = cr_operador.id_operador
+			INNER JOIN cr_sync ON crou.sync_token = cr_sync.token
 			WHERE
 				`id_usuario` = $id_usuario
+				AND
+				crou.status_operador_unidad = 198
 		";
 		
 		$query = $db->prepare($query);

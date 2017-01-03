@@ -158,8 +158,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 			WHERE
@@ -167,6 +167,7 @@ class OperacionModel{
 			AND viv.cat_tipotemporicidad = 162
 			AND vcd.fecha_requerimiento > DATE_SUB(NOW(), INTERVAL 30 MINUTE)
 			AND vcd.fecha_requerimiento < DATE_ADD(NOW(), INTERVAL 65 MINUTE)
+			AND crou.status_operador_unidad = 198
 			GROUP BY
 				viv.id_viaje
 			ORDER BY
@@ -484,7 +485,7 @@ class OperacionModel{
 			cr_numeq.num,
 			cr_operador.id_operador,
 			fw_usuarios.id_usuario,
-			cr_operador_unidad.id_operador_unidad,
+			crou.id_operador_unidad,
 			CONCAT(
 					fw_usuarios.nombres,
 					' ',
@@ -498,9 +499,10 @@ class OperacionModel{
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
 			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
 			INNER JOIN fw_usuarios ON cr_operador.id_usuario = fw_usuarios.id_usuario
-			INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON crou.id_operador = cr_operador.id_operador
 			WHERE
 				cr_operador.cat_statusoperador = 8
+				AND crou.status_operador_unidad = 198
 			GROUP BY
 				cr_numeq.num
 			ORDER BY
@@ -537,7 +539,7 @@ class OperacionModel{
 				cr_unidades.`year`,
 				cr_unidades.placas,
 				cr_unidades.color,
-				cr_operador_unidad.id_operador_unidad,
+				crou.id_operador_unidad,
 				CONCAT(
 					fwu.nombres,
 					' ',
@@ -548,16 +550,17 @@ class OperacionModel{
 				cr_numeq.num,
 				cr_operador.id_usuario
 			FROM
-				cr_operador_unidad
-			INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
+				cr_operador_unidad as crou
+			INNER JOIN cr_unidades ON crou.id_unidad = cr_unidades.id_unidad
 			INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
 			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN fw_usuarios AS fwu ON cr_operador.id_usuario = fwu.id_usuario
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
 			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
 			WHERE
-				cr_operador_unidad.id_operador = $id_operador	
+				crou.id_operador = $id_operador
+				AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -703,11 +706,11 @@ class OperacionModel{
 	function getTBUnitsRed(){
 		$qry = '
 			SELECT
-				oun.id_operador_unidad,
-				oun.id_operador AS id_operador
+				crou.id_operador_unidad,
+				crou.id_operador AS id_operador
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+				cr_operador_unidad AS crou
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			WHERE
 				(
 					(
@@ -718,7 +721,8 @@ class OperacionModel{
 						syc.estado1 = "C1"
 						AND syc.estado3 = "F11"
 					)
-				)		
+				)
+			AND crou.status_operador_unidad = 198
 		';
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -739,12 +743,13 @@ class OperacionModel{
 			SELECT
 				syc.clave as llave
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+				cr_operador_unidad AS crou
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
 			WHERE
-				oun.id_operador_unidad = $id_operador_unidad
+				crou.id_operador_unidad = $id_operador_unidad
 			AND cm_catalogo.catalogo = 'clavesitio'	
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -767,7 +772,7 @@ class OperacionModel{
 					" ",
 					usu.apellido_materno
 				) AS nombre,
-				cr_operador_unidad.id_operador_unidad,
+				crou.id_operador_unidad,
 				cr_operador.id_operador,
 				cr_marcas.marca,
 				cr_modelos.modelo,
@@ -782,12 +787,13 @@ class OperacionModel{
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
 			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
 			INNER JOIN fw_usuarios AS usu ON cr_operador.id_usuario = usu.id_usuario
-			INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cr_operador.id_operador
-			INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
+			INNER JOIN cr_operador_unidad as crou ON crou.id_operador = cr_operador.id_operador
+			INNER JOIN cr_unidades ON crou.id_unidad = cr_unidades.id_unidad
 			INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
 			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
 			WHERE
-				cr_tiempo_base.id_operador_unidad = cr_operador_unidad.id_operador_unidad
+				cr_tiempo_base.id_operador_unidad = crou.id_operador_unidad
+				AND crou.status_operador_unidad = 198
 		';
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -943,7 +949,7 @@ class OperacionModel{
 		
 		$stat_process = true;
 		$qrymissing = array();
-		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
+		$id_operador_unidad = self::getIdOperadorUnidadViaje($post['id_viaje']);
 		switch($post['stat']){
 			case '170':
 				if(!isset($post['status_operador'])){
@@ -1047,7 +1053,7 @@ class OperacionModel{
 		
 		$stat_process = true;
 		$qrymissing = array();
-		$id_operador_unidad = self::getIdOperadorUnidad($post['id_viaje']);
+		$id_operador_unidad = self::getIdOperadorUnidadViaje($post['id_viaje']);
 
 		if(!$post['cat_cancelaciones']){
 			$qrymissing = array('qrymissing' => 'cat_cancelaciones' );
@@ -1119,7 +1125,7 @@ class OperacionModel{
 			return json_encode(array('resp' => false , 'mensaje' => 'No se seteo a 170'));
 		}
 	}
-	function getIdOperadorUnidad($id_viaje){
+	function getIdOperadorUnidadViaje($id_viaje){
 		$sql ="SELECT id_operador_unidad FROM vi_viaje WHERE id_viaje = ".$id_viaje;
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1320,6 +1326,7 @@ class OperacionModel{
 				crou.id_operador_unidad = $id_operador_unidad
 			AND cre.fin IS NULL
 			AND cre.tiempo IS NULL
+			AND crou.status_operador_unidad = 198
 			ORDER BY
 				cre.id_episodio DESC
 			LIMIT 0,
@@ -1575,10 +1582,11 @@ class OperacionModel{
 				count(syc.estado1) as tot,
 				count(DISTINCT syc.estado1) as C1
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+				cr_operador_unidad AS crou
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			WHERE
-				oun.id_operador = $id_operador
+				crou.id_operador = $id_operador
+				AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1607,11 +1615,12 @@ class OperacionModel{
 				csr.id_sync_ride
 			FROM
 				cr_sync_ride AS csr
-			INNER JOIN cr_operador_unidad AS cou ON csr.id_operador_unidad = cou.id_operador_unidad
+			INNER JOIN cr_operador_unidad AS crou ON csr.id_operador_unidad = crou.id_operador_unidad
 			WHERE
 				csr.cat_cve_store = 132
 			AND csr.procesado = 0
-			AND cou.id_operador = $id_operador
+			AND crou.id_operador = $id_operador
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1635,15 +1644,16 @@ class OperacionModel{
 				cr_bases.descripcion
 			FROM
 				cr_cordon AS crc
-			INNER JOIN cr_operador_unidad AS cro ON crc.id_operador_unidad = cro.id_operador_unidad
+			INNER JOIN cr_operador_unidad AS crou ON crc.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_bases ON crc.id_base = cr_bases.id_base
 			WHERE
-				cro.id_operador_unidad = $id_operador_unidad
+				crou.id_operador_unidad = $id_operador_unidad
 			AND (
 				crc.cat_statuscordon = 113
 				OR crc.cat_statuscordon = 115
 			)
 			AND crc.id_base = $base
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1662,15 +1672,16 @@ class OperacionModel{
 				cr_bases.descripcion
 			FROM
 				cr_cordon AS crc
-			INNER JOIN cr_operador_unidad AS cro ON crc.id_operador_unidad = cro.id_operador_unidad
+			INNER JOIN cr_operador_unidad AS crou ON crc.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_bases ON crc.id_base = cr_bases.id_base
 			WHERE
-				cro.id_operador = $id_operador
+				crou.id_operador = $id_operador
 			AND (
 				crc.cat_statuscordon = 113
 				OR crc.cat_statuscordon = 115
 			)
 			AND crc.id_base = $base
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1771,7 +1782,8 @@ class OperacionModel{
 			AND (
 				crc.cat_statuscordon = 113
 				OR crc.cat_statuscordon = 115
-			)	
+			)
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1793,16 +1805,17 @@ class OperacionModel{
 		$qry = "
 			SELECT
 				cr_numeq.num AS numeq,
-				oun.id_operador AS id_operador,
-				oun.id_operador_unidad,
+				crou.id_operador AS id_operador,
+				crou.id_operador_unidad,
 				syc.serie
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_operador_numeq AS crone ON oun.id_operador = crone.id_operador
+				cr_operador_unidad AS crou
+			INNER JOIN cr_operador_numeq AS crone ON crou.id_operador = crone.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			WHERE
-				syc.estado1 = 'C1'	
+				syc.estado1 = 'C1'
+				AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1824,16 +1837,17 @@ class OperacionModel{
 		$qry = "
 			SELECT
 				cr_numeq.num AS numeq,
-				oun.id_operador AS id_operador,
-				oun.id_operador_unidad,
+				crou.id_operador AS id_operador,
+				crou.id_operador_unidad,
 				syc.serie
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_operador_numeq AS crone ON oun.id_operador = crone.id_operador
+				cr_operador_unidad AS crou
+			INNER JOIN cr_operador_numeq AS crone ON crou.id_operador = crone.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			WHERE
-				syc.estado1 = 'C8'	
+				syc.estado1 = 'C8'
+				AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1855,16 +1869,17 @@ class OperacionModel{
 		$qry = "
 			SELECT
 				cr_numeq.num AS numeq,
-				oun.id_operador AS id_operador,
-				oun.id_operador_unidad,
+				crou.id_operador AS id_operador,
+				crou.id_operador_unidad,
 				syc.serie
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_operador_numeq AS crone ON oun.id_operador = crone.id_operador
+				cr_operador_unidad AS crou
+			INNER JOIN cr_operador_numeq AS crone ON crou.id_operador = crone.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			WHERE
 				syc.estado1 = 'A11'	
+				AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -2064,7 +2079,7 @@ class OperacionModel{
 	}
 	function control_get($array){
 		ini_set('memory_limit', '256M');
-		$table = 'cr_operador_unidad AS oun';
+		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
 			array(
@@ -2108,17 +2123,17 @@ class OperacionModel{
 				'dt' => 4
 			),
 			array( 
-				'db' => 'oun.id_operador_unidad',
-				'dbj' => 'oun.id_operador_unidad',
-				'real' => 'oun.id_operador_unidad',
+				'db' => 'crou.id_operador_unidad',
+				'dbj' => 'crou.id_operador_unidad',
+				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 5			
 			),
 			array( 
-				'db' => 'oun.id_operador as id_operador',
-				'dbj' => 'oun.id_operador',
-				'real' => 'oun.id_operador',
+				'db' => 'crou.id_operador as id_operador',
+				'dbj' => 'crou.id_operador',
+				'real' => 'crou.id_operador',
 				'alias' => 'id_operador',
 				'typ' => 'int',
 				'dt' => 6			
@@ -2126,19 +2141,20 @@ class OperacionModel{
 		);
 		$render_table = new acciones_control;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON oun.id_operador = ope.id_operador
+			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
 			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON oun.id_unidad = uni.id_unidad
+			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
 			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
 			syc.estado1 = 'C1' and (syc.estado2 = 'A10' OR syc.estado2 = 'F13' OR syc.estado2 = 'A11' OR syc.estado2 = 'C8')
 			AND 
 			ope.cat_statusoperador = 8
+			AND crou.status_operador_unidad = 198
 		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
@@ -2174,7 +2190,7 @@ class OperacionModel{
 	}
 	function inactivos_get($array){
 		ini_set('memory_limit', '256M');				
-		$table = 'cr_operador_unidad AS oun';
+		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
 			array( 
@@ -2218,9 +2234,9 @@ class OperacionModel{
 				'dt' => 4
 			),
 			array( 
-				'db' => 'oun.id_operador_unidad',
-				'dbj' => 'oun.id_operador_unidad',
-				'real' => 'oun.id_operador_unidad',
+				'db' => 'crou.id_operador_unidad',
+				'dbj' => 'crou.id_operador_unidad',
+				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 5			
@@ -2228,14 +2244,14 @@ class OperacionModel{
 		);
 		$render_table = new acciones_inactivos;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON oun.id_operador = ope.id_operador
+			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
 			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON oun.id_unidad = uni.id_unidad
+			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
 			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
 			syc.estado1 = 'C2'
@@ -2248,8 +2264,9 @@ class OperacionModel{
 				FROM
 					cr_presence
 				WHERE
-					cr_presence.id_operador = oun.id_operador
+					cr_presence.id_operador = crou.id_operador
 			)
+			AND crou.status_operador_unidad = 198
 		";
 		$orden = "
 			GROUP BY
@@ -2261,7 +2278,7 @@ class OperacionModel{
 	}
 	function suspendidas_get($array){
 		ini_set('memory_limit', '256M');				
-		$table = 'cr_operador_unidad AS oun';
+		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
 			array( 
@@ -2305,9 +2322,9 @@ class OperacionModel{
 				'dt' => 4
 			),
 			array( 
-				'db' => 'oun.id_operador_unidad',
-				'dbj' => 'oun.id_operador_unidad',
-				'real' => 'oun.id_operador_unidad',
+				'db' => 'crou.id_operador_unidad',
+				'dbj' => 'crou.id_operador_unidad',
+				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 5			
@@ -2315,17 +2332,18 @@ class OperacionModel{
 		);
 		$render_table = new acciones_suspendidas;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON oun.id_operador = ope.id_operador
+			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
 			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON oun.id_unidad = uni.id_unidad
+			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
 			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
 			ope.cat_statusoperador = 10
+			AND crou.status_operador_unidad = 198
 		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
@@ -2333,7 +2351,7 @@ class OperacionModel{
 	}
 	function unidades_a11_get($array){
 		ini_set('memory_limit', '256M');				
-		$table = 'cr_operador_unidad AS oun';
+		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
 			array( 
@@ -2377,31 +2395,31 @@ class OperacionModel{
 				'dt' => 4
 			),
 			array( 
-				'db' => 'oun.id_operador_unidad',
-				'dbj' => 'oun.id_operador_unidad',
-				'real' => 'oun.id_operador_unidad',
+				'db' => 'crou.id_operador_unidad',
+				'dbj' => 'crou.id_operador_unidad',
+				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 5			
 			),
 			array( 
-				'db' => 'oun.id_operador',
-				'dbj' => 'oun.id_operador',
-				'real' => 'oun.id_operador',
+				'db' => 'crou.id_operador',
+				'dbj' => 'crou.id_operador',
+				'real' => 'crou.id_operador',
 				'typ' => 'int',
 				'dt' => 6			
 			)
 		);
 		$render_table = new acciones_unidades_a11;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON oun.id_operador = ope.id_operador
+			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
 			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON oun.id_unidad = uni.id_unidad
+			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
 			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
 			syc.estado1 = 'C1'
@@ -2409,6 +2427,7 @@ class OperacionModel{
 			syc.estado2 = 'A11'
 			AND
 			ope.cat_statusoperador = 8
+			AND crou.status_operador_unidad = 198
 		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
@@ -2416,7 +2435,7 @@ class OperacionModel{
 	}
 	function activos_get($array){
 		ini_set('memory_limit', '256M');				
-		$table = 'cr_operador_unidad AS oun';
+		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
 			array( 
@@ -2460,17 +2479,17 @@ class OperacionModel{
 				'dt' => 4
 			),
 			array( 
-				'db' => 'oun.id_operador AS aid_operador',
-				'dbj' => 'oun.id_operador',
-				'real' => 'oun.id_operador',
+				'db' => 'crou.id_operador AS aid_operador',
+				'dbj' => 'crou.id_operador',
+				'real' => 'crou.id_operador',
 				'alias' => 'aid_operador',
 				'typ' => 'int',
 				'dt' => 5			
 			),
 			array( 
-				'db' => 'oun.id_operador_unidad',
-				'dbj' => 'oun.id_operador_unidad',
-				'real' => 'oun.id_operador_unidad',
+				'db' => 'crou.id_operador_unidad',
+				'dbj' => 'crou.id_operador_unidad',
+				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 6			
@@ -2478,19 +2497,20 @@ class OperacionModel{
 		);
 		$render_table = new acciones_activos;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON oun.id_operador = ope.id_operador
+			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
 			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON oun.id_unidad = uni.id_unidad
+			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
 			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
 			syc.estado1 = 'C1'
 			AND 
 			ope.cat_statusoperador = 8
+			AND crou.status_operador_unidad = 198
 		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
@@ -2595,6 +2615,7 @@ class OperacionModel{
 				crc.cat_statuscordon = 113
 				OR crc.cat_statuscordon = 115
 			)
+			AND crou.status_operador_unidad = 198
 
 		";
 		$orden = "
@@ -2686,9 +2707,9 @@ class OperacionModel{
 				'dt' => 8
 			),
 			array( 
-				'db' => 'cr_operador_unidad.id_operador_unidad as id_operador_unidad',
-				'dbj' => 'cr_operador_unidad.id_operador_unidad',
-				'real' => 'cr_operador_unidad.id_operador_unidad',
+				'db' => 'crou.id_operador_unidad as id_operador_unidad',
+				'dbj' => 'crou.id_operador_unidad',
+				'real' => 'crou.id_operador_unidad',
 				'alias' => 'id_operador_unidad',
 				'typ' => 'int',
 				'dt' => 9
@@ -2701,8 +2722,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq	
 		';
@@ -2710,6 +2731,7 @@ class OperacionModel{
 			viv.cat_status_viaje = 179
 			AND
 			viv.cat_tipotemporicidad = 184
+			AND crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -2808,8 +2830,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq		
 		';
@@ -2817,6 +2839,7 @@ class OperacionModel{
 			viv.cat_status_viaje = 171
 			AND
 			viv.cat_tipotemporicidad = 184
+			AND crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3010,8 +3033,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
@@ -3023,6 +3046,8 @@ class OperacionModel{
 				NOW() < vcd.fecha_requerimiento
 			AND
 				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 60 MINUTE)
+			AND 
+				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3121,8 +3146,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
@@ -3134,6 +3159,8 @@ class OperacionModel{
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 60 MINUTE)
 			AND
 				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 90 MINUTE)
+			AND 
+				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3232,8 +3259,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
@@ -3244,7 +3271,9 @@ class OperacionModel{
 			AND 
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 90 MINUTE)
 			AND
-				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 1 DAY)			
+				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 1 DAY)		
+			AND 
+				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3343,8 +3372,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
@@ -3354,6 +3383,8 @@ class OperacionModel{
 				viv.cat_tipotemporicidad = 162
 			AND 
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 1 DAY)
+			AND 
+				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3473,8 +3504,8 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
@@ -3484,6 +3515,8 @@ class OperacionModel{
 				viv.cat_tipotemporicidad = 162
 			AND 
 				NOW() > vcd.fecha_requerimiento
+			AND 
+				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3583,13 +3616,15 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
 			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad ON viv.id_operador_unidad = cr_operador_unidad.id_operador_unidad
-			INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
 		';
 		$where = '
 			viv.cat_status_viaje = 172
+			AND 
+				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3795,6 +3830,8 @@ class OperacionModel{
 		';
 		$where = "
 			crtb.id_operador_unidad = crou.id_operador_unidad
+			AND 
+				crou.status_operador_unidad = 198
 		";
 		$orden = "";
 		return json_encode(
@@ -4037,12 +4074,13 @@ class acciones_asignados extends SSP{
 				syc.clave as llave,
 				cm_catalogo.valor as valor
 			FROM
-				cr_operador_unidad AS oun
-			INNER JOIN cr_sync AS syc ON oun.sync_token = syc.token
+				cr_operador_unidad AS crou
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
 			WHERE
-				oun.id_operador_unidad = $id_operador_unidad
+				crou.id_operador_unidad = $id_operador_unidad
 			AND cm_catalogo.catalogo = 'clavesitio'	
+			AND crou.status_operador_unidad = 198
 		";
 		$query = $db->prepare($qry);
 		$query->execute();

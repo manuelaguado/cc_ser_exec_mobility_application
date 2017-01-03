@@ -1,3 +1,18 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : CentralCar Development
+Source Server Version : 50716
+Source Host           : localhost:3306
+Source Database       : centralcar
+
+Target Server Type    : MYSQL
+Target Server Version : 50716
+File Encoding         : 65001
+
+Date: 2017-01-02 20:52:55
+*/
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -25,10 +40,6 @@ CREATE TABLE `cl_anticipo_aplicacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cl_anticipo_aplicacion
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cl_anticipos
 -- ----------------------------
 DROP TABLE IF EXISTS `cl_anticipos`;
@@ -47,10 +58,6 @@ CREATE TABLE `cl_anticipos` (
   KEY `fk_anticipos_ae_clientes_1` (`id_cliente`) USING BTREE,
   CONSTRAINT `fk_anticipos_ae_clientes_1` FOREIGN KEY (`id_cliente`) REFERENCES `cl_clientes` (`id_cliente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cl_anticipos
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cl_cargos_directos
@@ -73,10 +80,6 @@ CREATE TABLE `cl_cargos_directos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cl_cargos_directos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cl_cliente_operador
 -- ----------------------------
 DROP TABLE IF EXISTS `cl_cliente_operador`;
@@ -94,10 +97,6 @@ CREATE TABLE `cl_cliente_operador` (
   CONSTRAINT `fk_ae_cliente_operador_ae_clientes_1` FOREIGN KEY (`id_cliente`) REFERENCES `cl_clientes` (`id_cliente`),
   CONSTRAINT `fk_ae_cliente_operador_ae_operador_1` FOREIGN KEY (`id_operador`) REFERENCES `cr_operador` (`id_operador`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cl_cliente_operador
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cl_clientes
@@ -124,10 +123,6 @@ CREATE TABLE `cl_clientes` (
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cl_clientes
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cl_cobros
 -- ----------------------------
 DROP TABLE IF EXISTS `cl_cobros`;
@@ -142,10 +137,6 @@ CREATE TABLE `cl_cobros` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_cobro`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cl_cobros
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cl_datos_fiscales
@@ -176,10 +167,6 @@ CREATE TABLE `cl_datos_fiscales` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cl_datos_fiscales
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cl_detalle_factura
 -- ----------------------------
 DROP TABLE IF EXISTS `cl_detalle_factura`;
@@ -194,10 +181,6 @@ CREATE TABLE `cl_detalle_factura` (
   KEY `fk_ae_desglose_factura_ae_facturas_1` (`id_factura`) USING BTREE,
   CONSTRAINT `fk_ae_desglose_factura_ae_facturas_1` FOREIGN KEY (`id_factura`) REFERENCES `cl_facturas` (`id_factura`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cl_detalle_factura
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cl_factura_formapago
@@ -219,10 +202,6 @@ CREATE TABLE `cl_factura_formapago` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cl_factura_formapago
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cl_facturas
 -- ----------------------------
 DROP TABLE IF EXISTS `cl_facturas`;
@@ -241,10 +220,6 @@ CREATE TABLE `cl_facturas` (
   CONSTRAINT `fk_ae_facturas_ae_catalogo_1` FOREIGN KEY (`id_statusfactura`) REFERENCES `cm_catalogo` (`id_cat`),
   CONSTRAINT `fk_ae_facturas_ae_clientes_1` FOREIGN KEY (`id_cliente`) REFERENCES `cl_clientes` (`id_cliente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cl_facturas
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cl_movimientos_financieros
@@ -274,10 +249,6 @@ CREATE TABLE `cl_movimientos_financieros` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cl_movimientos_financieros
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cl_pagos
 -- ----------------------------
 DROP TABLE IF EXISTS `cl_pagos`;
@@ -298,10 +269,6 @@ CREATE TABLE `cl_pagos` (
   CONSTRAINT `fk_cl_pagos_cl_facturas_1` FOREIGN KEY (`id_factura`) REFERENCES `cl_facturas` (`id_factura`),
   CONSTRAINT `fk_cl_pagos_cm_catalogo_1` FOREIGN KEY (`cat_tipo_pago`) REFERENCES `cm_catalogo` (`id_cat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cl_pagos
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cl_tarifas_clientes
@@ -333,10 +300,6 @@ CREATE TABLE `cl_tarifas_clientes` (
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cl_tarifas_clientes
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cm_catalogo
 -- ----------------------------
 DROP TABLE IF EXISTS `cm_catalogo`;
@@ -355,11 +318,7 @@ CREATE TABLE `cm_catalogo` (
   PRIMARY KEY (`id_cat`),
   KEY `fk_cm_catalogo_cm_catalogo_1` (`id_padre`) USING BTREE,
   CONSTRAINT `fk_cm_catalogo_cm_catalogo_1` FOREIGN KEY (`id_padre`) REFERENCES `cm_catalogo` (`id_cat`)
-) ENGINE=InnoDB AUTO_INCREMENT=198 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cm_catalogo
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for cr_apartados
@@ -385,10 +344,6 @@ CREATE TABLE `cr_apartados` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_apartados
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_bases
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_bases`;
@@ -412,10 +367,6 @@ CREATE TABLE `cr_bases` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_bases
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_bases_operador_unidad
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_bases_operador_unidad`;
@@ -433,10 +384,6 @@ CREATE TABLE `cr_bases_operador_unidad` (
   CONSTRAINT `fk_ae_bases_operador_unidad_ae_bases_1` FOREIGN KEY (`id_base`) REFERENCES `cr_bases` (`id_base`),
   CONSTRAINT `fk_cr_bases_operador_unidad_cr_operador_unidad_1` FOREIGN KEY (`id_operador_unidad`) REFERENCES `cr_operador_unidad` (`id_operador_unidad`)
 ) ENGINE=InnoDB AUTO_INCREMENT=163 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_bases_operador_unidad
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cr_celulares
@@ -466,10 +413,6 @@ CREATE TABLE `cr_celulares` (
 ) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_celulares
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_cordon
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_cordon`;
@@ -496,11 +439,7 @@ CREATE TABLE `cr_cordon` (
   CONSTRAINT `fk_ae_cordon_ae_episodios_1` FOREIGN KEY (`id_episodio`) REFERENCES `cr_episodios` (`id_episodio`),
   CONSTRAINT `fk_cr_cordon_cr_bases_1` FOREIGN KEY (`id_base`) REFERENCES `cr_bases` (`id_base`),
   CONSTRAINT `fk_cr_cordon_cr_operador_unidad_1` FOREIGN KEY (`id_operador_unidad`) REFERENCES `cr_operador_unidad` (`id_operador_unidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_cordon
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for cr_domicilios
@@ -522,10 +461,6 @@ CREATE TABLE `cr_domicilios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_domicilios
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_episodios
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_episodios`;
@@ -543,11 +478,7 @@ CREATE TABLE `cr_episodios` (
   PRIMARY KEY (`id_episodio`),
   KEY `fk_ae_episodios_ae_operador_1` (`id_operador`) USING BTREE,
   CONSTRAINT `fk_ae_episodios_ae_operador_1` FOREIGN KEY (`id_operador`) REFERENCES `cr_operador` (`id_operador`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_episodios
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for cr_horario_operador_unidad
@@ -570,10 +501,6 @@ CREATE TABLE `cr_horario_operador_unidad` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_horario_operador_unidad
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_marcas
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_marcas`;
@@ -587,10 +514,6 @@ CREATE TABLE `cr_marcas` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_marca`)
 ) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_marcas
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cr_mensajes
@@ -611,10 +534,6 @@ CREATE TABLE `cr_mensajes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Records of cr_mensajes
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_modelos
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_modelos`;
@@ -629,10 +548,6 @@ CREATE TABLE `cr_modelos` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_modelo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=730 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_modelos
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cr_numeq
@@ -650,10 +565,6 @@ CREATE TABLE `cr_numeq` (
   KEY `fk_cr_numeq_cm_catalogo_1` (`eq_status`) USING BTREE,
   CONSTRAINT `fk_cr_numeq_cm_catalogo_1` FOREIGN KEY (`eq_status`) REFERENCES `cm_catalogo` (`id_cat`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_numeq
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cr_operador
@@ -674,9 +585,6 @@ CREATE TABLE `cr_operador` (
   CONSTRAINT `fk_cr_operador_fw_usuarios_1` FOREIGN KEY (`id_usuario`) REFERENCES `fw_usuarios` (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
--- ----------------------------
--- Records of cr_operador
--- ----------------------------
 -- ----------------------------
 -- Table structure for cr_operador_celular
 -- ----------------------------
@@ -701,10 +609,6 @@ CREATE TABLE `cr_operador_celular` (
 ) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_operador_celular
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_operador_numeq
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_operador_numeq`;
@@ -727,10 +631,6 @@ CREATE TABLE `cr_operador_numeq` (
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_operador_numeq
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_operador_unidad
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_operador_unidad`;
@@ -740,6 +640,7 @@ CREATE TABLE `cr_operador_unidad` (
   `id_unidad` int(32) unsigned DEFAULT NULL,
   `id_sync` int(32) unsigned DEFAULT NULL,
   `sync_token` varchar(80) DEFAULT NULL,
+  `status_operador_unidad` int(32) unsigned DEFAULT NULL,
   `user_alta` int(32) DEFAULT NULL,
   `user_mod` int(32) DEFAULT NULL,
   `fecha_alta` datetime DEFAULT NULL,
@@ -748,14 +649,12 @@ CREATE TABLE `cr_operador_unidad` (
   KEY `fk_ae_operador_unidad_ae_operador_1` (`id_operador`) USING BTREE,
   KEY `fk_ae_operador_unidad_ae_unidades_1` (`id_unidad`) USING BTREE,
   KEY `fk_ae_operador_unidad_ae_sync_1` (`id_sync`) USING BTREE,
+  KEY `fk_cr_operador_unidad_cm_catalogo_1` (`status_operador_unidad`),
   CONSTRAINT `fk_ae_operador_unidad_ae_operador_1` FOREIGN KEY (`id_operador`) REFERENCES `cr_operador` (`id_operador`),
   CONSTRAINT `fk_ae_operador_unidad_ae_unidades_1` FOREIGN KEY (`id_unidad`) REFERENCES `cr_unidades` (`id_unidad`),
+  CONSTRAINT `fk_cr_operador_unidad_cm_catalogo_1` FOREIGN KEY (`status_operador_unidad`) REFERENCES `cm_catalogo` (`id_cat`),
   CONSTRAINT `fk_cr_operador_unidad_cr_sync_1` FOREIGN KEY (`id_sync`) REFERENCES `cr_sync` (`id_sync`)
-) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_operador_unidad
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for cr_presence
@@ -769,11 +668,6 @@ CREATE TABLE `cr_presence` (
   UNIQUE KEY `token` (`id_operador`) USING BTREE,
   CONSTRAINT `fk_cr_presence_cr_operador_1` FOREIGN KEY (`id_operador`) REFERENCES `cr_operador` (`id_operador`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Records of cr_presence
--- ----------------------------
-INSERT INTO `cr_presence` VALUES ('1', '48', '2016-12-30 14:57:57');
 
 -- ----------------------------
 -- Table structure for cr_sync
@@ -802,11 +696,7 @@ CREATE TABLE `cr_sync` (
   `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_sync`),
   UNIQUE KEY `token` (`token`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=488 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of cr_sync
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=629 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for cr_sync_ride
@@ -827,11 +717,7 @@ CREATE TABLE `cr_sync_ride` (
   UNIQUE KEY `token` (`token`) USING BTREE,
   KEY `fk_sync_ride_cr_operador_unidad_1` (`id_operador_unidad`),
   CONSTRAINT `fk_sync_ride_cr_operador_unidad_1` FOREIGN KEY (`id_operador_unidad`) REFERENCES `cr_operador_unidad` (`id_operador_unidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=434 DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Records of cr_sync_ride
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=543 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for cr_telefonos
@@ -853,10 +739,6 @@ CREATE TABLE `cr_telefonos` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_telefonos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cr_tiempo_base
 -- ----------------------------
 DROP TABLE IF EXISTS `cr_tiempo_base`;
@@ -873,11 +755,7 @@ CREATE TABLE `cr_tiempo_base` (
   KEY `fk_cr_tiempo_base_cr_operador_unidad_1` (`id_operador_unidad`),
   CONSTRAINT `fk_cr_tiempo_base_cr_operador_1` FOREIGN KEY (`id_operador`) REFERENCES `cr_operador` (`id_operador`),
   CONSTRAINT `fk_cr_tiempo_base_cr_operador_unidad_1` FOREIGN KEY (`id_operador_unidad`) REFERENCES `cr_operador_unidad` (`id_operador_unidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Records of cr_tiempo_base
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for cr_unidades
@@ -906,10 +784,6 @@ CREATE TABLE `cr_unidades` (
 ) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of cr_unidades
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fo_cobro_ingresos
 -- ----------------------------
 DROP TABLE IF EXISTS `fo_cobro_ingresos`;
@@ -929,10 +803,6 @@ CREATE TABLE `fo_cobro_ingresos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fo_cobro_ingresos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fo_comisiones
 -- ----------------------------
 DROP TABLE IF EXISTS `fo_comisiones`;
@@ -947,10 +817,6 @@ CREATE TABLE `fo_comisiones` (
   KEY `fk_comisiones_regla_comision_1` (`id_regla_comision`) USING BTREE,
   CONSTRAINT `fk_comisiones_regla_comision_1` FOREIGN KEY (`id_regla_comision`) REFERENCES `fo_regla_comision` (`id_regla_comision`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fo_comisiones
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fo_concepto_adeudo
@@ -971,10 +837,6 @@ CREATE TABLE `fo_concepto_adeudo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fo_concepto_adeudo
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fo_conceptos
 -- ----------------------------
 DROP TABLE IF EXISTS `fo_conceptos`;
@@ -989,10 +851,6 @@ CREATE TABLE `fo_conceptos` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_concepto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fo_conceptos
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fo_conceptos_aplicaciones
@@ -1012,10 +870,6 @@ CREATE TABLE `fo_conceptos_aplicaciones` (
   KEY `fk_conceptos_aplicaciones_conceptos_1` (`id_concepto`) USING BTREE,
   CONSTRAINT `fk_conceptos_aplicaciones_conceptos_1` FOREIGN KEY (`id_concepto`) REFERENCES `fo_conceptos` (`id_concepto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fo_conceptos_aplicaciones
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fo_ingresos
@@ -1046,10 +900,6 @@ CREATE TABLE `fo_ingresos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fo_ingresos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fo_movimientos
 -- ----------------------------
 DROP TABLE IF EXISTS `fo_movimientos`;
@@ -1072,10 +922,6 @@ CREATE TABLE `fo_movimientos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fo_movimientos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fo_operador_conceptos
 -- ----------------------------
 DROP TABLE IF EXISTS `fo_operador_conceptos`;
@@ -1094,10 +940,6 @@ CREATE TABLE `fo_operador_conceptos` (
   CONSTRAINT `fk_operador_conceptos_ae_operador_1` FOREIGN KEY (`id_operador`) REFERENCES `cr_operador` (`id_operador`),
   CONSTRAINT `fk_operador_conceptos_conceptos_1` FOREIGN KEY (`id_concepto`) REFERENCES `fo_conceptos` (`id_concepto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fo_operador_conceptos
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fo_pagos_conceptos
@@ -1119,10 +961,6 @@ CREATE TABLE `fo_pagos_conceptos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fo_pagos_conceptos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fo_regla_comision
 -- ----------------------------
 DROP TABLE IF EXISTS `fo_regla_comision`;
@@ -1134,10 +972,6 @@ CREATE TABLE `fo_regla_comision` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_regla_comision`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fo_regla_comision
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fo_tarifas_operadores
@@ -1163,10 +997,6 @@ CREATE TABLE `fo_tarifas_operadores` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fo_tarifas_operadores
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_area
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_area`;
@@ -1187,10 +1017,6 @@ CREATE TABLE `fw_area` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_area
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_config
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_config`;
@@ -1209,10 +1035,6 @@ CREATE TABLE `fw_config` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_config
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_dac_acl
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_dac_acl`;
@@ -1228,10 +1050,6 @@ CREATE TABLE `fw_dac_acl` (
   KEY `fk_dac_acl_usuarios_1` (`id_usuario`) USING BTREE,
   CONSTRAINT `fk_dac_acl_usuarios_1` FOREIGN KEY (`id_usuario`) REFERENCES `fw_usuarios` (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fw_dac_acl
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fw_login
@@ -1255,11 +1073,7 @@ CREATE TABLE `fw_login` (
   PRIMARY KEY (`id_login`),
   KEY `fk_fw_login_fw_usuarios_1` (`id_usuario`),
   CONSTRAINT `fk_fw_login_fw_usuarios_1` FOREIGN KEY (`id_usuario`) REFERENCES `fw_usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Records of fw_login
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for fw_login_log
@@ -1275,10 +1089,6 @@ CREATE TABLE `fw_login_log` (
   KEY `fk_login_log_usuarios_1` (`id_usuario`) USING BTREE,
   CONSTRAINT `fk_fw_login_log_fw_usuarios_1` FOREIGN KEY (`id_usuario`) REFERENCES `fw_usuarios` (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Records of fw_login_log
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fw_lost_password
@@ -1302,10 +1112,6 @@ CREATE TABLE `fw_lost_password` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_lost_password
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_metodos
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_metodos`;
@@ -1321,10 +1127,6 @@ CREATE TABLE `fw_metodos` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_metodo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fw_metodos
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fw_nivel
@@ -1354,10 +1156,6 @@ CREATE TABLE `fw_nivel` (
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_nivel
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_permisos
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_permisos`;
@@ -1377,10 +1175,6 @@ CREATE TABLE `fw_permisos` (
 ) ENGINE=InnoDB AUTO_INCREMENT=713 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_permisos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_roles
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_roles`;
@@ -1396,10 +1190,6 @@ CREATE TABLE `fw_roles` (
   KEY `fk_fw_roles_cm_catalogo_1` (`cat_tiporol`) USING BTREE,
   CONSTRAINT `fk_fw_roles_cm_catalogo_1` FOREIGN KEY (`cat_tiporol`) REFERENCES `cm_catalogo` (`id_cat`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fw_roles
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fw_roles_alta
@@ -1419,10 +1209,6 @@ CREATE TABLE `fw_roles_alta` (
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_roles_alta
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_ubicacion
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_ubicacion`;
@@ -1439,10 +1225,6 @@ CREATE TABLE `fw_ubicacion` (
   KEY `fk_ubicacion_ae_catalogo_1` (`cat_tipo_ubicacion`) USING BTREE,
   CONSTRAINT `fk_ubicacion_ae_catalogo_1` FOREIGN KEY (`cat_tipo_ubicacion`) REFERENCES `cm_catalogo` (`id_cat`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of fw_ubicacion
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for fw_usuarios
@@ -1477,10 +1259,6 @@ CREATE TABLE `fw_usuarios` (
 ) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_usuarios
--- ----------------------------
-
--- ----------------------------
 -- Table structure for fw_usuarios_config
 -- ----------------------------
 DROP TABLE IF EXISTS `fw_usuarios_config`;
@@ -1504,10 +1282,6 @@ CREATE TABLE `fw_usuarios_config` (
 ) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of fw_usuarios_config
--- ----------------------------
-
--- ----------------------------
 -- Table structure for gps
 -- ----------------------------
 DROP TABLE IF EXISTS `gps`;
@@ -1527,11 +1301,7 @@ CREATE TABLE `gps` (
   PRIMARY KEY (`id_gps`),
   KEY `fk_gps_cr_operador_1` (`id_operador`) USING BTREE,
   CONSTRAINT `fk_gps_cr_operador_1` FOREIGN KEY (`id_operador`) REFERENCES `cr_operador` (`id_operador`)
-) ENGINE=InnoDB AUTO_INCREMENT=1381 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of gps
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=338 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for it_asentamientos
@@ -1566,10 +1336,6 @@ CREATE TABLE `it_asentamientos` (
 ) ENGINE=InnoDB AUTO_INCREMENT=145942 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of it_asentamientos
--- ----------------------------
-
--- ----------------------------
 -- Table structure for it_ciudades
 -- ----------------------------
 DROP TABLE IF EXISTS `it_ciudades`;
@@ -1582,10 +1348,6 @@ CREATE TABLE `it_ciudades` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_ciudad`)
 ) ENGINE=InnoDB AUTO_INCREMENT=639 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_ciudades
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for it_cliente_destino
@@ -1604,11 +1366,7 @@ CREATE TABLE `it_cliente_destino` (
   KEY `fk_ae_cliente_destino_ae_destinos_1` (`id_destino`) USING BTREE,
   CONSTRAINT `fk_ae_cliente_destino_ae_clientes_1` FOREIGN KEY (`id_cliente`) REFERENCES `cl_clientes` (`id_cliente`),
   CONSTRAINT `fk_ae_cliente_destino_ae_destinos_1` FOREIGN KEY (`id_destino`) REFERENCES `it_destinos` (`id_destino`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_cliente_destino
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for it_cliente_origen
@@ -1627,11 +1385,7 @@ CREATE TABLE `it_cliente_origen` (
   KEY `fk_ae_cliente_origen_ae_origenes_1` (`id_origen`) USING BTREE,
   CONSTRAINT `fk_ae_cliente_origen_ae_clientes_1` FOREIGN KEY (`id_cliente`) REFERENCES `cl_clientes` (`id_cliente`),
   CONSTRAINT `fk_ae_cliente_origen_ae_origenes_1` FOREIGN KEY (`id_origen`) REFERENCES `it_origenes` (`id_origen`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_cliente_origen
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for it_codigos_postales
@@ -1648,10 +1402,6 @@ CREATE TABLE `it_codigos_postales` (
 ) ENGINE=InnoDB AUTO_INCREMENT=32453 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of it_codigos_postales
--- ----------------------------
-
--- ----------------------------
 -- Table structure for it_destinos
 -- ----------------------------
 DROP TABLE IF EXISTS `it_destinos`;
@@ -1666,11 +1416,7 @@ CREATE TABLE `it_destinos` (
   PRIMARY KEY (`id_destino`),
   KEY `fk_ae_destinos_ae_direcciones_1` (`id_direccion`) USING BTREE,
   CONSTRAINT `fk_ae_destinos_ae_direcciones_1` FOREIGN KEY (`id_direccion`) REFERENCES `it_direcciones` (`id_direccion`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_destinos
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for it_direcciones
@@ -1694,11 +1440,7 @@ CREATE TABLE `it_direcciones` (
   PRIMARY KEY (`id_direccion`),
   KEY `fk_it_direcciones_asentamientos_1` (`id_asentamiento`) USING BTREE,
   CONSTRAINT `fk_it_direcciones_asentamientos_1` FOREIGN KEY (`id_asentamiento`) REFERENCES `it_asentamientos` (`id_asentamiento`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_direcciones
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for it_estados
@@ -1715,10 +1457,6 @@ CREATE TABLE `it_estados` (
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of it_estados
--- ----------------------------
-
--- ----------------------------
 -- Table structure for it_municipios
 -- ----------------------------
 DROP TABLE IF EXISTS `it_municipios`;
@@ -1731,10 +1469,6 @@ CREATE TABLE `it_municipios` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_municipio`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2319 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_municipios
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for it_origenes
@@ -1751,11 +1485,7 @@ CREATE TABLE `it_origenes` (
   PRIMARY KEY (`id_origen`),
   KEY `fk_ae_origenes_ae_direcciones_1` (`id_direccion`) USING BTREE,
   CONSTRAINT `fk_ae_origenes_ae_direcciones_1` FOREIGN KEY (`id_direccion`) REFERENCES `it_direcciones` (`id_direccion`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_origenes
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for it_tipo_asentamientos
@@ -1770,10 +1500,6 @@ CREATE TABLE `it_tipo_asentamientos` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_tipo_asenta`)
 ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_tipo_asentamientos
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for it_viaje_destino
@@ -1792,11 +1518,7 @@ CREATE TABLE `it_viaje_destino` (
   KEY `fk_ae_bitacora_destino_ae_bitacora_1` (`id_viaje`) USING BTREE,
   CONSTRAINT `fk_ae_bitacora_destino_ae_bitacora_1` FOREIGN KEY (`id_viaje`) REFERENCES `vi_viaje` (`id_viaje`),
   CONSTRAINT `fk_ae_bitacora_destino_ae_cliente_destino_1` FOREIGN KEY (`id_cliente_destino`) REFERENCES `it_cliente_destino` (`id_cliente_destino`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_viaje_destino
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for it_zonas
@@ -1811,10 +1533,6 @@ CREATE TABLE `it_zonas` (
   `fecha_mod` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_zona`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of it_zonas
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for timeoff
@@ -1837,10 +1555,6 @@ CREATE TABLE `timeoff` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Records of timeoff
--- ----------------------------
-
--- ----------------------------
 -- Table structure for vi_costos_adicionales
 -- ----------------------------
 DROP TABLE IF EXISTS `vi_costos_adicionales`;
@@ -1861,10 +1575,6 @@ CREATE TABLE `vi_costos_adicionales` (
   CONSTRAINT `fk_ae_conceptos_varios_ae_bitacora_1` FOREIGN KEY (`id_viaje`) REFERENCES `vi_viaje` (`id_viaje`),
   CONSTRAINT `fk_ae_costos_adicionales_ae_catalogo_1` FOREIGN KEY (`cat_concepto`) REFERENCES `cm_catalogo` (`id_cat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of vi_costos_adicionales
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for vi_viaje
@@ -1908,11 +1618,7 @@ CREATE TABLE `vi_viaje` (
   CONSTRAINT `fk_vi_viaje_cm_catalogo_3` FOREIGN KEY (`cat_tiposervicio`) REFERENCES `cm_catalogo` (`id_cat`),
   CONSTRAINT `fk_vi_viaje_cm_catalogo_4` FOREIGN KEY (`cat_tipo_salida`) REFERENCES `cm_catalogo` (`id_cat`),
   CONSTRAINT `fk_vi_viaje_cr_operador_unidad_1` FOREIGN KEY (`id_operador_unidad`) REFERENCES `cr_operador_unidad` (`id_operador_unidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of vi_viaje
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for vi_viaje_claves
@@ -1934,10 +1640,6 @@ CREATE TABLE `vi_viaje_claves` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
--- Records of vi_viaje_claves
--- ----------------------------
-
--- ----------------------------
 -- Table structure for vi_viaje_clientes
 -- ----------------------------
 DROP TABLE IF EXISTS `vi_viaje_clientes`;
@@ -1954,11 +1656,7 @@ CREATE TABLE `vi_viaje_clientes` (
   KEY `fk_ae_bitacora_clientes_ae_bitacora_1` (`id_viaje`) USING BTREE,
   CONSTRAINT `fk_ae_bitacora_clientes_ae_bitacora_1` FOREIGN KEY (`id_viaje`) REFERENCES `vi_viaje` (`id_viaje`),
   CONSTRAINT `fk_ae_bitacora_clientes_ae_clientes_1` FOREIGN KEY (`id_cliente`) REFERENCES `cl_clientes` (`id_cliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of vi_viaje_clientes
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for vi_viaje_detalle
@@ -1984,11 +1682,7 @@ CREATE TABLE `vi_viaje_detalle` (
   PRIMARY KEY (`id_viaje_detalle`),
   KEY `fk_ae_bitacora_detalle_ae_bitacora_1` (`id_viaje`) USING BTREE,
   CONSTRAINT `fk_ae_bitacora_detalle_ae_bitacora_1` FOREIGN KEY (`id_viaje`) REFERENCES `vi_viaje` (`id_viaje`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of vi_viaje_detalle
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for vi_viaje_formapago
@@ -2007,11 +1701,7 @@ CREATE TABLE `vi_viaje_formapago` (
   KEY `fk_ae_bitacora_formapago_ae_bitacora_1` (`id_viaje`) USING BTREE,
   CONSTRAINT `fk_ae_bitacora_formapago_ae_bitacora_1` FOREIGN KEY (`id_viaje`) REFERENCES `vi_viaje` (`id_viaje`),
   CONSTRAINT `fk_ae_bitacora_formapago_ae_catalogo_1` FOREIGN KEY (`cat_formapago`) REFERENCES `cm_catalogo` (`id_cat`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of vi_viaje_formapago
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for vi_viaje_incidencia
@@ -2031,7 +1721,4 @@ CREATE TABLE `vi_viaje_incidencia` (
   CONSTRAINT `fk_ae_bitacora_incidencia_ae_bitacora_1` FOREIGN KEY (`id_viaje`) REFERENCES `vi_viaje` (`id_viaje`),
   CONSTRAINT `fk_ae_bitacora_incidencia_ae_catalogo_1` FOREIGN KEY (`cat_incidencias`) REFERENCES `cm_catalogo` (`id_cat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of vi_viaje_incidencia
--- ----------------------------
+SET FOREIGN_KEY_CHECKS=1;

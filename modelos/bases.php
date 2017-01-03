@@ -75,14 +75,15 @@ class BasesModel
 				cr_marcas.marca,
 				cu.color
 			FROM
-				cr_operador_unidad AS cou
-			INNER JOIN cr_operador AS co ON cou.id_operador = co.id_operador
+				cr_operador_unidad AS crou
+			INNER JOIN cr_operador AS co ON crou.id_operador = co.id_operador
 			INNER JOIN fw_usuarios AS fu ON co.id_usuario = fu.id_usuario
-			INNER JOIN cr_unidades AS cu ON cou.id_unidad = cu.id_unidad
+			INNER JOIN cr_unidades AS cu ON crou.id_unidad = cu.id_unidad
 			INNER JOIN cr_modelos ON cu.id_modelo = cr_modelos.id_modelo
 			INNER JOIN cr_marcas ON cu.id_marca = cr_marcas.id_marca
 			WHERE
-				cou.id_operador_unidad = ".$operador_unidad."		
+				crou.id_operador_unidad = ".$operador_unidad."
+				AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
