@@ -1625,11 +1625,11 @@ class OperacionModel{
 	function formadoAnyBase(BasesModel $bases, $id_operador_unidad){
 		$return = false;
 		foreach($bases->listarBases() as $base){
-			$return .= self::formadoenBase($id_operador_unidad,$base->id_base);
+			$return .= self::formadoenBase2($id_operador_unidad,$base->id_base);
 		}
 		return $return;
 	}
-	function formadoenBase($id_operador_unidad,$base){
+	function formadoenBase2($id_operador_unidad,$base){
 		$qry = "
 			SELECT
 				cr_bases.descripcion
@@ -1639,6 +1639,33 @@ class OperacionModel{
 			INNER JOIN cr_bases ON crc.id_base = cr_bases.id_base
 			WHERE
 				cro.id_operador_unidad = $id_operador_unidad
+			AND (
+				crc.cat_statuscordon = 113
+				OR crc.cat_statuscordon = 115
+			)
+			AND crc.id_base = $base
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$data = $query->fetchAll();
+		$return = "";
+		if($query->rowCount()>=1){
+			foreach ($data as $row) {
+				$return .= $row->descripcion;
+			}
+		}
+		return $return;
+	}	
+	function formadoenBase($id_operador,$base){
+		$qry = "
+			SELECT
+				cr_bases.descripcion
+			FROM
+				cr_cordon AS crc
+			INNER JOIN cr_operador_unidad AS cro ON crc.id_operador_unidad = cro.id_operador_unidad
+			INNER JOIN cr_bases ON crc.id_base = cr_bases.id_base
+			WHERE
+				cro.id_operador = $id_operador
 			AND (
 				crc.cat_statuscordon = 113
 				OR crc.cat_statuscordon = 115

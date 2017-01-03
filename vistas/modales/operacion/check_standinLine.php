@@ -54,7 +54,6 @@
 										<i class="<?=$solicitud?>"></i>
 										Existe una solicitud activa F14 por parte del operador
 									</li><br>
-									
 									<?php if($encordon1){ ?>
 									<li class="text-warning bigger-110 green">
 										<i class="ace-icon fa fa-exclamation-triangle"></i>
