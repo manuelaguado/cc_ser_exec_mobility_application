@@ -29,7 +29,7 @@ class Mobile extends Controlador
     {
 		$model = $this->loadModel('Mobile');
 		$claves = (json_decode($_POST['gps'], true));
-		$model->verify_token($_POST['tknses']);
+		//$model->verify_token($_POST['tknses']);
 		$model->storeGps($claves);
 		print(json_encode(array('gps'=>'ok')));
     }
