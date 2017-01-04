@@ -14,8 +14,10 @@ class MobileModel
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
 			$tokenStore = self::tokenStore($clave['token']);
+			error_log('TKS>>'.$tokenStore);
 			if($tokenStore == 0){
 				error_log('Op>>'.$clave['id_operador'].'-- Cve>>'.$clave['clave'].'--');
+				error_log('TK>>'.$clave['token']);
 				switch ($clave['clave']) {
 					case 'A2':/*Servicio por tiempo*/
 						$output[$num] = self::storeToSync($clave);
