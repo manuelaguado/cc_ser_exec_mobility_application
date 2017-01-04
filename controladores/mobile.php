@@ -10,28 +10,32 @@ class Mobile extends Controlador
     }
 	public function sync()
     {
-		$model = $this->loadModel('Mobile');
-		$claves = (json_decode($_POST['sync'], true));
-		
-		/*if(isset($claves[1])){
-			if($claves[1]['clave'] != 'C1'){
+		if(isset($_POST['sync']) && isset($_POST['tknses'])){
+			$model = $this->loadModel('Mobile');
+			$claves = (json_decode($_POST['sync'], true));
+			
+			/*if(isset($claves[1])){
+				if($claves[1]['clave'] != 'C1'){
+					$model->verify_token($_POST['tknses']);
+				}
+			}else{
 				$model->verify_token($_POST['tknses']);
-			}
-		}else{
-			$model->verify_token($_POST['tknses']);
-		}*/
-		
-		$operacion = $this->loadModel('Operacion');
-		$model->store($claves,$operacion,$_POST['tknses']);
-		print(json_encode(array('sync'=>'ok')));
+			}*/
+			
+			$operacion = $this->loadModel('Operacion');
+			$model->store($claves,$operacion,$_POST['tknses']);
+			print(json_encode(array('sync'=>'ok')));
+		}
     }
 	public function gps()
     {
-		$model = $this->loadModel('Mobile');
-		$claves = (json_decode($_POST['gps'], true));
-		//$model->verify_token($_POST['tknses']);
-		$model->storeGps($claves);
-		print(json_encode(array('gps'=>'ok')));
+		if(isset($_POST['gps']) && isset($_POST['tknses'])){
+			$model = $this->loadModel('Mobile');
+			$claves = (json_decode($_POST['gps'], true));
+			//$model->verify_token($_POST['tknses']);
+			$model->storeGps($claves);
+			print(json_encode(array('gps'=>'ok')));
+		}
     }
 	public function pusher_auth(){
 		$this->se_requiere_logueo(true,'Mobile|index');
