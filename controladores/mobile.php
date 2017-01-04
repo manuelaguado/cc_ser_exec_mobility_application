@@ -13,13 +13,13 @@ class Mobile extends Controlador
 		$model = $this->loadModel('Mobile');
 		$claves = (json_decode($_POST['sync'], true));
 		
-		if(isset($claves[1])){
+		/*if(isset($claves[1])){
 			if($claves[1]['clave'] != 'C1'){
 				$model->verify_token($_POST['tknses']);
 			}
 		}else{
 			$model->verify_token($_POST['tknses']);
-		}
+		}*/
 		
 		$operacion = $this->loadModel('Operacion');
 		$model->store($claves,$operacion,$_POST['tknses']);
