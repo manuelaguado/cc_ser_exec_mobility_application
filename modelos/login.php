@@ -94,7 +94,7 @@ class LoginModel
 		}
 	}
 	private function getIdOperadorUnidadBySession($session_id){
-		var $id_operador_unidad;
+		$id_operador_unidad = '';
 		if(file_exists(session_save_path().'/sess_'.$session_id)){
 			$fp = fopen(session_save_path().'/sess_'.$session_id, "r");
 			$content = '';
