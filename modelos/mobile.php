@@ -1016,7 +1016,7 @@ class MobileModel
 				:origen
 			)";
 		$query = $this->db->prepare($sql);
-		$query->execute(
+		$ok = $query->execute(
 			array(
 				':accurate' => 			@$clave['accurate'],
 				':clave' => 			$clave['clave'],
@@ -1039,13 +1039,16 @@ class MobileModel
 				':origen' => 			$clave['origen']
 			)
 		);
-		$id_sync = $this->db->lastInsertId();
-		$noStore = array('R1','F17');
-		if(!in_array($clave['clave'], $noStore)){
-			self::updateEstadoOperador($id_sync,$clave['token'],$clave['id_operador_unidad'],$clave['id_usuario']);
+		if($ok){
+			$id_sync = $this->db->lastInsertId();
+			$noStore = array('R1','F17');
+			if(!in_array($clave['clave'], $noStore)){
+				self::updateEstadoOperador($id_sync,$clave['token'],$clave['id_operador_unidad'],$clave['id_usuario']);
+			}
+			$output = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token'],'clave' => $clave['clave'],'insert' => true);
+		}else{
+			$output = array('resp' => false, 'id' => $clave['id'], 'token' => $clave['token'],'clave' => $clave['clave'],'insert' => false);
 		}
-		
-		$output = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token'],'clave' => $clave['clave'],'insert' => true);
 		return $output;
 	}
 	function updateEstadoOperador($id_sync,$token,$id_operador_unidad,$id_usuario){
