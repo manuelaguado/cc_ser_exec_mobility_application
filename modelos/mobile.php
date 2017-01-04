@@ -197,7 +197,7 @@ class MobileModel
 						break;
 				}
 			}else{
-				$output[$num] = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token']);
+				$output[$num] = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token'],'clave' => $clave['clave'], 'insert' => false);
 			}
 		}
 		
@@ -704,7 +704,7 @@ class MobileModel
 	private function tokenStore($token){
 		$qry = "
 			SELECT
-				Count(cr_sync.token) AS tok_en
+				count(cr_sync.token) AS tok_en
 			FROM
 				cr_sync
 			WHERE
@@ -1046,7 +1046,7 @@ class MobileModel
 			self::updateEstadoOperador($id_sync,$clave['token'],$clave['id_operador_unidad'],$clave['id_usuario']);
 		}
 		
-		$output = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token']);
+		$output = array('resp' => true, 'id' => $clave['id'], 'token' => $clave['token'],'clave' => $clave['clave'],'insert' => true);
 		return $output;
 	}
 	function updateEstadoOperador($id_sync,$token,$id_operador_unidad,$id_usuario){
