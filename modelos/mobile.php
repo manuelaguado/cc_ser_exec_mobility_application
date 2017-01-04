@@ -495,7 +495,8 @@ class MobileModel
 						`procesado` = 0
 				";
 				$queryupd = $this->db->prepare($sqlupd);
-				$queryupd->execute();
+				$ok = $queryupd->execute();
+				error_log('RB1>'.$ok);
 			}
 			
 			$set = ($valor)?$valor:'';
@@ -523,10 +524,12 @@ class MobileModel
 					);
 			";
 			$query = $this->db->prepare($sql);
-			$query->execute();
+			$ok = $query->execute();
+			error_log('RB2>'.$ok);
 			$this->db->commit();
 		} catch (Exception $e) {
 			$this->db->rollBack();
+			error_log('RBK> '.$token);
 		}
 	}	
 	function cordon_operadores($base){
@@ -800,7 +803,6 @@ class MobileModel
 			);
 			$turno = self::turno($id_operador_unidad,$id_base);
 
-			/*rollback ??*/
 			self::storeToSyncRide($clave['id_usuario'],$clave['token'],122,$id_operador_unidad);
 			self::solicitarAcuseCordon();				
 			return $turno;
