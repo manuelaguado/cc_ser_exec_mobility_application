@@ -56,7 +56,9 @@ class MobileModel
 						$output[$num] = $array;
 						break;
 					case 'C2':/*Fin de labores*/
-						$id_base = ($clave['estado2'] == 'B1')?1:2;
+						
+						if(isset($clave['estado2'])){$id_base = ($clave['estado2'] == 'B1')?1:2;}
+						
 						if($clave['id_episodio']){self::cerrarEpisodio($clave['id_episodio'],$clave['id_usuario']);}
 						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
 						self::storeToSyncRide($clave['id_usuario'],$clave['token'],123,$clave['id_operador_unidad']);
@@ -1022,7 +1024,7 @@ class MobileModel
 				':accurate' => 			@$clave['accurate'],
 				':clave' => 			$clave['clave'],
 				':estado1' => 			$clave['estado1'],
-				':estado2' => 			$clave['estado2'],
+				':estado2' => 			@$clave['estado2'],
 				':estado3' => 			$clave['estado3'],
 				':estado4' => 			$clave['estado4'],
 				':id_indexeddb' => 		$clave['id'],
