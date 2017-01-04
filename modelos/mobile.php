@@ -524,7 +524,6 @@ class MobileModel
 			$this->db->commit();
 		} catch (Exception $e) {
 			$this->db->rollBack();
-			error_log('rollback en modelos/mobile function storeToSyncRide!! '.$token);
 		}
 	}	
 	function cordon_operadores($base){
