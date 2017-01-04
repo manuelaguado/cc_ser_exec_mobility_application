@@ -1747,11 +1747,9 @@ class MobileModel
 		$online = ' AND (';
 		foreach($operadores as $num => $oper){
 			$id_operador_unidad = self::getIdOperadorUnidadEpisode($oper['id_operador'],'id_operador');
-			$online .= "
-				(
-					crou.id_operador_unidad = ".$id_operador_unidad."
-				)
-			OR ";
+			if($id_operador_unidad){
+				$online .= "(crou.id_operador_unidad = ".$id_operador_unidad.") OR ";
+			}
 		}
 		/*Elimine la verificacion de estado en c1 para priorizar el id_operador_unidad
 		toma el valor de presence sin importar que este en c2*/
