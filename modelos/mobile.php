@@ -14,10 +14,7 @@ class MobileModel
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
 			$tokenStore = self::tokenStore($clave['token']);
-			error_log('Op>>'.$clave['id_operador'].' TKS>>'.$tokenStore);
 			if($tokenStore == 0){
-				error_log('Cve>>'.$clave['clave'].'--');
-				error_log('TK>>'.$clave['token']);
 				switch ($clave['clave']) {
 					case 'A2':/*Servicio por tiempo*/
 						$output[$num] = self::storeToSync($clave);
@@ -498,7 +495,6 @@ class MobileModel
 				";
 				$queryupd = $this->db->prepare($sqlupd);
 				$ok = $queryupd->execute();
-				error_log('RB1>'.$ok);
 			}
 			
 			$set = ($valor)?$valor:'';
@@ -527,11 +523,9 @@ class MobileModel
 			";
 			$query = $this->db->prepare($sql);
 			$ok = $query->execute();
-			error_log('RB2>'.$ok);
 			$this->db->commit();
 		} catch (Exception $e) {
 			$this->db->rollBack();
-			error_log('RBK> '.$token);
 		}
 	}	
 	function cordon_operadores($base){
@@ -1790,7 +1784,6 @@ class MobileModel
 				syr.user_alta DESC,
 				syr.id_operador_unidad DESC
 		";
-		error_log($qry);
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		$array = array();
