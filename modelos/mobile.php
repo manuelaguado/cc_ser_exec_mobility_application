@@ -1788,6 +1788,7 @@ class MobileModel
 				syr.user_alta DESC,
 				syr.id_operador_unidad DESC
 		";
+		error_log($qry);
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		$array = array();
