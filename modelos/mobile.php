@@ -13,7 +13,8 @@ class MobileModel
 	function store($claves, OperacionModel $operacion, $tknses){
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
-			
+		
+		error_log('==============================================================================================');		
 		error_log('Op>> '.$clave['id_operador']);
 		error_log('Cve>> '.$clave['clave']);
 		error_log('Tkn>> '.$clave['token']);
