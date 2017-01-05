@@ -41,7 +41,7 @@ class MobileModel
 						break;
 					case 'C1':/*Inicio de labores*/
 						
-						$clave['id_episodio'] = self::getEpisodio($clave['id_operador'],$clave['id_usuario']);
+						$clave['id_episodio'] = self::getEpisodio($clave['id_operador'],$clave['id_usuario'],$clave['id_operador_unidad'],$tknses);
 						
 						$array = array(
 							'clave'					=> $clave['clave'],
@@ -418,7 +418,7 @@ class MobileModel
 			}
 		}
 	}
-	function getEpisodio($id_operador,$id_usuario){
+	function getEpisodio($id_operador,$id_usuario,$id_operador_unidad,$tknses){
 		self::closeEpisodeOpen($id_operador,$id_usuario);
 		$sql = "
 			INSERT INTO cr_episodios (
@@ -441,8 +441,8 @@ class MobileModel
 			array(
 				':id_operador' 			=> 	$id_operador,
 				':inicio' 				=> 	date("Y-m-d H:i:s"),
-				':token_session'		=> 	$_SESSION['token'],
-				':id_operador_unidad'	=> 	$_SESSION['id_operador_unidad'],
+				':token_session'		=> 	$tknses,
+				':id_operador_unidad'	=> 	$id_operador_unidad,
 				':user_alta' 			=> 	$id_usuario,
 				':fecha_alta' 			=> 	date("Y-m-d H:i:s")
 			)
