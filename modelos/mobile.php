@@ -14,9 +14,9 @@ class MobileModel
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
 			$tokenStore = self::tokenStore($clave['token']);
-			error_log('TKS>>'.$tokenStore);
+			error_log('Op>>'.$clave['id_operador'].' TKS>>'.$tokenStore);
 			if($tokenStore == 0){
-				error_log('Op>>'.$clave['id_operador'].'-- Cve>>'.$clave['clave'].'--');
+				error_log('Cve>>'.$clave['clave'].'--');
 				error_log('TK>>'.$clave['token']);
 				switch ($clave['clave']) {
 					case 'A2':/*Servicio por tiempo*/
@@ -1756,7 +1756,7 @@ class MobileModel
 		$online = ' AND (';
 		foreach($operadores as $num => $oper){
 			$id_operador_unidad = self::getIdOperadorUnidadEpisode($oper['id_operador'],'id_operador');
-			if($id_operador_unidad){
+			if($id_operador_unidad != ''){
 				$online .= "(crou.id_operador_unidad = ".$id_operador_unidad.") OR ";
 			}
 		}
