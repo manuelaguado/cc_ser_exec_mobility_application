@@ -1754,17 +1754,19 @@ class MobileModel
 	function sync_ride(){
 		$operadores = (PRESENCE_GET == 'CURL')?self::onLink():self::onLinkWebHook();
 		$online = ' AND (';
+		$real = 0;
 		foreach($operadores as $num => $oper){
 			$id_operador_unidad = self::getIdOperadorUnidadEpisode($oper['id_operador'],'id_operador');
 			if($id_operador_unidad != ''){
 				$online .= "(crou.id_operador_unidad = ".$id_operador_unidad.") OR ";
+				$real++;
 			}
 		}
 		/*Elimine la verificacion de estado en c1 para priorizar el id_operador_unidad
 		toma el valor de presence sin importar que este en c2*/
 		$online = rtrim($online, " OR ");
 		$online .= ')';
-		if(count($operadores)== 0){$online = 'AND op.id_operador = 0';}
+		if((count($operadores)== 0)OR($real == 0)){$online = 'AND op.id_operador = 0';}
 		
 		$qry = "
 			SELECT
