@@ -1122,7 +1122,7 @@ class MobileModel
 			)";
 		$query = $this->db->prepare($sql);
 		$base = self::getClaveBase($id_base);
-		$token = 'CN:'.self::token(62);
+		$token = 'CN:'.self::token(60);
 		$query->execute(
 			array(
 				':accurate' => 			'1',
@@ -1570,7 +1570,7 @@ class MobileModel
 						'proceso'		=> 'ride'.$id_operador
 					);
 					self::send_msg($id_operador,$clave['etiqueta']);
-					$token = 'RD:'.$this->token(62);
+					$token = 'RD:'.$this->token(60);
 					switch ($clave['etiqueta']) {
 						
 						case 'R11':

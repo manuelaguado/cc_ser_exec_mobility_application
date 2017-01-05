@@ -993,7 +993,7 @@ class OperacionModel{
 		if($success){
 			switch($post['stat']){
 				case '170':
-					$token = 'SOL:'.Controller::token(62);
+					$token = 'SOL:'.Controller::token(60);
 					switch($post['status_operador']){
 						case 'segundo':
 							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
@@ -1021,7 +1021,7 @@ class OperacionModel{
 				break;
 				case '173':
 					if($post['origen'] == 'asignados'){
-						$token = 'SOL:'.Controller::token(62);
+						$token = 'SOL:'.Controller::token(60);
 						switch($post['status_operador']){
 							case 'segundo':
 								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
@@ -1087,7 +1087,7 @@ class OperacionModel{
 		if($success){
 			
 			if($post['origen'] == 'rojo'){
-				$token = 'APA:'.Controller::token(62);
+				$token = 'APA:'.Controller::token(60);
 				switch($post['status_operador']){
 					case 'segundo':
 						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);

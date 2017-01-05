@@ -33,7 +33,7 @@ class Login extends Controlador
 		$mobile = $this->loadModel('Mobile');
 		
 		foreach ($whosLogin as $logged){
-			$token = 'LGN:'.$this->token(62);
+			$token = 'LGN:'.$this->token(60);
 			$id_operador_unidad = $mobile->getIdOperadorUnidadEpisode($logged['id_usuario'],'user_alta');
 			$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
 			$login->signout($logged['id_usuario']);
@@ -62,7 +62,7 @@ class Login extends Controlador
 		$this->se_requiere_logueo(true,'Login|force_sign_out');
 		
 		$mobile = $this->loadModel('Mobile');
-		$token = 'LGN:'.$this->token(62);
+		$token = 'LGN:'.$this->token(60);
 		$id_operador_unidad = $mobile->getIdOperadorUnidadEpisode($id_usuario,'user_alta');
 		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);		
 		
@@ -112,7 +112,7 @@ class Login extends Controlador
     {
 		$this->se_requiere_logueo(false);
 		$obtener_modelo = $this->loadModel('Login');
-		$token = $this->token(62);
+		$token = $this->token(60);
 		$recuperar = $obtener_modelo->recuperar_datos($_POST['correo'],$token);
 		
 		require( '../vendor/mail.php' );

@@ -86,7 +86,7 @@ class LoginModel
 			foreach ($result as $num => $row) {
 				$id_operador_unidad = self::getIdOperadorUnidadBySession($row->session_id);				
 				if(@$id_operador_unidad){
-					$token = 'DUP:'.Controlador::token(62);
+					$token = 'DUP:'.Controlador::token(60);
 					$mobile->storeToSyncRide($id_usuario,$token,155,$id_operador_unidad);
 				}
 				self::signout($id_usuario);
@@ -143,7 +143,7 @@ class LoginModel
 				$_SESSION['id_ubicacion']=$row->id_ubicacion;
 				$_SESSION['correo']=$row->correo;
 				$_SESSION['tyc']=$row->aceptar_tyc;
-				$_SESSION['token'] = Controlador::token(62);
+				$_SESSION['token'] = Controlador::token(60);
 				$array[0]=array('resp'=>"acceso_correcto");
 				$array[3]=array('tyc'=>$_SESSION['tyc']);
 			}

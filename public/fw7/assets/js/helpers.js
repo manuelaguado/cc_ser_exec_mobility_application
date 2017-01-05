@@ -73,7 +73,7 @@ function haversineDistance(array_coords1, array_coords2) {
 }
 
 var rand = function() {
-    return Math.random().toString(36).substr(2);
+    return (Math.random().toString(36).substr(2)).substr(0,20);
 };
 
 function token(callback) {
