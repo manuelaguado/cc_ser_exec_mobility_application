@@ -1947,13 +1947,16 @@ class MobileModel
 	function getAllIdenOperadorUnidad($id_operador_unidad){
 		$qry = "
 			SELECT
-				base.id_operador_unidad
+				base.id_operador_unidad,
+				base.id_operador,
+				cr_operador.id_usuario
 			FROM
 				cr_operador_unidad AS iden
 			INNER JOIN cr_operador_unidad AS base ON iden.id_operador = base.id_operador
+			INNER JOIN cr_operador ON base.id_operador = cr_operador.id_operador
 			WHERE
 				iden.id_operador_unidad = $id_operador_unidad
-				AND base.status_operador_unidad = 198
+			AND base.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1961,8 +1964,10 @@ class MobileModel
 		$num = 0;
 		if($query->rowCount()>=1){
 			$data = $query->fetchAll();
-			foreach ($data as $row) {
+			foreach ($data as $row){
 				$ids[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$ids[$num]['id_operador'] = $row->id_operador;
+				$ids[$num]['id_usuario'] = $row->id_usuario;
 				$num++;
 			}
 		}

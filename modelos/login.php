@@ -93,6 +93,30 @@ class LoginModel
 			}
 		}
 	}
+	private function getAllIdenOperadorUnidad($id_operador_unidad){
+		$qry = "
+			SELECT
+				base.id_operador_unidad
+			FROM
+				cr_operador_unidad AS iden
+			INNER JOIN cr_operador_unidad AS base ON iden.id_operador = base.id_operador
+			WHERE
+				iden.id_operador_unidad = $id_operador_unidad
+				AND base.status_operador_unidad = 198
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$ids = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$ids[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$num++;
+			}
+		}
+		return $ids;
+	}	
 	private function getIdOperadorUnidadBySession($session_id){
 		$id_operador_unidad = '';
 		if(file_exists(session_save_path().'/sess_'.$session_id)){
@@ -101,7 +125,7 @@ class LoginModel
 			while(!feof($fp)) {
 				$content .= fgets($fp);
 			}
-				$regex = '#.*(id_operador_unidad\|s:1:")#';
+				$regex = '#.*(id_operador_unidad\|).{5}#';
 				$replacement = '';
 				$result = preg_replace($regex, $replacement, $content);
 				

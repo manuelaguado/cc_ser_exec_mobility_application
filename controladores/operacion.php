@@ -7,12 +7,13 @@ class Operacion extends Controlador
         require URL_VISTA.'operacion/index.php';
     }
 	public function clearGps(){
+		session_destroy();
 		$modelo = $this->loadModel('Operacion');
-		$modelo->caducarGps();
+		$modelo->caducarGps();		
 	}
 	
 	public function cron(){
-		
+		session_destroy();
 		if(DEVELOPMENT){
 			$acceso = Controlador::getConfig(1,'websockets_control');
 			if($acceso['valor'] != 1){exit();}
@@ -38,10 +39,9 @@ class Operacion extends Controlador
 		foreach ($eventos as $evento){
 			$mobile->broadcast($evento['id_operador_unidad']);
 		}
-		
 	}
 	public function cron10(){
-		
+		session_destroy();
 		if(DEVELOPMENT){
 			$acceso = Controlador::getConfig(1,'websockets_control');
 			if($acceso['valor'] != 1){exit();}
@@ -51,7 +51,6 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$notificaciones = $operacion->notificacionesApartados();
 		$mobile->transmitir(json_encode($notificaciones),'notificarApartados');
-		
 	}
 	
 	public function getTBUnits(){

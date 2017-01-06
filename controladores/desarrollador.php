@@ -22,7 +22,49 @@ class Desarrollador extends Controlador
 				}
 			}
 	}
-	
+	function gidous(){
+		$id_operador_unidad = '';
+		if(file_exists(session_save_path().'/sess_uOA28hWS3sFx1KpBHR70gdyZDIJ9vfQk')){
+			$fp = fopen(session_save_path().'/sess_uOA28hWS3sFx1KpBHR70gdyZDIJ9vfQk', "r");
+			$content = '';
+			while(!feof($fp)) {
+				$content .= fgets($fp);
+			}
+				$regex = '#.*(id_operador_unidad\|).{5}#';
+				$replacement = '';
+				$result = preg_replace($regex, $replacement, $content);
+				
+				$regex = '#(";cat_statusoperador).*#';
+				$replacement = '';
+				$id_operador_unidad = preg_replace($regex, $replacement, $result);
+				
+			fclose($fp);
+		}
+		print $id_operador_unidad;		
+	}
+	function gidops(){
+		$id_operador_unidad = '';
+		if(file_exists(session_save_path().'/sess_h1zQmnFfsj7ro0eGbgEBlMLA6U84iOwa')){
+			$fp = fopen(session_save_path().'/sess_h1zQmnFfsj7ro0eGbgEBlMLA6U84iOwa', "r");
+			$content = '';
+			while(!feof($fp)) {
+				$content .= fgets($fp);
+			}
+				$regex = '#.*(id_operador\|).{5}#';
+				$replacement = '';
+				$result = preg_replace($regex, $replacement, $content);
+				
+				$regex = '#(";id_operador_unidad).*#';
+				$replacement = '';
+				$id_operador_unidad = preg_replace($regex, $replacement, $result);
+				
+			fclose($fp);
+		}
+		print $id_operador_unidad;		
+	}	
+	function ssp(){
+		echo session_save_path();
+	}
 	function cp_import(){
 		$db = Controlador::direct_connectivity();
 		

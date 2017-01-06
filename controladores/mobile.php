@@ -77,24 +77,23 @@ class Mobile extends Controlador
 			exit();
 		}
 	}
-	public function setIdOperadorUnidad($id_operador_unidad){
-		$_SESSION['multi'] = 1;
-		$_SESSION['id_operador_unidad'] = $id_operador_unidad;
-		
+	public function setIdOperadorUnidad($id_operador_unidad){		
 				$operacion = $this->loadModel('Operacion');
 				$bases = $this->loadModel('Bases');
 				$mobile = $this->loadModel('Mobile');
 				
-				$idens = $mobile->getAllIdenOperadorUnidad($_SESSION['id_operador_unidad']);
+				$idens = $mobile->getAllIdenOperadorUnidad($id_operador_unidad);
 				foreach($idens as $iden){
 					$tail = $operacion->formadoAnyBase($bases, $iden['id_operador_unidad']);
 					if($tail){
 						D::bug('Se quitó del cordon 2 > '.$tail);
-						$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$iden['id_operador_unidad']);
+						$mobile->exitCordonFromLogin($iden['id_usuario'],$iden['id_operador_unidad']);
 					}
+					$id_operador = $iden['id_operador'];
+					$id_usuario = $iden['id_usuario'];
 				}
 				
-				$timebase = $mobile->getIdensOperadorEnC2($_SESSION['id_operador']);
+				$timebase = $mobile->getIdensOperadorEnC2($id_operador);
 				foreach($timebase as $unit){
 					$array = array(
 						'accurate' => '0',
@@ -103,9 +102,9 @@ class Mobile extends Controlador
 						'estado2' => 'NULL',
 						'estado3' => 'NULL',
 						'estado4' => 'NULL',
-						'id_indexeddb' => '0',
+						'id' => '0',
 						'id_episodio' => '0',
-						'id_operador' => $_SESSION['id_operador'],
+						'id_operador' => $id_operador,
 						'id_operador_unidad' => $unit['id_operador_unidad'],
 						'id_viaje' => '0',
 						'latitud' => '0',
@@ -115,11 +114,14 @@ class Mobile extends Controlador
 						'tiempo' => date("Y-m-d H:i:s"),
 						'timestamp' => date("Y-m-d H:i:s"),
 						'token' => $this->token(62),
-						'origen' => 'system'
+						'origen' => 'system',
+						'id_usuario' => $id_usuario
 					);
 					$mobile->storeToSync($array);
 				}
 				
+		$_SESSION['multi'] = 1;
+		$_SESSION['id_operador_unidad'] = $id_operador_unidad;		
 		print json_encode(array('resp' => true ));
 	}
 }
