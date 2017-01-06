@@ -1540,6 +1540,29 @@ class MobileModel
 		}
 		return $array;
 	}
+	public function jumGeoposition(){
+		$qry = "
+			SELECT
+				fwu.id_usuario
+			FROM
+				fw_usuarios AS fwu
+			INNER JOIN fw_usuarios_config AS fwuc ON fwuc.id_usuario = fwu.id_usuario
+			INNER JOIN cr_operador AS cro ON cro.id_usuario = fwu.id_usuario
+			WHERE
+				fwuc.poseido = 1
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$poseidos = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$poseidos[] = $row->id_usuario;
+			}
+		}
+		return $poseidos;	
+	}
     public function broadcast($id_operador_unidad)
     {
 		$current = self::getDataActual($id_operador_unidad);
@@ -1595,7 +1618,7 @@ class MobileModel
 							$ahora = date("Y-m-d H:i:s");
 							$timeFresh = self::minutosDiferencia(@$position->times,$ahora);
 							
-							$jumGeoposition = array(1,56);
+							$jumGeoposition = self::jumGeoposition();
 							
 							$enGeocerca = self::enGeocerca($geoVars);
 							
