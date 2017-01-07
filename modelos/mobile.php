@@ -1017,6 +1017,13 @@ class MobileModel
 				:origen
 			)";
 		$query = $this->db->prepare($sql);
+		
+		if(!isset($clave['accurate'])){error_log($clave['clave']);}
+		if(!isset($clave['latitud'])){error_log($clave['clave']);}
+		if(!isset($clave['longitud'])){error_log($clave['clave']);}
+		if(!isset($clave['origen'])){error_log($clave['clave']);}
+		if(!isset($clave['motivo'])){error_log($clave['clave']);}
+		
 		$ok = $query->execute(
 			array(
 				':accurate' => 			$clave['accurate'],
