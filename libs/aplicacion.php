@@ -3,34 +3,19 @@ class Aplicacion
 {
     private $url_controladores = null;
     private $url_metodo = null;
-    private $parametro_url_1 = null;
-    private $parametro_url_2 = null;
-    private $parametro_url_3 = null;
-	private $parametro_url_4 = null;
-	private $parametro_url_5 = null;
+    private $parametros = array();
+
 	public function __construct()
 	{
 		$this->mapearUrl();
 		if (file_exists(URL_CONTROLADOR . $this->url_controladores . '.php')) {
-			if($this->url_controladores == 'extensions'){
-				require URL_CONTROLADOR . $this->url_controladores . '.php';
-				$this->url_controladores = new $this->url_controladores();
-				$this->url_controladores->init($_GET['url']);
-			}else{
+				
 				require URL_CONTROLADOR . $this->url_controladores . '.php';
 				$this->url_controladores = new $this->url_controladores();
 
 				if (method_exists($this->url_controladores, $this->url_metodo)) {
-					 if (isset($this->parametro_url_5)) {
-						$this->url_controladores->{$this->url_metodo}($this->parametro_url_1, $this->parametro_url_2, $this->parametro_url_3, $this->parametro_url_4, $this->parametro_url_5);
-					} elseif (isset($this->parametro_url_4)) {
-						$this->url_controladores->{$this->url_metodo}($this->parametro_url_1, $this->parametro_url_2, $this->parametro_url_3, $this->parametro_url_4);
-					} elseif (isset($this->parametro_url_3)) {
-						$this->url_controladores->{$this->url_metodo}($this->parametro_url_1, $this->parametro_url_2, $this->parametro_url_3);
-					} elseif (isset($this->parametro_url_2)) {
-						$this->url_controladores->{$this->url_metodo}($this->parametro_url_1, $this->parametro_url_2);
-					} elseif (isset($this->parametro_url_1)) {
-						$this->url_controladores->{$this->url_metodo}($this->parametro_url_1);
+					if (!empty($this->parametros)) {
+						call_user_func_array(array($this->url_controladores, $this->url_metodo), $this->parametros);
 					} else {
 						$this->url_controladores->{$this->url_metodo}();
 					}
@@ -41,7 +26,6 @@ class Aplicacion
 						require URL_TEMPLATE.'404_full.php';
 					}
 				}
-			}
 		} else {
 			if(!$this->url_controladores){
 				require URL_CONTROLADOR.'inicio.php';
@@ -60,11 +44,8 @@ class Aplicacion
             $url = explode('/', $url);
             $this->url_controladores= (isset($url[0]) ? $url[0] : null);
             $this->url_metodo 		= (isset($url[1]) ? $url[1] : null);
-            $this->parametro_url_1 	= (isset($url[2]) ? $url[2] : null);
-            $this->parametro_url_2 	= (isset($url[3]) ? $url[3] : null);
-            $this->parametro_url_3 	= (isset($url[4]) ? $url[4] : null);
-			$this->parametro_url_4 	= (isset($url[5]) ? $url[5] : null);
-			$this->parametro_url_5 	= (isset($url[6]) ? $url[6] : null);
+            unset($url[0], $url[1]);
+			$this->parametros = array_values($url);
         }
     }
 }
