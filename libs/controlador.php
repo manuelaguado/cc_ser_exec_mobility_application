@@ -33,7 +33,7 @@ class Controlador extends Controller
 	}
     public function loadModel($nombre_del_modelo)
     {
-        require URL_MODELO . strtolower($nombre_del_modelo) . '.php';
+        require_once URL_MODELO . strtolower($nombre_del_modelo) . '.php';
 		$modelo = $nombre_del_modelo . "Model" ;
         return new $modelo($this->db, $this->dbt);
     }
