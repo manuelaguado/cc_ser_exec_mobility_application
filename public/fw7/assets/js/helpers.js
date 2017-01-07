@@ -28,7 +28,6 @@ function twoDigits(d) {
     if(-10 < d && d < 0) return "-0" + (-1*d).toString();
     return d.toString();
 }
-var lat, lon, acc;
 function showPosition(position) {
 	var crd = position.coords;	
 	lat = crd.latitude;

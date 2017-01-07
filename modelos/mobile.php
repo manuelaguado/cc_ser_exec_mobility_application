@@ -55,11 +55,11 @@ class MobileModel
 						$output[$num] = $array;
 						break;
 					case 'C2':/*Fin de labores*/
-						
-						$id_base = ($clave['estado2'] == 'B1')?1:2;
-						
+						$id_base = self::getIdBase($clave['estado2']);
 						self::cerrarEpisodio($clave['id_episodio'],$clave['id_usuario']);
-						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
+						if($id_base != $clave['estado2']){
+							self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
+						}
 						self::storeToSyncRide($clave['id_usuario'],$clave['token'],123,$clave['id_operador_unidad']);
 						$output[$num] = self::storeToSync($clave);
 						break;
@@ -206,6 +206,28 @@ class MobileModel
 		$emitir =  json_encode($output);
 		self::transmitir($emitir,'sync'.$clave['id_operador']);
 	}
+	function getIdBase($clave){
+		$sql = "
+			SELECT
+				crb.id_base
+			FROM
+				cr_bases AS crb
+			WHERE
+				crb.clave = '".$clave."'
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$return = '';
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$return = $row->id_base;
+			}
+		}else{
+			$return = $clave;
+		}
+		return $return;	
+	}	
 	function verify_token($tknses){
 		$qry = "
 			SELECT
@@ -1017,13 +1039,6 @@ class MobileModel
 				:origen
 			)";
 		$query = $this->db->prepare($sql);
-		
-		if(!isset($clave['accurate'])){error_log($clave['clave']);}
-		if(!isset($clave['latitud'])){error_log($clave['clave']);}
-		if(!isset($clave['longitud'])){error_log($clave['clave']);}
-		if(!isset($clave['origen'])){error_log($clave['clave']);}
-		if(!isset($clave['motivo'])){error_log($clave['clave']);}
-		
 		$ok = $query->execute(
 			array(
 				':accurate' => 			$clave['accurate'],

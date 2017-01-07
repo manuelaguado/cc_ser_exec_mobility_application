@@ -8,6 +8,11 @@
 	var id_usuario = '<?=$_SESSION['id_usuario']?>';
 	var domain = '<?=DOMAIN?>';
 	
+	var lat = 23.915941;
+	var lon = -102.537345;
+	var acc = 0;
+	var globalBase = 'SB';
+	
 	var ably_api_key = '<?=ABLY_API_KEY?>';
 	var ably_presence = '<?=ABLY_PRESENCE?>';
 	
