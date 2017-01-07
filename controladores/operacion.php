@@ -865,8 +865,8 @@ class Operacion extends Controlador
 			$unitState[$num]['numeq'] = $frm['numeq'];
 			$unitState[$num]['id_operador'] = $frm['id_operador'];
 			$unitState[$num]['id_operador_unidad'] = $frm['id_operador_unidad'];
-			$unitState[$num]['latitud'] = @$coords->lat;
-			$unitState[$num]['longitud'] = @$coords->lng;
+			$unitState[$num]['latitud'] = $coords->lat;
+			$unitState[$num]['longitud'] = $coords->lng;
 			$unitState[$num]['time'] = $coords->time;
 			$num++;
 			
@@ -885,8 +885,8 @@ class Operacion extends Controlador
 			$actual_coords = $gps->lastPositionById($c1['id_operador']);
 			$coords = json_decode($actual_coords);
 			
-			$geoVars['latitud_act'] = @$coords->lat;
-			$geoVars['longitud_act'] = @$coords->lng;
+			$geoVars['latitud_act'] = $coords->lat;
+			$geoVars['longitud_act'] = $coords->lng;
 			
 			$in = $mobile->enGeocercaNum($geoVars,$base);
 			

@@ -56,9 +56,9 @@ class MobileModel
 						break;
 					case 'C2':/*Fin de labores*/
 						
-						if(isset($clave['estado2'])){$id_base = ($clave['estado2'] == 'B1')?1:2;}
+						$id_base = ($clave['estado2'] == 'B1')?1:2;
 						
-						if(isset($clave['id_episodio'])){self::cerrarEpisodio($clave['id_episodio'],$clave['id_usuario']);}
+						self::cerrarEpisodio($clave['id_episodio'],$clave['id_usuario']);
 						self::cordonCompletado($clave['id_usuario'],$clave['id_operador_unidad'],$id_base);
 						self::storeToSyncRide($clave['id_usuario'],$clave['token'],123,$clave['id_operador_unidad']);
 						$output[$num] = self::storeToSync($clave);
@@ -671,7 +671,7 @@ class MobileModel
 					AND cat_statuscordon <> 114
 				";
 				$query = $this->db->prepare($sql);
-				@$query_resp = $query->execute();
+				$query_resp = $query->execute();
 				self::solicitarAcuseCordon();
 				self::firmarAcuseCordon($row->id_operador_unidad);
 			}
@@ -785,7 +785,7 @@ class MobileModel
 					:fecha_alta
 				)";
 			$query = $this->db->prepare($sql);
-			@$query->execute(
+			$query->execute(
 				array(
 					':id_operador_unidad' 	=> 	$id_operador_unidad,
 					':id_episodio' 			=> 	$clave['id_episodio'],
@@ -920,11 +920,11 @@ class MobileModel
 			$position = self::ultimaPositionByIdOperador($id_operador);
 			$position = json_decode($position);
 			
-			$geoVars['latitud_act'] 	= @$position->lat;
-			$geoVars['longitud_act'] 	= @$position->lng;
+			$geoVars['latitud_act'] 	= $position->lat;
+			$geoVars['longitud_act'] 	= $position->lng;
 			
 			$ahora = date("Y-m-d H:i:s");
-			$timeFresh = self::minutosDiferencia(@$position->times,$ahora);
+			$timeFresh = self::minutosDiferencia($position->times,$ahora);
 				$time_return = ($timeFresh < 3)?true:false;
 				
 			$enGeocerca1 = self::enGeocercaNum($geoVars,'B1');
@@ -1019,19 +1019,19 @@ class MobileModel
 		$query = $this->db->prepare($sql);
 		$ok = $query->execute(
 			array(
-				':accurate' => 			@$clave['accurate'],
+				':accurate' => 			$clave['accurate'],
 				':clave' => 			$clave['clave'],
 				':estado1' => 			$clave['estado1'],
-				':estado2' => 			@$clave['estado2'],
+				':estado2' => 			$clave['estado2'],
 				':estado3' => 			$clave['estado3'],
 				':estado4' => 			$clave['estado4'],
 				':id_indexeddb' => 		$clave['id'],
-				':id_episodio' => 		@$clave['id_episodio'],
+				':id_episodio' => 		$clave['id_episodio'],
 				':id_operador' => 		$clave['id_operador'],
 				':id_operador_unidad' =>$clave['id_operador_unidad'],
 				':id_viaje' => 			$clave['id_viaje'],
-				':latitud' => 			@$clave['latitud'],
-				':longitud' => 			@$clave['longitud'],
+				':latitud' => 			$clave['latitud'],
+				':longitud' => 			$clave['longitud'],
 				':motivo' => 			$clave['motivo'],
 				':serie' => 			$clave['serie'],
 				':tiempo' => 			$clave['tiempo'],
@@ -1612,11 +1612,11 @@ class MobileModel
 							$position = json_decode($position);
 							
 							$geoVars['estado2'] 		= $base;
-							$geoVars['latitud_act'] 	= @$position->lat;
-							$geoVars['longitud_act'] 	= @$position->lng;
+							$geoVars['latitud_act'] 	= $position->lat;
+							$geoVars['longitud_act'] 	= $position->lng;
 							
 							$ahora = date("Y-m-d H:i:s");
-							$timeFresh = self::minutosDiferencia(@$position->times,$ahora);
+							$timeFresh = self::minutosDiferencia($position->times,$ahora);
 							
 							$jumGeoposition = self::jumGeoposition();
 							

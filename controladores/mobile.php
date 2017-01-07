@@ -12,16 +12,7 @@ class Mobile extends Controlador
     {
 		if(isset($_POST['sync']) && isset($_POST['tknses'])){
 			$model = $this->loadModel('Mobile');
-			$claves = (json_decode($_POST['sync'], true));
-			
-			/*if(isset($claves[1])){
-				if($claves[1]['clave'] != 'C1'){
-					$model->verify_token($_POST['tknses']);
-				}
-			}else{
-				$model->verify_token($_POST['tknses']);
-			}*/
-			
+			$claves = (json_decode($_POST['sync'], true));			
 			$operacion = $this->loadModel('Operacion');
 			$model->store($claves,$operacion,$_POST['tknses']);
 			print(json_encode(array('sync'=>'ok')));
@@ -32,7 +23,6 @@ class Mobile extends Controlador
 		if(isset($_POST['gps']) && isset($_POST['tknses'])){
 			$model = $this->loadModel('Mobile');
 			$claves = (json_decode($_POST['gps'], true));
-			//$model->verify_token($_POST['tknses']);
 			$model->storeGps($claves);
 			print(json_encode(array('gps'=>'ok')));
 		}

@@ -85,10 +85,8 @@ class LoginModel
 		if($query->rowCount()>=1){
 			foreach ($result as $num => $row) {
 				$id_operador_unidad = self::getIdOperadorUnidadBySession($row->session_id);				
-				if(@$id_operador_unidad){
-					$token = 'DUP:'.Controlador::token(60);
-					$mobile->storeToSyncRide($id_usuario,$token,155,$id_operador_unidad);
-				}
+				$token = 'DUP:'.Controlador::token(60);
+				$mobile->storeToSyncRide($id_usuario,$token,155,$id_operador_unidad);
 				self::signout($id_usuario);
 			}
 		}
