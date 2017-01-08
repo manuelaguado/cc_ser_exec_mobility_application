@@ -109,6 +109,13 @@ class Login extends Controlador
 		$salir = $obtener_modelo->salir();
         return $salir;
     }
+	public function salirAndroid($id_usuario)
+    {
+		header('Access-Control-Allow-Origin: *');
+		$obtener_modelo = $this->loadModel('Login');
+		$salir = $obtener_modelo->salirAndroid($id_usuario);
+        return $salir;
+    }
 	public function recuperar_datos()
     {
 		$this->se_requiere_logueo(false);

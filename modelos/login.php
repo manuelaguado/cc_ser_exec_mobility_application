@@ -680,6 +680,38 @@ class LoginModel
 		}
 		print json_encode($array);
 	}
+	public function salirAndroid($id_usuario){
+		$id_login = self::getId_loginAndroid($id_usuario);
+		self::signout($id_usuario);
+		session_unset();
+		unset($_SESSION);
+		if(session_destroy()){
+			$array[]=array('resp'=>"correcto");
+		}else{
+			$array[]=array('resp'=>"incorrecto");
+		}
+		print json_encode($array);
+	}
+	public function getId_loginAndroid($id_usuario){
+		$sql = "
+			SELECT
+				fwl.id_login
+			FROM
+				fw_login as fwl
+			WHERE
+				fwl.id_usuario = ".$id_usuario." AND 
+				fwl.open = 1
+		";
+				
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$result = $query->fetchAll();
+		if($query->rowCount()>=1){
+			foreach ($result as $num => $row) {
+				return $row->id_login;
+			}
+		}
+	}
 	public function recuperar_datos($correo,$token){
         $sql = "SELECT id_usuario, usuario FROM fw_usuarios WHERE correo='{$correo}'";
         $query = $this->db->prepare($sql);
