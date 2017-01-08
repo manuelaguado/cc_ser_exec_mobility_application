@@ -412,5 +412,3 @@ function setCordonDual(resp_success){
 		updatePageButtons('exit_false','exit_true');
 	}	
 }
-
-startDB();

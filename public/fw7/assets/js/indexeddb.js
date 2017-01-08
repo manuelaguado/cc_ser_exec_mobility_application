@@ -510,3 +510,4 @@ function deleteDatabase(dbname) {
     console.log("Delete " + dbname);
     var request = window.indexedDB.deleteDatabase(dbname);
 }
+startDB();
