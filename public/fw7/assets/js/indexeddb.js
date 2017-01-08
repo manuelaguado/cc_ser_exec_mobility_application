@@ -39,9 +39,6 @@ deleteDatabase('serexecutive2');
 			}else{
 				setStartPage();
 			}
-			/*INTERVALS*/
-			var initSync = setInterval("startSync(function(){})",1000);
-			var initGps  = setInterval("startGps()",5000);				
 		};
 		dataBase.onerror = function (e) {
 			alert('Error loading database');
