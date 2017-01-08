@@ -71,6 +71,7 @@ class Login extends Controlador
 	}
 	public function logear()
     {
+		header('Access-Control-Allow-Origin: *');
 		$this->se_requiere_logueo(false);
 		$obtener_modelo = $this->loadModel('Login');
 		$mobile = $this->loadModel('Mobile');
