@@ -81,32 +81,34 @@ function token(callback) {
 	callback(token);
 };
 function mvhc_start(){
-	$.ajax({
-		url: 'mobile/multi',
-		type: "POST",
-		dataType: 'json',
-		success: function(resp_success){
-			loadTemplate('choice_car');
-			setPageWOR1('regreso');
-			$.each(resp_success, function( key, value ) {
-					
-				$('#select_car_list').append('<li>'+
-					'<a href="javascript:;" class="item-link item-content select_car" data-car="'+value['id_operador_unidad']+'">'+
-						'<div class="item-media"><img src="fw7/assets/img/car_select.svg" width="80"/></div>'+
-						'<div class="item-inner">'+
-							'<div class="item-title-row">'+
-								'<div class="item-title">'+value['marca']+' '+value['modelo']+'</div>'+
-								'<div class="item-after">Seleccionar</div>'+
+	$(document).ready(function(){
+		$.ajax({
+			url: 'mobile/multi',
+			type: "POST",
+			dataType: 'json',
+			success: function(resp_success){
+				loadTemplate('choice_car');
+				setPageWOR1('regreso');
+				$.each(resp_success, function( key, value ) {
+						
+					$('#select_car_list').append('<li>'+
+						'<a href="javascript:;" class="item-link item-content select_car" data-car="'+value['id_operador_unidad']+'">'+
+							'<div class="item-media"><img src="fw7/assets/img/car_select.svg" width="80"/></div>'+
+							'<div class="item-inner">'+
+								'<div class="item-title-row">'+
+									'<div class="item-title">'+value['marca']+' '+value['modelo']+'</div>'+
+									'<div class="item-after">Seleccionar</div>'+
+								'</div>'+
+								'<div class="item-subtitle">Placas: '+value['placas']+'</div>'+
+								'<div class="item-subtitle">Color: '+value['color']+'</div>'+
 							'</div>'+
-							'<div class="item-subtitle">Placas: '+value['placas']+'</div>'+
-							'<div class="item-subtitle">Color: '+value['color']+'</div>'+
-						'</div>'+
-					'</a>'+
-				'</li>');
-					
-			});
-			
-		},
+						'</a>'+
+					'</li>');
+						
+				});
+				
+			},
+		});
 	});
 }
 /*
