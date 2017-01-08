@@ -75,32 +75,23 @@ if(SOCKET_PROVIDER == 'ABLY'){
 <?php
 }
 ?>
+<script id="libsper"></script>
 <script>
 function reloadlibs(){
-	$('#helperslib').remove();
-	$('#applib').remove();
-	$('#indexeddblib').remove();
-	$('#intervalslib').remove();
-	
-	
 	var helperslib = document.createElement("script");
 	helperslib.src = '<?=FW7?>assets/js/helpers.js<?=$new_version?>';
-	helperslib.id = 'helperslib';
-	$('#helperslib').append(helperslib);
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(helperslib);
 	
 	var applib = document.createElement("script");
 	applib.src = '<?=FW7?>assets/js/app.js<?=$new_version?>';
-	applib.id = 'applib';
-	$('#applib').append(applib);
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(applib);
 	
 	var indexeddblib = document.createElement("script");
 	indexeddblib.src = '<?=FW7?>assets/js/indexeddb.js<?=$new_version?>';
-	indexeddblib.id = 'indexeddblib';
-	$('#indexeddblib').append(indexeddblib);
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(indexeddblib);
 	
 	var intervalslib = document.createElement("script");
 	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
-	intervalslib.id = 'intervalslib';
-	$('#intervalslib').append(intervalslib);
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
 }
 </script>
