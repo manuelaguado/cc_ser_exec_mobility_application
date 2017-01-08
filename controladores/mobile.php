@@ -87,7 +87,7 @@ class Mobile extends Controlador
 	}
 	public function multiandroid($id_operador_unidad,$id_operador){
 		header('Access-Control-Allow-Origin: *');
-		if($id_operador_unidad] == 'select'){
+		if($id_operador_unidad) == 'select'){
 			
 			$mobile = $this->loadModel('Mobile');
 			$vehiculos = $mobile->getVehiculosOperador($id_operador);
