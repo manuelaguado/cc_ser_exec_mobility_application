@@ -193,8 +193,19 @@ class LoginModel
 						if($sess_oper['multi'] > 1){
 							$_SESSION['id_operador_unidad'] = 'select';
 						}
-						
+						$mvhc = ($_SESSION['id_operador_unidad'] == 'select')?2:1;
 						$_SESSION['serie'] = self::getSerie($_SESSION['id_usuario']);
+						
+							$array[4] = array(
+								'id_operador'=>$_SESSION['id_operador'],
+								'serie'=>$_SESSION['serie'],
+								'id_operador_unidad'=>$_SESSION['id_operador_unidad'],
+								'token_session'=>$_SESSION['token'],
+								'id_usuario'=>$_SESSION['id_usuario'],
+								'mvhc'=>$mvhc
+							);							
+						
+						
 						self::permisos($_SESSION['id_rol']);
 						self::permisos_acl($_SESSION['id_usuario']);
 						$episodio = self::openEpisodio($_SESSION['id_operador']);
