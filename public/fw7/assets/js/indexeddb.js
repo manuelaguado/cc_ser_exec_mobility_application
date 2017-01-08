@@ -182,6 +182,9 @@ function setStartPage(){
 		}else{
 			initEpisodioAuto();
 		}
+		/*INTERVALS*/
+		var initSync = setInterval("startSync(function(){})",1000);
+		var initGps  = setInterval("startGps()",5000);			
 	};
 }
 /*SETEAR VARIABLES DINAMICAS*/

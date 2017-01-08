@@ -412,7 +412,3 @@ function setCordonDual(resp_success){
 		updatePageButtons('exit_false','exit_true');
 	}	
 }
-
-/*INTERVALS*/
-var initSync = setInterval("startSync(function(){})",1000);
-var initGps  = setInterval("startGps()",5000);
