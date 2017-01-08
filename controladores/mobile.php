@@ -30,7 +30,6 @@ class Mobile extends Controlador
 		}
     }
 	public function pusher_auth(){
-		header('Access-Control-Allow-Origin: *');
 		require_once('../vendor/pusher/Pusher.php');
 		$pusher = new Pusher(PUSHER_KEY, PUSHER_SECRET, PUSHER_APP_ID);
 		$presence_data = array(
