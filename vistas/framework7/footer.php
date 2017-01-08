@@ -77,22 +77,28 @@ if(SOCKET_PROVIDER == 'ABLY'){
 ?>
 <script id="libsper"></script>
 <script>
-function reloadlibs(){
+function fhelperslib(){
 	var helperslib = document.createElement("script");
 	helperslib.src = '<?=FW7?>assets/js/helpers.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(helperslib);
-	
+}
+function fapplib(){
 	var applib = document.createElement("script");
 	applib.src = '<?=FW7?>assets/js/app.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(applib);
-	
+}
+function findexeddblib(){
 	var indexeddblib = document.createElement("script");
 	indexeddblib.src = '<?=FW7?>assets/js/indexeddb.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(indexeddblib);
-	
+}
+function fintervalslib(){
 	var intervalslib = document.createElement("script");
 	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
 }
-reloadlibs();
+if(helpersLoaded == undefined){fhelperslib();}
+if(appLoaded == undefined){fapplib();}
+if(indexeddbLoaded == undefined){findexeddblib();}
+if(intervalsLoaded == undefined){fintervalslib();}
 </script>

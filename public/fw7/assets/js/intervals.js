@@ -416,3 +416,5 @@ function setCordonDual(resp_success){
 
 var initSync = setInterval("startSync(function(){})",1000);
 var initGps  = setInterval("startGps()",5000);
+
+var intervalsLoaded = true;

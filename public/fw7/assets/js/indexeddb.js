@@ -507,3 +507,5 @@ function deleteDatabase(dbname) {
     var request = window.indexedDB.deleteDatabase(dbname);
 }
 startDB();
+
+var indexeddbLoaded = true;

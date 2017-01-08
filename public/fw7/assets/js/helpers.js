@@ -110,6 +110,7 @@ function mvhc_start(){
 		});
 	});
 }
+var helpersLoaded = true;
 /*
 function mostrar(){
 	var tar = document.getElementById("pie");

@@ -540,3 +540,5 @@ $$("body").on("click", ".esquema_contraste", function() {
 	esquema_contraste();
 	scheme_movil = "esquema_contraste";
 });
+
+var appLoaded = true;
