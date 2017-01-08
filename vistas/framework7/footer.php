@@ -25,7 +25,7 @@
 	var pubnub_presence = '<?=PUBNUB_PRESENCE?>';
 	var csrf_token = '<?=$token_cache?>';
 	
-	<?php $new_version = '';//'?v='.$token_cache; ?>
+	<?php $new_version = '?v='.$token_cache; ?>
 	
 	var helpersLoaded = false;
 	var appLoaded = false;
@@ -82,9 +82,9 @@ if(SOCKET_PROVIDER == 'ABLY'){
 ?>
 <script id="libsper"></script>
 <script>
-if(helpersLoaded == false){ location.reload(true); }
+/*if(helpersLoaded == false){ location.reload(true); }
 if(appLoaded == false){ location.reload(true); }
 if(indexeddbLoaded == false){ location.reload(true); }
 if(intervalsLoaded == false){ location.reload(true); }
-if(pusher == false){ location.reload(true); }
+if(pusher == false){ location.reload(true); }*/
 </script>
