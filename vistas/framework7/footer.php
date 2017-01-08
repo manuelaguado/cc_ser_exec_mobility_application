@@ -23,7 +23,8 @@
 	var pubnub_suscribe = '<?=PUBNUB_SUSCRIBE?>';
 	var pubnub_presence = '<?=PUBNUB_PRESENCE?>';
 	
-	var csrf_token = '<?=$token_cache?>';
+	var csrf_token = 'MEAM';
+	//var csrf_token = '<?=$token_cache?>';
 	
 </script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery/dist/jquery.min.js"></script>
