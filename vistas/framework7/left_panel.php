@@ -39,7 +39,7 @@
                             <div class="item-media">
                                 <i class="fa fa-database"></i>
                             </div>
-                            <div  class="menu-link1 close-panel item-inner">
+                            <div onclick="reloadlibs()"; class="menu-link1 close-panel item-inner">
                                 <div class="item-title">Database v.<span id="allow_update"></span></div>
                             </div>
                         </a>

@@ -33,10 +33,10 @@
 <script type="text/javascript" src="<?=FW7?>libs/swipebox/src/js/jquery.swipebox.min.js"></script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery-validation/dist/jquery.validate.min.js"></script>
 
-<!--<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" ></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" ></script>
 <script type="text/javascript" src="<?=FW7?>assets/js/app.js<?=$new_version?>" ></script>
 <script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js<?=$new_version?>" ></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/intervals.js<?=$new_version?>" ></script>-->
+<script type="text/javascript" src="<?=FW7?>assets/js/intervals.js<?=$new_version?>" ></script>
 
 <audio id="timbre" name="timbre" src="<?=FW7?>assets/audio/timbre.mp3<?=$new_version?>" preload="auto" loop></audio>
 <audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3<?=$new_version?>" preload="auto"></audio>
@@ -75,8 +75,8 @@ if(SOCKET_PROVIDER == 'ABLY'){
 <?php
 }
 ?>
-
-<script type="text/javascript">
+<script>
+function reloadlibs(){
 	var helperslib = document.createElement("script");
 	helperslib.src = '<?=FW7?>assets/js/helpers.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(helperslib);
@@ -92,4 +92,5 @@ if(SOCKET_PROVIDER == 'ABLY'){
 	var intervalslib = document.createElement("script");
 	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
+}
 </script>
