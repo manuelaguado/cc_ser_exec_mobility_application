@@ -33,7 +33,7 @@
 <script type="text/javascript" src="<?=FW7?>libs/swipebox/src/js/jquery.swipebox.min.js"></script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery-validation/dist/jquery.validate.min.js"></script>
 
-<!--<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" ></script>
+<--<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" ></script>
 <script type="text/javascript" src="<?=FW7?>assets/js/app.js<?=$new_version?>" ></script>
 <script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js<?=$new_version?>" ></script>
 <script type="text/javascript" src="<?=FW7?>assets/js/intervals.js<?=$new_version?>" ></script>-->
@@ -97,8 +97,8 @@ function fintervalslib(){
 	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
 }
-if(helpersLoaded == undefined){fhelperslib();}
-if(appLoaded == undefined){fapplib();}
-if(indexeddbLoaded == undefined){findexeddblib();}
-if(intervalsLoaded == undefined){fintervalslib();}
+if(typeof  helpersLoaded == "undefined"){fhelperslib();}
+if(typeof  appLoaded == "undefined"){fapplib();}
+if(typeof  indexeddbLoaded == "undefined"){findexeddblib();}
+if(typeof  intervalsLoaded == "undefined"){fintervalslib();}
 </script>
