@@ -70,7 +70,7 @@ function startSync(exec){
 				data: 'sync='+sendvar+'&tknses='+token_session,
 				success: function(e){
 					exec();
-					if(e['out'] == 'login'){dOut();}
+					//if(e['out'] == 'login'){dOut();}
 				}
 			});
 		}else{
@@ -90,7 +90,6 @@ function sync_ok(data) {
 		switch (resp_success[0]['clave']) {
 			case 'C1':
 				storeTravel(resp_success[0]);
-				console.log(resp_success[0]);
 				break;
 		}
 }

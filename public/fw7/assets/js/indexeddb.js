@@ -4,7 +4,7 @@ var dataBase = null;
 var version_bd = 'CC17v1';
 $("#allow_update").html(version_bd);
 
-deleteDatabase('serexecutive2');
+//deleteDatabase('serexecutive2');
 
 	/*INICIALIZAR LA BASE DE DATOS*/
 	function startDB() {
@@ -504,7 +504,6 @@ function eliminarClaveByToken(token,db){
 }
 
 function deleteDatabase(dbname) {
-    console.log("Delete " + dbname);
     var request = window.indexedDB.deleteDatabase(dbname);
 }
 startDB();
