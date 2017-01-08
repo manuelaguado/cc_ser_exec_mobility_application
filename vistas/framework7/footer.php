@@ -69,12 +69,12 @@ var mvhc = <?=$mvhc?>;
 <audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3<?=$new_version?>" preload="auto"></audio>
 <audio id="rideSound" name="rideSound" src="<?=FW7?>assets/audio/ride.mp3<?=$new_version?>" preload="auto" loop></audio>
 
-<img src="<?=FW7?>assets/img/driver_green.svg" style="display:none;">
-<img src="<?=FW7?>assets/img/driver_black.svg" style="display:none;">
-<img src="<?=FW7?>assets/img/driver_red.svg" style="display:none;">
-<img src="<?=FW7?>assets/img/driver_orange.svg" style="display:none;">
-<img src="<?=FW7?>assets/img/driver_blue.svg" style="display:none;">
-<img src="<?=FW7?>assets/img/driver_white.svg" style="display:none;">
+<img src="<?=FW7?>assets/img/driver-green.svg" style="display:none;">
+<img src="<?=FW7?>assets/img/driver-black.svg" style="display:none;">
+<img src="<?=FW7?>assets/img/driver-red.svg" style="display:none;">
+<img src="<?=FW7?>assets/img/driver-orange.svg" style="display:none;">
+<img src="<?=FW7?>assets/img/driver-blue.svg" style="display:none;">
+<img src="<?=FW7?>assets/img/driver-white.svg" style="display:none;">
 <script>
 var timbre = document.getElementsByTagName("audio")[0];
 var cordonSound = document.getElementsByTagName("audio")[1];
