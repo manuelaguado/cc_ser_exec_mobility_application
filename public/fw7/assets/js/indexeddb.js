@@ -34,39 +34,11 @@ deleteDatabase('serexecutive2');
 				object9.createIndex('by_iden', 'iden', {unique: true});
 		};
 		dataBase.onsuccess = function (e) {	
-
 			if(mvhc == 2){
-				$.ajax({
-					url: 'mobile/multi',
-					type: "POST",
-					dataType: 'json',
-					success: function(resp_success){
-						loadTemplate('choice_car');
-						setPageWOR1('regreso');
-						$.each(resp_success, function( key, value ) {
-								
-							$('#select_car_list').append('<li>'+
-								'<a href="javascript:;" class="item-link item-content select_car" data-car="'+value['id_operador_unidad']+'">'+
-									'<div class="item-media"><img src="fw7/assets/img/car_select.svg" width="80"/></div>'+
-									'<div class="item-inner">'+
-										'<div class="item-title-row">'+
-											'<div class="item-title">'+value['marca']+' '+value['modelo']+'</div>'+
-											'<div class="item-after">Seleccionar</div>'+
-										'</div>'+
-										'<div class="item-subtitle">Placas: '+value['placas']+'</div>'+
-										'<div class="item-subtitle">Color: '+value['color']+'</div>'+
-									'</div>'+
-								'</a>'+
-							'</li>');
-								
-						});
-						
-					},
-				});
+				mvhc_start();
 			}else{
 				setStartPage();
 			}
-
 		};
 		dataBase.onerror = function (e) {
 			alert('Error loading database');
@@ -538,5 +510,3 @@ function deleteDatabase(dbname) {
     console.log("Delete " + dbname);
     var request = window.indexedDB.deleteDatabase(dbname);
 }
-
-startDB();

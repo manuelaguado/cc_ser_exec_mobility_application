@@ -57,10 +57,13 @@ if(SOCKET_PROVIDER == 'ABLY'){
 <script>
 var mvhc = <?=$mvhc?>;
 </script>
+
+
 <script type="text/javascript" src="<?=FW7?>assets/js/app.js?v=<?=$token_cache?>"></script>
 <script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js?v=<?=$token_cache?>"></script>
-
 <script type="text/javascript" src="<?=FW7?>assets/js/intervals.js?v=<?=$token_cache?>"></script>
+
+
 
 <audio id="timbre" name="timbre" src="<?=FW7?>assets/audio/timbre.mp3?v=<?=$token_cache?>" preload="auto" loop></audio>
 <audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3?v=<?=$token_cache?>" preload="auto"></audio>
