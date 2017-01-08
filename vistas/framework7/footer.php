@@ -1,6 +1,5 @@
 <script>var url_app = '<?=URL_APP?>';</script>
 <script>
-	<?php $token_cache = 'MEAM'; ?>
 	var id_operador = '<?=$_SESSION['id_operador']?>';
 	var serie = '<?=$_SESSION['serie']?>';
 	var id_operador_unidad = '<?=$_SESSION['id_operador_unidad']?>';
@@ -23,6 +22,7 @@
 	var pubnub_suscribe = '<?=PUBNUB_SUSCRIBE?>';
 	var pubnub_presence = '<?=PUBNUB_PRESENCE?>';
 	
+	<?php $new_version = '';//'?v='.$token_cache; ?>
 	var csrf_token = '<?=$token_cache?>';
 	
 </script>
@@ -31,26 +31,26 @@
 <script type="text/javascript" src="<?=FW7?>libs/swipebox/src/js/jquery.swipebox.min.js"></script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery-validation/dist/jquery.validate.min.js"></script>
 
-<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js?v=<?=$token_cache?>" async="async"></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" async="async"></script>
 
 <?php
 if(SOCKET_PROVIDER == 'ABLY'){
 ?>
 	<!--Ably-->
 	<script lang="text/javascript" src="//cdn.ably.io/lib/ably.min.js"></script>
-	<script type="text/javascript" src="<?=FW7?>assets/js/ws_ably.js?v=<?=$token_cache?>"></script>
+	<script type="text/javascript" src="<?=FW7?>assets/js/ws_ably.js<?=$new_version?>"></script>
 <?php
 }elseif(SOCKET_PROVIDER == 'PUSHER'){
 ?>
 	<!--Pusher-->
 	<script src="https://js.pusher.com/3.1/pusher.min.js"></script>
-	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.js?v=<?=$token_cache?>"></script>
+	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>"></script>
 <?php
 }elseif(SOCKET_PROVIDER == 'PUBNUB'){
 ?>
 	<!--PubNub-->
 	<script src="https://cdn.pubnub.com/pubnub-3.15.2.min.js"></script>
-	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pubnub.js?v=<?=$token_cache?>"></script>
+	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pubnub.js<?=$new_version?>"></script>
 <?php
 }
 ?>
@@ -59,15 +59,15 @@ var mvhc = <?=$mvhc?>;
 </script>
 
 
-<script type="text/javascript" src="<?=FW7?>assets/js/app.js?v=<?=$token_cache?>" async="async"></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js?v=<?=$token_cache?>" async="async"></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/intervals.js?v=<?=$token_cache?>" async="async"></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/app.js<?=$new_version?>" async="async"></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js<?=$new_version?>" async="async"></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/intervals.js<?=$new_version?>" async="async"></script>
 
 
 
-<audio id="timbre" name="timbre" src="<?=FW7?>assets/audio/timbre.mp3?v=<?=$token_cache?>" preload="auto" loop></audio>
-<audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3?v=<?=$token_cache?>" preload="auto"></audio>
-<audio id="rideSound" name="rideSound" src="<?=FW7?>assets/audio/ride.mp3?v=<?=$token_cache?>" preload="auto" loop></audio>
+<audio id="timbre" name="timbre" src="<?=FW7?>assets/audio/timbre.mp3<?=$new_version?>" preload="auto" loop></audio>
+<audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3<?=$new_version?>" preload="auto"></audio>
+<audio id="rideSound" name="rideSound" src="<?=FW7?>assets/audio/ride.mp3<?=$new_version?>" preload="auto" loop></audio>
 
 <img src="<?=FW7?>assets/img/driver_green.svg" style="display:none;">
 <img src="<?=FW7?>assets/img/driver_black.svg" style="display:none;">
