@@ -414,7 +414,6 @@ function setCordonDual(resp_success){
 	}	
 }
 /*INTERVALS*/
-$(document).ready(function(){
-	var initSync = setInterval("startSync(function(){})",1000);
-	var initGps  = setInterval("startGps()",5000);
-}
+
+var initSync = setInterval("startSync(function(){})",1000);
+var initGps  = setInterval("startGps()",5000);
