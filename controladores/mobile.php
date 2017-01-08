@@ -10,7 +10,6 @@ class Mobile extends Controlador
     }
 	public function sync()
     {
-		header('Access-Control-Allow-Origin: *');
 		if(isset($_POST['sync']) && isset($_POST['tknses'])){
 			$model = $this->loadModel('Mobile');
 			$claves = (json_decode($_POST['sync'], true));			
@@ -21,7 +20,6 @@ class Mobile extends Controlador
     }
 	public function gps()
     {
-		header('Access-Control-Allow-Origin: *');
 		if(isset($_POST['gps']) && isset($_POST['tknses'])){
 			$model = $this->loadModel('Mobile');
 			$claves = (json_decode($_POST['gps'], true));
@@ -30,7 +28,6 @@ class Mobile extends Controlador
 		}
     }
 	public function pusher_auth(){
-		header('Access-Control-Allow-Origin: *');
 		require_once('../vendor/pusher/Pusher.php');
 		$pusher = new Pusher(PUSHER_KEY, PUSHER_SECRET, PUSHER_APP_ID);
 		$presence_data = array(
@@ -59,7 +56,6 @@ class Mobile extends Controlador
 		print json_encode(array('resp' => true));
 	}
 	public function multi(){
-		header('Access-Control-Allow-Origin: *');
 		if($_SESSION['id_operador_unidad'] == 'select'){
 			
 			$mobile = $this->loadModel('Mobile');

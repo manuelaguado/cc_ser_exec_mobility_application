@@ -11,6 +11,7 @@ class Aplicacion
 		if (file_exists(URL_CONTROLADOR . $this->url_controladores . '.php')) {
 				
 				require URL_CONTROLADOR . $this->url_controladores . '.php';
+				header('Access-Control-Allow-Origin: *');
 				$this->url_controladores = new $this->url_controladores();
 
 				if (method_exists($this->url_controladores, $this->url_metodo)) {
