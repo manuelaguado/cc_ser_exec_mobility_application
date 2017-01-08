@@ -13,7 +13,7 @@ class UnidadesModel
 	function getPermisos($id_operador,$id_unidad){
 		$id_operador = intval($id_operador);
 		$id_unidad = intval($id_unidad);
-		$sql="SELECT count(*) as permiso, id_operador_unidad FROM cr_operador_unidad where id_operador = '".$id_operador."' and id_unidad = ".$id_unidad."";
+		$sql="SELECT count(*) as permiso, id_operador_unidad FROM cr_operador_unidad where id_operador = '".$id_operador."' and id_unidad = ".$id_unidad." AND cr_operador_unidad.status_operador_unidad = 198";
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$unidad = $query->fetchAll();
