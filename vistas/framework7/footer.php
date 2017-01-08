@@ -25,7 +25,7 @@
 	var pubnub_presence = '<?=PUBNUB_PRESENCE?>';
 	var csrf_token = '<?=$token_cache?>';
 	
-	<?php $new_version = '?v='.$token_cache; ?>
+	<?php $new_version = '';//'?v='.$token_cache; ?>
 	
 	var helpersLoaded = false;
 	var appLoaded = false;
