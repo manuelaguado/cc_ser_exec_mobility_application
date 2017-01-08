@@ -43,8 +43,8 @@ if(SOCKET_PROVIDER == 'ABLY'){
 }elseif(SOCKET_PROVIDER == 'PUSHER'){
 ?>
 	<!--Pusher-->
-	<script src="https://js.pusher.com/3.1/pusher.min.js"></script>
-	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>"></script>
+	<script src="https://js.pusher.com/3.1/pusher.min.js" async="async"></script>
+	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>" async="async"></script>
 <?php
 }elseif(SOCKET_PROVIDER == 'PUBNUB'){
 ?>

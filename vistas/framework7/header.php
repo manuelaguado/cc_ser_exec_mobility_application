@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="<?=FW7?>libs/framework7/dist/css/framework7.ios.min.css">
     <link rel="stylesheet" href="<?=FW7?>libs/swipebox/src/css/swipebox.css">
 
-    <link rel="stylesheet" href="<?=FW7?>assets/css/app.css?v="<?=$token_cache?>>
+    <link rel="stylesheet" href="<?=FW7?>assets/css/app.css">
 	<?php if(DEVELOPMENT){ ?>
 	<style>
 		.navbar-inner, .toolbar-inner {
