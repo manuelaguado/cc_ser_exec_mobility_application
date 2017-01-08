@@ -97,8 +97,14 @@ function fintervalslib(){
 	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
 }
+function fpusherlib(){
+	var pusherlib = document.createElement("script");
+	pusherlib.src = '<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>';
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(pusherlib);
+}
 if(typeof  helpersLoaded == undefined){fhelperslib();}
 if(typeof  appLoaded == undefined){fapplib();}
 if(typeof  indexeddbLoaded == undefined){findexeddblib();}
 if(typeof  intervalsLoaded == undefined){fintervalslib();}
+if(typeof  pusher == undefined){fpusherlib();}
 </script>
