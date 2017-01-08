@@ -94,4 +94,5 @@ function reloadlibs(){
 	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
 }
+reloadlibs();
 </script>
