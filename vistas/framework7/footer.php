@@ -27,11 +27,11 @@
 	
 	<?php $new_version = '?v='.$token_cache; ?>
 	
-	var helpersLoaded = false;
+	/*var helpersLoaded = false;
 	var appLoaded = false;
 	var indexeddbLoaded = false;
 	var intervalsLoaded = false;
-	var pusherisLoaded = false;
+	var pusherisLoaded = false;*/
 </script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="<?=FW7?>libs/framework7/dist/js/framework7.min.js"></script>
@@ -82,9 +82,34 @@ if(SOCKET_PROVIDER == 'ABLY'){
 ?>
 <script id="libsper"></script>
 <script>
-/*if(helpersLoaded == false){ location.reload(true); }
-if(appLoaded == false){ location.reload(true); }
-if(indexeddbLoaded == false){ location.reload(true); }
-if(intervalsLoaded == false){ location.reload(true); }
-if(pusher == false){ location.reload(true); }*/
+/*function fhelperslib(){
+	var helperslib = document.createElement("script");
+	helperslib.src = '<?=FW7?>assets/js/helpers.js<?=$new_version?>';
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(helperslib);
+}
+function fapplib(){
+	var applib = document.createElement("script");
+	applib.src = '<?=FW7?>assets/js/app.js<?=$new_version?>';
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(applib);
+}
+function findexeddblib(){
+	var indexeddblib = document.createElement("script");
+	indexeddblib.src = '<?=FW7?>assets/js/indexeddb.js<?=$new_version?>';
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(indexeddblib);
+}
+function fintervalslib(){
+	var intervalslib = document.createElement("script");
+	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
+}
+function fpusherlib(){
+	var pusherlib = document.createElement("script");
+	pusherlib.src = '<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>';
+	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(pusherlib);
+}
+if(helpersLoaded == false){fhelperslib();}
+if(appLoaded == false){fapplib();}
+if(indexeddbLoaded == false){findexeddblib();}
+if(intervalsLoaded == false){fintervalslib();}
+if(pusher == false){fpusherlib();}*/
 </script>
