@@ -33,10 +33,10 @@
 <script type="text/javascript" src="<?=FW7?>libs/swipebox/src/js/jquery.swipebox.min.js"></script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery-validation/dist/jquery.validate.min.js"></script>
 
-<--<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" ></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/app.js<?=$new_version?>" ></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js<?=$new_version?>" ></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/intervals.js<?=$new_version?>" ></script>-->
+<--<script type="text/javascript" src="<?=FW7?>assets/js/helpers.min.js<?=$new_version?>" ></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/app.min.js<?=$new_version?>" ></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.min.js<?=$new_version?>" ></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/intervals.min.js<?=$new_version?>" ></script>-->
 
 <audio id="timbre" name="timbre" src="<?=FW7?>assets/audio/timbre.mp3<?=$new_version?>" preload="auto" loop></audio>
 <audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3<?=$new_version?>" preload="auto"></audio>
@@ -65,7 +65,7 @@ if(SOCKET_PROVIDER == 'ABLY'){
 ?>
 	<!--Pusher-->
 	<script src="https://js.pusher.com/3.1/pusher.min.js" ></script>
-	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>" ></script>
+	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.min.js<?=$new_version?>" ></script>
 <?php
 }elseif(SOCKET_PROVIDER == 'PUBNUB'){
 ?>
@@ -79,27 +79,27 @@ if(SOCKET_PROVIDER == 'ABLY'){
 <script>
 function fhelperslib(){
 	var helperslib = document.createElement("script");
-	helperslib.src = '<?=FW7?>assets/js/helpers.js<?=$new_version?>';
+	helperslib.src = '<?=FW7?>assets/js/helpers.min.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(helperslib);
 }
 function fapplib(){
 	var applib = document.createElement("script");
-	applib.src = '<?=FW7?>assets/js/app.js<?=$new_version?>';
+	applib.src = '<?=FW7?>assets/js/app.min.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(applib);
 }
 function findexeddblib(){
 	var indexeddblib = document.createElement("script");
-	indexeddblib.src = '<?=FW7?>assets/js/indexeddb.js<?=$new_version?>';
+	indexeddblib.src = '<?=FW7?>assets/js/indexeddb.min.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(indexeddblib);
 }
 function fintervalslib(){
 	var intervalslib = document.createElement("script");
-	intervalslib.src = '<?=FW7?>assets/js/intervals.js<?=$new_version?>';
+	intervalslib.src = '<?=FW7?>assets/js/intervals.min.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(intervalslib);
 }
 function fpusherlib(){
 	var pusherlib = document.createElement("script");
-	pusherlib.src = '<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>';
+	pusherlib.src = '<?=FW7?>assets/js/ws_pusher.min.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(pusherlib);
 }
 if(typeof  helpersLoaded == undefined){fhelperslib();}
