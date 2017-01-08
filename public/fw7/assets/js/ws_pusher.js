@@ -70,3 +70,5 @@ bcChannel.bind('evento', function(data) {
 	var convert_json = JSON.stringify(data.message);
 	broadcastPlay(convert_json);
 });
+
+var pusherisLoaded = true;

@@ -27,6 +27,11 @@
 	
 	<?php $new_version = '?v='.$token_cache; ?>
 	
+	var helpersLoaded = false;
+	var appLoaded = false;
+	var indexeddbLoaded = false;
+	var intervalsLoaded = false;
+	var pusherisLoaded = false;
 </script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="<?=FW7?>libs/framework7/dist/js/framework7.min.js"></script>
@@ -122,9 +127,9 @@ function fpusherlib(){
 	pusherlib.src = '<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>';
 	(document.body ? document.body : document.getElementsByTagName("head")[0]).appendChild(pusherlib);
 }
-if(isset(helpersLoaded) == false){fhelperslib();}
-if(isset(appLoaded) == false){fapplib();}
-if(isset(indexeddbLoaded) == false){findexeddblib();}
-if(isset(intervalsLoaded) == false){fintervalslib();}
-if(isset(pusher) == false){fpusherlib();}
+if(helpersLoaded == false){fhelperslib();}
+if(appLoaded == false){fapplib();}
+if(indexeddbLoaded == false){findexeddblib();}
+if(intervalsLoaded == false){fintervalslib();}
+if(pusher == false){fpusherlib();}
 </script>
