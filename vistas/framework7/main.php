@@ -16,7 +16,7 @@
 			<?php $tiling = ($_SESSION['cat_statusoperador'] == 10)?'parpadea':''; ?>
 			<div class="center sliding <?=$tiling?>" style="left: -6.5px; transform: translate3d(0px, 0px, 0px);"><?=$titlr_bar?></div>
 			<div class="right">
-				<a href="javascript:void(0);" class="infolink icon-only" id="infolink">
+				<a href="javascript:void(0);" onclick="location.reload(true);" class="infolink icon-only" id="infolink">
 					<span class="kkicon icon-link" style="color:#3c99fc !important"></span>
 				</a>
 			</div>
