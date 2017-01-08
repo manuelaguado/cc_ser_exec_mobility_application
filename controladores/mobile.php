@@ -8,27 +8,6 @@ class Mobile extends Controlador
 		$mvhc = ($_SESSION['id_operador_unidad'] == 'select')?2:1;
 		require URL_TEMPLATE_FW7.'index.php';
     }
-	public function sync()
-    {
-		header('Access-Control-Allow-Origin: *');
-		if(isset($_POST['sync']) && isset($_POST['tknses'])){
-			$model = $this->loadModel('Mobile');
-			$claves = (json_decode($_POST['sync'], true));			
-			$operacion = $this->loadModel('Operacion');
-			$model->store($claves,$operacion,$_POST['tknses']);
-			print(json_encode(array('sync'=>'ok')));
-		}
-    }
-	public function gps()
-    {
-		header('Access-Control-Allow-Origin: *');
-		if(isset($_POST['gps']) && isset($_POST['tknses'])){
-			$model = $this->loadModel('Mobile');
-			$claves = (json_decode($_POST['gps'], true));
-			$model->storeGps($claves);
-			print(json_encode(array('gps'=>'ok')));
-		}
-    }
 	public function pusher_auth(){
 		$this->se_requiere_logueo(true,'Mobile|index');
 		require_once('../vendor/pusher/Pusher.php');
@@ -41,22 +20,6 @@ class Mobile extends Controlador
 			$_POST['channel_name'], 
 			$_POST['socket_id'], 
 			$_SESSION['id_operador'], 
-			$presence_data
-		);
-	}
-	public function pusher_android_auth($token_session,$id_usuario,$id_operador,$id_operador_unidad){
-		header('Access-Control-Allow-Origin: *');
-		require_once('../vendor/pusher/Pusher.php');
-		$pusher = new Pusher(PUSHER_KEY, PUSHER_SECRET, PUSHER_APP_ID);
-		$presence_data = array(
-			'token_session' => $token_session,
-			'id_operador_unidad' => $id_operador_unidad,
-			'id_usuario' => $id_usuario
-		);
-		echo $pusher->presence_auth(
-			$_POST['channel_name'], 
-			$_POST['socket_id'], 
-			$id_operador, 
 			$presence_data
 		);
 	}
@@ -84,6 +47,43 @@ class Mobile extends Controlador
 		}else{
 			exit();
 		}
+	}	
+	public function sync()
+    {
+		header('Access-Control-Allow-Origin: *');
+		if(isset($_POST['sync']) && isset($_POST['tknses'])){
+			$model = $this->loadModel('Mobile');
+			$claves = (json_decode($_POST['sync'], true));			
+			$operacion = $this->loadModel('Operacion');
+			$model->store($claves,$operacion,$_POST['tknses']);
+			print(json_encode(array('sync'=>'ok')));
+		}
+    }
+	public function gps()
+    {
+		header('Access-Control-Allow-Origin: *');
+		if(isset($_POST['gps']) && isset($_POST['tknses'])){
+			$model = $this->loadModel('Mobile');
+			$claves = (json_decode($_POST['gps'], true));
+			$model->storeGps($claves);
+			print(json_encode(array('gps'=>'ok')));
+		}
+    }
+	public function pusher_android_auth($token_session,$id_usuario,$id_operador,$id_operador_unidad){
+		header('Access-Control-Allow-Origin: *');
+		require_once('../vendor/pusher/Pusher.php');
+		$pusher = new Pusher(PUSHER_KEY, PUSHER_SECRET, PUSHER_APP_ID);
+		$presence_data = array(
+			'token_session' => $token_session,
+			'id_operador_unidad' => $id_operador_unidad,
+			'id_usuario' => $id_usuario
+		);
+		echo $pusher->presence_auth(
+			$_POST['channel_name'], 
+			$_POST['socket_id'], 
+			$id_operador, 
+			$presence_data
+		);
 	}
 	public function multiandroid($id_operador_unidad,$id_operador){
 		header('Access-Control-Allow-Origin: *');
