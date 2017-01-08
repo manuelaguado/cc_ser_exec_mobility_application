@@ -75,7 +75,6 @@ class Mobile extends Controlador
 		print json_encode(array('resp' => true));
 	}
 	public function multi(){
-		header('Access-Control-Allow-Origin: *');
 		if($_SESSION['id_operador_unidad'] == 'select'){
 			
 			$mobile = $this->loadModel('Mobile');
@@ -86,6 +85,18 @@ class Mobile extends Controlador
 			exit();
 		}
 	}
+	public function multiandroid($id_operador_unidad,$id_operador){
+		header('Access-Control-Allow-Origin: *');
+		if($id_operador_unidad] == 'select'){
+			
+			$mobile = $this->loadModel('Mobile');
+			$vehiculos = $mobile->getVehiculosOperador($id_operador);
+			print(json_encode($vehiculos));
+			
+		}else{
+			exit();
+		}
+	}	
 	public function setIdOperadorUnidad($id_operador_unidad){	
 				header('Access-Control-Allow-Origin: *');
 				$operacion = $this->loadModel('Operacion');
