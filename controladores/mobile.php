@@ -30,7 +30,7 @@ class Mobile extends Controlador
 		}
     }
 	public function pusher_auth(){
-		header('Access-Control-Allow-Origin: *');
+		$this->se_requiere_logueo(true,'Mobile|index');
 		require_once('../vendor/pusher/Pusher.php');
 		$pusher = new Pusher(PUSHER_KEY, PUSHER_SECRET, PUSHER_APP_ID);
 		$presence_data = array(
@@ -41,6 +41,22 @@ class Mobile extends Controlador
 			$_POST['channel_name'], 
 			$_POST['socket_id'], 
 			$_SESSION['id_operador'], 
+			$presence_data
+		);
+	}
+	public function pusher_android_auth($token_session,$id_usuario,$id_operador,$id_operador_unidad){
+		header('Access-Control-Allow-Origin: *');
+		require_once('../vendor/pusher/Pusher.php');
+		$pusher = new Pusher(PUSHER_KEY, PUSHER_SECRET, PUSHER_APP_ID);
+		$presence_data = array(
+			'token_session' => $token_session,
+			'id_operador_unidad' => $id_operador_unidad,
+			'id_usuario' => $id_usuario
+		);
+		echo $pusher->presence_auth(
+			$_POST['channel_name'], 
+			$_POST['socket_id'], 
+			$id_operador, 
 			$presence_data
 		);
 	}
