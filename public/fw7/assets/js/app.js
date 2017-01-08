@@ -67,10 +67,11 @@ $$("body").on("click", ".select_car", function() {
 		dataType: "json",
 		success: function(respuesta){
 			if (respuesta['resp'] == true) {
-				storeClave('C1','C1','F11','NULL','NULL','NULL',function(){
+				setStartPage();
+				/*storeClave('C1','C1','F11','NULL','NULL','NULL',function(){
 					var mvhc = 1;
 					loadTemplateWOR1('regreso');
-				});
+				});*/
 			}else{
 				myApp.alert('Intente seleccionar la unidad cuando tenga datos APP1', 'Sin conexión');
 			}

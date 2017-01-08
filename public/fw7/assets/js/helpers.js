@@ -89,8 +89,7 @@ function mvhc_start(){
 			success: function(resp_success){
 				loadTemplate('choice_car');
 				setPageWOR1('regreso');
-				$.each(resp_success, function( key, value ) {
-						
+				$.each(resp_success, function( key, value ) {	
 					$('#select_car_list').append('<li>'+
 						'<a href="javascript:;" class="item-link item-content select_car" data-car="'+value['id_operador_unidad']+'">'+
 							'<div class="item-media"><img src="fw7/assets/img/car_select.svg" width="80"/></div>'+
