@@ -1,5 +1,6 @@
-<script>var url_app = '<?=URL_APP?>';</script>
 <script>
+	
+	var url_app = '<?=URL_APP?>';
 	var id_operador = '<?=$_SESSION['id_operador']?>';
 	var serie = '<?=$_SESSION['serie']?>';
 	var id_operador_unidad = '<?=$_SESSION['id_operador_unidad']?>';
@@ -22,9 +23,9 @@
 	var pubnub_publish= '<?=PUBNUB_PUBLISH?>';
 	var pubnub_suscribe = '<?=PUBNUB_SUSCRIBE?>';
 	var pubnub_presence = '<?=PUBNUB_PRESENCE?>';
-	
-	<?php $new_version = '';//'?v='.$token_cache; ?>
 	var csrf_token = '<?=$token_cache?>';
+	
+	<?php $new_version = '?v='.$token_cache; ?>
 	
 </script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery/dist/jquery.min.js"></script>
@@ -32,10 +33,10 @@
 <script type="text/javascript" src="<?=FW7?>libs/swipebox/src/js/jquery.swipebox.min.js"></script>
 <script type="text/javascript" src="<?=FW7?>libs/jquery-validation/dist/jquery.validate.min.js"></script>
 
-<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" async="async"></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/app.js<?=$new_version?>" async="async"></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js<?=$new_version?>" async="async"></script>
-<script type="text/javascript" src="<?=FW7?>assets/js/intervals.js<?=$new_version?>" async="async"></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/helpers.js<?=$new_version?>" ></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/app.js<?=$new_version?>" ></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/indexeddb.js<?=$new_version?>" ></script>
+<script type="text/javascript" src="<?=FW7?>assets/js/intervals.js<?=$new_version?>" ></script>
 
 <audio id="timbre" name="timbre" src="<?=FW7?>assets/audio/timbre.mp3<?=$new_version?>" preload="auto" loop></audio>
 <audio id="cordonSound" name="cordonSound" src="<?=FW7?>assets/audio/cordon.mp3<?=$new_version?>" preload="auto"></audio>
@@ -63,8 +64,8 @@ if(SOCKET_PROVIDER == 'ABLY'){
 }elseif(SOCKET_PROVIDER == 'PUSHER'){
 ?>
 	<!--Pusher-->
-	<script src="https://js.pusher.com/3.1/pusher.min.js" async="async"></script>
-	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>" async="async"></script>
+	<script src="https://js.pusher.com/3.1/pusher.min.js" ></script>
+	<script type="text/javascript" src="<?=FW7?>assets/js/ws_pusher.js<?=$new_version?>" ></script>
 <?php
 }elseif(SOCKET_PROVIDER == 'PUBNUB'){
 ?>
