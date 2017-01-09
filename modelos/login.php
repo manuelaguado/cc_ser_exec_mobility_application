@@ -84,10 +84,13 @@ class LoginModel
 		$result = $query->fetchAll();
 		if($query->rowCount()>=1){
 			foreach ($result as $num => $row) {
-				$id_operador_unidad = self::getIdOperadorUnidadBySession($row->session_id);				
+				$current = session_id();
+				session_id($row->session_id);
+				$id_operador_unidad = $_SESSION['id_operador_unidad'];
 				$token = 'DUP:'.Controlador::token(60);
 				$mobile->storeToSyncRide($id_usuario,$token,155,$id_operador_unidad);
 				self::signout($id_usuario);
+				session_id($current);
 			}
 		}
 	}
@@ -115,26 +118,7 @@ class LoginModel
 		}
 		return $ids;
 	}	
-	private function getIdOperadorUnidadBySession($session_id){
-		$id_operador_unidad = '';
-		if(file_exists(session_save_path().'/sess_'.$session_id)){
-			$fp = fopen(session_save_path().'/sess_'.$session_id, "r");
-			$content = '';
-			while(!feof($fp)) {
-				$content .= fgets($fp);
-			}
-				$regex = '#.*(id_operador_unidad\|).{5}#';
-				$replacement = '';
-				$result = preg_replace($regex, $replacement, $content);
-				
-				$regex = '#(";cat_statusoperador).*#';
-				$replacement = '';
-				$id_operador_unidad = preg_replace($regex, $replacement, $result);
-				
-			fclose($fp);
-		}
-		return $id_operador_unidad;
-	}
+
 	public function logear(MobileModel $mobile){
 		
 		$stat = self::getStatusUser($_POST['usuario']);
@@ -185,10 +169,8 @@ class LoginModel
 						$sess_oper = self::setIDOperadorSessions($_SESSION['id_usuario']);
 						$_SESSION['id_operador'] = $sess_oper['id_operador'];
 						
-						/*no separar getIdOperadorUnidadBySession*/
 						$_SESSION['id_operador_unidad'] = $sess_oper['id_operador_unidad'];
 						$_SESSION['cat_statusoperador'] = $sess_oper['cat_statusoperador'];
-						/*no separar getIdOperadorUnidadBySession*/
 						
 						if($sess_oper['multi'] > 1){
 							$_SESSION['id_operador_unidad'] = 'select';
