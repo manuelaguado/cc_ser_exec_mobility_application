@@ -114,7 +114,7 @@ class Mobile extends Controlador
 					$id_usuario = $iden['id_usuario'];
 				}
 				
-				$timebase = $mobile->getIdensOperadorEnC2($id_operador);
+				$timebase = $mobile->getIdensOperadorEnC2($id_operador,$session_id);
 				foreach($timebase as $unit){
 					$array = array(
 						'accurate' => '0',
@@ -140,7 +140,7 @@ class Mobile extends Controlador
 					);
 					$mobile->storeToSync($array);
 				}
-				
+		session_id($session_id);		
 		$_SESSION['multi'] = 1;
 		$_SESSION['id_operador_unidad'] = $id_operador_unidad;		
 		print json_encode(array('resp' => true ));

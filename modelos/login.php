@@ -202,7 +202,8 @@ class LoginModel
 								'id_operador_unidad'=>$_SESSION['id_operador_unidad'],
 								'token_session'=>$_SESSION['token'],
 								'id_usuario'=>$_SESSION['id_usuario'],
-								'mvhc'=>$mvhc
+								'mvhc'=>$mvhc,
+								'session_id'=>session_id()
 							);							
 						
 						
@@ -680,6 +681,28 @@ class LoginModel
 		}
 		print json_encode($array);
 	}
+	public function recuperar_datos($correo,$token){
+        $sql = "SELECT id_usuario, usuario FROM fw_usuarios WHERE correo='{$correo}'";
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $usuario = $query->fetchAll();
+		if($query->rowCount()>=1){
+			self::insert_lost_password($token,$usuario[0]->id_usuario,$correo);
+			$array[]=array('resp'=>"enviado",'usuario'=>$usuario[0]->usuario);
+		}else{
+			$array[]=array('resp'=>"no_existe");
+		}
+		return $array;
+	}
+	private function insert_lost_password($token,$id,$correo){
+		$clean = "DELETE FROM fw_lost_password WHERE correo = :correo";
+        $query = $this->db->prepare($clean);
+        $query->execute(array(':correo' => $correo));
+		
+		$sql = "INSERT INTO fw_lost_password (	token, 	id_usuario, correo) VALUES (:token, :id_usuario, :correo)";
+		$query = $this->db->prepare($sql);
+		$query->execute(array(':token' => $token, ':id_usuario' => $id, ':correo' => $correo));	
+	}
 	public function salirAndroid($id_usuario){
 		$id_login = self::getId_loginAndroid($id_usuario);
 		self::signout($id_usuario);
@@ -711,27 +734,5 @@ class LoginModel
 				return $row->id_login;
 			}
 		}
-	}
-	public function recuperar_datos($correo,$token){
-        $sql = "SELECT id_usuario, usuario FROM fw_usuarios WHERE correo='{$correo}'";
-        $query = $this->db->prepare($sql);
-        $query->execute();
-        $usuario = $query->fetchAll();
-		if($query->rowCount()>=1){
-			self::insert_lost_password($token,$usuario[0]->id_usuario,$correo);
-			$array[]=array('resp'=>"enviado",'usuario'=>$usuario[0]->usuario);
-		}else{
-			$array[]=array('resp'=>"no_existe");
-		}
-		return $array;
-	}
-	private function insert_lost_password($token,$id,$correo){
-		$clean = "DELETE FROM fw_lost_password WHERE correo = :correo";
-        $query = $this->db->prepare($clean);
-        $query->execute(array(':correo' => $correo));
-		
-		$sql = "INSERT INTO fw_lost_password (	token, 	id_usuario, correo) VALUES (:token, :id_usuario, :correo)";
-		$query = $this->db->prepare($sql);
-		$query->execute(array(':token' => $token, ':id_usuario' => $id, ':correo' => $correo));	
 	}
 }
