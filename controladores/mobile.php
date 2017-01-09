@@ -97,7 +97,7 @@ class Mobile extends Controlador
 			exit();
 		}
 	}	
-	public function setIdOperadorUnidad($id_operador_unidad){	
+	public function setIdOperadorUnidad($id_operador_unidad,$session_id){	
 				header('Access-Control-Allow-Origin: *');
 				$operacion = $this->loadModel('Operacion');
 				$bases = $this->loadModel('Bases');
@@ -114,7 +114,7 @@ class Mobile extends Controlador
 					$id_usuario = $iden['id_usuario'];
 				}
 				
-				$timebase = $mobile->getIdensOperadorEnC2($id_operador,$session_id);
+				$timebase = $mobile->getIdensOperadorEnC2($id_operador);
 				foreach($timebase as $unit){
 					$array = array(
 						'accurate' => '0',
