@@ -24,7 +24,7 @@ function startGps() {
 					url: 'mobile/gps',
 					type: "POST",
 					dataType: 'json',
-					data: 'gps='+sendvar+'&tknses='+token_session,
+					data: 'gps='+sendvar+'&sid='+session_id,
 					/*No se verifica el envio para ahorrar datos*/
 					success: function(resp_success){
 						if (resp_success['gps'] == 'ok') {
@@ -67,7 +67,7 @@ function startSync(exec){
 				url: 'mobile/sync',
 				type: "POST",
 				dataType: 'json',
-				data: 'sync='+sendvar+'&tknses='+token_session,
+				data: 'sync='+sendvar+'&sid='+session_id,
 				success: function(e){
 					exec();
 					//if(e['out'] == 'login'){dOut();}

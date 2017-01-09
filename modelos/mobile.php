@@ -10,7 +10,7 @@ class MobileModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-	function store($claves, OperacionModel $operacion, $tknses){
+	function store($claves, OperacionModel $operacion, $sid){
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
 			$tokenStore = self::tokenStore($clave['token']);
@@ -38,7 +38,7 @@ class MobileModel
 						break;
 					case 'C1':/*Inicio de labores*/
 						
-						$clave['id_episodio'] = self::getEpisodio($clave['id_operador'],$clave['id_usuario'],$clave['id_operador_unidad'],$tknses);
+						$clave['id_episodio'] = self::getEpisodio($clave['id_operador'],$clave['id_usuario'],$clave['id_operador_unidad'],$sid);
 						
 						$array = array(
 							'clave'					=> $clave['clave'],
@@ -228,14 +228,14 @@ class MobileModel
 		}
 		return $return;	
 	}	
-	function verify_token($tknses){
+	function verify_token($sid){
 		$qry = "
 			SELECT
 				cre.id_episodio
 			FROM
 				cr_episodios AS cre
 			WHERE
-				cre.token_session = '$tknses'
+				cre.session_id = '$sid'
 				AND
 				cre.fin IS NULL
 		";
@@ -437,20 +437,20 @@ class MobileModel
 			}
 		}
 	}
-	function getEpisodio($id_operador,$id_usuario,$id_operador_unidad,$tknses){
+	function getEpisodio($id_operador,$id_usuario,$id_operador_unidad,$sid){
 		self::closeEpisodeOpen($id_operador,$id_usuario);
 		$sql = "
 			INSERT INTO cr_episodios (
 				id_operador,
 				inicio,
-				token_session,
+				session_id,
 				id_operador_unidad,
 				user_alta,
 				fecha_alta
 			) VALUES (
 				:id_operador,
 				:inicio,
-				:token_session,
+				:session_id,
 				:id_operador_unidad,
 				:user_alta,
 				:fecha_alta
@@ -460,7 +460,7 @@ class MobileModel
 			array(
 				':id_operador' 			=> 	$id_operador,
 				':inicio' 				=> 	date("Y-m-d H:i:s"),
-				':token_session'		=> 	$tknses,
+				':session_id'			=> 	$sid,
 				':id_operador_unidad'	=> 	$id_operador_unidad,
 				':user_alta' 			=> 	$id_usuario,
 				':fecha_alta' 			=> 	date("Y-m-d H:i:s")

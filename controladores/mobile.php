@@ -51,18 +51,18 @@ class Mobile extends Controlador
 	public function sync()
     {
 		header('Access-Control-Allow-Origin: *');
-		if(isset($_POST['sync']) && isset($_POST['tknses'])){
+		if(isset($_POST['sync']) && isset($_POST['sid'])){
 			$model = $this->loadModel('Mobile');
 			$claves = (json_decode($_POST['sync'], true));			
 			$operacion = $this->loadModel('Operacion');
-			$model->store($claves,$operacion,$_POST['tknses']);
+			$model->store($claves,$operacion,$_POST['sid']);
 			print(json_encode(array('sync'=>'ok')));
 		}
     }
 	public function gps()
     {
 		header('Access-Control-Allow-Origin: *');
-		if(isset($_POST['gps']) && isset($_POST['tknses'])){
+		if(isset($_POST['gps']) && isset($_POST['sid'])){
 			$model = $this->loadModel('Mobile');
 			$claves = (json_decode($_POST['gps'], true));
 			$model->storeGps($claves);
@@ -145,7 +145,7 @@ class Mobile extends Controlador
 			session_start();
 		}*/	
 		$_SESSION['multi'] = 1;
-		$_SESSION['id_operador_unidadXYZ'] = $id_operador_unidad;		
+		$_SESSION['id_operador_unidad'] = $id_operador_unidad;		
 		print json_encode(array('resp' => true ));
 	}
 }
