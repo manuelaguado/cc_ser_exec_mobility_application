@@ -1319,7 +1319,9 @@ class MobileModel
 	function storeGps($claves){
 		$output[0] = array('resp' => false);
 		foreach($claves as $num => $clave){
-			self::storeToGps($clave, $num);
+			if($clave['latitud'] != 23.915941){
+				self::storeToGps($clave, $num);
+			}
 		}	
 	}	
 	function storeToGps($clave, $num){
