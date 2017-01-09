@@ -38,10 +38,10 @@ class Mobile extends Controlador
 		print json_encode(array('resp' => true));
 	}
 	public function multi(){
-		if($_SESSION['id_operador_unidad'] == 'select'){
+		if($_POST['id_operador_unidad'] == 'select'){
 			
 			$mobile = $this->loadModel('Mobile');
-			$vehiculos = $mobile->getVehiculosOperador($_SESSION['id_operador']);
+			$vehiculos = $mobile->getVehiculosOperador($_POST['id_operador']);
 			print(json_encode($vehiculos));
 			
 		}else{
@@ -85,63 +85,61 @@ class Mobile extends Controlador
 			$presence_data
 		);
 	}
-	public function multiandroid($id_operador_unidad,$id_operador){
+	public function multiandroid(){
 		header('Access-Control-Allow-Origin: *');
-		if(($id_operador_unidad) == 'select'){
+		if($_POST['id_operador_unidad'] == 'select'){
 			
 			$mobile = $this->loadModel('Mobile');
-			$vehiculos = $mobile->getVehiculosOperador($id_operador);
+			$vehiculos = $mobile->getVehiculosOperador($_POST['id_operador']);
 			print(json_encode($vehiculos));
 			
 		}else{
 			exit();
 		}
 	}	
-	public function setIdOperadorUnidad($id_operador_unidad){	
-				header('Access-Control-Allow-Origin: *');
-				$operacion = $this->loadModel('Operacion');
-				$bases = $this->loadModel('Bases');
-				$mobile = $this->loadModel('Mobile');
-				
-				$idens = $mobile->getAllIdenOperadorUnidad($id_operador_unidad);
-				foreach($idens as $iden){
-					$tail = $operacion->formadoAnyBase($bases, $iden['id_operador_unidad']);
-					if($tail){
-						D::bug('Se quitó del cordon 2 > '.$tail);
-						$mobile->exitCordonFromLogin($iden['id_usuario'],$iden['id_operador_unidad']);
-					}
-					$id_operador = $iden['id_operador'];
-					$id_usuario = $iden['id_usuario'];
-				}
-				
-				$timebase = $mobile->getIdensOperadorEnC2($id_operador);
-				foreach($timebase as $unit){
-					$array = array(
-						'accurate' => '0',
-						'clave' => 'C2',
-						'estado1' => 'C2',
-						'estado2' => 'NULL',
-						'estado3' => 'NULL',
-						'estado4' => 'NULL',
-						'id' => '0',
-						'id_episodio' => '0',
-						'id_operador' => $id_operador,
-						'id_operador_unidad' => $unit['id_operador_unidad'],
-						'id_viaje' => '0',
-						'latitud' => '0',
-						'longitud' => '0',
-						'motivo' => 'AUTO C2 SESION DUPLICADA',
-						'serie' => '0',
-						'tiempo' => date("Y-m-d H:i:s"),
-						'timestamp' => date("Y-m-d H:i:s"),
-						'token' => $this->token(62),
-						'origen' => 'system',
-						'id_usuario' => $id_usuario
-					);
-					$mobile->storeToSync($array);
-				}
-		$_SESSION['multi'] = 1;
-		$_SESSION['id_operador_unidad'] = $id_operador_unidad;		
+	public function setIdOperadorUnidad(){	
+		header('Access-Control-Allow-Origin: *');
+		$operacion = $this->loadModel('Operacion');
+		$bases = $this->loadModel('Bases');
+		$mobile = $this->loadModel('Mobile');
+		
+		$idens = $mobile->getAllIdenOperadorUnidad($_POST['id_operador_unidad']);
+		foreach($idens as $iden){
+			$tail = $operacion->formadoAnyBase($bases, $iden['id_operador_unidad']);
+			if($tail){
+				D::bug('Se quitó del cordon 2 > '.$tail);
+				$mobile->exitCordonFromLogin($iden['id_usuario'],$iden['id_operador_unidad']);
+			}
+			$id_operador = $iden['id_operador'];
+			$id_usuario = $iden['id_usuario'];
+		}
+		
+		$timebase = $mobile->getIdensOperadorEnC2($id_operador);
+		foreach($timebase as $unit){
+			$array = array(
+				'accurate' => '0',
+				'clave' => 'C2',
+				'estado1' => 'C2',
+				'estado2' => 'NULL',
+				'estado3' => 'NULL',
+				'estado4' => 'NULL',
+				'id' => '0',
+				'id_episodio' => '0',
+				'id_operador' => $id_operador,
+				'id_operador_unidad' => $unit['id_operador_unidad'],
+				'id_viaje' => '0',
+				'latitud' => '0',
+				'longitud' => '0',
+				'motivo' => 'AUTO C2 SESION DUPLICADA',
+				'serie' => '0',
+				'tiempo' => date("Y-m-d H:i:s"),
+				'timestamp' => date("Y-m-d H:i:s"),
+				'token' => $this->token(62),
+				'origen' => 'system',
+				'id_usuario' => $id_usuario
+			);
+			$mobile->storeToSync($array);
+		}	
 		print json_encode(array('resp' => true ));
 	}
 }

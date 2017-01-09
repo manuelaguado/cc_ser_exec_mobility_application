@@ -102,11 +102,11 @@ class Login extends Controlador
 			
         print json_encode($recuperar);
     }
-	public function salirAndroid($id_usuario)
+	public function salirAndroid()
     {
 		header('Access-Control-Allow-Origin: *');
 		$obtener_modelo = $this->loadModel('Login');
-		$salir = $obtener_modelo->salirAndroid($id_usuario);
+		$salir = $obtener_modelo->salirAndroid($_POST['id_usuario']);
         return $salir;
     }
 	public function logear()

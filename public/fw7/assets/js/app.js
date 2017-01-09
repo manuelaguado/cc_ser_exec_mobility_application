@@ -62,9 +62,10 @@ function loadUpdatedTemplate(template,returned){
 $$("body").on("click", ".select_car", function() {
 	id_operador_unidad = $(this).attr('data-car');
 	$.ajax({
-		url: url_app + 'mobile/setIdOperadorUnidad/' + id_operador_unidad,
+		url: url_app + 'mobile/setIdOperadorUnidad',
 		type: 'POST',
 		dataType: "json",
+		data: 'id_operador_unidad='+id_operador_unidad+'&session_id='+session_id,
 		success: function(respuesta){
 			if (respuesta['resp'] == true) {
 				storeClave('C1','C1','F11','NULL','NULL','NULL',function(){

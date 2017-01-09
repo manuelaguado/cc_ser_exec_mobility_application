@@ -86,6 +86,7 @@ function mvhc_start(){
 			url: 'mobile/multi',
 			type: "POST",
 			dataType: 'json',
+			data: 'id_operador_unidad='+id_operador_unidad+'&id_operador='+id_operador,
 			success: function(resp_success){
 				loadTemplate('choice_car');
 				setPageWOR1('regreso');
