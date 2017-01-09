@@ -97,7 +97,7 @@ class Mobile extends Controlador
 			exit();
 		}
 	}	
-	public function setIdOperadorUnidad($id_operador_unidad,$session_id){	
+	public function setIdOperadorUnidad($id_operador_unidad){	
 				header('Access-Control-Allow-Origin: *');
 				$operacion = $this->loadModel('Operacion');
 				$bases = $this->loadModel('Bases');
@@ -140,7 +140,7 @@ class Mobile extends Controlador
 					);
 					$mobile->storeToSync($array);
 				}
-		session_id($session_id);		
+		if(isset($_POST['session_id'])){session_id($_POST['session_id']);}		
 		$_SESSION['multi'] = 1;
 		$_SESSION['id_operador_unidad'] = $id_operador_unidad;		
 		print json_encode(array('resp' => true ));

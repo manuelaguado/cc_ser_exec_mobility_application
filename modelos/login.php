@@ -86,11 +86,13 @@ class LoginModel
 			foreach ($result as $num => $row) {
 				$current = session_id();
 				session_id($row->session_id);
+				session_start();
 				$id_operador_unidad = $_SESSION['id_operador_unidad'];
 				$token = 'DUP:'.Controlador::token(60);
 				$mobile->storeToSyncRide($id_usuario,$token,155,$id_operador_unidad);
 				self::signout($id_usuario);
 				session_id($current);
+				session_start();
 			}
 		}
 	}
