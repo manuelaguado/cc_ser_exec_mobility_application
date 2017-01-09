@@ -7,6 +7,7 @@
 	var token_session = '<?=$_SESSION['token']?>';
 	var id_usuario = '<?=$_SESSION['id_usuario']?>';
 	var domain = '<?=DOMAIN?>';
+	var session_id = '<?=session_id()?>';
 	
 	var lat = 23.915941;
 	var lon = -102.537345;
