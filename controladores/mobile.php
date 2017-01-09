@@ -140,10 +140,10 @@ class Mobile extends Controlador
 					);
 					$mobile->storeToSync($array);
 				}
-		if(isset($_POST['session_id'])){
+		/*if(isset($_POST['session_id'])){
 			session_id($_POST['session_id']);
 			session_start();
-		}		
+		}*/	
 		$_SESSION['multi'] = 1;
 		$_SESSION['id_operador_unidadXYZ'] = $id_operador_unidad;		
 		print json_encode(array('resp' => true ));
