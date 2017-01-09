@@ -71,23 +71,23 @@ class LoginModel
 			SELECT
 				fwl.id_login,
 				fwl.session_id,
-				fwl.fecha_login
+				fwl.fecha_login,
+				cr_episodios.id_operador_unidad
 			FROM
-				fw_login as fwl
+				fw_login AS fwl
+			INNER JOIN cr_episodios ON fwl.session_id = cr_episodios.session_id
 			WHERE
-				fwl.id_usuario = ".$id_usuario." AND
-				fwl.`open` = 1
+				fwl.id_usuario = ".$id_usuario."
+			AND fwl.`open` = 1
 		";
 				
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$result = $query->fetchAll();
 		if($query->rowCount()>=1){
-			foreach ($result as $num => $row) {
-				session_id($row->session_id);
-				$id_operador_unidad = self::getIdOperadorUnidadBySession($row->session_id);				
+			foreach ($result as $num => $row) {			
 				$token = 'DUP:'.Controlador::token(60);
-				$mobile->storeToSyncRide($id_usuario,$token,155,$id_operador_unidad);
+				$mobile->storeToSyncRide($id_usuario,$token,155,$row->id_operador_unidad);
 				self::signout($id_usuario);
 			}
 		}
@@ -116,27 +116,6 @@ class LoginModel
 		}
 		return $ids;
 	}	
-	private function getIdOperadorUnidadBySession($session_id){
-		$id_operador_unidad = '';
-		if(file_exists(session_save_path().'/sess_'.$session_id)){
-			$fp = fopen(session_save_path().'/sess_'.$session_id, "r");
-			$content = '';
-			while(!feof($fp)) {
-				$content .= fgets($fp);
-			}
-				$regex = '#.*(id_operador_unidad\|).{5}#';
-				$replacement = '';
-				$result = preg_replace($regex, $replacement, $content);
-				
-				$regex = '#(";a_acceso).*#';
-				//$regex = '#(";cat_statusoperador).*#';
-				$replacement = '';
-				$id_operador_unidad = preg_replace($regex, $replacement, $result);
-				
-			fclose($fp);
-		}
-		return $id_operador_unidad;
-	}
 	public function logear(MobileModel $mobile){
 		
 		$stat = self::getStatusUser($_POST['usuario']);
@@ -186,11 +165,9 @@ class LoginModel
 						
 						$sess_oper = self::setIDOperadorSessions($_SESSION['id_usuario']);
 						$_SESSION['id_operador'] = $sess_oper['id_operador'];
-						
-						/*no separar getIdOperadorUnidadBySession*/
+
 						$_SESSION['id_operador_unidad'] = $sess_oper['id_operador_unidad'];
 						$_SESSION['cat_statusoperador'] = $sess_oper['cat_statusoperador'];
-						/*no separar getIdOperadorUnidadBySession*/
 						
 						if($sess_oper['multi'] > 1){
 							$_SESSION['id_operador_unidad'] = 'select';
