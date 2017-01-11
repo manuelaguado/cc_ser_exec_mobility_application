@@ -59,7 +59,9 @@
             <div class="clearfix"></div>
             <!--<a onclick="valida_logeo(event,'noDec','1');" href="#" class="btn btn-login btn-danger btn-float"><i class="zmdi zmdi-arrow-forward"></i></a>-->
         </div>
-		
+		<div class="lc-block toggled" id="l-loginx">
+            ACCESO INHABILITADO, ACCEDA DESDE LA APLICACION ANDROID 2.7 O SUPERIOR
+        </div>
 		<div class="lc-block toggled hidden" id="alertWindow">
             <div class="input-group m-b-20">
 				<div class="titlelert">
