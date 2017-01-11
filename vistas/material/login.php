@@ -36,7 +36,7 @@
 			<img width="70%" src="<?=MATERIAL?>img/logo_intro.png">
 		</div>
 		
-		<div class="lc-block toggled" id="l-login">
+		<div class="lc-block toggled" id="l-login" style="display:none">
             <div class="input-group m-b-20">
                 <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
                 <div class="fg-line">
@@ -57,7 +57,7 @@
 				</label>
 			</div>
             <div class="clearfix"></div>
-            <a onclick="valida_logeo(event,'noDec','1');" href="#" class="btn btn-login btn-danger btn-float"><i class="zmdi zmdi-arrow-forward"></i></a>
+            <!--<a onclick="valida_logeo(event,'noDec','1');" href="#" class="btn btn-login btn-danger btn-float"><i class="zmdi zmdi-arrow-forward"></i></a>-->
         </div>
 		
 		<div class="lc-block toggled hidden" id="alertWindow">
