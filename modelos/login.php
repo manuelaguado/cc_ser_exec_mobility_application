@@ -66,6 +66,30 @@ class LoginModel
 		}
 		return json_encode(array('resp' => true )); 
 	}
+	private function getAllIdenOperadorUnidad($id_operador_unidad){
+		$qry = "
+			SELECT
+				base.id_operador_unidad
+			FROM
+				cr_operador_unidad AS iden
+			INNER JOIN cr_operador_unidad AS base ON iden.id_operador = base.id_operador
+			WHERE
+				iden.id_operador_unidad = $id_operador_unidad
+				AND base.status_operador_unidad = 198
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$ids = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row) {
+				$ids[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$num++;
+			}
+		}
+		return $ids;
+	}
 	public function session_duplicada($id_usuario, MobileModel $mobile){
 		$sql = "
 			SELECT
@@ -92,30 +116,28 @@ class LoginModel
 			}
 		}
 	}
-	private function getAllIdenOperadorUnidad($id_operador_unidad){
-		$qry = "
+	public function session_duplicada_no_operador($id_usuario, MobileModel $mobile){
+		$sql = "
 			SELECT
-				base.id_operador_unidad
+				fwl.id_login,
+				fwl.session_id,
+				fwl.fecha_login
 			FROM
-				cr_operador_unidad AS iden
-			INNER JOIN cr_operador_unidad AS base ON iden.id_operador = base.id_operador
+				fw_login as fwl
 			WHERE
-				iden.id_operador_unidad = $id_operador_unidad
-				AND base.status_operador_unidad = 198
+				fwl.id_usuario = ".$id_usuario." AND
+				fwl.`open` = 1
 		";
-		$query = $this->db->prepare($qry);
+				
+		$query = $this->db->prepare($sql);
 		$query->execute();
-		$ids = array();
-		$num = 0;
+		$result = $query->fetchAll();
 		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				$ids[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$num++;
+			foreach ($result as $num => $row) {
+				self::signout($id_usuario);
 			}
 		}
-		return $ids;
-	}	
+	}
 	public function logear(MobileModel $mobile){
 		
 		$stat = self::getStatusUser($_POST['usuario']);
@@ -136,8 +158,6 @@ class LoginModel
 		if($query->rowCount()>=1){
 			
 			foreach ($usuario as $row) {
-				self::session_duplicada($row->id_usuario,$mobile);
-
 				session_name(SITE_NAME);
 				$_SESSION['id_usuario']=$row->id_usuario;
 				$_SESSION['id_rol']=$row->id_rol;
@@ -160,6 +180,9 @@ class LoginModel
 					$array[2] = array('via'=>"incorrecta");
 					
 				}else if(($_SESSION['id_rol']==2)&&($_SESSION['dispositivo'] == 'celular')){
+					
+					self::session_duplicada($row->id_usuario,$mobile);
+					
 					$acceso = Controlador::getConfig(1,'login_operadores');
 					if($acceso['valor'] == 1){
 						
@@ -212,6 +235,9 @@ class LoginModel
 					}
 					
 				}else if(($_SESSION['id_rol']!=2)&&($_SESSION['dispositivo'] == 'pc')){	
+					
+					self::session_duplicada_no_operador($row->id_usuario,$mobile);
+					
 					self::permisos($_SESSION['id_rol']);
 					self::permisos_acl($_SESSION['id_usuario']);
 					$array[2] = array('via'=>"correcta");
