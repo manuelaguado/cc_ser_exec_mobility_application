@@ -148,21 +148,12 @@ class ClientesModel
 		
 		$qry = "
 			SELECT
-				ite.estado,
-				itm.municipio,
-				itc.ciudad,
-				itp.codigo_postal,
-				ita.asentamiento,
+				itd.geocodificacion_inversa,
 				itco.id_cliente_origen
 			FROM
 				it_cliente_origen AS itco
 			INNER JOIN it_origenes AS ito ON itco.id_origen = ito.id_origen
 			INNER JOIN it_direcciones AS itd ON ito.id_direccion = itd.id_direccion
-			INNER JOIN it_asentamientos AS ita ON itd.id_asentamiento = ita.id_asentamiento
-			INNER JOIN it_ciudades AS itc ON ita.id_ciudad = itc.id_ciudad
-			INNER JOIN it_estados AS ite ON ita.id_estado = ite.id_estado
-			INNER JOIN it_municipios AS itm ON ita.id_municipio = itm.id_municipio
-			INNER JOIN it_codigos_postales AS itp ON ita.id_codigo_postal = itp.id_codigo_postal
 			WHERE
 				itco.id_cliente = ".$id_cliente."
 			ORDER BY
@@ -175,7 +166,7 @@ class ClientesModel
 			$data = $query->fetchAll();
 			$cont = 0;
 			foreach ($data as $row) {
-				$array[$cont]['valor']=$row->estado.', '.$row->municipio.', '.$row->ciudad.', '.$row->asentamiento.', '.$row->codigo_postal;
+				$array[$cont]['valor']=$row->geocodificacion_inversa;
 				$array[$cont]['value']=$row->id_cliente_origen;
 				$cont++;			
 			}
@@ -187,21 +178,12 @@ class ClientesModel
 		
 		$qry = "
 			SELECT
-				ite.estado,
-				itm.municipio,
-				itc.ciudad,
-				itp.codigo_postal,
-				ita.asentamiento,
+				itd.geocodificacion_inversa,
 				itcd.id_cliente_destino
 			FROM
 				it_cliente_destino AS itcd
 			INNER JOIN it_destinos AS itt ON itcd.id_destino = itt.id_destino
 			INNER JOIN it_direcciones AS itd ON itt.id_direccion = itd.id_direccion
-			INNER JOIN it_asentamientos AS ita ON itd.id_asentamiento = ita.id_asentamiento
-			INNER JOIN it_ciudades AS itc ON ita.id_ciudad = itc.id_ciudad
-			INNER JOIN it_estados AS ite ON ita.id_estado = ite.id_estado
-			INNER JOIN it_municipios AS itm ON ita.id_municipio = itm.id_municipio
-			INNER JOIN it_codigos_postales AS itp ON ita.id_codigo_postal = itp.id_codigo_postal
 			WHERE
 				itcd.id_cliente = ".$id_cliente."
 			ORDER BY
@@ -214,7 +196,7 @@ class ClientesModel
 			$data = $query->fetchAll();
 			$cont = 0;
 			foreach ($data as $row) {
-				$array[$cont]['valor']=$row->estado.', '.$row->municipio.', '.$row->ciudad.', '.$row->asentamiento.', '.$row->codigo_postal;
+				$array[$cont]['valor']=$row->geocodificacion_inversa;
 				$array[$cont]['value']=$row->id_cliente_destino;
 				$cont++;			
 			}
