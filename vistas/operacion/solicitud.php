@@ -36,8 +36,6 @@ span.input-icon > textarea {
 								<i class="ace-icon fa fa-gear bigger-110"></i>
 								Procesar
 							</a>
-							<input type="hidden" id="id_asentamiento_origen" name="id_asentamiento_origen" value="" />
-							<input type="hidden" id="id_asentamiento_destino" name="id_asentamiento_destino" value="" />
 							
 							<input type="hidden" id="origen_calle" name="origen_calle" value="" />
 							<input type="hidden" id="origen_num_ext" name="origen_num_ext" value="" />
@@ -201,35 +199,8 @@ span.input-icon > textarea {
 												<option value="" disabled selected>Origenes guardados</option>
 											</select>
 										</div>
-									</div>							
+									</div>	
 									
-									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-											<a onclick="formAsentamiento('asentamiento_origen','id_asentamiento_origen'); cleanSavedOrigen();" href="javascript:void(0);">
-												<i class="ace-icon fa fa-map-marker bigger-230 orange icon_ztop"></i>
-											</a>
-										</label>						
-										<div class="col-sm-11">
-											<span class="input-icon">
-												<textarea readonly="" id="asentamiento_origen" name="asentamiento_origen" placeholder="Estado, Ciudad, Colonia, CP." class="col-xs-10 col-sm-12"></textarea>
-												<i class="ace-icon fa fa-map-marker blue"></i>
-											</span>
-										</div>
-									</div>
-
-									<div class="space-4"></div>
-
-									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-											<i class="ace-icon fa fa-question-circle bigger-230 orange icon_ztop"></i>
-										</label>						
-										<div class="col-sm-11">
-											<span class="input-icon">
-												<textarea  id="origen_referencia" onchange="cleanSavedOrigen();" name="origen_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
-												<i class="ace-icon fa fa-question-circle blue"></i>
-											</span>
-										</div>
-									</div>
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
 											<a onclick="iframeSetReference(); cleanSavedOrigen();" href="javascript:void(0);">
@@ -243,6 +214,21 @@ span.input-icon > textarea {
 											</span>
 										</div>
 									</div>
+									
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-question-circle bigger-230 orange icon_ztop"></i>
+										</label>						
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea  id="origen_referencia" onchange="cleanSavedOrigen();" name="origen_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-question-circle blue"></i>
+											</span>
+										</div>
+									</div>
+
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
 											<i class="ace-icon fa fa-thumb-tack bigger-230 orange icon_ztop"></i>
@@ -280,36 +266,7 @@ span.input-icon > textarea {
 												<option value="" disabled selected>Destinos guardados</option>
 											</select>
 										</div>
-									</div>								
-									
-									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-											<a onclick="formAsentamiento('asentamiento_destino','id_asentamiento_destino'); cleanSavedDestino();" href="#" class="blue">
-												<i class="ace-icon fa fa-map-marker bigger-230 green icon_ztop"></i>
-											</a>
-										</label>
-
-										<div class="col-sm-11">
-											<span class="input-icon">
-												<textarea readonly="" id="asentamiento_destino" name="asentamiento_destino" placeholder="Estado, Ciudad, Colonia, CP." class="col-xs-10 col-sm-12"></textarea>
-												<i class="ace-icon fa fa-map-marker blue"></i>
-											</span>
-										</div>
-									</div>
-
-									<div class="space-4"></div>
-
-									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
-											<i class="ace-icon fa fa-question-circle bigger-230 green icon_ztop"></i>
-										</label>							
-										<div class="col-sm-11">
-											<span class="input-icon">
-												<textarea id="destino_referencia" onchange="cleanSavedDestino();" name="destino_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
-												<i class="ace-icon fa fa-question-circle blue"></i>
-											</span>
-										</div>
-									</div>
+									</div>	
 									
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
@@ -324,6 +281,22 @@ span.input-icon > textarea {
 											</span>
 										</div>
 									</div>
+									
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+											<i class="ace-icon fa fa-question-circle bigger-230 green icon_ztop"></i>
+										</label>							
+										<div class="col-sm-11">
+											<span class="input-icon">
+												<textarea id="destino_referencia" onchange="cleanSavedDestino();" name="destino_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
+												<i class="ace-icon fa fa-question-circle blue"></i>
+											</span>
+										</div>
+									</div>
+									
+
 									<div class="form-group">
 										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
 											<i class="ace-icon fa fa-thumb-tack bigger-230 green icon_ztop"></i>

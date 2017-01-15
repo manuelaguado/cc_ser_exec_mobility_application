@@ -11,7 +11,6 @@ class ClientesModel
         }
     }		
 	function insertDireccion($service,$tipo){
-		$id_asentamiento = ($tipo == 'origen')?$service->id_asentamiento_origen:$service->id_asentamiento_destino;
 		$calle 		= ($tipo == 'origen')?$service->origen_calle:$service->destino_calle;
 		$num_ext 	= ($tipo == 'origen')?$service->origen_num_ext:$service->destino_num_ext;
 		$num_int 	= ($tipo == 'origen')?$service->origen_num_int:$service->destino_num_int;
@@ -24,7 +23,6 @@ class ClientesModel
 		
 		$sql = "
 			INSERT INTO `it_direcciones` (
-				`id_asentamiento`,
 				`calle`,
 				`num_ext`,
 				`num_int`,
@@ -38,7 +36,6 @@ class ClientesModel
 			)
 			VALUES
 				(
-					'".$id_asentamiento."',
 					'".$calle."',
 					'".$num_ext."',
 					'".$num_int."',

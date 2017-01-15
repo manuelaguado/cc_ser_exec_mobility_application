@@ -1436,32 +1436,6 @@ class MobileModel
 				cm2.etiqueta AS tipo_servicio,
 				cm3.etiqueta AS forma_pago,
 
-				concat(
-					cp1.codigo_postal,
-					' ',
-					ta1.d_tipo_asenta,
-					' ',
-					as1.asentamiento,
-					' ',
-					mun1.municipio,
-					' ',
-					edo1.estado,
-					' ',
-					cid1.ciudad
-				) AS origen,
-				concat(
-					cp2.codigo_postal,
-					' ',
-					ta2.d_tipo_asenta,
-					' ',
-					as2.asentamiento,
-					' ',
-					mun2.municipio,
-					' ',
-					edo2.estado,
-					' ',
-					cid2.ciudad
-				) AS destino,
 				emp.nombre as empresa,
 				vid.redondo AS redondo,
 				vid.apartado AS apartado
@@ -1483,19 +1457,7 @@ class MobileModel
 			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
 			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
 			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
-			
-			INNER JOIN it_asentamientos AS as1 ON dir1.id_asentamiento = as1.id_asentamiento
-			INNER JOIN it_asentamientos AS as2 ON dir2.id_asentamiento = as2.id_asentamiento
-			INNER JOIN it_codigos_postales AS cp1 ON as1.id_codigo_postal = cp1.id_codigo_postal
-			INNER JOIN it_codigos_postales AS cp2 ON as2.id_codigo_postal = cp2.id_codigo_postal
-			INNER JOIN it_tipo_asentamientos AS ta1 ON as1.id_tipo_asenta = ta1.id_tipo_asenta
-			INNER JOIN it_tipo_asentamientos AS ta2 ON as2.id_tipo_asenta = ta2.id_tipo_asenta
-			INNER JOIN it_municipios AS mun2 ON as2.id_municipio = mun2.id_municipio
-			INNER JOIN it_municipios AS mun1 ON as1.id_municipio = mun1.id_municipio
-			INNER JOIN it_estados AS edo1 ON as1.id_estado = edo1.id_estado
-			INNER JOIN it_estados AS edo2 ON as2.id_estado = edo2.id_estado
-			INNER JOIN it_ciudades as cid1 ON as1.id_ciudad = cid1.id_ciudad
-			INNER JOIN it_ciudades as cid2 ON as2.id_ciudad = cid2.id_ciudad
+
 			INNER JOIN cl_clientes AS emp ON clc.parent = emp.id_cliente
 			
 			WHERE
@@ -1556,10 +1518,10 @@ class MobileModel
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
 				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
 				
-				$array['Origen'] 	= ($row->invo != '')?$mapo.$row->invo.$dato.$ro:$row->origen.$dato.$ro;
-				$array['Destino'] 	= ($row->invd != '')?$mapd.$row->invd.$datd.$rd:$row->destino.$datd.$rd;
+				$array['Origen'] 		= $mapo.$row->invo.$dato.$ro;
+				$array['Destino'] 		= $mapd.$row->invd.$datd.$rd;
 				
-				$array['Observaciones'] 			= $row->observaciones;		
+				$array['Observaciones']	= $row->observaciones;		
 			}
 		}
 		return $array;

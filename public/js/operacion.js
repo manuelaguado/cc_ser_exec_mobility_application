@@ -531,10 +531,10 @@ function procesar_servicio(){
 	if( $('#fecha_hora').val() == "" )
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Precise la hora a la cual se requiere el servicio.</li>';}
 	
-	if(( $('#id_asentamiento_origen').val() == "" )&&($('#id_cliente_origen').val() === null))
+	if(( $('#geocodificacion_inversa_origen').val() == "" )&&($('#id_cliente_origen').val() === null))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Necesita indicar al menos una fuente de origen.</li>';}
 
-	if(( $('#id_asentamiento_destino').val() == "" )&&($('#id_cliente_destino').val() === null))
+	if(( $('#geocodificacion_inversa_destino').val() == "" )&&($('#id_cliente_destino').val() === null))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Necesita indicar al menos una fuente de destino.</li>';}
 	
 	if(($('#temporicidad').val() == 162 )&&($('#id_operador_unidad').val() == ""))
@@ -645,8 +645,6 @@ function iframeSetReferenceD(){
 	} );
 }
 function cleanOrigen(){
-	$('#asentamiento_origen').val('');
-	$('#id_asentamiento_origen').val('');
 	$('#origen_referencia').val('');
 	$('#geocodificacion_inversa_origen').val('');
 	$('#geocoordenadas_origen').val('');
@@ -658,8 +656,6 @@ function cleanOrigen(){
 	$('#origen_hide_ok').addClass('hide');
 }
 function cleanDestino(){
-	$('#asentamiento_destino').val('');
-	$('#id_asentamiento_destino').val('');
 	$('#destino_referencia').val('');
 	$('#geocodificacion_inversa_destino').val('');
 	$('#geocoordenadas_destino').val('');
