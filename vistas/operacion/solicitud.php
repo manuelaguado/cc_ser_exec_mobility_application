@@ -13,6 +13,7 @@ span.input-icon > textarea {
 #tabla_asignados_wrapper > div:nth-child(1){display:none;}
 #cordon_kpmg > tbody > tr > td:nth-child(8){padding: 0px;vertical-align: middle;}
 #cordon_kpmg > tbody > tr > td:nth-child(8) > a:nth-child(1){position:relative; top:-7px;}
+.autocomplete-suggestions{width:auto !important;}
 </style>
 <div class="main-content">
 	<div class="main-content-inner">
