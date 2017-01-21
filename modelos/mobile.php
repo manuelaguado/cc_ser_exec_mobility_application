@@ -1512,11 +1512,11 @@ class MobileModel
 				$datd =  $d1.$d2.$d3.$d4.$d5;
 				
 				
-				$mapo = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodo.'"><i class="fa fa-map"></i></a>';
-				$mapd = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodd.'"><i class="fa fa-map"></i></a>';
+				$mapo = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodo.'"><img height="35" src="file:///android_asset/fw7/assets/img/gmaps.svg"></a>';
+				$mapd = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodd.'"><img height="35" src="file:///android_asset/fw7/assets/img/gmaps.svg"></a>';
 				
-				$mapow = '<a class="iconfloat external" target="_blank" href="waze://?ll='.$row->coodo.'&navigate=yes"><i class="fa fa-map-o"></i></a>';
-				$mapdw = '<a class="iconfloat external" target="_blank" href="waze://?ll='.$row->coodd.'&navigate=yes"><i class="fa fa-map-o"></i></a>';
+				$mapow = '<a class="iconfloat external" target="_blank" href="waze://?ll='.$row->coodo.'&navigate=yes"><img height="35" src="file:///android_asset/fw7/assets/img/waze.svg"></a>';
+				$mapdw = '<a class="iconfloat external" target="_blank" href="waze://?ll='.$row->coodd.'&navigate=yes"><img height="35" src="file:///android_asset/fw7/assets/img/waze.svg"></a>';
 				
 				
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
