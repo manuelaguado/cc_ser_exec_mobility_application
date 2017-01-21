@@ -1515,8 +1515,8 @@ class MobileModel
 				$mapo = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodo.'"><i class="fa fa-map"></i></a>';
 				$mapd = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodd.'"><i class="fa fa-map"></i></a>';
 				
-				$mapow = '<a class="iconfloat external" target="_blank" href="waze//maps.google.com/maps?q=loc:'.$row->coodo.'"><i class="fa fa-map-o"></i></a>';
-				$mapdw = '<a class="iconfloat external" target="_blank" href="waze//maps.google.com/maps?q=loc:'.$row->coodd.'"><i class="fa fa-map-o"></i></a>';	
+				$mapow = '<a class="iconfloat external" target="_blank" href="http://waze.to/?ll='.$row->coodo.'&navigate=yes"><i class="fa fa-map-o"></i></a>';
+				$mapdw = '<a class="iconfloat external" target="_blank" href="http://waze.to/?ll='.$row->coodd.'&navigate=yes"><i class="fa fa-map-o"></i></a>';
 				
 				
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
