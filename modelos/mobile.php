@@ -1513,13 +1513,17 @@ class MobileModel
 				
 				
 				$mapo = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodo.'"><i class="fa fa-map"></i></a>';
-				$mapd = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodd.'"><i class="fa fa-map"></i></a>';			
+				$mapd = '<a class="iconfloat external" target="_blank" href="http://maps.google.com/maps?q=loc:'.$row->coodd.'"><i class="fa fa-map"></i></a>';
+				
+				$mapow = '<a class="iconfloat external" target="_blank" href="waze//maps.google.com/maps?q=loc:'.$row->coodo.'"><i class="fa fa-map-o"></i></a>';
+				$mapdw = '<a class="iconfloat external" target="_blank" href="waze//maps.google.com/maps?q=loc:'.$row->coodd.'"><i class="fa fa-map-o"></i></a>';	
+				
 				
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
 				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
 				
-				$array['Origen'] 		= $mapo.$row->invo.$dato.$ro;
-				$array['Destino'] 		= $mapd.$row->invd.$datd.$rd;
+				$array['Origen'] 		= $mapow.$mapo.$row->invo.$dato.$ro;
+				$array['Destino'] 		= $mapdw.$mapd.$row->invd.$datd.$rd;
 				
 				$array['Observaciones']	= $row->observaciones;		
 			}
