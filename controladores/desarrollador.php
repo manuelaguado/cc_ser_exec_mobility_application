@@ -2,9 +2,135 @@
 use Pubnub\Pubnub;
 class Desarrollador extends Controlador
 {
-	// function __construct(){
-		// if(DEVELOPMENT == false){exit();}
-	// }	
+	public function gps(){
+		$db = Controlador::direct_connectivity();
+		
+		$stmt = $db->prepare("SELECT count(id_gps) as total from gpstmp");
+		$stmt->execute();
+		$rows = $stmt->fetchAll();
+		$puntos = $rows[0]->total;
+		$bucles = ceil($puntos/100);
+		
+		for($i = 1; $i <= $bucles; $i++){
+			$sql = "select latitud,longitud  from gpstmp LIMIT " . (($i*100)-100) . ",100;";
+			$qry = $db->prepare($sql);
+			$qry->execute();
+			$data = $qry->fetchAll();
+			$coords{$i} = '';
+			if($qry->rowCount()>=1){
+				foreach ($data as $num=>$row) {
+					$coords{$i} .= $row->latitud.','.$row->longitud.'|';
+				}
+			}
+			$coords{$i} = substr($coords{$i}, 0, -1);
+		}
+		$allcoords = '';
+		for($i = 1; $i <= $bucles; $i++){
+			$snap = self::GetSnailTrail($coords{$i});
+			$decode = json_decode($snap);
+			foreach($decode->snappedPoints as $num=>$val){
+				$allcoords .= $val->location->longitude.','.$val->location->latitude.'
+';
+			}
+		}
+		$out = self::genKml($allcoords);
+		echo $out;
+	}
+    function GetSnailTrail( $paths ){
+        $key='AIzaSyDRlfacNyHn7ZOsC0FzufqZ_rtQYfZD6wA';
+        $url='https://roads.googleapis.com/v1/snapToRoads?path='.$paths.'&interpolate=true&key='.$key;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+
+        return $result;
+    }	
+	public function genKml($coords){
+
+		$kml = array('<?xml version=\'1.0\' encoding=\'UTF-8\'?>');
+		$kml[] = ' <kml xmlns=\'http://www.opengis.net/kml/2.2\'>';
+		$kml[] = ' <Document>';
+		$kml[] = ' <name>Viaje</name>';
+		$kml[] = ' <description><![CDATA[]]></description>';
+		$kml[] = ' <Folder>';
+		$kml[] = ' <name>Viaje</name>';
+		$kml[] = ' </Folder>';
+		$kml[] = ' <Folder>';
+		$kml[] = ' <name>GPS Logger</name>';
+		$kml[] = ' <Placemark>';
+		$kml[] = ' <name>GPS Logger</name>';
+		$kml[] = ' <styleUrl>#line-1267FF-5-nodesc</styleUrl>';
+		$kml[] = ' <ExtendedData>';
+		$kml[] = ' </ExtendedData>';
+		$kml[] = ' <LineString>';
+		$kml[] = ' <tessellate>1</tessellate>';
+		$kml[] = ' <coordinates>';
+		
+		$kml[] = $coords;
+			
+		$kml[] = '</coordinates>';
+		$kml[] = '</LineString>';
+		$kml[] = '</Placemark>';
+		$kml[] = '</Folder>';
+		$kml[] = '<StyleMap id=\'icon-503-DB4436-nodesc\'>';
+		$kml[] = '<Pair>';
+		$kml[] = '<key>normal</key>';
+		$kml[] = '<styleUrl>#icon-503-DB4436-nodesc-normal</styleUrl>';
+		$kml[] = '</Pair>';
+		$kml[] = '<Pair>';
+		$kml[] = '<key>highlight</key>';
+		$kml[] = '<styleUrl>#icon-503-DB4436-nodesc-highlight</styleUrl>';
+		$kml[] = '</Pair>';
+		$kml[] = '</StyleMap>';
+		$kml[] = '<Style id=\'line-1267FF-5-nodesc-normal\'>';
+		$kml[] = '<LineStyle>';
+		$kml[] = '<color>ffFF6712</color>';
+		$kml[] = '<width>5</width>';
+		$kml[] = '</LineStyle>';
+		$kml[] = '<BalloonStyle>';
+		$kml[] = '<text><![CDATA[<h3>$[name]</h3>]]></text>';
+		$kml[] = '</BalloonStyle>';
+		$kml[] = '</Style>';
+		$kml[] = '<Style id=\'line-1267FF-5-nodesc-highlight\'>';
+		$kml[] = '<LineStyle>';
+		$kml[] = '<color>ffFF6712</color>';
+		$kml[] = '<width>8.0</width>';
+		$kml[] = '</LineStyle>';
+		$kml[] = '<BalloonStyle>';
+		$kml[] = '<text><![CDATA[<h3>$[name]</h3>]]></text>';
+		$kml[] = '</BalloonStyle>';
+		$kml[] = '</Style>';
+		$kml[] = '<StyleMap id=\'line-1267FF-5-nodesc\'>';
+		$kml[] = '<Pair>';
+		$kml[] = '<key>normal</key>';
+		$kml[] = '<styleUrl>#line-1267FF-5-nodesc-normal</styleUrl>';
+		$kml[] = '</Pair>';
+		$kml[] = '<Pair>';
+		$kml[] = '<key>highlight</key>';
+		$kml[] = '<styleUrl>#line-1267FF-5-nodesc-highlight</styleUrl>';
+		$kml[] = '</Pair>';
+		$kml[] = '</StyleMap>';
+		$kml[] = '</Document>';
+		$kml[] = '</kml>';
+		$kmlOutput = join("\n", $kml);
+		
+		$file = $this->token(6).".kml";
+		$name = "../public/tmp/".$file;
+		$fp = fopen($name, 'w');
+		fputs($fp, $kmlOutput);
+		fclose($fp);
+		return $file;
+	}
+	
+	function __construct(){
+		if(DEVELOPMENT == false){exit();}
+	}	
     public function index()
     {	
 		$this->se_requiere_logueo(false);
