@@ -2,6 +2,88 @@
 use Pubnub\Pubnub;
 class Desarrollador extends Controlador
 {
+	public function image(){
+		$pointsToEncoded = self::PolylineToEncoded();
+		$encoded = EncodedPolylineAlgorithm::encode($pointsToEncoded);
+		$imagen = self::saveImage($encoded);
+		echo '<img src="../tmp/'.$imagen.'" height="300px">';
+	}
+	public function saveImage($encoded){
+        $url='https://maps.googleapis.com/maps/api/staticmap?&size=600x300&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$encoded.'&key='.GOOGLE_MAPS;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+		
+		$file = $this->token(6).".png";
+		$name = "../public/tmp/".$file;
+		$fp = fopen($name, 'w');
+		fputs($fp, $result);
+		fclose($fp);
+		return $file;
+	}	
+	public function PolylineToEncoded(){
+		$db = Controlador::direct_connectivity();
+		
+		$stmt = $db->prepare("SELECT count(id_gps) as total from gpstmp");
+		$stmt->execute();
+		$rows = $stmt->fetchAll();
+		$puntos = $rows[0]->total;
+		$bucles = ceil($puntos/100);
+		
+		for($i = 1; $i <= $bucles; $i++){
+			$sql = "select latitud,longitud  from gpstmp LIMIT " . (($i*100)-100) . ",100;";
+			$qry = $db->prepare($sql);
+			$qry->execute();
+			$data = $qry->fetchAll();
+			$coords{$i} = '';
+			if($qry->rowCount()>=1){
+				foreach ($data as $num=>$row) {
+					$coords{$i} .= $row->latitud.','.$row->longitud.'|';
+				}
+			}
+			$coords{$i} = substr($coords{$i}, 0, -1);
+		}
+		$tms = 0;
+		for($i = 1; $i <= $bucles; $i++){
+			$snap = self::GetSnailTrail($coords{$i});
+			$decode = json_decode($snap);
+			$origin = 0;
+			foreach($decode->snappedPoints as $num=>$val){
+				$array[] = array($val->location->latitude,$val->location->longitude);
+			}
+		}
+		return $array;
+	}	
+	public function distanceMatrix(){
+        $url='https://maps.googleapis.com/maps/api/distancematrix/json?origins=19.375489,-99.062057&destinations=20.670867,-103.367144&key=AIzaSyDS6f8F5bj6kKdsfO57Y_2GZQShg79rgnk';
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+		
+		print $result;
+		echo '<br><br>';
+		
+        $decode = json_decode($result);
+		foreach($decode->rows as $num=>$val){
+			foreach($val->elements as $n=>$v){
+				echo 'distancia: '.$v->distance->text;
+				echo '<br>';
+				echo 'duracion: '.$v->duration->text;
+			}
+		}
+	}
 	public function gps(){
 		$db = Controlador::direct_connectivity();
 		
@@ -25,16 +107,46 @@ class Desarrollador extends Controlador
 			$coords{$i} = substr($coords{$i}, 0, -1);
 		}
 		$allcoords = '';
+		$tms = 0;
 		for($i = 1; $i <= $bucles; $i++){
 			$snap = self::GetSnailTrail($coords{$i});
 			$decode = json_decode($snap);
+			$origin = 0;
 			foreach($decode->snappedPoints as $num=>$val){
 				$allcoords .= $val->location->longitude.','.$val->location->latitude.'
 ';
+				if($origin == 0){
+					$init = [$val->location->latitude,$val->location->longitude];
+				}
+				
+				$mts = self::haversine($init,[$val->location->latitude,$val->location->longitude]);
+				$tms = $tms + $mts;
+				
+				$init = [$val->location->latitude,$val->location->longitude];
+				$origin = 1;
 			}
 		}
 		$out = self::genKml($allcoords);
-		echo $out;
+		echo $out .'  mts totales: '. ceil($tms);
+	}
+	public function haversine($init,$end){
+		$lat1 = $init[0];
+		$lon1 = $init[1];
+		
+		$lat2 = $end[0];
+		$lon2 = $end[1];
+
+		$latFrom = deg2rad($lat1);
+		$lonFrom = deg2rad($lon1);
+		$latTo = deg2rad($lat2);
+		$lonTo = deg2rad($lon2);
+
+		$latDelta = $latTo - $latFrom;
+		$lonDelta = $lonTo - $lonFrom;
+
+		$angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+		cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+		return $angle * 6371000;
 	}
     function GetSnailTrail( $paths ){
         $key='AIzaSyDRlfacNyHn7ZOsC0FzufqZ_rtQYfZD6wA';
@@ -878,25 +990,6 @@ class Desarrollador extends Controlador
 			echo 'Generando: '.$i.'<br>';
 		}
 	}
-	public function haversine($lat1,$lon1,$lat2,$lon2){
-		/*$lat1 = 19.374248;
-		$lon1 = -99.061615;
-		
-		$lat2 = 19.375258;
-		$lon2 = -99.061572;*/
-
-		$latFrom = deg2rad($lat1);
-		$lonFrom = deg2rad($lon1);
-		$latTo = deg2rad($lat2);
-		$lonTo = deg2rad($lon2);
-
-		$latDelta = $latTo - $latFrom;
-		$lonDelta = $lonTo - $lonFrom;
-
-		$angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-		cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
-		return $angle * 6371000;
-	}
 	public function distanciaEntrePuntos($latitude1, $longitude1, $latitude2, $longitude2, $unit = 'Mi') {
 		$theta = $longitude1 - $longitude2;
 		$distance = (sin(deg2rad($latitude1)) * sin(deg2rad($latitude2))) + (cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta)));
@@ -911,6 +1004,69 @@ class Desarrollador extends Controlador
 			$distance = $distance * 1.609344;
 		}
 		return (round($distance,2));
-	}	
+	}
+}
+class EncodedPolylineAlgorithm
+{
+	protected static $precision = 5;
+	final public static function encode( $points )
+	{
+		$points = self::flatten($points);
+		$encodedString = '';
+		$index = 0;
+		$previous = array(0,0);
+		foreach ( $points as $number ) {
+			$number = (float)($number);
+			$number = (int)round($number * pow(10, static::$precision));
+			$diff = $number - $previous[$index % 2];
+			$previous[$index % 2] = $number;
+			$number = $diff;
+			$index++;
+			$number = ($number < 0) ? ~($number << 1) : ($number << 1);
+			$chunk = '';
+			while ( $number >= 0x20 ) {
+				$chunk .= chr((0x20 | ($number & 0x1f)) + 63);
+				$number >>= 5;
+			}
+			$chunk .= chr($number + 63);
+			$encodedString .= $chunk;
+		}
+		return $encodedString;
+	}
+	final public static function decode( $string )
+	{
+		$points = array();
+		$index = $i = 0;
+		$previous = array(0,0);
+		while ($i < strlen($string)) {
+			$shift = $result = 0x00;
+			do {
+				$bit = ord(substr($string, $i++)) - 63;
+				$result |= ($bit & 0x1f) << $shift;
+				$shift += 5;
+			} while ($bit >= 0x20);
+			$diff = ($result & 1) ? ~($result >> 1) : ($result >> 1);
+			$number = $previous[$index % 2] + $diff;
+			$previous[$index % 2] = $number;
+			$index++;
+			$points[] = $number * 1 / pow(10, static::$precision);
+		}
+		return $points;
+	}
+	final public static function flatten( $array )
+	{
+		$flatten = array();
+		array_walk_recursive(
+			$array,
+			function ($current) use (&$flatten) {
+				$flatten[] = $current;
+			}
+		);
+		return $flatten;
+	}
+	final public static function pair( $list )
+	{
+		return is_array($list) ? array_chunk($list, 2) : array();
+	}
 }
 ?>
