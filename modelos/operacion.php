@@ -684,9 +684,15 @@ class OperacionModel{
 						syc.estado1 = "C1"
 						AND syc.estado3 = "F11"
 					)
+					OR (
+						syc.estado1 = "C1"
+						AND syc.clave = "F14"
+						AND syc.estado3 = "F14"
+					)					
 				)
 			AND crou.status_operador_unidad = 198
 		';
+		/*El ultimo OR se agrego para agregar una solicitud F14 a la lista de Tiempo a la Base*/
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		$operadores = array();

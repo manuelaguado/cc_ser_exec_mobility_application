@@ -6,7 +6,8 @@ class Desarrollador extends Controlador
 		$pointsToEncoded = self::PolylineToEncoded();
 		$encoded = EncodedPolylineAlgorithm::encode($pointsToEncoded);
 		$imagen = self::saveImage($encoded);
-		echo '<img src="../tmp/'.$imagen.'" height="300px">';
+		//echo '<img src="../plugs/timthumb.php?src=tmp/'.$imagen.'&w=150&a=c">';
+		echo '<img src="../tmp/'.$imagen.'">';
 	}
 	public function saveImage($encoded){
         $url='https://maps.googleapis.com/maps/api/staticmap?&size=600x300&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$encoded.'&key='.GOOGLE_MAPS;
