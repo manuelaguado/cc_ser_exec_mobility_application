@@ -510,30 +510,35 @@ span.input-icon > textarea {
 											},
 										error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}
 									});
-									$.ajax({
-										url: 'operacion/selectOrigenes/'+suggestion.id,
-										dataType: 'html',
-											success: function(resp_success){			
-												if( resp_success == "<option value=''>Seleccione...</option>"){
-													$('#id_cliente_origen').html("<option disabled selected value=''>Sin datos de origenes</option>");
-												}else{
-													$('#id_cliente_origen').html(resp_success);
-												}
-											},
-										error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}	
-									});
-									$.ajax({
-										url: 'operacion/selectDestinos/'+suggestion.id,
-										dataType: 'html',
-											success: function(resp_success){			
-												if( resp_success == "<option value=''>Seleccione...</option>"){
-													$('#id_cliente_destino').html("<option disabled selected value=''>Sin datos de destinos</option>");
-												}else{
-													$('#id_cliente_destino').html(resp_success);
-												}
-											},
-										error: function(respuesta){ alerta('Info!','Error de al seleccionar los destinos');}	
-									});
+									if(suggestion.tipocliente == '201'){
+										$("#id_cliente_origen").html('<option value="" disabled selected>No disponible para usuario concentrador</option>');
+										$("#id_cliente_destino").html('<option value="" disabled selected>No disponible para usuario concentrador</option>');
+									}else{
+										$.ajax({
+											url: 'operacion/selectOrigenes/'+suggestion.id,
+											dataType: 'html',
+												success: function(resp_success){			
+													if( resp_success == "<option value=''>Seleccione...</option>"){
+														$('#id_cliente_origen').html("<option disabled selected value=''>Sin datos de origenes</option>");
+													}else{
+														$('#id_cliente_origen').html(resp_success);
+													}
+												},
+											error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}	
+										});
+										$.ajax({
+											url: 'operacion/selectDestinos/'+suggestion.id,
+											dataType: 'html',
+												success: function(resp_success){			
+													if( resp_success == "<option value=''>Seleccione...</option>"){
+														$('#id_cliente_destino').html("<option disabled selected value=''>Sin datos de destinos</option>");
+													}else{
+														$('#id_cliente_destino').html(resp_success);
+													}
+												},
+											error: function(respuesta){ alerta('Info!','Error de al seleccionar los destinos');}	
+										});
+									}
 								}
 								
 							}else{

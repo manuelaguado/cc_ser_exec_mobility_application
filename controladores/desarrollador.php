@@ -10,17 +10,7 @@ class Desarrollador extends Controlador
 		echo '<img src="../tmp/'.$imagen.'">';
 	}
 	public function saveImage($encoded){
-        $url='https://maps.googleapis.com/maps/api/staticmap?&size=600x300&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$encoded.'&key='.GOOGLE_MAPS;
-
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-        $result = curl_exec($curl);
-        curl_close($curl);
-		
+		$result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=600x300&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$encoded.'&key='.GOOGLE_MAPS);
 		$file = $this->token(6).".png";
 		$name = "../public/tmp/".$file;
 		$fp = fopen($name, 'w');

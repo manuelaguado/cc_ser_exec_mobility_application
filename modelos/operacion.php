@@ -1505,7 +1505,8 @@ class OperacionModel{
 					WHERE
 						id_cliente = client.parent
 				) AS parent,
-				client.nombre
+				client.nombre,
+				client.cat_tipocliente as tipocliente
 			FROM
 				cl_clientes AS client
 			INNER JOIN cm_catalogo AS cat1 ON client.cat_tipocliente = cat1.id_cat		
@@ -1525,7 +1526,8 @@ class OperacionModel{
 					'etiqueta'=>$row->etiqueta,
 					'parent'=>$row->parent,
 					'nombre'=>$row->nombre,
-					'id'=>$row->id_cliente
+					'id'=>$row->id_cliente,
+					'tipocliente'=>$row->tipocliente
 				);
 			}			
 		}
