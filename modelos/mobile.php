@@ -205,6 +205,7 @@ class MobileModel
 		
 		$emitir =  json_encode($output);
 		self::transmitir($emitir,'sync'.$clave['id_operador']);
+		self::storelogger($emitir,'sync'.$clave['id_operador']);
 	}
 	function getIdBase($clave){
 		$sql = "
@@ -1738,9 +1739,27 @@ class MobileModel
 			$no_emitir = array('F20','F18','SIGNED');
 			if(!in_array($clave['etiqueta'], $no_emitir)){
 				self::transmitir(json_encode($ride),$ride['proceso']);
+				self::storelogger(json_encode($ride),$ride['proceso']);
 			}
 		}
     }
+	public function storelogger($json,$proceso){
+		$sql = "
+			INSERT INTO websockets_log (
+				json,
+				proceso
+			) VALUES (
+				:json,
+				:proceso
+			)";
+		$query = $this->db->prepare($sql);
+		$query->execute(
+			array(
+				':json'			=> 	$json,
+				':proceso' 		=> 	$proceso
+			)
+		);
+	}
 	public function send_msg($id_operador,$clave){
 			$ride = array(
 				'clave'			=> 'MSG',
