@@ -793,6 +793,34 @@ class ClientesModel
 			}			
 		}
 	}
+	function listadoEmpresas($search){
+		$query = "
+			SELECT
+				cl_clientes.id_cliente as padre,
+				cl_clientes.nombre as empresa
+			FROM
+				cl_clientes
+			WHERE
+				cl_clientes.parent = 0
+			AND cl_clientes.cat_statuscliente = 21
+			AND cl_clientes.nombre LIKE lower('%".$search."%')
+			ORDER BY
+				cl_clientes.id_cliente ASC
+		";
+		$query = $this->db->prepare($query);
+		$query->execute();
+		$result = $query->fetchAll();
+		$output = array('suggestions'=>array());
+		if($query->rowCount()>=1){
+			foreach ($result as $row) {
+				$output['suggestions'][] = array(
+					'value'	=> 	$row->empresa,
+					'data'		=>	$row->padre
+				);
+			}			
+		}
+		return json_encode($output);
+	}	
 	function add_client_children($arreglo){
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);

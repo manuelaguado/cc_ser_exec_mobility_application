@@ -164,6 +164,7 @@ span.input-icon > textarea {
 											<span class="input-icon">
 												<input value="" type="text" id="user" name="user" placeholder="Usuario" class="col-xs-12 col-sm-12" autocomplete="off"/>
 												<i class="ace-icon fa fa-user blue"></i>
+												<i class="right_align fa fa-plus blue add_user_form"></i>
 											</span>
 										</div>
 									</div>

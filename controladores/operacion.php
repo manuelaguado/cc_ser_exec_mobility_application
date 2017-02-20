@@ -250,6 +250,25 @@ class Operacion extends Controlador
 		$tipoSalida = $this->selectCatalog('tipo_salida',null);
 		require URL_VISTA.'operacion/solicitud.php';
 	}
+	public function addClienteUsuario(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$tiposClientes = $this->selectCatalog('tipocliente',null);
+		$satatusCliente = $this->selectCatalog('statuscliente',null);
+			$modelo = $this->loadModel('Roles');
+			$roles = $modelo->selectRolesByTipo(26,$_SESSION['id_rol'],null);
+		require URL_VISTA.'modales/clientes/add_usuario_desde_solicitud.php';
+	}
+	public function listadoEmpresas(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$consulta = $_GET['query'];
+		$model = $this->loadModel('Clientes');
+		print $model->listadoEmpresas($consulta);
+	}
+	public function add_user_client(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Clientes');
+		print $modelo->add_client_children($_POST);
+	}
 	public function paqMsgSelect_salida(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/paqMsgSelect_salida.php';

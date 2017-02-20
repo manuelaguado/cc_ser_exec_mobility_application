@@ -1335,3 +1335,44 @@ function elegirVehiculo(id_operador){
 		});
 	} );
 }
+$("body").on("click", ".add_user_form", function() {
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/addClienteUsuario',
+			dataType: 'html',
+				success: function(resp_success){			
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-85');}	
+		});
+	} );
+});
+
+$("body").on("click", ".add_user_do", function() {
+	var msj_error="";
+	if( $('#cat_tipocliente').get(0).value == "" ) 	msj_error+='Seleccione el tipo de cliente.<br />';
+	if( $('#id_rol').get(0).value == "" )			msj_error+='Seleccione el rol del cliente.<br />';
+	if( $('#cat_statuscliente').get(0).value == "") msj_error+='Seleccione el status del cliente.<br />';
+	if( $('#nombre').get(0).value == "" )			msj_error+='Ingrese un nombre para el cliente.<br />';
+	if( $('#padre').get(0).value == "" )			msj_error+='Seleccione el nombre de la empresa desde el combo.<br />';
+
+	if( !msj_error == "" ){
+		alerta('Alerta!',msj_error);
+		return false;
+	}
+	$.ajax({
+		url: 'operacion/add_user_client',
+		type: 'POST',
+		data: $("#nuevo_cliente_usr").serialize(),
+		dataType: 'html',
+		success: function(resp_success){
+			$('#myModal').modal('hide');
+		},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-04');}	
+	});
+});
