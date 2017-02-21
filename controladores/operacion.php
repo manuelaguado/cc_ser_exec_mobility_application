@@ -252,10 +252,10 @@ class Operacion extends Controlador
 	}
 	public function addClienteUsuario(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$tiposClientes = $this->selectCatalog('tipocliente',null);
-		$satatusCliente = $this->selectCatalog('statuscliente',null);
+		$tiposClientes = $this->selectCatalog('tipocliente',200);
+		$satatusCliente = $this->selectCatalog('statuscliente',21);
 			$modelo = $this->loadModel('Roles');
-			$roles = $modelo->selectRolesByTipo(26,$_SESSION['id_rol'],null);
+			$roles = $modelo->selectRolesByTipo(26,$_SESSION['id_rol'],5);
 		require URL_VISTA.'modales/clientes/add_usuario_desde_solicitud.php';
 	}
 	public function listadoEmpresas(){
