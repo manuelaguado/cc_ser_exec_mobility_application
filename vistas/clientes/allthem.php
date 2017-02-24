@@ -34,6 +34,7 @@ div.table-responsive div#listado_wrapper.dataTables_wrapper.form-inline.dt-boots
 					<thead>
 						<tr>
 							<th>ID</th>
+							<th>Empresa</th>
 							<th>Nombre</th>
 							<th>Tipo</th>
 							<th>Status</th>

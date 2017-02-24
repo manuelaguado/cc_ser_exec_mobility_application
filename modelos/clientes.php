@@ -1429,20 +1429,28 @@ class ClientesModel
 		$primaryKey = 'id_cliente';
 		$columns = array(
 			array( 
-				'db' => 'id_cliente',
-				'dbj' => 'id_cliente',
-				'real' => 'id_cliente',
+				'db' => 'cli.id_cliente',
+				'dbj' => 'cli.id_cliente',
+				'real' => 'cli.id_cliente',
 				'alias' => 'id_cliente',
 				'typ' => 'int',
 				'dt' => 0
 			),
 			array( 
-				'db' => 'nombre',
-				'dbj' => 'nombre',				
-				'real' => 'nombre',
-				'alias' => 'nombre',
+				'db' => 'emp.nombre as empresa',
+				'dbj' => 'emp.nombre',				
+				'real' => 'emp.nombre',
+				'alias' => 'empresa',
 				'typ' => 'txt',
 				'dt' => 1
+			),
+			array( 
+				'db' => 'cli.nombre',
+				'dbj' => 'cli.nombre',				
+				'real' => 'cli.nombre',
+				'alias' => 'nombre',
+				'typ' => 'txt',
+				'dt' => 2
 			),
 			array( 
 				'db' => 'cat.etiqueta AS etiqueta',
@@ -1450,7 +1458,7 @@ class ClientesModel
 				'real' => 'cat.etiqueta',
 				'alias' => 'etiqueta',
 				'typ' => 'txt',
-				'dt' => 2				
+				'dt' => 3				
 			),
 			array( 
 				'db' => 'cat2.etiqueta AS etiqueta2',
@@ -1458,7 +1466,7 @@ class ClientesModel
 				'real' => 'cat2.etiqueta',
 				'alias' => 'etiqueta2',
 				'typ' => 'txt',
-				'dt' => 3				
+				'dt' => 4				
 			),
 			array( 
 				'db' => 'rol.descripcion AS rol',
@@ -1466,16 +1474,16 @@ class ClientesModel
 				'real' => 'rol.descripcion',
 				'alias' => 'rol',
 				'typ' => 'txt',
-				'dt' => 4				
+				'dt' => 5				
 			),
 			array( 
-				'db' => 'id_cliente',
-				'dbj' => 'id_cliente',	
-				'alias' => 'id_cliente',
+				'db' => 'cli.id_cliente',
+				'dbj' => 'cli.id_cliente',	
+				'alias' => 'cli.id_cliente',
 				'real' => 'id_cliente',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 5			
+				'dt' => 6			
 			)
 		);
 		$render_table = new acciones_usuario;
@@ -1483,9 +1491,10 @@ class ClientesModel
 			INNER JOIN cm_catalogo AS cat ON cli.cat_tipocliente = cat.id_cat
 			INNER JOIN cm_catalogo AS cat2 ON cli.cat_statuscliente = cat2.id_cat
 			INNER JOIN fw_roles AS rol ON cli.id_rol = rol.id_rol
+			INNER JOIN cl_clientes AS emp ON cli.parent = emp.id_cliente
 		';
 		$where = '
-			parent <> 0
+			cli.parent <> 0
 		';
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
