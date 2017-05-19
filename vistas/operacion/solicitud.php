@@ -28,7 +28,7 @@ span.input-icon > textarea {
 							<i class="ace-icon fa fa-chevron-up"></i>
 						</a>
 					</div>
-				</div>		
+				</div>
 				<div class="widget-body">
 					<form class="form-horizontal" role="form" id="nuevo_servicio">
 						<div class="page-header" style="margin-bottom: 26px;">
@@ -37,33 +37,33 @@ span.input-icon > textarea {
 								<i class="ace-icon fa fa-gear bigger-110"></i>
 								Procesar
 							</a>
-							
+
 							<input type="hidden" id="origen_calle" name="origen_calle" value="" />
 							<input type="hidden" id="origen_num_ext" name="origen_num_ext" value="" />
 							<input type="hidden" id="origen_num_int" name="origen_num_int" value="" />
 							<input type="hidden" id="origen_telefono" name="origen_telefono" value="" />
 							<input type="hidden" id="origen_celular" name="origen_celular" value="" />
-							
+
 							<input type="hidden" id="destino_calle" name="destino_calle" value="" />
 							<input type="hidden" id="destino_num_ext" name="destino_num_ext" value="" />
 							<input type="hidden" id="destino_num_int" name="destino_num_int" value="" />
 							<input type="hidden" id="destino_telefono" name="destino_telefono" value="" />
 							<input type="hidden" id="destino_celular" name="destino_celular" value="" />
-							
+
 							<input type="hidden" id="id_operador_unidad" name="id_operador_unidad" value="" />
 							<input type="hidden" id="id_operador" name="id_operador" value="" />
 							<input type="hidden" id="id_operador_turno" name="id_operador_turno" value="" />
 							<input type="hidden" id="turno_apartado" name="turno_apartado" value="" />
 							<input type="hidden" id="numero_economico" name="numero_economico" value="" />
-							
+
 							<input type="hidden" id="msgPaqArray" name="msgPaqArray" value="" />
-							
+
 							<input type="hidden" id="temporicidad" name="temporicidad" value="184" />
 							<input type="hidden" id="exist_tarifa" name="exist_tarifa" value="0" />
-							
+
 							<span id="input_pasajeros"></span>
 							</h1>
-						</div>		
+						</div>
 						<div class="row">
 								<div class="col-sm-3">
 									<div class="widget-header widget-header-flat">
@@ -90,7 +90,7 @@ span.input-icon > textarea {
 												<?php echo $tiposServicios; ?>
 											</select>
 										</div>
-										
+
 										<div class="col-sm-5">
 											<label style="position:relative; top:5px;">
 												<input value="1" name="viaje_redondo" id="viaje_redondo" class="ace ace-switch ace-switch-6" type="checkbox" />
@@ -100,8 +100,8 @@ span.input-icon > textarea {
 												<input onchange="apartadoActive()" value="1" name="tipo_temporicidad" id="tipo_temporicidad" class="ace ace-switch ace-switch-6" type="checkbox" />
 												<span class="lbl">&nbsp;Apartado</span>
 											</label>
-										</div>	
-										
+										</div>
+
 									</div>
 									<hr />
 									<div class="form-group">
@@ -117,12 +117,12 @@ span.input-icon > textarea {
 												<input name="sitio_select_oper" id="sitio_select_oper1" value="1" type="radio" class="ace" />
 												<span class="lbl"> Primero</span>
 											</label>
-											<label>									
+											<label>
 												<input name="sitio_select_oper" id="sitio_select_oper2" value="2" type="radio" class="ace" />
 												<span class="lbl"> Segundo</span>
 											</label>
-										</div>								
-										
+										</div>
+
 									</div>
 									<hr />
 									<div class="form-group">
@@ -139,7 +139,7 @@ span.input-icon > textarea {
 									</div>
 									<hr />
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<i class="ace-icon fa fa-eye bigger-230 orange icon_ztop"></i>
 										</label>
 										<div class="col-sm-11">
@@ -148,7 +148,7 @@ span.input-icon > textarea {
 												<i class="ace-icon fa fa-question-circle blue"></i>
 											</span>
 										</div>
-									</div>	
+									</div>
 								</div>
 								<div class="col-sm-3">
 									<div class="widget-header widget-header-flat">
@@ -157,7 +157,7 @@ span.input-icon > textarea {
 											<span id="dta_name">Usuario</span>
 										</h4>
 									</div><br>
-									
+
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right">Usuario</label>
 										<div class="col-sm-9">
@@ -168,20 +168,20 @@ span.input-icon > textarea {
 											</span>
 										</div>
 									</div>
-									
+
 									<div class="form-group hide" id="user_list">
 										<label class="col-sm-3 control-label no-padding-right">Pasajeros</label>
 										<div class="col-sm-9" id="pasajeros_list"></div>
-									</div>				
-									
-									
+									</div>
+
+
 									<div class="form-group hide" id="spinDestinos">
 										<label class="col-sm-3 control-label no-padding-right">Destinos</label>
 										<div class="col-sm-9">
 											<input readonly="" type="text" class="input-sm" id="spinDestino" name="spinDestino"/>
 										</div>
-									</div>	
-									
+									</div>
+
 								</div>
 								<div class="col-sm-3">
 									<div class="widget-header widget-header-flat">
@@ -190,9 +190,9 @@ span.input-icon > textarea {
 											Origen
 										</h4>
 									</div><br>
-									
+
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<i class="ace-icon fa fa-bookmark bigger-230 orange icon_ztop"></i>
 										</label>
 
@@ -201,10 +201,10 @@ span.input-icon > textarea {
 												<option value="" disabled selected>Origenes guardados</option>
 											</select>
 										</div>
-									</div>	
-									
+									</div>
+
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<a onclick="iframeSetReference(); cleanSavedOrigen();" href="javascript:void(0);">
 												<i class="ace-icon fa fa-globe bigger-230 orange icon_ztop"></i>
 											</a>
@@ -216,13 +216,13 @@ span.input-icon > textarea {
 											</span>
 										</div>
 									</div>
-									
+
 									<div class="space-4"></div>
 
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<i class="ace-icon fa fa-question-circle bigger-230 orange icon_ztop"></i>
-										</label>						
+										</label>
 										<div class="col-sm-11">
 											<span class="input-icon">
 												<textarea  id="origen_referencia" onchange="cleanSavedOrigen();" name="origen_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
@@ -232,23 +232,23 @@ span.input-icon > textarea {
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<i class="ace-icon fa fa-thumb-tack bigger-230 orange icon_ztop"></i>
-										</label>						
+										</label>
 										<div class="col-sm-11">
 											<span class="input-icon">
 												<input readonly="" type="text" id="geocoordenadas_origen" name="geocoordenadas_origen" placeholder="Geocoordenadas" class="col-sm-12 autosize-transition form-control"></textarea>
 												<i class="ace-icon fa fa-thumb-tack blue"></i>
 											</span>
 										</div>
-									</div>	
+									</div>
 									<div class="space-4"></div>
 									<a class="btn btn-light" href="#" onclick="modal_extra_origen();" style="position:relative; float:right; top:-8px;">
 										<i class="ace-icon fa fa-home bigger-110"></i>
 										Más datos
 									</a>
 									<i id="origen_hide_ok" class="fa fa-check-circle-o origen_destiono_set hide" aria-hidden="true"></i>
-									
+
 								</div>
 								<div class="col-sm-3">
 									<div class="widget-header widget-header-flat">
@@ -257,9 +257,9 @@ span.input-icon > textarea {
 											Destino
 										</h4>
 									</div><br>
-									
+
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<i class="ace-icon fa fa-bookmark bigger-230 green icon_ztop"></i>
 										</label>
 
@@ -268,14 +268,14 @@ span.input-icon > textarea {
 												<option value="" disabled selected>Destinos guardados</option>
 											</select>
 										</div>
-									</div>	
-									
+									</div>
+
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<a onclick="iframeSetReferenceD(); cleanSavedDestino();" href="javascript:void(0);">
 												<i class="ace-icon fa fa-globe bigger-230 green icon_ztop"></i>
 											</a>
-										</label>						
+										</label>
 										<div class="col-sm-11">
 											<span class="input-icon">
 												<textarea readonly="" id="geocodificacion_inversa_destino" name="geocodificacion_inversa_destino" placeholder="Geocodificacion inversa" class="col-sm-12 autosize-transition form-control"></textarea>
@@ -283,13 +283,13 @@ span.input-icon > textarea {
 											</span>
 										</div>
 									</div>
-									
+
 									<div class="space-4"></div>
 
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<i class="ace-icon fa fa-question-circle bigger-230 green icon_ztop"></i>
-										</label>							
+										</label>
 										<div class="col-sm-11">
 											<span class="input-icon">
 												<textarea id="destino_referencia" onchange="cleanSavedDestino();" name="destino_referencia" placeholder="Referencia" class="col-sm-12 autosize-transition form-control"></textarea>
@@ -297,27 +297,27 @@ span.input-icon > textarea {
 											</span>
 										</div>
 									</div>
-									
+
 
 									<div class="form-group">
-										<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 
+										<label class="col-sm-1 control-label no-padding-right" for="form-field-1">
 											<i class="ace-icon fa fa-thumb-tack bigger-230 green icon_ztop"></i>
-										</label>						
+										</label>
 										<div class="col-sm-11">
 											<span class="input-icon">
 												<input readonly="" type="text" id="geocoordenadas_destino" name="geocoordenadas_destino" placeholder="Geocoordenadas" class="col-sm-12 autosize-transition form-control"></textarea>
 												<i class="ace-icon fa fa-thumb-tack blue"></i>
 											</span>
 										</div>
-									</div>								
-									
+									</div>
+
 									<div class="space-4"></div>
 									<a class="btn btn-light" href="#" onclick="modal_extra_destino();" style="display:relative; float:right; top:-8px;">
 										<i class="ace-icon fa fa-home bigger-110"></i>
 										Más datos
 									</a>
 									<i id="destino_hide_ok" class="fa fa-check-circle-o origen_destiono_set hide" aria-hidden="true"></i>
-									
+
 								</div>
 						</div>
 					</form>
@@ -338,21 +338,17 @@ span.input-icon > textarea {
 								</li>
 
 								<li class="">
-									<a data-toggle="tab" href="#table_ejnal" aria-expanded="false">Ejército</a>
-								</li>
-								
-								<li class="">
 									<a data-toggle="tab" href="#table_pendientes" aria-expanded="false">
 									<i class="fa fa-chain-broken" style="color:#c40b0b;"></i>
 									Pendientes</a>
 								</li>
-								
+
 								<li class="">
 									<a data-toggle="tab" href="#table_proceso" aria-expanded="false">
 									<i class="fa fa-link" style="color:#ffbb00"></i>
 									En proceso</a>
 								</li>
-								
+
 								<li class="">
 									<a data-toggle="tab" href="#table_asignados" aria-expanded="false">
 									<i class="fa fa-calendar-check-o" style="color:#32b200"></i>
@@ -383,22 +379,6 @@ span.input-icon > textarea {
 									</table>
 								</div>
 
-								<div id="table_ejnal" class="tab-pane">
-									<table id="cordon_ejnal" class="display table table-striped" cellspacing="0" width="100%">
-										<thead>
-											<tr>
-												<th>Turno</th>
-												<th>NUM&nbsp;EQ</th>
-												<th>Nombre</th>
-												<th>Marca</th>
-												<th>Modelo</th>
-												<th>Color</th>
-												<th>Llegada/Espera</th>
-												<th></th>
-											</tr>
-										</thead>
-									</table>
-								</div>
 								<div id="table_pendientes" class="tab-pane">
 									<table id="tabla_pendientes" class="display table table-striped" cellspacing="0" width="100%">
 										<thead>
@@ -430,7 +410,7 @@ span.input-icon > textarea {
 												<th>Acciones</th>
 											</tr>
 										</thead>
-									</table>								
+									</table>
 								</div>
 								<div id="table_asignados" class="tab-pane">
 									<table id="tabla_asignados" class="display table table-striped" cellspacing="0" width="100%">
@@ -447,7 +427,7 @@ span.input-icon > textarea {
 												<th>Acciones</th>
 											</tr>
 										</thead>
-									</table>								
+									</table>
 								</div>
 							</div>
 						</div>
@@ -466,23 +446,23 @@ span.input-icon > textarea {
 					minChars: 3,
 					onSelect: function (suggestion) {
 						if((globalTypeUser == suggestion.parent)||(globalTypeUser == 'init')){
-							
+
 							globalTypeUser = suggestion.parent;
-							
+
 							if(jQuery.inArray(suggestion.id, pasajeros) === -1){
-								
+
 								pasajeros.push(suggestion.id);
-								
+
 								$('#input_pasajeros').append('<input type="hidden" id="usuario_'+suggestion.id+'" name="usuario_'+suggestion.id+'" value="'+suggestion.id+'" />');
 								$('#pasajeros_list').append('<div class="tipo_cliente" id="client'+suggestion.id+'"><a onclick="removeClient('+suggestion.id+');" href="javascript:void(0);"><i class="fa fa-times-circle orange" aria-hidden="true"></i></a>&nbsp;&nbsp;'+suggestion.nombre+'</div>');
-								
+
 								$('#dta_name').html(suggestion.etiqueta + ' > ' +  suggestion.parent);
 
 								$('#user').val('');
 								$('#user_list').removeClass('hide');
 								$('#spinDestinos').removeClass('hide');
-								
-								
+
+
 								var destinos = $('#pasajeros_list > div').length;
 								if(destinos == 0){
 									$('#user_list').addClass('hide');
@@ -495,12 +475,12 @@ span.input-icon > textarea {
 									globalTypeUser = 'init';
 									pasajeros = [];
 								}
-								
+
 								if(destinos == 1){
 									$.ajax({
 										url: 'operacion/getTarifa/'+suggestion.id,
 										dataType: 'json',
-											success: function(resp_success){			
+											success: function(resp_success){
 												if (resp_success['resp'] == true) {
 													if(resp_success['tarifa'] == ''){
 														alerta('Cuenta sin tarifa','No existen tarifas relacionadas al cliente <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span>');
@@ -518,46 +498,46 @@ span.input-icon > textarea {
 										$.ajax({
 											url: 'operacion/selectOrigenes/'+suggestion.id,
 											dataType: 'html',
-												success: function(resp_success){			
+												success: function(resp_success){
 													if( resp_success == "<option value=''>Seleccione...</option>"){
 														$('#id_cliente_origen').html("<option disabled selected value=''>Sin datos de origenes</option>");
 													}else{
 														$('#id_cliente_origen').html(resp_success);
 													}
 												},
-											error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}	
+											error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}
 										});
 										$.ajax({
 											url: 'operacion/selectDestinos/'+suggestion.id,
 											dataType: 'html',
-												success: function(resp_success){			
+												success: function(resp_success){
 													if( resp_success == "<option value=''>Seleccione...</option>"){
 														$('#id_cliente_destino').html("<option disabled selected value=''>Sin datos de destinos</option>");
 													}else{
 														$('#id_cliente_destino').html(resp_success);
 													}
 												},
-											error: function(respuesta){ alerta('Info!','Error de al seleccionar los destinos');}	
+											error: function(respuesta){ alerta('Info!','Error de al seleccionar los destinos');}
 										});
 									}
 								}
-								
+
 							}else{
-								
+
 								alerta('Pasajero duplicado','El pasajero <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span> ya estaba en la lista.');
 								$('#user').val('');
-								
+
 							}
-							
+
 						}else{
-							
+
 							alerta('Cuentas diferentes','Los usuarios deben de pertenecer a la misma cuenta, no mezcle usuarios de diferentes cuentas en un mismo viaje.');
 							$('#user').val('');
-							
+
 						}
 					}
 				});
-				
+
 				$('#fecha_hora').datetimepicker({
 					minDate: moment("<?=date("Y-m-d H:i")?>"),
 					defaultDate: moment("<?=date("Y-m-d H:i")?>"),
@@ -576,13 +556,13 @@ span.input-icon > textarea {
 					}
 				}).next().on(ace.click_event, function(){
 					$(this).prev().focus();
-				});			
-				
-				
+				});
+
+
 				autosize($('textarea[class*=autosize]'));
-				
+
 				$('#spinDestino').ace_spinner({value:1,min:1,max:50,step:1, touch_spinner: true, icon_up:'ace-icon fa fa-caret-up bigger-110', icon_down:'ace-icon fa fa-caret-down bigger-110'});
-				
+
 				$('#cordon_kpmg').dataTable( {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
@@ -605,29 +585,7 @@ span.input-icon > textarea {
 						}
 					]
 				} );
-				
-				$('#cordon_ejnal').dataTable( {
-					"fnDrawCallback": function( oSettings ) {
-					  $('[data-rel=tooltip]').tooltip();
-					  $('.dataTables_empty').attr('colspan',8);
-					},
-					"ordering": false,
-					"processing": true,
-					"serverSide": true,
-					"pageLength": 20,
 
-					"ajax": {
-						"url": "operacion/cordon_ejnal_get",
-						"type": "POST"
-					},
-					"columnDefs": [
-						{
-							"targets": 8,
-							"visible": false,
-							"searchable":false
-						}
-					]
-				} );
 				$('#tabla_pendientes').dataTable( {
 					"fnDrawCallback": function( oSettings ) {
 					  $('[data-rel=tooltip]').tooltip();
@@ -694,7 +652,7 @@ span.input-icon > textarea {
 					]
 				} );
 			});
-			
+
 			<?php
 			if(SOCKET_PROVIDER == 'ABLY'){
 			?>
@@ -707,22 +665,22 @@ span.input-icon > textarea {
 				updChannel1.subscribe(function(resp_success){
 					$('#cordon_kpmg').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel2 = conn.channels.get('updcrd2');
 				updChannel2.subscribe(function(resp_success){
 					$('#cordon_ejnal').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel3 = conn.channels.get('updpendientes');
 				updChannel3.subscribe(function(resp_success){
 					$('#tabla_pendientes').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel4 = conn.channels.get('updproceso');
 				updChannel4.subscribe(function(resp_success){
 					$('#tabla_proceso').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel5 = conn.channels.get('updasignados');
 				updChannel5.subscribe(function(resp_success){
 					$('#tabla_asignados').DataTable().ajax.reload();
@@ -737,27 +695,27 @@ span.input-icon > textarea {
 				pusher.connection.bind('connected', function() {
 					console.log('✓ Servicio de actualización de cordón activo');
 				})
-				
+
 				var updChannel1 = pusher.subscribe('updcrd1');
 				updChannel1.bind('evento', function(data) {
 					$('#cordon_kpmg').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel2 = pusher.subscribe('updcrd2');
 				updChannel2.bind('evento', function(data) {
 					$('#cordon_ejnal').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel3 = pusher.subscribe('updpendientes');
 				updChannel3.bind('evento', function(data) {
 					$('#tabla_pendientes').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel4 = pusher.subscribe('updproceso');
 				updChannel4.bind('evento', function(data) {
 					$('#tabla_proceso').DataTable().ajax.reload();
 				});
-				
+
 				var updChannel5 = pusher.subscribe('updasignados');
 				updChannel5.bind('evento', function(data) {
 					$('#tabla_asignados').DataTable().ajax.reload();
@@ -802,6 +760,6 @@ span.input-icon > textarea {
 				});
 			<?php
 			}
-			?>			
-			
+			?>
+
 		</script>
