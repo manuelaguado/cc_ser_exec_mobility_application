@@ -172,66 +172,11 @@ class LoginModel
 				self::MobileDetect();
 				$array[1] = array('dispositivo'=>$_SESSION['dispositivo']);
 
-				if(($_SESSION['id_rol']==2)&&($_SESSION['dispositivo'] == 'pc')){
-					session_unset();
+				if($_SESSION['id_rol']==2){
+                                   session_unset();
 					unset($_SESSION);
 					session_destroy();
 					$array[2] = array('via'=>"incorrecta");
-
-				}else if(($_SESSION['id_rol']==2)&&($_SESSION['dispositivo'] == 'celular')){
-
-					self::session_duplicada($row->id_usuario);
-
-					$acceso = Controlador::getConfig(1,'login_operadores');
-					if($acceso['valor'] == 1){
-
-						$sess_oper = self::setIDOperadorSessions($_SESSION['id_usuario']);
-						$_SESSION['id_operador'] = $sess_oper['id_operador'];
-
-						$_SESSION['id_operador_unidad'] = $sess_oper['id_operador_unidad'];
-						$_SESSION['cat_statusoperador'] = $sess_oper['cat_statusoperador'];
-
-						if($sess_oper['multi'] > 1){
-							$_SESSION['id_operador_unidad'] = 'select';
-						}
-						$mvhc = ($_SESSION['id_operador_unidad'] == 'select')?2:1;
-						$_SESSION['serie'] = self::getSerie($_SESSION['id_usuario']);
-
-							$array[4] = array(
-								'id_operador'=>$_SESSION['id_operador'],
-								'serie'=>$_SESSION['serie'],
-								'id_operador_unidad'=>$_SESSION['id_operador_unidad'],
-								'token_session'=>$_SESSION['token'],
-								'id_usuario'=>$_SESSION['id_usuario'],
-								'mvhc'=>$mvhc,
-								'session_id'=>session_id()
-							);
-
-
-						self::permisos($_SESSION['id_rol']);
-						self::permisos_acl($_SESSION['id_usuario']);
-						$episodio = self::openEpisodio($_SESSION['id_operador']);
-						$_SESSION['id_episodio'] = ($episodio)?$episodio:'';
-						if(
-							($_SESSION['id_operador'] == '') OR
-							($_SESSION['id_operador_unidad'] == '') OR
-							($_SESSION['serie'] == '')
-						){
-							session_unset();
-							unset($_SESSION);
-							session_destroy();
-							$array[2] = array('via'=>"incompleto");
-						}else{
-							$array[2] = array('via'=>"correcta");
-						}
-						self::storeSession($_SESSION['id_usuario']);
-
-					}else{
-						session_unset();
-						unset($_SESSION);
-						session_destroy();
-						$array[2] = array('via'=>"disabled");
-					}
 
 				}else if(($_SESSION['id_rol']!=2)&&($_SESSION['dispositivo'] == 'pc')){
 
