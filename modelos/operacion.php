@@ -965,12 +965,11 @@ class OperacionModel{
 					$token = 'SOL:'.Controller::token(60);
 					switch($post['status_operador']){
 						case 'segundo':
-							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 						break;
 						case 'cola':
 							$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 						break;
 						case 'suspender':
 							/*Setear en suspendido*/
@@ -979,12 +978,12 @@ class OperacionModel{
 							$operadores->setearstatusoperador($operador);
 
 							/*desloguear*/
-							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
+
 							$id_usuario = $mobile->getIdUsuario($id_operador_unidad);
 							$login->signout($id_usuario);
 						break;
 						case 'omitir':
-							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 						break;
 					}
 				break;
@@ -993,15 +992,13 @@ class OperacionModel{
 						$token = 'SOL:'.Controller::token(60);
 						switch($post['status_operador']){
 							case 'segundo':
-								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 							break;
 							case 'cola':
 								$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 							break;
 							case 'omitir':
-								$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 							break;
 						}
 
@@ -1059,15 +1056,14 @@ class OperacionModel{
 				$token = 'APA:'.Controller::token(60);
 				switch($post['status_operador']){
 					case 'segundo':
-						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 					break;
 					case 'cola':
 						$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 					break;
 					case 'omitir':
-						$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+
 					break;
 				}
 

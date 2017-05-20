@@ -342,13 +342,6 @@ span.input-icon > textarea {
 									<i class="fa fa-chain-broken" style="color:#c40b0b;"></i>
 									Pendientes</a>
 								</li>
-
-								<li class="">
-									<a data-toggle="tab" href="#table_proceso" aria-expanded="false">
-									<i class="fa fa-link" style="color:#ffbb00"></i>
-									En proceso</a>
-								</li>
-
 								<li class="">
 									<a data-toggle="tab" href="#table_asignados" aria-expanded="false">
 									<i class="fa fa-calendar-check-o" style="color:#32b200"></i>
@@ -390,23 +383,6 @@ span.input-icon > textarea {
 												<th>Empresa</th>
 												<th>Servicio</th>
 												<th>Tipo</th>
-												<th>Acciones</th>
-											</tr>
-										</thead>
-									</table>
-								</div>
-								<div id="table_proceso" class="tab-pane">
-									<table id="tabla_proceso" class="display table table-striped" cellspacing="0" width="100%">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>[STATUS]</th>
-												<th>Hora</th>
-												<th>Usuario</th>
-												<th>Empresa</th>
-												<th>Servicio</th>
-												<th>Tipo</th>
-												<th>NUM</th>
 												<th>Acciones</th>
 											</tr>
 										</thead>
@@ -597,28 +573,6 @@ span.input-icon > textarea {
 					"pageLength": 20,
 					"ajax": {
 						"url": "operacion/servicios_pendientes",
-						"type": "POST"
-					},
-					"columnDefs": [
-						{
-							"targets": 1,
-							"visible": false,
-							"searchable":false
-						}
-					]
-				} );
-				$('#tabla_proceso').dataTable( {
-					"fnDrawCallback": function( oSettings ) {
-					  $('[data-rel=tooltip]').tooltip();
-					  $('.dataTables_empty').attr('colspan',8);
-					},
-					"ordering": false,
-					"processing": true,
-					"serverSide": true,
-					"pageLength": 20,
-
-					"ajax": {
-						"url": "operacion/servicios_enProceso",
 						"type": "POST"
 					},
 					"columnDefs": [

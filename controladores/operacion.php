@@ -8,10 +8,6 @@ class Operacion extends Controlador
     }
 	public function cron(){
 		session_destroy();
-		if(DEVELOPMENT){
-			$acceso = Controlador::getConfig(1,'websockets_control');
-			if($acceso['valor'] != 1){exit();}
-		}
 
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
@@ -29,18 +25,9 @@ class Operacion extends Controlador
 		if($operacion->servicio_hash(170)){$mobile->transmitir('doit','updpendientes');}
 		if($operacion->servicio_hash(188)){$mobile->transmitir('doit','updpendientes');}
 
-		$eventos = $mobile->sync_ride();
-		foreach ($eventos as $evento){
-			$mobile->broadcast($evento['id_operador_unidad']);
-		}
 	}
 	public function cron10(){
 		session_destroy();
-		if(DEVELOPMENT){
-			$acceso = Controlador::getConfig(1,'websockets_control');
-			if($acceso['valor'] != 1){exit();}
-		}
-
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		$notificaciones = $operacion->notificacionesApartados();
@@ -111,7 +98,7 @@ class Operacion extends Controlador
 	}
 	public function asignacion_automatica($array,MobileModel $model){
 		$token = 'AAT:'.$this->token(62);
-		$model->storeToSyncRide(1,$token,$array['salida'],$array['id_operador_unidad']);
+		$model->sxxtoreToSyncRide(1,$token,$array['salida'],$array['id_operador_unidad']);
 	}
 	public function servicios_asignados(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -213,7 +200,7 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$token = 'OP:'.$this->token(62);
-		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+		$mobile->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
 		$mobile->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -223,7 +210,7 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$token = 'OP:'.$this->token(62);
-		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
+		$mobile->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
 		$mobile->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -472,7 +459,7 @@ class Operacion extends Controlador
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
 		$id_operador_unidad = $model->getIdOperadorUnidadEpisode($_POST['id_operador'],'id_operador');
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
 		print json_encode(array('resp' => true ));
 	}
 	public function set_page_remotly($id_operador){
@@ -497,119 +484,6 @@ class Operacion extends Controlador
 		$encordon2 = $model->formadoenBase($id_operador,2);
 
 		require URL_VISTA.'modales/operacion/check_standinLine.php';
-	}
-	public function enlazados(){
-		$this->se_requiere_logueo(true,'Operacion|enlazados');
-		$model = $this->loadModel('Operacion');
-		$mobile = $this->loadModel('Mobile');
-
-		$enlazados = array();
-		$num = 0;
-		$duplicados = array();
-
-		if(SOCKET_PROVIDER == 'ABLY'){
-			$activos = $mobile->linkedIn();
-			foreach($activos->items as $num => $oper){
-				$id_operador = substr($oper->clientId, 3);
-				$data_enlace = $model->gatDataOperador($id_operador);
-				$enlazados[$num]['c1orc2'] = $model->c1orc2($id_operador);
-				$enlazados[$num]['id'] = $oper->id;
-				$enlazados[$num]['connectionId'] = $oper->connectionId;
-				$enlazados[$num]['timestamp'] = $oper->timestamp;
-				$enlazados[$num]['clientId'] = $id_operador;
-				$enlazados[$num]['num'] = $data_enlace['num'];
-				$enlazados[$num]['nombre'] = $data_enlace['nombre'];
-				$duplicados[] = $id_operador;
-				$neconomico[$id_operador] = $data_enlace['num'];
-				$num++;
-			}
-		}else if(SOCKET_PROVIDER == 'PUSHER'){
-			if(PRESENCE_GET == 'CURL'){
-				$activos = $mobile->linkedIn();
-				foreach($activos['result']['users'] as $num => $item){
-					foreach($item as $oper){
-						$id_operador = $oper;
-						$data_enlace = $model->gatDataOperador($id_operador);
-						$enlazados[$num]['c1orc2'] = $model->c1orc2($id_operador);
-						$enlazados[$num]['clientId'] = $id_operador;
-						$enlazados[$num]['num'] = $data_enlace['num'];
-						$enlazados[$num]['nombre'] = $data_enlace['nombre'];
-						$duplicados[] = $id_operador;
-						$neconomico[$id_operador] = $data_enlace['num'];
-						$num++;
-					}
-				}
-				$oper_link = count($activos['result']['users']);
-			}else{
-				$activos = $mobile->onLinkWebHook();
-				foreach($activos as $num => $oper){
-					$id_operador = $oper['id_operador'];
-					$data_enlace = $model->gatDataOperador($id_operador);
-					$enlazados[$num]['c1orc2'] = $model->c1orc2($id_operador);
-					$enlazados[$num]['clientId'] = $id_operador;
-					$enlazados[$num]['num'] = $data_enlace['num'];
-					$enlazados[$num]['nombre'] = $data_enlace['nombre'];
-					$duplicados[] = $id_operador;
-					$neconomico[$id_operador] = $data_enlace['num'];
-					$num++;
-				}
-				$oper_link = count($activos);
-			}
-		}else if(SOCKET_PROVIDER == 'PUBNUB'){
-			if(PRESENCE_GET == 'CURL'){
-				$activos = $mobile->linkedIn();
-				foreach($activos['uuids'] as $num => $oper){
-					$id_operador = $oper;
-					$data_enlace = $model->gatDataOperador($id_operador);
-					$enlazados[$num]['c1orc2'] = $model->c1orc2($id_operador);
-					$enlazados[$num]['clientId'] = $id_operador;
-					$enlazados[$num]['num'] = $data_enlace['num'];
-					$enlazados[$num]['nombre'] = $data_enlace['nombre'];
-					$duplicados[] = $id_operador;
-					$neconomico[$id_operador] = $data_enlace['num'];
-					$num++;
-				}
-				$oper_link = count($activos['uuids']);
-			}else{
-				$activos = $mobile->onLinkWebHook();
-				foreach($activos as $num => $oper){
-					$id_operador = $oper['id_operador'];
-					$data_enlace = $model->gatDataOperador($id_operador);
-					$enlazados[$num]['c1orc2'] = $model->c1orc2($id_operador);
-					$enlazados[$num]['clientId'] = $id_operador;
-					$enlazados[$num]['num'] = $data_enlace['num'];
-					$enlazados[$num]['nombre'] = $data_enlace['nombre'];
-					$duplicados[] = $id_operador;
-					$neconomico[$id_operador] = $data_enlace['num'];
-					$num++;
-				}
-				$oper_link = count($activos);
-			}
-		}
-
-		$repeated = array_filter(array_count_values($duplicados), function($count) {
-			return $count > 1;
-		});
-		$duplicado = array();
-		$cuantas = array();
-		$extras = 0;
-		foreach ($repeated as $key => $value) {
-			//$repetidos .= "El N° Economico ".$neconomico[$key]." cin id_operador $key tiene $value sesiones iniciadas. <br />";
-			$duplicado[] = $key;
-			$cuantas[$key] = $value;
-			$extras += --$value;
-		}
-
-
-		if(SOCKET_PROVIDER == 'ABLY'){
-			require URL_VISTA.'operacion/enlace_ably.php';
-		}else if(SOCKET_PROVIDER == 'PUSHER'){
-			require URL_VISTA.'operacion/enlace_pusher.php';
-		}else if(SOCKET_PROVIDER == 'PUBNUB'){
-			require URL_VISTA.'operacion/enlace_pubnub.php';
-		}
-
-
 	}
 	public function modal_mensajeria($id_operador){
 		$this->se_requiere_logueo(true,'Operacion|mensajeria');
@@ -650,7 +524,7 @@ class Operacion extends Controlador
 		$model->set2enc6($id_base);
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$token = 'OP:'.$this->token(62);
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		$model->formarse_directo($token,$id_operador_unidad,$id_base,115);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
@@ -668,7 +542,7 @@ class Operacion extends Controlador
 		$model->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
 		$model->cerrarEpisodio($model->getIdEpisodio($id_operador_unidad),$_SESSION['id_usuario']);
 		$token = 'OP:'.$this->token(62);
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -682,7 +556,7 @@ class Operacion extends Controlador
 		$model = $this->loadModel('Mobile');
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$token = 'OP:'.$this->token(62);
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		$model->formarse_directo($token,$id_operador_unidad,$id_base,113);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
@@ -701,7 +575,7 @@ class Operacion extends Controlador
 		$model2 = $this->loadModel('Operadores');
 		$model2->setearstatusoperador(array('cat_statusoperador'=>'10','id_operador'=>$id_operador));
 		$token = 'OP:'.$this->token(62);
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -716,7 +590,7 @@ class Operacion extends Controlador
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 
 		$token = 'OP:'.$this->token(62);
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -755,7 +629,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,118,$id_operador_unidad);
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,118,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
@@ -768,7 +642,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|activar_f13');
 		$model = $this->loadModel('Mobile');
 		$token = 'OP:'.$this->token(62);
-		$model->storeToSyncRide($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
+		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}

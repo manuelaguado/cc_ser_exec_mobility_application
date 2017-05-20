@@ -2,7 +2,7 @@
 class Login extends Controlador
 {
     public function index()
-    {	
+    {
 		$this->se_requiere_logueo(false);
 		setcookie("PHPSESSID",$this->token(32),time()+86400);
 		require_once '../vendor/MobileDetect/Mobile_Detect.php';
@@ -18,54 +18,54 @@ class Login extends Controlador
 			include (URL_VISTA.'login/index.php');
 		}
     }
-	
-	
+
+
 	public function modal_all_sign_out(){
 		$this->se_requiere_logueo(true,'Login|force_all_sign_out');
 		require URL_VISTA.'modales/login/sign-all-out.php';
 	}
 	public function sign_all_out(){
 		$this->se_requiere_logueo(true,'Login|force_sign_out');
-		
+
 		$login = $this->loadModel('Login');
 		$whosLogin = $login->whoisLogged();
-		
+
 		$mobile = $this->loadModel('Mobile');
-		
+
 		foreach ($whosLogin as $logged){
 			$token = 'LGN:'.$this->token(60);
 			$id_operador_unidad = $mobile->getIdOperadorUnidadEpisode($logged['id_usuario'],'user_alta');
-			$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
+
 			$login->signout($logged['id_usuario']);
 		}
 	}
 	public function switch_login_op($estado){
 		$this->se_requiere_logueo(true,'Login|switch_login_op');
-		
+
 		$state = ($estado == 'true')?'1':'0';
-		
+
 		$data['id_site']	= '1';
 		$data['descripcion']= 'login_operadores';
 		$data['valor']		= $state;
 		$data['tmp_val']	= '0';
 		$data['data']		= '0';
-		
+
 		Controlador::setConfig($data);
 		print json_encode(array('resp' => true));
 	}
-	
+
 	public function modal_sign_out($id_usuario){
 		$this->se_requiere_logueo(true,'Login|force_sign_out');
 		require URL_VISTA.'modales/login/sign-out.php';
 	}
 	public function sign_out($id_usuario){
 		$this->se_requiere_logueo(true,'Login|force_sign_out');
-		
+
 		$mobile = $this->loadModel('Mobile');
 		$token = 'LGN:'.$this->token(60);
 		$id_operador_unidad = $mobile->getIdOperadorUnidadEpisode($id_usuario,'user_alta');
-		$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);		
-		
+	
+
 		$model = $this->loadModel('Login');
 		print $model->signout($id_usuario);
 	}
@@ -95,11 +95,11 @@ class Login extends Controlador
 		$obtener_modelo = $this->loadModel('Login');
 		$token = $this->token(60);
 		$recuperar = $obtener_modelo->recuperar_datos($_POST['correo'],$token);
-		
+
 		require( '../vendor/mail.php' );
 		$send = new Email();
 		$send->recuperar_cuenta($_POST['correo'], $token, $recuperar[0]['usuario']);
-			
+
         print json_encode($recuperar);
     }
 	public function salirAndroid()
@@ -116,7 +116,7 @@ class Login extends Controlador
 		$obtener_modelo = $this->loadModel('Login');
 		$mobile = $this->loadModel('Mobile');
 		$loguear = $obtener_modelo->logear($mobile);
-			
+
 			if(($loguear[1]['dispositivo'] == 'celular')&&($loguear[2]['via'] == 'correcta')&&($_SESSION['id_operador_unidad'])!= 'select'){
 				$operacion = $this->loadModel('Operacion');
 				$bases = $this->loadModel('Bases');
@@ -126,8 +126,8 @@ class Login extends Controlador
 					$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
 				}
 			}
-			
+
         print json_encode($loguear);
-    }	
+    }
 }
 ?>

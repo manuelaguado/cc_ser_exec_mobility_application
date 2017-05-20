@@ -20,7 +20,7 @@ class LoginModel
 			WHERE
 				fwl.`open` = 1
 			ORDER BY
-				id_usuario ASC			
+				id_usuario ASC
 		';
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -42,7 +42,7 @@ class LoginModel
 			$fecha_login = self::initLogin($id_login);
 			$fin = date("Y-m-d H:i:s");
 			$tiempo = Controller::diferenciaFechasD($fecha_login , $fin);
-			
+
 			$sql = "
 				UPDATE `fw_login`
 				SET
@@ -54,17 +54,17 @@ class LoginModel
 				WHERE
 					(`id_login` = '".$id_login."');
 			";
-			
+
 			$session_id = self::getSession_id($id_login);
-			
+
 			if(file_exists(session_save_path().'/sess_'.$session_id)){
 				unlink(session_save_path().'/sess_'.$session_id);
 			}
-			
+
 			$query = $this->db->prepare($sql);
 			$query->execute();
 		}
-		return json_encode(array('resp' => true )); 
+		return json_encode(array('resp' => true ));
 	}
 	private function getAllIdenOperadorUnidad($id_operador_unidad){
 		$qry = "
@@ -104,14 +104,13 @@ class LoginModel
 				fwl.id_usuario = ".$id_usuario."
 			AND fwl.`open` = 1
 		";
-				
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$result = $query->fetchAll();
 		if($query->rowCount()>=1){
-			foreach ($result as $num => $row) {			
+			foreach ($result as $num => $row) {
 				$token = 'DUP:'.Controlador::token(60);
-				$mobile->storeToSyncRide($id_usuario,$token,155,$row->id_operador_unidad);
 				self::signout($id_usuario);
 			}
 		}
@@ -128,7 +127,7 @@ class LoginModel
 				fwl.id_usuario = ".$id_usuario." AND
 				fwl.`open` = 1
 		";
-				
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$result = $query->fetchAll();
@@ -139,14 +138,14 @@ class LoginModel
 		}
 	}
 	public function logear(MobileModel $mobile){
-		
+
 		$stat = self::getStatusUser($_POST['usuario']);
 		if($stat == 131){
 			$array[]=array('resp'=>"inhabilitado");
 			print json_encode($array);
 			exit();
 		}
-		
+
 		$password_md5=md5($_POST['password']);
         $sql = "
 		SELECT fwu.id_usuario, fwu.id_rol, fwu.usuario, fwu.id_ubicacion, fwu.correo, fwc.aceptar_tyc FROM fw_usuarios as fwu
@@ -156,7 +155,7 @@ class LoginModel
         $query->execute();
         $usuario = $query->fetchAll();
 		if($query->rowCount()>=1){
-			
+
 			foreach ($usuario as $row) {
 				session_name(SITE_NAME);
 				$_SESSION['id_usuario']=$row->id_usuario;
@@ -171,33 +170,33 @@ class LoginModel
 				$array[3]=array('tyc'=>$_SESSION['tyc']);
 			}
 				self::MobileDetect();
-				$array[1] = array('dispositivo'=>$_SESSION['dispositivo']);	
+				$array[1] = array('dispositivo'=>$_SESSION['dispositivo']);
 
 				if(($_SESSION['id_rol']==2)&&($_SESSION['dispositivo'] == 'pc')){
 					session_unset();
 					unset($_SESSION);
 					session_destroy();
 					$array[2] = array('via'=>"incorrecta");
-					
+
 				}else if(($_SESSION['id_rol']==2)&&($_SESSION['dispositivo'] == 'celular')){
-					
+
 					self::session_duplicada($row->id_usuario,$mobile);
-					
+
 					$acceso = Controlador::getConfig(1,'login_operadores');
 					if($acceso['valor'] == 1){
-						
+
 						$sess_oper = self::setIDOperadorSessions($_SESSION['id_usuario']);
 						$_SESSION['id_operador'] = $sess_oper['id_operador'];
 
 						$_SESSION['id_operador_unidad'] = $sess_oper['id_operador_unidad'];
 						$_SESSION['cat_statusoperador'] = $sess_oper['cat_statusoperador'];
-						
+
 						if($sess_oper['multi'] > 1){
 							$_SESSION['id_operador_unidad'] = 'select';
 						}
 						$mvhc = ($_SESSION['id_operador_unidad'] == 'select')?2:1;
 						$_SESSION['serie'] = self::getSerie($_SESSION['id_usuario']);
-						
+
 							$array[4] = array(
 								'id_operador'=>$_SESSION['id_operador'],
 								'serie'=>$_SESSION['serie'],
@@ -206,9 +205,9 @@ class LoginModel
 								'id_usuario'=>$_SESSION['id_usuario'],
 								'mvhc'=>$mvhc,
 								'session_id'=>session_id()
-							);							
-						
-						
+							);
+
+
 						self::permisos($_SESSION['id_rol']);
 						self::permisos_acl($_SESSION['id_usuario']);
 						$episodio = self::openEpisodio($_SESSION['id_operador']);
@@ -221,34 +220,34 @@ class LoginModel
 							session_unset();
 							unset($_SESSION);
 							session_destroy();
-							$array[2] = array('via'=>"incompleto");	
+							$array[2] = array('via'=>"incompleto");
 						}else{
 							$array[2] = array('via'=>"correcta");
 						}
 						self::storeSession($_SESSION['id_usuario']);
-						
+
 					}else{
 						session_unset();
 						unset($_SESSION);
 						session_destroy();
 						$array[2] = array('via'=>"disabled");
 					}
-					
-				}else if(($_SESSION['id_rol']!=2)&&($_SESSION['dispositivo'] == 'pc')){	
-					
+
+				}else if(($_SESSION['id_rol']!=2)&&($_SESSION['dispositivo'] == 'pc')){
+
 					self::session_duplicada_no_operador($row->id_usuario,$mobile);
-					
+
 					self::permisos($_SESSION['id_rol']);
 					self::permisos_acl($_SESSION['id_usuario']);
 					$array[2] = array('via'=>"correcta");
 					self::storeSession($_SESSION['id_usuario']);
-				
-				}else{	
+
+				}else{
 					session_unset();
 					unset($_SESSION);
 					session_destroy();
 					$array[2] = array('via'=>"disabled");
-					
+
 				}
 		}else{
 			self::putLoggerLogin($_POST['usuario']);
@@ -290,7 +289,7 @@ class LoginModel
 			WHERE
 				fw_usuarios.usuario = '".$usuario."'
 		";
-				
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$result = $query->fetchAll();
@@ -348,13 +347,13 @@ class LoginModel
 				);
 		";
 		$query = $this->db->prepare($sql);
-		$query->execute();		
+		$query->execute();
 	}
 	public function updateLoggerLogin($id_login_log){
 		$ahora = date("Y-m-d H:i:s");
 		$sql = "
 			UPDATE `fw_login_log`
-			SET 
+			SET
 			 `ip` = '".$_SERVER['REMOTE_ADDR']."',
 			 `fecha` = '".$ahora."',
 			 `intentos` = intentos + 1
@@ -362,8 +361,8 @@ class LoginModel
 				(`id_login_log` = '".$id_login_log."');
 		";
 		$query = $this->db->prepare($sql);
-		$query->execute();		
-	}	
+		$query->execute();
+	}
 	public function selectLoggerLogin($id_usuario){
 		$sql = "
 			SELECT
@@ -395,7 +394,7 @@ class LoginModel
 		}else{
 			return array('id_login_log' => NULL);
 		}
-	}	
+	}
 	public function getIdUsuario($usuario){
 		$sql = "
 			SELECT
@@ -405,7 +404,7 @@ class LoginModel
 			WHERE
 				fw_usuarios.usuario = '".$usuario."'
 		";
-				
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$result = $query->fetchAll();
@@ -414,7 +413,7 @@ class LoginModel
 				return $row->id_usuario;
 			}
 		}
-	}	
+	}
 	public function storeSession($id_usuario){
 		$init = date("Y-m-d H:i:s");
 		$sql = "
@@ -440,7 +439,7 @@ class LoginModel
 					'".$init."'
 				);
 		";
-		
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
@@ -459,10 +458,10 @@ class LoginModel
 			FROM
 				fw_login as fwl
 			WHERE
-				fwl.id_usuario = ".$id_usuario." AND 
+				fwl.id_usuario = ".$id_usuario." AND
 				fwl.open = 1
 		";
-				
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$result = $query->fetchAll();
@@ -482,7 +481,7 @@ class LoginModel
 				WHERE
 					fwl.id_login = ".$id_login."
 			";
-					
+
 			$query = $this->db->prepare($sql);
 			$query->execute();
 			$result = $query->fetchAll();
@@ -506,7 +505,7 @@ class LoginModel
 				WHERE
 					fwl.id_login = ".$id_login."
 			";
-					
+
 			$query = $this->db->prepare($sql);
 			$query->execute();
 			$result = $query->fetchAll();
@@ -592,7 +591,7 @@ class LoginModel
 	public function credenciales(){
 		$data = array();
 		if(isset($_SESSION['id_rol'])){
-			
+
 			$id_ubicacion = isset($_SESSION['id_ubicacion']) ? $_SESSION['id_ubicacion'] : '';
 			$id_rol = isset($_SESSION['id_rol']) ? $_SESSION['id_rol'] : '';
 			$sql = "
@@ -604,7 +603,7 @@ class LoginModel
 						fw_roles
 					WHERE
 						fw_ubicacion.id_ubicacion = ".$id_ubicacion."
-					AND 
+					AND
 						fw_roles.id_rol = ".$id_rol."
 			";
 			$query = $this->db->prepare($sql);
@@ -636,7 +635,7 @@ class LoginModel
 		}else{
 			$_SESSION['permisos_acl'] = '';
 		}
-	}	
+	}
 	private function permisos($rol){
 		$sql = "SELECT	fw_metodos.controlador, fw_metodos.metodo	FROM fw_permisos INNER JOIN fw_metodos ON fw_permisos.id_metodo = fw_metodos.id_metodo where fw_permisos.id_rol = $rol ";
 		$query = $this->db->prepare($sql);
@@ -653,7 +652,7 @@ class LoginModel
 		}
 	}
 	public function verificarSession(){
-		
+
 		if(!isset($_SESSION['hora_acceso'])){
 			$array[]=array('resp'=>"timeout");
 		}else{
@@ -672,7 +671,7 @@ class LoginModel
 				Controlador::updateLogin();
 			}
 		}
-		print json_encode($array); 			 
+		print json_encode($array);
 	}
 	public function salir(){
 		$id_login = self::getId_login();
@@ -703,10 +702,10 @@ class LoginModel
 		$clean = "DELETE FROM fw_lost_password WHERE correo = :correo";
         $query = $this->db->prepare($clean);
         $query->execute(array(':correo' => $correo));
-		
+
 		$sql = "INSERT INTO fw_lost_password (	token, 	id_usuario, correo) VALUES (:token, :id_usuario, :correo)";
 		$query = $this->db->prepare($sql);
-		$query->execute(array(':token' => $token, ':id_usuario' => $id, ':correo' => $correo));	
+		$query->execute(array(':token' => $token, ':id_usuario' => $id, ':correo' => $correo));
 	}
 	public function salirAndroid($id_usuario){
 		$id_login = self::getId_loginAndroid($id_usuario);
@@ -727,10 +726,10 @@ class LoginModel
 			FROM
 				fw_login as fwl
 			WHERE
-				fwl.id_usuario = ".$id_usuario." AND 
+				fwl.id_usuario = ".$id_usuario." AND
 				fwl.open = 1
 		";
-				
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$result = $query->fetchAll();
