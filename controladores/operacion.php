@@ -3,38 +3,32 @@ class Operacion extends Controlador
 {
     public function index()
     {
-		$this->se_requiere_logueo(true,'Operacion|index');
-        require URL_VISTA.'operacion/index.php';
+	$this->se_requiere_logueo(true,'Operacion|index');
+       require URL_VISTA.'operacion/index.php';
     }
-	public function clearGps(){
-		session_destroy();
-		$modelo = $this->loadModel('Operacion');
-		$modelo->caducarGps();		
-	}
-	
 	public function cron(){
 		session_destroy();
 		if(DEVELOPMENT){
 			$acceso = Controlador::getConfig(1,'websockets_control');
 			if($acceso['valor'] != 1){exit();}
 		}
-		
+
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
-		
+
 		$relTravel = $operacion->asignar_viajes(1);
 		if($relTravel['process']){
 			self::asignacion_automatica($relTravel,$mobile);
 		}
-		
+
 		if($operacion->cordon_hash(1)){$mobile->transmitir('doit','updcrd1');}
 		if($operacion->cordon_hash(2)){$mobile->transmitir('doit','updcrd2');}
-		
+
 		if($operacion->serv_cve_hash(179)){$mobile->transmitir('doit','updasignados');}
 		if($operacion->servicio_hash(171)){$mobile->transmitir('doit','updproceso');}
 		if($operacion->servicio_hash(170)){$mobile->transmitir('doit','updpendientes');}
 		if($operacion->servicio_hash(188)){$mobile->transmitir('doit','updpendientes');}
-		
+
 		$eventos = $mobile->sync_ride();
 		foreach ($eventos as $evento){
 			$mobile->broadcast($evento['id_operador_unidad']);
@@ -46,13 +40,13 @@ class Operacion extends Controlador
 			$acceso = Controlador::getConfig(1,'websockets_control');
 			if($acceso['valor'] != 1){exit();}
 		}
-		
+
 		$mobile = $this->loadModel('Mobile');
 		$operacion = $this->loadModel('Operacion');
 		$notificaciones = $operacion->notificacionesApartados();
 		$mobile->transmitir(json_encode($notificaciones),'notificarApartados');
 	}
-	
+
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');
@@ -66,19 +60,19 @@ class Operacion extends Controlador
 		require URL_VISTA.'modales/operacion/viajeAlAire.php';
 	}
 	public function asignarViajeAlAire($id_operador_unidad, $id_operador, $id_viaje){
-		
+
 		$operacion = $this->loadModel('Operacion');
 		$mobile = $this->loadModel('Mobile');
-		
+
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->asignar_viaje($id_viaje,$operador);
-		
+
 		$relTravel['id_operador_unidad'] = $id_operador_unidad;
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 120;
-		
+
 		self::asignacion_automatica($relTravel,$mobile);
-		
+
 		print json_encode(array('resp' => true ));
 	}
 	public function pulledApart(){
@@ -97,24 +91,24 @@ class Operacion extends Controlador
 	}
 	public function mensajeriaSettings(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		
+
 		$model = $this->loadModel('Operacion');
 		$operadores = $model->pulledApart();
 		$anterior = self::getConfig(1,'turno_apartados');
 		$actual = $model->turnoApart($anterior['valor']);
-		
+
 		require URL_VISTA.'modales/operacion/mensajeriaSettings.php';
 	}
 	public function paqueteriaSettings(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		
+
 		$model = $this->loadModel('Operacion');
 		$operadores = $model->pulledApart();
 		$anterior = self::getConfig(1,'turno_apartados');
 		$actual = $model->turnoApart($anterior['valor']);
-		
+
 		require URL_VISTA.'modales/operacion/paqueteriaSettings.php';
-	}	
+	}
 	public function asignacion_automatica($array,MobileModel $model){
 		$token = 'AAT:'.$this->token(62);
 		$model->storeToSyncRide(1,$token,$array['salida'],$array['id_operador_unidad']);
@@ -137,12 +131,12 @@ class Operacion extends Controlador
 	public function listado_completados(){
 		$this->se_requiere_logueo(true,'Operacion|listado_completados');
 		require URL_VISTA.'operacion/listado_completados.php';
-	}	
+	}
 	public function listado_cancelados(){
 		$this->se_requiere_logueo(true,'Operacion|listado_cancelados');
 		require URL_VISTA.'operacion/listado_cancelados.php';
-	}	
-	
+	}
+
 	public function completados(){
 		$this->se_requiere_logueo(true,'Operacion|listado_completados');
 		$modelo = $this->loadModel('Operacion');
@@ -189,7 +183,7 @@ class Operacion extends Controlador
 	}
 	public function costos_adicionales($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$cat_concepto = $this->selectCatalog('costos_adicionales',null);		
+		$cat_concepto = $this->selectCatalog('costos_adicionales',null);
 		require URL_VISTA.'modales/operacion/costos_adicionales.php';
 	}
 	public function costos_adicionales_get($id_viaje){
@@ -202,7 +196,7 @@ class Operacion extends Controlador
 		$operacion = $this->loadModel('Operacion');
 		$ok = $operacion->eliminar_costoAdicional($id_costos_adicionales);
 		print json_encode($ok);
-	}	
+	}
 	public function cambiar_tarifa($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$operacion = $this->loadModel('Operacion');
@@ -210,7 +204,7 @@ class Operacion extends Controlador
 		$current_tarifa = $operacion->currentTarifa($id_viaje);
 		$id_company = $operacion->id_company($id_cliente);
 		$tarifas = $operacion->queryTarifas($id_company);
-		
+
 		require URL_VISTA.'modales/operacion/cambiar_tarifa.php';
 	}
 	public function activar_cancelacion_do($id_viaje){
@@ -242,7 +236,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
 		$modelo->cambiar_tarifa($id_tarifa_cliente,$id_viaje);
-	}	
+	}
 	public function solicitud(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$tiposServicios = $this->selectCatalog('tipo_servicio',null);
@@ -367,27 +361,27 @@ class Operacion extends Controlador
 		$mobil = $this->loadModel('Mobile');
 		$operadores = $this->loadModel('Operadores');
 		$login = $this->loadModel('Login');
-		print $modelo->setear_status_viaje($_POST, $mobil, $operadores, $login);	
+		print $modelo->setear_status_viaje($_POST, $mobil, $operadores, $login);
 	}
 	public function cancel_apartado($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$razones_cancelacion = $this->selectCatalog('cancelaciones',null);
 		require URL_VISTA.'modales/operacion/cancel_apartado.php';
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public function apartado2pendientes($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');
 		$vigente = $model->viajeVigente($id_viaje);
 		$alAire = true;
 		$formado = false;
-		
+
 		if($vigente){
 			require URL_VISTA.'modales/operacion/apartado2pendientes.php';
 		}else{
@@ -397,53 +391,53 @@ class Operacion extends Controlador
 	public function apartado2pendientesDo(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
-		print $modelo->apartado2pendientesDo($_POST);	
+		print $modelo->apartado2pendientesDo($_POST);
 	}
 
-	
+
 	public function apartadoAlAire($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');
 		$operadores = $model->getTBUnits();
-		
+
 		$vigente = $model->viajeVigente($id_viaje);
 		$alAire = true;
 		$formado = false;
-		
+
 		if($vigente){
 			require URL_VISTA.'modales/operacion/apartadoAlAire.php';
 		}else{
 			require URL_VISTA.'modales/operacion/procesarException.php';
 		}
-	}	
+	}
 	public function asignarApartadoAlAire($id_operador_unidad, $id_operador, $id_viaje){
-		
+
 		$operacion = $this->loadModel('Operacion');
 		$mobile = $this->loadModel('Mobile');
-		
+
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->asignarApartadoAlAire($id_viaje,$operador);
-		
+
 		$relTravel['id_operador_unidad'] = $id_operador_unidad;
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 120;
-		
+
 		self::asignacion_automatica($relTravel,$mobile);
-		
+
 		print json_encode(array('resp' => true ));
 	}
 	public function procesarNormal($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		
+
 		$operacion = $this->loadModel('Operacion');
 		$bases = $this->loadModel('Bases');
-		
+
 		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$alAire = $operacion->alAire($id_operador_unidad);
 		$formado = $operacion->formadoAnyBase($bases, $id_operador_unidad);
 		$vigente = $operacion->viajeVigente($id_viaje);
-		
-		
+
+
 		if(($alAire)&&(!$formado)&&($vigente)){
 			require URL_VISTA.'modales/operacion/procesarNormal.php';
 		}else{
@@ -455,23 +449,23 @@ class Operacion extends Controlador
 		$mobile = $this->loadModel('Mobile');
 		$id_viaje = $_POST['id_viaje'];
 		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
-		
+
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->activarApartado($id_viaje,$operador);
-		
+
 		$relTravel['id_operador_unidad'] = $id_operador_unidad;
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 197;
-		
+
 		self::asignacion_automatica($relTravel,$mobile);
-		
+
 		print json_encode(array('resp' => true ));
 	}
 	public function cancel_apartado_set(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
 		$mobil = $this->loadModel('Mobile');
-		print $modelo->cancel_apartado_set($_POST, $mobil);	
+		print $modelo->cancel_apartado_set($_POST, $mobil);
 	}
 	public function setPageRemotly(){
 		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
@@ -489,9 +483,9 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|check_standinLine');
 		$model = $this->loadModel('Operacion');
 		$mobile = $this->loadModel('Mobile');
-		
+
 		$geotime = $mobile->enGeocercas($id_operador);
-		
+
 		$session = $model->getActiveSession($id_operador);
 		$connected = $mobile->inLinkedIn($id_operador);
 		$engeocerca1 = $geotime['geo1'];
@@ -501,18 +495,18 @@ class Operacion extends Controlador
 		$solicitud = $model->getSolicitudF14Activa($id_operador);
 		$encordon1 = $model->formadoenBase($id_operador,1);
 		$encordon2 = $model->formadoenBase($id_operador,2);
-		
+
 		require URL_VISTA.'modales/operacion/check_standinLine.php';
 	}
 	public function enlazados(){
 		$this->se_requiere_logueo(true,'Operacion|enlazados');
 		$model = $this->loadModel('Operacion');
 		$mobile = $this->loadModel('Mobile');
-		
+
 		$enlazados = array();
 		$num = 0;
 		$duplicados = array();
-		
+
 		if(SOCKET_PROVIDER == 'ABLY'){
 			$activos = $mobile->linkedIn();
 			foreach($activos->items as $num => $oper){
@@ -605,18 +599,18 @@ class Operacion extends Controlador
 			$cuantas[$key] = $value;
 			$extras += --$value;
 		}
-		
-		
-		if(SOCKET_PROVIDER == 'ABLY'){		
+
+
+		if(SOCKET_PROVIDER == 'ABLY'){
 			require URL_VISTA.'operacion/enlace_ably.php';
 		}else if(SOCKET_PROVIDER == 'PUSHER'){
 			require URL_VISTA.'operacion/enlace_pusher.php';
 		}else if(SOCKET_PROVIDER == 'PUBNUB'){
 			require URL_VISTA.'operacion/enlace_pubnub.php';
 		}
-		
-		
-	}		
+
+
+	}
 	public function modal_mensajeria($id_operador){
 		$this->se_requiere_logueo(true,'Operacion|mensajeria');
 		require URL_VISTA.'modales/operacion/mensajeria.php';
@@ -633,7 +627,7 @@ class Operacion extends Controlador
 	public function enviar_emision(){
 		$this->se_requiere_logueo(true,'Operacion|broadcast_all');
 		$model = $this->loadModel('Mobile');
-		
+
 		$mensaje = array(
 			'mensaje' => $_POST['mensaje']
 		);
@@ -645,7 +639,7 @@ class Operacion extends Controlador
 		$model = $this->loadModel('Operacion');
 		$model->delivery_stat($id_mensaje);
 	}
-	
+
 	public function modal_activar_c06($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		require URL_VISTA.'modales/operacion/activar_c06.php';
@@ -661,11 +655,11 @@ class Operacion extends Controlador
 		$model->formarse_directo($token,$id_operador_unidad,$id_base,115);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
-	
+
 	public function modal_activar_c02($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		require URL_VISTA.'modales/operacion/activar_c02.php';
-	}	
+	}
 	public function aut_c02($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		$model = $this->loadModel('Mobile');
@@ -678,11 +672,11 @@ class Operacion extends Controlador
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
-	
+
 	public function modal_activar_f14($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		require URL_VISTA.'modales/operacion/activar_f14.php';
-	}		
+	}
 	public function aut_f14($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		$model = $this->loadModel('Mobile');
@@ -693,11 +687,11 @@ class Operacion extends Controlador
 		$model->formarse_directo($token,$id_operador_unidad,$id_base,113);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
-	
+
 	public function modal_activar_f06($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		require URL_VISTA.'modales/operacion/activar_f06.php';
-	}	
+	}
 	public function aut_f06($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		$model = $this->loadModel('Mobile');
@@ -715,40 +709,40 @@ class Operacion extends Controlador
 	public function modal_activar_out($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		require URL_VISTA.'modales/operacion/activar_out.php';
-	}	
+	}
 	public function aut_out($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		$model = $this->loadModel('Mobile');
 		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
-		
+
 		$token = 'OP:'.$this->token(62);
 		$model->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}	
-	
-	
+	}
+
+
 	public function verificar_a10($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
 		$model = $this->loadModel('Mobile');
-		
+
 		$send = 0;
 		for($i=0;$i<=15;$i++){
-			
+
 			$turno = $model->turno($id_operador_unidad,$id_base);
-			
+
 			if($turno == 'No formado'){
 				$state = array('state' => 1);
 				$send = 1;
 			}else{
 				$state = array('state' => 0);
 			}
-			
+
 			if($send = 1){
 				$model->transmitir(json_encode($state),'verify_a10_'.$id_operador_unidad.'');
 				exit();
 			}
-			
+
 			sleep(2);
 		}
 		print json_encode(array('resp' => true ));
@@ -765,7 +759,7 @@ class Operacion extends Controlador
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
-	
+
 	public function modal_activar_f13($id_operador_unidad){
 		$this->se_requiere_logueo(true,'Operacion|activar_f13');
 		require URL_VISTA.'modales/operacion/activar_f13.php';
@@ -778,86 +772,6 @@ class Operacion extends Controlador
 		$model->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
-	
-	public function panorama($page){
-		$this->se_requiere_logueo(true,'Operacion|index');
-		require URL_VISTA.'operacion/panorama.php';
-	}	
-	public function panorama_c1(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_c1');
-		$unitsIn = self::panorama_get_c1();
-		require URL_VISTA.'operacion/panorama_c1.php';
-	}
-	public function panorama_c8(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_c8');
-		$unitsIn = self::panorama_get_c8();
-		require URL_VISTA.'operacion/panorama_c8.php';
-	}
-	public function panorama_a11(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_a11');
-		$unitsIn = self::panorama_get_a11();
-		require URL_VISTA.'operacion/panorama_a11.php';
-	}
-	public function panorama_kpmg(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_kpmg');
-		$mobile = $this->loadModel('Mobile');
-		$unitsIn = self::panorama_get_base($mobile,'B1');
-		$gt_goc = $mobile->getGeocerca('B1');
-		$geocerca = $gt_goc['geocerca'];
-		$geoDraw = self::dataGeocerca($geocerca);
-		require URL_VISTA.'operacion/panorama_kpmg.php';
-	}
-	public function panorama_kpmg_cordon(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_kpmg_cordon');
-		$mobile = $this->loadModel('Mobile');
-		$gt_goc = $mobile->getGeocerca('B1');
-		$geocerca = $gt_goc['geocerca'];
-		$geoDraw = self::dataGeocerca($geocerca);
-		$unitsIn = self::panorama_get_cordon('1');
-		require URL_VISTA.'operacion/panorama_kpmg_cordon.php';
-	}
-	public function panorama_ejnal(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_ejnal');
-		$mobile = $this->loadModel('Mobile');
-		$unitsIn = self::panorama_get_base($mobile,'B2');
-		$gt_goc = $mobile->getGeocerca('B2');
-		$geocerca = $gt_goc['geocerca'];
-		$geoDraw = self::dataGeocerca($geocerca);
-		require URL_VISTA.'operacion/panorama_ejnal.php';
-	}
-	public function panorama_ejnal_cordon(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_ejnal_cordon');
-		$mobile = $this->loadModel('Mobile');
-		$gt_goc = $mobile->getGeocerca('B2');
-		$geocerca = $gt_goc['geocerca'];		
-		$geoDraw = self::dataGeocerca($geocerca);
-		$unitsIn = self::panorama_get_cordon('2');
-		require URL_VISTA.'operacion/panorama_ejnal_cordon.php';
-	}	
-	public function panorama_tb(){
-		$this->se_requiere_logueo(true,'Operacion|panorama_tb');
-		$unitsIn = self::panorama_get_tb();
-		require URL_VISTA.'operacion/panorama_tb.php';
-	}
-	public function panorama_get_tb(){
-		$operacion = $this->loadModel('Operacion');
-		
-		$unitsTB = $operacion->getTBUnits();
-		$num = 0;
-		$unitState = array();
-		foreach ($unitsTB as $tb){
-			$unitState[$num]['numeq'] 				= $tb['numeq'];
-			$unitState[$num]['id_operador'] 		= $tb['id_operador'];
-			$unitState[$num]['id_operador_unidad'] 	= $tb['id_operador_unidad'];
-			$unitState[$num]['latitud'] 			= $tb['latitud'];
-			$unitState[$num]['longitud'] 			= $tb['longitud'];
-			$unitState[$num]['distancia'] 			= round(($tb['distancia']/1000),2).' km';
-			$unitState[$num]['min_min'] 			= round(($tb['min_min']/60),0);
-			$unitState[$num]['min_max'] 			= round(($tb['min_max'])/60,0);
-			$num++;
-		}
-		return $unitState;
-	}	
 	public function dataGeocerca($geocerca){
 		$geoarray = explode(' ',$geocerca);
 		$num = 0;
@@ -868,127 +782,6 @@ class Operacion extends Controlador
 			$num++;
 		}
 		return $coords;
-	}
-	public function panorama_get_cordon($base){
-		$operacion = $this->loadModel('Operacion');
-		$gps = $this->loadModel('Gps');
-		
-		$enCordon = $operacion->mapearCordon($base);
-		$num = 0;
-		$unitState = array();
-		foreach ($enCordon as $frm){
-			
-			$actual_coords = $gps->lastPositionById($frm['id_operador']);
-			$coords = json_decode($actual_coords);
-			
-			$unitState[$num]['numeq'] = $frm['numeq'];
-			$unitState[$num]['id_operador'] = $frm['id_operador'];
-			$unitState[$num]['id_operador_unidad'] = $frm['id_operador_unidad'];
-			$unitState[$num]['latitud'] = $coords->lat;
-			$unitState[$num]['longitud'] = $coords->lng;
-			$unitState[$num]['time'] = $coords->time;
-			$num++;
-			
-		}
-		return $unitState;
-	}
-	public function panorama_get_base(MobileModel $mobile,$base){
-		$operacion = $this->loadModel('Operacion');
-		$gps = $this->loadModel('Gps');
-		
-		$enc1 = $operacion->enC1();
-		$num = 0;
-		$unitState = array();
-		foreach ($enc1 as $c1){
-			
-			$actual_coords = $gps->lastPositionById($c1['id_operador']);
-			$coords = json_decode($actual_coords);
-			
-			$geoVars['latitud_act'] = $coords->lat;
-			$geoVars['longitud_act'] = $coords->lng;
-			
-			$in = $mobile->enGeocercaNum($geoVars,$base);
-			
-			if($in == 'in'){
-				$unitState[$num]['numeq'] = $c1['numeq'];
-				$unitState[$num]['id_operador'] = $c1['id_operador'];
-				$unitState[$num]['id_operador_unidad'] = $c1['id_operador_unidad'];
-				$unitState[$num]['latitud'] = $coords->lat;
-				$unitState[$num]['longitud'] = $coords->lng;
-				$unitState[$num]['time'] = $coords->time;
-				$num++;
-			}
-		}
-		return $unitState;
-	}
-	public function panorama_get_c1(){
-		$operacion = $this->loadModel('Operacion');
-		$gps = $this->loadModel('Gps');
-		
-		$enc1 = $operacion->enC1();
-		$num = 0;
-		$unitState = array();
-		foreach ($enc1 as $c1){
-			
-			$actual_coords = $gps->lastPositionById($c1['id_operador']);
-			$coords = json_decode($actual_coords);
-			if($coords){
-				$unitState[$num]['numeq'] = $c1['numeq'];
-				$unitState[$num]['id_operador'] = $c1['id_operador'];
-				$unitState[$num]['id_operador_unidad'] = $c1['id_operador_unidad'];
-				$unitState[$num]['latitud'] = $coords->lat;
-				$unitState[$num]['longitud'] = $coords->lng;
-				$unitState[$num]['time'] = $coords->time;
-				$num++;
-			}
-		}
-		return $unitState;
-	}
-	public function panorama_get_c8(){
-		$operacion = $this->loadModel('Operacion');
-		$gps = $this->loadModel('Gps');
-		
-		$enc8 = $operacion->enC8();
-		$num = 0;
-		$unitState = array();
-		foreach ($enc8 as $c8){
-			
-			$actual_coords = $gps->lastPositionById($c8['id_operador']);
-			$coords = json_decode($actual_coords);
-			if($coords){
-				$unitState[$num]['numeq'] = $c8['numeq'];
-				$unitState[$num]['id_operador'] = $c8['id_operador'];
-				$unitState[$num]['id_operador_unidad'] = $c8['id_operador_unidad'];
-				$unitState[$num]['latitud'] = $coords->lat;
-				$unitState[$num]['longitud'] = $coords->lng;
-				$unitState[$num]['time'] = $coords->time;
-				$num++;
-			}
-		}
-		return $unitState;
-	}
-	public function panorama_get_a11(){
-		$operacion = $this->loadModel('Operacion');
-		$gps = $this->loadModel('Gps');
-		
-		$ena11 = $operacion->enA11();
-		$num = 0;
-		$unitState = array();
-		foreach ($ena11 as $a11){
-			
-			$actual_coords = $gps->lastPositionById($a11['id_operador']);
-			$coords = json_decode($actual_coords);
-			if($coords){
-				$unitState[$num]['numeq'] = $a11['numeq'];
-				$unitState[$num]['id_operador'] = $a11['id_operador'];
-				$unitState[$num]['id_operador_unidad'] = $a11['id_operador_unidad'];
-				$unitState[$num]['latitud'] = $coords->lat;
-				$unitState[$num]['longitud'] = $coords->lng;
-				$unitState[$num]['time'] = $coords->time;
-				$num++;
-			}
-		}
-		return $unitState;
 	}
 	public function cordon_kpmg(){
 		$this->se_requiere_logueo(true,'Operacion|cordon_kpmg');
@@ -1015,13 +808,13 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|cordon_ejnal');
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->cordon_get($_POST,2);
-	}	
+	}
 
 	public function cordon_hash($base){
 		$this->se_requiere_logueo(true,'Operacion|cordon_kpmg');
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->cordon_hash($base);
-	}	
+	}
 	public function suspendidas(){
 		$this->se_requiere_logueo(true,'Operacion|suspendidas');
 		require URL_VISTA.'operacion/suspendidas.php';
@@ -1047,7 +840,6 @@ class Operacion extends Controlador
 	public function inactivos_get(){
 		$this->se_requiere_logueo(true,'Operacion|inactivos');
 		$modelo = $this->loadModel('Operacion');
-		if(PRESENCE_GET == 'CURL'){$modelo->populate_presence();}
 		print $modelo->inactivos_get($_POST);
 	}
 	public function tiempo_base(){
@@ -1074,7 +866,7 @@ class Operacion extends Controlador
 		$mobile = $this->loadModel('Mobile');
 		////////////////////////////////////////////////////////////////////variables del form
 		$num = 0;
-		$service = new stdClass;	
+		$service = new stdClass;
 		foreach ($_POST as $key => $value) {
 			$service->$key = $value;
 			if(substr($key,0, 8) == 'usuario_'){
@@ -1083,7 +875,7 @@ class Operacion extends Controlador
 				$num++;
 			}
 		}
-		
+
 		////////////////////////////////////////////////////////////////////crear directorio
 		if(empty($_POST['id_cliente_origen'])) {
 			$service->id_cliente_origen = $cliente->insertOrigen($service);
@@ -1091,7 +883,7 @@ class Operacion extends Controlador
 		if(empty($_POST['id_cliente_destino'])) {
 			$service->id_cliente_destino = $cliente->insertDestino($service);
 		}
-		
+
 		////////////////////////////////////////////////////////////////////inserta viaje
 		$service->id_viaje = $operacion->insert_viaje($service);
 		$operacion->insert_detallesViaje($service);
@@ -1109,32 +901,32 @@ class Operacion extends Controlador
 			$num_eq = $service->numero_economico;
 			$hit = ($num_eq == $turno)?true:false;
 			$operacion->countApart($service->id_operador,$hit,$service->id_operador_turno);
-			
+
 				$data['id_site']	= 1;
 				$data['descripcion']= 'turno_apartados';
 				$data['valor']		= $turno;
 				$data['tmp_val']	= 0;
 				$data['data']		= 0;
-				
+
 			self::setConfig($data);
-			
+
 			$operador = $operacion->unidadalAire($service->id_operador_unidad);
 			$operacion->asignar_apartado($service->id_viaje,$operador);
-			
+
 		}
-		
+
 		////////////////////////////////////////////////////////////////////servicio al aire
 		if($service->cat_tipo_salida == 181){
 			$operador = $operacion->unidadalAire($service->id_operador_unidad);
 			$operacion->asignar_viaje($service->id_viaje,$operador);
-			
+
 			$relTravel['id_operador_unidad'] = $service->id_operador_unidad;
 			$relTravel['id_viaje'] 	= $service->id_viaje;
 			$relTravel['salida'] 	= 120;
-			
+
 			self::asignacion_automatica($relTravel,$mobile);
 		}
-		
+
 		////////////////////////////////////////////////////////////////////salida por sitio
 		if($service->cat_tipo_salida == 182){
 			$operador = $operacion->unidadenSitio($service->sitio_select_oper,1);
@@ -1142,12 +934,12 @@ class Operacion extends Controlador
 
 			$relTravel['id_operador_unidad'] = $operador['id_operador_unidad'];
 			$relTravel['id_viaje'] 	= $service->id_viaje;
-			$relTravel['salida'] 	= 119;		
-			
+			$relTravel['salida'] 	= 119;
+
 			self::asignacion_automatica($relTravel,$mobile);
 		}
 		print json_encode(array('resp' => true ));
 	}
-	
+
 }
 ?>

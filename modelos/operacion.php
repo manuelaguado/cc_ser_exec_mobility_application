@@ -55,10 +55,10 @@ class OperacionModel{
 			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
 			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
 			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
-			
+
 			INNER JOIN cl_clientes AS emp ON clc.parent = emp.id_cliente
 			WHERE
-				viv.id_viaje = $id_viaje		
+				viv.id_viaje = $id_viaje
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -87,19 +87,19 @@ class OperacionModel{
 				$d4 = ($row->teld != '')?'<br><strong>Tel:</strong> '.$row->teld:'';
 				$d2 = ($row->int_d != '')?'<br><strong>Int:</strong> '.$row->int_d:'';
 				$d3 = ($row->extd != '')?'<br><strong>Ext:</strong> '.$row->extd:'';
-				$d1 = ($row->called != '')?'<br><br><strong>Calle:</strong> '.$row->called:'';				
-				
+				$d1 = ($row->called != '')?'<br><br><strong>Calle:</strong> '.$row->called:'';
+
 				$dato =  $o1.$o2.$o3.$o4.$o5;
 				$datd =  $d1.$d2.$d3.$d4.$d5;
-				
+
 
 				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
 				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
-				
+
 				$array['Origen'] 	= $row->invo.$dato.$ro;
 				$array['Destino'] 	= $row->invd.$datd.$rd;
-				
-				$array['Observaciones'] 			= $row->observaciones;		
+
+				$array['Observaciones'] 			= $row->observaciones;
 			}
 		}
 		return $array;
@@ -152,9 +152,9 @@ class OperacionModel{
 				$notificacion[$num]['total']		= $query->rowCount();
 				$num++;
 			}
-			
+
 		}
-		return $notificacion;	
+		return $notificacion;
 	}
 	function addCostoAdicional($arreglo){
 		foreach ($arreglo as $key => $value) {
@@ -203,7 +203,7 @@ class OperacionModel{
 			FROM
 			vi_costos_adicionales
 			WHERE
-			id_costos_adicionales = '".$id_costos_adicionales."' 
+			id_costos_adicionales = '".$id_costos_adicionales."'
 		";
 		$query = $this->db->prepare($qry);
 		$ok = $query->execute();
@@ -271,7 +271,7 @@ class OperacionModel{
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
-	}	
+	}
 	function turnUpdate($id_operador){
 		$increment = self::resetOrIncrement($id_operador);
 		$inc = ($increment['year'])?'`turnos_anuales` + 1':'1';
@@ -294,7 +294,7 @@ class OperacionModel{
 			FROM
 				cr_apartados AS cra
 			WHERE
-				cra.id_operador = $id_operador		
+				cra.id_operador = $id_operador
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -339,11 +339,11 @@ class OperacionModel{
 					'1',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);	
+				);
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
-	}	
+	}
 	function comprobarApartado($id_operador){
 		$qry = "
 			SELECT
@@ -351,7 +351,7 @@ class OperacionModel{
 			FROM
 				cr_apartados AS cra
 			WHERE
-				cra.id_operador = $id_operador		
+				cra.id_operador = $id_operador
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -388,7 +388,7 @@ class OperacionModel{
 					'".$isHit."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);	
+				);
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -488,11 +488,11 @@ class OperacionModel{
 				$operadores[$num]['mensual'] 			= $apartados['mensuales'];
 				$operadores[$num]['anual'] 				= $apartados['anuales'];
 				$operadores[$num]['status'] 			= $apartados['hit_anual'].'/'.$apartados['turnos_anuales'];
-				
+
 				$num++;
 			}
 		}
-		return $operadores;			
+		return $operadores;
 	}
 	function elegirVehiculo($id_operador){
 		$qry = "
@@ -544,7 +544,7 @@ class OperacionModel{
 				$n++;
 			}
 		}
-		return $vehiculos;	
+		return $vehiculos;
 	}
 	function apartData($id_operador){
 		$qry = "
@@ -575,8 +575,8 @@ class OperacionModel{
 				$apartados['hit_anual'] 	= 0;
 				$apartados['turnos_anuales']= 0;
 		}
-		return $apartados;	
-	}	
+		return $apartados;
+	}
 	function adquirirTiemposBase(){
 		$units = self::getTBUnitsRed();
 		self::vaciarTiempoBase();
@@ -598,7 +598,7 @@ class OperacionModel{
 				ORDER BY
 					gps.id_gps DESC
 				LIMIT 0,
-				 1			
+				 1
 			";
 			$query = $this->db->prepare($qry);
 			$query->execute();
@@ -610,7 +610,7 @@ class OperacionModel{
 					$oper_unit[] = $unit['id_operador_unidad'];
 					$latLng[] = $row->latitud.','.$row->longitud;
 				}
-			}		
+			}
 		}
 		if($coordsUnits != ''){
 			$coordBase = '19.434830,-99.211976';
@@ -641,7 +641,7 @@ class OperacionModel{
 	function vaciarTiempoBase(){
 		$sql = "TRUNCATE cr_tiempo_base";
 		$query = $this->db->prepare($sql);
-		$query->execute();	
+		$query->execute();
 	}
 	function storeTB($array){
 		$sql = "
@@ -661,10 +661,10 @@ class OperacionModel{
 					'".$array['min']."',
 					'".$array['max']."',
 					'".$array['latLng']."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
-		$query->execute();	
+		$query->execute();
 	}
 	function getTBUnitsRed(){
 		$qry = '
@@ -688,7 +688,7 @@ class OperacionModel{
 						syc.estado1 = "C1"
 						AND syc.clave = "F14"
 						AND syc.estado3 = "F14"
-					)					
+					)
 				)
 			AND crou.status_operador_unidad = 198
 		';
@@ -705,7 +705,7 @@ class OperacionModel{
 				$num++;
 			}
 		}
-		return $operadores;			
+		return $operadores;
 	}
 	function getCurrentCveOperador($id_operador_unidad){
 		$qry = "
@@ -717,7 +717,7 @@ class OperacionModel{
 			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
 			WHERE
 				crou.id_operador_unidad = $id_operador_unidad
-			AND cm_catalogo.catalogo = 'clavesitio'	
+			AND cm_catalogo.catalogo = 'clavesitio'
 			AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
@@ -727,8 +727,8 @@ class OperacionModel{
 			foreach ($query->fetchAll() as $row){
 				return	$row->llave;
 			}
-		}		
-	}	
+		}
+	}
 	function getTBUnits(){
 		self::adquirirTiemposBase();
 		$qry = '
@@ -778,19 +778,19 @@ class OperacionModel{
 				$operadores[$num]['color'] 				= $row->color;
 				$operadores[$num]['id_operador_unidad'] = $row->id_operador_unidad;
 				$operadores[$num]['id_operador'] 		= $row->id_operador;
-				
+
 				$operadores[$num]['distancia'] 			= $row->distancia;
 				$operadores[$num]['min_min'] 			= $row->min_min;
 				$operadores[$num]['min_max'] 			= $row->min_max;
-				
+
 				$coord = explode(',',$row->latlng);
 				$operadores[$num]['latitud'] 			= $coord[0];
 				$operadores[$num]['longitud'] 			= $coord[1];
-				
+
 				$num++;
 			}
 		}
-		return $operadores;			
+		return $operadores;
 	}
 	function asignar_viajes($base){
 		$operador 	= self::unidades_formadas($base);
@@ -798,12 +798,12 @@ class OperacionModel{
 		$array = array();
 		if(($operador['procesar'])&&($viajes['procesar'])){
 			self::asignar_viaje($viajes['id_viaje'],$operador);
-			
+
 			$array['id_operador_unidad'] = $operador['id_operador_unidad'];
 			$array['id_viaje'] 	= $viajes['id_viaje'];
 			$array['salida'] 	= self::getSalidaId($viajes['salida']);
 			$array['process'] 	= true;
-		
+
 		}else{
 			$array['process'] = false;
 		}
@@ -826,17 +826,17 @@ class OperacionModel{
 			}
 		}
 	}
-	
-	
+
+
 	function asignar_apartado($id_viaje,$operador){
 		self::relacionar_operador_apartado($id_viaje,$operador);
 		self::set_fecha_asignacion($id_viaje);
 	}
 	function relacionar_operador_apartado($id_viaje,$operador){
-		
+
 		$sql = "
 			UPDATE vi_viaje
-			SET 
+			SET
 			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
 			 cat_status_viaje	= '195'
@@ -845,17 +845,17 @@ class OperacionModel{
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
-		
-	}	
+
+	}
 	function asignarApartadoAlAire($id_viaje,$operador){
 		self::relacionar_apartadoAlAire($id_viaje,$operador);
 		self::set_fecha_asignacion($id_viaje);
 	}
 	function relacionar_apartadoAlAire($id_viaje,$operador){
-		
+
 		$sql = "
 			UPDATE vi_viaje
-			SET 
+			SET
 			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
 			 cat_status_viaje	= '171',
@@ -865,19 +865,19 @@ class OperacionModel{
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
-		
-	}	
+
+	}
 	function asignar_viaje($id_viaje,$operador){
 		self::relacionar_operador_viaje($id_viaje,$operador);
 		self::set_fecha_asignacion($id_viaje);
 	}
 	function relacionar_operador_viaje($id_viaje,$operador){
-		
+
 		$cordon = ($operador['id_cordon'] != '')?"id_cordon = '".$operador['id_cordon']."',":'';
-		
+
 		$sql = "
 			UPDATE vi_viaje
-			SET 
+			SET
 			 $cordon
 			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
@@ -891,7 +891,7 @@ class OperacionModel{
 	function activarApartado($id_viaje,$operador){
 		$sql = "
 			UPDATE vi_viaje
-			SET 
+			SET
 			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
 			 cat_status_viaje	= '171',
@@ -915,7 +915,7 @@ class OperacionModel{
 		if($alAire == 0){return false;}else{return true;}
 	}
 	function setear_status_viaje($post, MobileModel $mobile=NULL, OperadoresModel $operadores = NULL, LoginModel $login = NULL){
-		
+
 		$stat_process = true;
 		$qrymissing = array();
 		$id_operador_unidad = self::getIdOperadorUnidadViaje($post['id_viaje']);
@@ -939,10 +939,10 @@ class OperacionModel{
 				$sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
 			break;
 		}
-		
+
 		if($stat_process){
 			$success = true;
-			try {  
+			try {
 				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 				$this->db->beginTransaction();
@@ -952,13 +952,13 @@ class OperacionModel{
 
 			} catch (Exception $e) {
 				$this->db->rollBack();
-				$success = false;			
+				$success = false;
 			}
-			
+
 		}else{
 			$success = false;
 		}
-		
+
 		if($success){
 			switch($post['stat']){
 				case '170':
@@ -977,7 +977,7 @@ class OperacionModel{
 							$operador['cat_statusoperador'] = 10;
 							$operador['id_operador'] = $mobile->getIdOperador($id_operador_unidad);
 							$operadores->setearstatusoperador($operador);
-							
+
 							/*desloguear*/
 							$mobile->storeToSyncRide($_SESSION['id_usuario'],$token,154,$id_operador_unidad,false);
 							$id_usuario = $mobile->getIdUsuario($id_operador_unidad);
@@ -1008,7 +1008,7 @@ class OperacionModel{
 					}
 				break;
 			}
-			
+
 			$output = array('resp' => true , 'mensaje' => 'se seteo a '.$post['stat'].' satisfactoriamente' );
 			$print = $output + $qrymissing;
 			return json_encode($print);
@@ -1019,7 +1019,7 @@ class OperacionModel{
 		}
 	}
 	function cancel_apartado_set($post, MobileModel $mobile=NULL){
-		
+
 		$stat_process = true;
 		$qrymissing = array();
 		$id_operador_unidad = self::getIdOperadorUnidadViaje($post['id_viaje']);
@@ -1027,16 +1027,16 @@ class OperacionModel{
 		if(!$post['cat_cancelaciones']){
 			$qrymissing = array('qrymissing' => 'cat_cancelaciones' );
 			$stat_process = false;
-		}		
+		}
 		if(($post['origen'] == 'rojo')&&(!isset($post['status_operador']))){
 			$qrymissing = array('qrymissing' => 'status_operador' );
 			$stat_process = false;
 		}
 		$sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
-		
+
 		if($stat_process){
 			$success = true;
-			try {  
+			try {
 				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 				$this->db->beginTransaction();
@@ -1046,15 +1046,15 @@ class OperacionModel{
 
 			} catch (Exception $e) {
 				$this->db->rollBack();
-				$success = false;			
+				$success = false;
 			}
-			
+
 		}else{
 			$success = false;
 		}
-		
+
 		if($success){
-			
+
 			if($post['origen'] == 'rojo'){
 				$token = 'APA:'.Controller::token(60);
 				switch($post['status_operador']){
@@ -1083,11 +1083,11 @@ class OperacionModel{
 		}
 	}
 	function apartado2pendientesDo($post){
-	
+
 		$qry = "UPDATE vi_viaje SET cat_status_viaje = '170', cat_tipotemporicidad = '184' WHERE id_viaje = ".$post['id_viaje'];
 		$query = $this->db->prepare($qry);
-		$success = $query->execute();			
-		
+		$success = $query->execute();
+
 		if($success){
 			return json_encode(array('resp' => true , 'mensaje' => 'se seteo a 170 satisfactoriamente' ));
 		}else{
@@ -1143,7 +1143,7 @@ class OperacionModel{
 			FROM
 				vi_viaje AS viv
 			WHERE
-				viv.id_viaje = $id_viaje	
+				viv.id_viaje = $id_viaje
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1165,7 +1165,7 @@ class OperacionModel{
 			WHERE
 				viv.id_viaje = $id_viaje
 			LIMIT 0,
-			 1		
+			 1
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1196,20 +1196,20 @@ class OperacionModel{
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				$output =  $row->id_company;
-			}			
+			}
 		}
 		return $output;
-	}	
+	}
 	function set_fecha_asignacion($id_viaje){
 		$sql = "
 			UPDATE vi_viaje_detalle
-			SET 
+			SET
 			 fecha_asignacion = '".date("Y-m-d H:i:s")."'
 			WHERE
 				id_viaje = ".$id_viaje."
 		";
 		$query = $this->db->prepare($sql);
-		$query->execute();	
+		$query->execute();
 	}
 	function viajes_pendientes(){
 		$sql ="
@@ -1228,7 +1228,7 @@ class OperacionModel{
 				viv.id_viaje ASC
 			Limit 0,1
 		";
-		
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$array = array();
@@ -1281,7 +1281,7 @@ class OperacionModel{
 		}else{
 			$array['procesar'] = false;
 		}
-		return $array;	
+		return $array;
 	}
 	function unidadalAire($id_operador_unidad){
 		$sql ="
@@ -1371,7 +1371,7 @@ class OperacionModel{
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				$output =  $row->id_tarifa_cliente;
-			}			
+			}
 		}
 		return $output;
 	}
@@ -1398,11 +1398,11 @@ class OperacionModel{
 					'".$service->temporicidad."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
-		return $this->db->lastInsertId();		
+		return $this->db->lastInsertId();
 	}
 	function insert_detallesViaje($service){
 		$redondo = (isset($service->viaje_redondo))?'1':'0';
@@ -1430,7 +1430,7 @@ class OperacionModel{
 					'".$service->msgPaqArray."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1449,7 +1449,7 @@ class OperacionModel{
 					'".$service->forma_pago."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1468,7 +1468,7 @@ class OperacionModel{
 					'".$service->id_cliente_destino."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1487,7 +1487,7 @@ class OperacionModel{
 					'".$id_cliente."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1509,7 +1509,7 @@ class OperacionModel{
 				client.cat_tipocliente as tipocliente
 			FROM
 				cl_clientes AS client
-			INNER JOIN cm_catalogo AS cat1 ON client.cat_tipocliente = cat1.id_cat		
+			INNER JOIN cm_catalogo AS cat1 ON client.cat_tipocliente = cat1.id_cat
 			WHERE
 				client.nombre LIKE lower('%".$search."%')
 			ORDER BY
@@ -1529,22 +1529,9 @@ class OperacionModel{
 					'id'=>$row->id_cliente,
 					'tipocliente'=>$row->tipocliente
 				);
-			}			
+			}
 		}
 		return json_encode($output);
-	}	
-	function caducarGps(){
-		$desde = mktime(date("H")-12,  date("i"), 0,  date("m")  , date("d"), date("Y"));
-		$desde = date("Y-m-d H:i:s", $desde );
-		$qry = "
-			DELETE
-			FROM
-			gps
-			WHERE
-			`timestamp` <= '".$desde."' 
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
 	}
 	function c1orc2($id_operador){
 		$qry = "
@@ -1636,7 +1623,7 @@ class OperacionModel{
 			}
 		}
 		return $return;
-	}	
+	}
 	function formadoenBase($id_operador,$base){
 		$qry = "
 			SELECT
@@ -1711,8 +1698,8 @@ class OperacionModel{
 		$output = array();
 		if($query->rowCount()>=1){
 			foreach ($data as $row) {
-				$output['num'] = $row->num; 
-				$output['nombre'] = $row->nombre; 
+				$output['num'] = $row->num;
+				$output['nombre'] = $row->nombre;
 			}
 		}
 		return $output;
@@ -1770,7 +1757,7 @@ class OperacionModel{
 				$num++;
 			}
 		}
-		return $unitState;	
+		return $unitState;
 	}
 	function enC1(){
 		$qry = "
@@ -1802,7 +1789,7 @@ class OperacionModel{
 				$num++;
 			}
 		}
-		return $unitState;		
+		return $unitState;
 	}
 	function enC8(){
 		$qry = "
@@ -1834,7 +1821,7 @@ class OperacionModel{
 				$num++;
 			}
 		}
-		return $unitState;		
+		return $unitState;
 	}
 	function enA11(){
 		$qry = "
@@ -1849,7 +1836,7 @@ class OperacionModel{
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
 			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 			WHERE
-				syc.estado1 = 'A11'	
+				syc.estado1 = 'A11'
 				AND crou.status_operador_unidad = 198
 		";
 		$query = $this->db->prepare($qry);
@@ -1866,7 +1853,7 @@ class OperacionModel{
 				$num++;
 			}
 		}
-		return $unitState;		
+		return $unitState;
 	}
 	function getTokenStatusBase($id_base){
 		$sql = "
@@ -1885,19 +1872,19 @@ class OperacionModel{
 				$token = $row->token_status;
 			}
 		}
-		return $token;		
+		return $token;
 	}
 	function tokenStatusBase($id_base,$token){
 		$sql = "
 			UPDATE cr_bases
-			SET 
+			SET
 			 token_status 	= '".$token."'
 			WHERE
 				id_base = ".$id_base."
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
-	}	
+	}
 	function cordon_hash($base){
 		$sql ="
 			SELECT
@@ -1912,7 +1899,7 @@ class OperacionModel{
 			)
 			ORDER BY
 				crc.cat_statuscordon DESC,
-				crc.id_cordon ASC			
+				crc.id_cordon ASC
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1949,7 +1936,7 @@ class OperacionModel{
 				$token = $row->token;
 			}
 		}
-		return $token;		
+		return $token;
 	}
 	function tokenStatusViaje($status,$output){
 		$sql = "
@@ -1971,7 +1958,7 @@ class OperacionModel{
 			WHERE
 				vi_viaje.cat_status_viaje = $status
 			ORDER BY
-				vi_viaje.id_viaje DESC		
+				vi_viaje.id_viaje DESC
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1990,7 +1977,7 @@ class OperacionModel{
 		}
 		if($change){self::tokenStatusViaje($status,$output);}
 		return $change;
-	}	
+	}
 	function servicio_hash($status){
 		$sql ="
 			SELECT
@@ -2001,7 +1988,7 @@ class OperacionModel{
 			WHERE
 				vi_viaje.cat_status_viaje = $status
 			ORDER BY
-				vi_viaje.id_viaje DESC		
+				vi_viaje.id_viaje DESC
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -2061,31 +2048,31 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'int',
-				'dt' => 1				
+				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',	
+				'dbj' => 'mk.marca',
 				'alias' => 'marca',
 				'real' => 'mk.marca',
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',				
+				'dbj' => '`mod`.modelo',
 				'real' => '`mod`.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'uni.color AS color',
 				'dbj' => 'uni.color',
 				'real' => 'uni.color',
@@ -2093,21 +2080,21 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador_unidad',
 				'dbj' => 'crou.id_operador_unidad',
 				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 5			
+				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador as id_operador',
 				'dbj' => 'crou.id_operador',
 				'real' => 'crou.id_operador',
 				'alias' => 'id_operador',
 				'typ' => 'int',
-				'dt' => 6			
+				'dt' => 6
 			)
 		);
 		$render_table = new acciones_control;
@@ -2123,7 +2110,7 @@ class OperacionModel{
 		';
 		$where = "
 			syc.estado1 = 'C1' and (syc.estado2 = 'A10' OR syc.estado2 = 'F13' OR syc.estado2 = 'A11' OR syc.estado2 = 'C8')
-			AND 
+			AND
 			ope.cat_statusoperador = 8
 			AND crou.status_operador_unidad = 198
 		";
@@ -2131,40 +2118,12 @@ class OperacionModel{
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
 	}
-	function populate_presence(){
-		require_once('../vendor/pusher/Pusher.php');
-		$options = array('encrypted' => true);
-		$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
-		$response = $pusher->get( '/channels/'.PUSHER_PRESENCE.'/users' );
-		$ahora = date("Y-m-d H:i:s");
-		
-			$sql="TRUNCATE cr_presence";
-			$query = $this->db->prepare($sql);
-			$query->execute();
-			
-		foreach($response['result']['users'] as $num => $oper){
-			foreach($oper as $it){
-				$sql="
-					INSERT INTO cr_presence 
-					(
-						id_operador,
-						fecha
-					)VALUES(
-						'".$it."',
-						'".$ahora."'
-					);
-				";
-				$query = $this->db->prepare($sql);
-				$query->execute();	
-			}
-		}
-	}
 	function inactivos_get($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cr_numeq.num as numeq',
 				'dbj' => 'cr_numeq.num',
 				'real' => 'cr_numeq.num',
@@ -2172,31 +2131,31 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'int',
-				'dt' => 1				
+				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',	
+				'dbj' => 'mk.marca',
 				'alias' => 'marca',
 				'real' => 'mk.marca',
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',				
+				'dbj' => '`mod`.modelo',
 				'real' => '`mod`.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'uni.color AS color',
 				'dbj' => 'uni.color',
 				'real' => 'uni.color',
@@ -2204,13 +2163,13 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador_unidad',
 				'dbj' => 'crou.id_operador_unidad',
 				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 5			
+				'dt' => 5
 			)
 		);
 		$render_table = new acciones_inactivos;
@@ -2226,7 +2185,7 @@ class OperacionModel{
 		';
 		$where = "
 			syc.estado1 = 'C2'
-			AND 
+			AND
 			ope.cat_statusoperador = 8
 			AND
 			NOT EXISTS (
@@ -2248,11 +2207,11 @@ class OperacionModel{
 		);
 	}
 	function suspendidas_get($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cr_numeq.num as numeq',
 				'dbj' => 'cr_numeq.num',
 				'real' => 'cr_numeq.num',
@@ -2260,31 +2219,31 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'int',
-				'dt' => 1				
+				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',	
+				'dbj' => 'mk.marca',
 				'alias' => 'marca',
 				'real' => 'mk.marca',
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',				
+				'dbj' => '`mod`.modelo',
 				'real' => '`mod`.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'uni.color AS color',
 				'dbj' => 'uni.color',
 				'real' => 'uni.color',
@@ -2292,13 +2251,13 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador_unidad',
 				'dbj' => 'crou.id_operador_unidad',
 				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 5			
+				'dt' => 5
 			)
 		);
 		$render_table = new acciones_suspendidas;
@@ -2321,11 +2280,11 @@ class OperacionModel{
 		);
 	}
 	function unidades_a11_get($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cr_numeq.num as numeq',
 				'dbj' => 'cr_numeq.num',
 				'real' => 'cr_numeq.num',
@@ -2333,15 +2292,15 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'int',
-				'dt' => 1				
+				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'mk.marca AS marca',
 				'dbj' => 'mk.marca',
 				'alias' => 'marca',
@@ -2349,15 +2308,15 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',				
+				'dbj' => '`mod`.modelo',
 				'real' => '`mod`.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'uni.color AS color',
 				'dbj' => 'uni.color',
 				'real' => 'uni.color',
@@ -2365,20 +2324,20 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador_unidad',
 				'dbj' => 'crou.id_operador_unidad',
 				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 5			
+				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador',
 				'dbj' => 'crou.id_operador',
 				'real' => 'crou.id_operador',
 				'typ' => 'int',
-				'dt' => 6			
+				'dt' => 6
 			)
 		);
 		$render_table = new acciones_unidades_a11;
@@ -2394,7 +2353,7 @@ class OperacionModel{
 		';
 		$where = "
 			syc.estado1 = 'C1'
-			AND 
+			AND
 			syc.estado2 = 'A11'
 			AND
 			ope.cat_statusoperador = 8
@@ -2405,11 +2364,11 @@ class OperacionModel{
 		);
 	}
 	function activos_get($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_operador_unidad AS crou';
 		$primaryKey = 'id_operador_unidad';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cr_numeq.num as numeq',
 				'dbj' => 'cr_numeq.num',
 				'real' => 'cr_numeq.num',
@@ -2417,31 +2376,31 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'int',
-				'dt' => 1				
+				'dt' => 1
 			),
 			array(
 				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',	
+				'dbj' => 'mk.marca',
 				'alias' => 'marca',
 				'real' => 'mk.marca',
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',				
+				'dbj' => '`mod`.modelo',
 				'real' => '`mod`.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'uni.color AS color',
 				'dbj' => 'uni.color',
 				'real' => 'uni.color',
@@ -2449,21 +2408,21 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador AS aid_operador',
 				'dbj' => 'crou.id_operador',
 				'real' => 'crou.id_operador',
 				'alias' => 'aid_operador',
 				'typ' => 'int',
-				'dt' => 5			
+				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador_unidad',
 				'dbj' => 'crou.id_operador_unidad',
 				'real' => 'crou.id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 6			
+				'dt' => 6
 			)
 		);
 		$render_table = new acciones_activos;
@@ -2479,7 +2438,7 @@ class OperacionModel{
 		';
 		$where = "
 			syc.estado1 = 'C1'
-			AND 
+			AND
 			ope.cat_statusoperador = 8
 			AND crou.status_operador_unidad = 198
 		";
@@ -2488,11 +2447,11 @@ class OperacionModel{
 		);
 	}
 	function cordon_get($array, $base){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_cordon AS crc';
 		$primaryKey = 'id_cordon';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'crc.id_operador_unidad AS id_operador_unidad',
 				'dbj' => 'crc.id_operador_unidad',
 				'real' => 'crc.id_operador_unidad',
@@ -2500,9 +2459,9 @@ class OperacionModel{
 				'typ' => 'int',
 				'turno' => true,
 				'base' => $base,
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'crn.num as num',
 				'dbj' => 'crn.num',
 				'real' => 'crn.num',
@@ -2510,31 +2469,31 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
 				'real' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'txt',
-				'dt' => 2				
+				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'crm.marca AS marca',
 				'dbj' => 'crm.marca',
 				'real' => 'crm.marca',
-				'alias' => 'marca',				
+				'alias' => 'marca',
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'crmo.modelo AS modelo',
-				'dbj' => 'crmo.modelo',				
+				'dbj' => 'crmo.modelo',
 				'real' => 'crmo.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'cru.color AS color',
 				'dbj' => 'cru.color',
 				'real' => 'cru.color',
@@ -2542,16 +2501,16 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'crc.llegada AS llegada',
 				'dbj' => 'crc.llegada',
 				'real' => 'crc.llegada',
 				'alias' => 'llegada',
 				'typ' => 'txt',
 				'time_stat' => true,
-				'dt' => 6			
+				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'crc.id_cordon AS cordon',
 				'dbj' => 'crc.id_cordon',
 				'real' => 'crc.id_cordon',
@@ -2559,15 +2518,15 @@ class OperacionModel{
 				'typ' => 'int',
 				'acciones' => true,
 				'base' => $base,
-				'dt' => 7			
+				'dt' => 7
 			),
-			array( 
+			array(
 				'db' => 'cro.id_operador AS id_operador',
 				'dbj' => 'cro.id_operador',
 				'real' => 'cro.id_operador',
 				'alias' => 'id_operador',
 				'typ' => 'int',
-				'dt' => 8			
+				'dt' => 8
 			)
 		);
 		$inner = '
@@ -2600,19 +2559,19 @@ class OperacionModel{
 		);
 	}
 	function servicios_asignados($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -2620,7 +2579,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_solicitud as solicitud',
 				'dbj' => 'vcd.fecha_solicitud',
 				'real' => 'vcd.fecha_solicitud',
@@ -2628,7 +2587,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -2636,7 +2595,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -2644,7 +2603,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -2652,7 +2611,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -2660,7 +2619,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
@@ -2668,7 +2627,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 7
 			),
-			array( 
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -2677,14 +2636,14 @@ class OperacionModel{
 				'acciones' => true,
 				'dt' => 8
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador_unidad as id_operador_unidad',
 				'dbj' => 'crou.id_operador_unidad',
 				'real' => 'crou.id_operador_unidad',
 				'alias' => 'id_operador_unidad',
 				'typ' => 'int',
 				'dt' => 9
-			)			
+			)
 		);
 		$inner = '
 			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
@@ -2696,7 +2655,7 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq	
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 179
@@ -2706,9 +2665,9 @@ class OperacionModel{
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
-				viv.id_viaje DESC		
+				viv.id_viaje DESC
 		';
 		$render_table = new acciones_asignados;
 		return json_encode(
@@ -2716,19 +2675,19 @@ class OperacionModel{
 		);
 	}
 	function servicios_enProceso($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -2736,7 +2695,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_solicitud as solicitud',
 				'dbj' => 'vcd.fecha_solicitud',
 				'real' => 'vcd.fecha_solicitud',
@@ -2744,7 +2703,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -2752,7 +2711,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -2760,7 +2719,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -2768,7 +2727,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -2776,15 +2735,15 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
 				'alias' => 'numq',
 				'typ' => 'int',
 				'dt' => 7
-			),			
-			array( 
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -2792,7 +2751,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 8
-			)		
+			)
 		);
 		$inner = '
 			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
@@ -2804,7 +2763,7 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq		
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 171
@@ -2814,9 +2773,9 @@ class OperacionModel{
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
-				viv.id_viaje DESC		
+				viv.id_viaje DESC
 		';
 		$render_table = new acciones_enproceso;
 		return json_encode(
@@ -2824,19 +2783,19 @@ class OperacionModel{
 		);
 	}
 	function servicios_pendientes($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -2844,7 +2803,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_solicitud as solicitud',
 				'dbj' => 'vcd.fecha_solicitud',
 				'real' => 'vcd.fecha_solicitud',
@@ -2852,7 +2811,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -2860,7 +2819,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -2868,7 +2827,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -2876,7 +2835,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -2884,7 +2843,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -2892,7 +2851,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 7
-			)			
+			)
 		);
 		$inner = '
 			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
@@ -2900,7 +2859,7 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
-			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat				
+			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
 		';
 		$where = '
 			(viv.cat_status_viaje = 170 OR viv.cat_status_viaje = 188)
@@ -2909,7 +2868,7 @@ class OperacionModel{
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
 				viv.id_viaje DESC
 		';
@@ -2919,19 +2878,19 @@ class OperacionModel{
 		);
 	}
 	function programados_rojo($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -2939,7 +2898,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
 				'dbj' => 'vcd.fecha_requerimiento',
 				'real' => 'vcd.fecha_requerimiento',
@@ -2947,7 +2906,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -2955,7 +2914,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -2963,7 +2922,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -2971,7 +2930,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -2979,15 +2938,15 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
 				'alias' => 'numq',
 				'typ' => 'int',
 				'dt' => 7
-			),				
-			array( 
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -3007,22 +2966,22 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
-			AND 
+			AND
 				NOW() < vcd.fecha_requerimiento
 			AND
 				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 60 MINUTE)
-			AND 
+			AND
 				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
 				viv.id_viaje DESC
 		';
@@ -3032,19 +2991,19 @@ class OperacionModel{
 		);
 	}
 	function programados_naranja($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -3052,7 +3011,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
 				'dbj' => 'vcd.fecha_requerimiento',
 				'real' => 'vcd.fecha_requerimiento',
@@ -3060,7 +3019,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -3068,7 +3027,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -3076,7 +3035,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -3084,7 +3043,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -3092,15 +3051,15 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
 				'alias' => 'numq',
 				'typ' => 'int',
 				'dt' => 7
-			),				
-			array( 
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -3120,22 +3079,22 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
-			AND 
+			AND
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 60 MINUTE)
 			AND
 				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 90 MINUTE)
-			AND 
+			AND
 				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
 				viv.id_viaje DESC
 		';
@@ -3145,19 +3104,19 @@ class OperacionModel{
 		);
 	}
 	function programados_amarillo($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -3165,7 +3124,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
 				'dbj' => 'vcd.fecha_requerimiento',
 				'real' => 'vcd.fecha_requerimiento',
@@ -3173,7 +3132,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -3181,7 +3140,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -3189,7 +3148,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -3197,7 +3156,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -3205,15 +3164,15 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
 				'alias' => 'numq',
 				'typ' => 'int',
 				'dt' => 7
-			),				
-			array( 
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -3233,22 +3192,22 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
-			AND 
+			AND
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 90 MINUTE)
 			AND
-				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 1 DAY)		
-			AND 
+				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 1 DAY)
+			AND
 				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
 				viv.id_viaje DESC
 		';
@@ -3258,19 +3217,19 @@ class OperacionModel{
 		);
 	}
 	function programados_verde($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -3278,7 +3237,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
 				'dbj' => 'vcd.fecha_requerimiento',
 				'real' => 'vcd.fecha_requerimiento',
@@ -3286,7 +3245,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -3294,7 +3253,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -3302,7 +3261,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -3310,7 +3269,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -3318,15 +3277,15 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
 				'alias' => 'numq',
 				'typ' => 'int',
 				'dt' => 7
-			),	
-			array( 
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -3346,20 +3305,20 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
-			AND 
+			AND
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 1 DAY)
-			AND 
+			AND
 				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
 				viv.id_viaje DESC
 		';
@@ -3379,7 +3338,7 @@ class OperacionModel{
 				viv.id_viaje = $id_viaje
 			AND viv.cat_status_viaje = 195
 			AND viv.cat_tipotemporicidad = 162
-			AND NOW() < vcd.fecha_requerimiento		
+			AND NOW() < vcd.fecha_requerimiento
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -3390,19 +3349,19 @@ class OperacionModel{
 		}
 	}
 	function programados_gris($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -3410,7 +3369,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_requerimiento as fecha_requerimiento',
 				'dbj' => 'vcd.fecha_requerimiento',
 				'real' => 'vcd.fecha_requerimiento',
@@ -3418,7 +3377,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -3426,7 +3385,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -3434,7 +3393,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -3442,7 +3401,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'tempo.etiqueta AS temporicidad',
 				'dbj' => 'tempo.etiqueta',
 				'real' => 'tempo.etiqueta',
@@ -3450,15 +3409,15 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
 				'alias' => 'numq',
 				'typ' => 'int',
 				'dt' => 7
-			),				
-			array( 
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -3478,20 +3437,20 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 195
 			AND
 				viv.cat_tipotemporicidad = 162
-			AND 
+			AND
 				NOW() > vcd.fecha_requerimiento
-			AND 
+			AND
 				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
-				viv.id_viaje		
+				viv.id_viaje
 			ORDER BY
 				viv.id_viaje DESC
 		';
@@ -3501,19 +3460,19 @@ class OperacionModel{
 		);
 	}
 	function completados($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -3521,7 +3480,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_solicitud as solicitud',
 				'dbj' => 'vcd.fecha_solicitud',
 				'real' => 'vcd.fecha_solicitud',
@@ -3529,7 +3488,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -3537,7 +3496,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -3545,7 +3504,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -3553,7 +3512,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'num_eq.num AS numq',
 				'dbj' => 'num_eq.num',
 				'real' => 'num_eq.num',
@@ -3561,7 +3520,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'vcd.apartado AS apartado',
 				'dbj' => 'vcd.apartado',
 				'real' => 'vcd.apartado',
@@ -3570,7 +3529,7 @@ class OperacionModel{
 				'bin' => true,
 				'dt' => 7
 			),
-			array( 
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -3590,11 +3549,11 @@ class OperacionModel{
 			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq				
+			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
 		';
 		$where = '
 			viv.cat_status_viaje = 172
-			AND 
+			AND
 				crou.status_operador_unidad = 198
 		';
 		$orden = '
@@ -3607,19 +3566,19 @@ class OperacionModel{
 		);
 	}
 	function cancelados($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_viaje AS viv';
 		$primaryKey = 'id_viaje';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'viv.id_viaje as id_viaje',
 				'dbj' => 'viv.id_viaje',
 				'real' => 'viv.id_viaje',
 				'alias' => 'id_viaje',
 				'typ' => 'int',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'viv.cat_status_viaje as status_viaje',
 				'dbj' => 'viv.cat_status_viaje',
 				'real' => 'viv.cat_status_viaje',
@@ -3627,7 +3586,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'vcd.fecha_solicitud as solicitud',
 				'dbj' => 'vcd.fecha_solicitud',
 				'real' => 'vcd.fecha_solicitud',
@@ -3635,7 +3594,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'clc.nombre AS cliente',
 				'dbj' => 'clc.nombre',
 				'real' => 'clc.nombre',
@@ -3643,7 +3602,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'clp.nombre AS empresa',
 				'dbj' => 'clp.nombre',
 				'real' => 'clp.nombre',
@@ -3651,7 +3610,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'service.etiqueta AS servicio',
 				'dbj' => 'service.etiqueta',
 				'real' => 'service.etiqueta',
@@ -3659,7 +3618,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'vcd.apartado AS apartado',
 				'dbj' => 'vcd.apartado',
 				'real' => 'vcd.apartado',
@@ -3667,8 +3626,8 @@ class OperacionModel{
 				'typ' => 'int',
 				'bin' => true,
 				'dt' => 6
-			),				
-			array( 
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
@@ -3684,7 +3643,7 @@ class OperacionModel{
 			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
 			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
-			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat				
+			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
 		';
 		$where = '
 			viv.cat_status_viaje = 173
@@ -3697,13 +3656,13 @@ class OperacionModel{
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
-	}	
+	}
 	function tiempo_base_get($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_tiempo_base AS crtb';
 		$primaryKey = 'id_tiempo_base';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'crnq.num AS numeq',
 				'dbj' => 'crnq.num',
 				'real' => 'crnq.num',
@@ -3711,58 +3670,58 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'crtb.distancia AS metros',
 				'dbj' => 'crtb.distancia',
 				'real' => 'crtb.distancia',
 				'alias' => 'metros',
 				'typ' => 'int',
 				'distance' => true,
-				'dt' => 1				
+				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'crtb.min_min AS min_seg',
 				'dbj' => 'crtb.min_min',
 				'real' => 'crtb.min_min',
 				'alias' => 'min_seg',
 				'typ' => 'int',
 				'time_min' => true,
-				'dt' => 2				
+				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'crtb.min_max AS max_seg',
 				'dbj' => 'crtb.min_max',
 				'real' => 'crtb.min_max',
 				'alias' => 'max_seg',
 				'typ' => 'int',
 				'time_max' => true,
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'int',
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'crmk.marca AS marca',
-				'dbj' => 'crmk.marca',	
+				'dbj' => 'crmk.marca',
 				'real' => 'crmk.marca',
 				'alias' => 'marca',
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'crmd.modelo AS modelo',
-				'dbj' => 'crmd.modelo',				
+				'dbj' => 'crmd.modelo',
 				'real' => 'crmd.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'cru.color AS color',
 				'dbj' => 'cru.color',
 				'real' => 'cru.color',
@@ -3770,23 +3729,23 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 7
 			),
-			array( 
+			array(
 				'db' => 'crou.id_operador_unidad AS id_operador_unidad',
 				'dbj' => 'crou.id_operador_unidad',
 				'real' => 'crou.id_operador_unidad',
 				'alias' => 'id_operador_unidad',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 8			
-			),				
-			array( 
+				'dt' => 8
+			),
+			array(
 				'db' => 'crop.id_operador AS id_operador',
 				'dbj' => 'crop.id_operador',
 				'real' => 'crop.id_operador',
 				'alias' => 'id_operador',
 				'typ' => 'int',
-				'dt' => 9			
-			)		
+				'dt' => 9
+			)
 		);
 		$render_table = new acciones_tiempo_base;
 		$inner = '
@@ -3801,7 +3760,7 @@ class OperacionModel{
 		';
 		$where = "
 			crtb.id_operador_unidad = crou.id_operador_unidad
-			AND 
+			AND
 				crou.status_operador_unidad = 198
 		";
 		$orden = "";
@@ -3810,19 +3769,19 @@ class OperacionModel{
 		);
 	}
 	function queryCostosAdicionales($array,$id_viaje){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'vi_costos_adicionales AS vca';
 		$primaryKey = 'id_costos_adicionales';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cat.etiqueta as etiqueta',
 				'dbj' => 'cat.etiqueta',
 				'real' => 'cat.etiqueta',
 				'alias' => 'etiqueta',
 				'typ' => 'txt',
-				'dt' => 0			
+				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'vca.costo as costo',
 				'dbj' => 'vca.costo',
 				'real' => 'vca.costo',
@@ -3831,7 +3790,7 @@ class OperacionModel{
 				'moneda' => true,
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'usr.usuario as usuario',
 				'dbj' => 'usr.usuario',
 				'real' => 'usr.usuario',
@@ -3839,7 +3798,7 @@ class OperacionModel{
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'vca.fecha as fecha',
 				'dbj' => 'vca.fecha',
 				'real' => 'vca.fecha',
@@ -3847,7 +3806,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'vca.id_costos_adicionales as id_costos_adicionales',
 				'dbj' => 'vca.id_costos_adicionales',
 				'real' => 'vca.id_costos_adicionales',
@@ -3860,7 +3819,7 @@ class OperacionModel{
 		);
 		$inner = '
 			INNER JOIN cm_catalogo AS cat ON vca.cat_concepto = cat.id_cat
-			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_mod			
+			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_mod
 		';
 		$where = '
 			vca.id_viaje = '.$id_viaje.'
@@ -3873,7 +3832,7 @@ class OperacionModel{
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
-	}	
+	}
 }
 class acciones_costosAdicionales extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -3885,31 +3844,31 @@ class acciones_costosAdicionales extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_viaje = ($data[$i][ $column['alias'] ]);
 					$id_costos_adicionales = ($data[$i][ $column['alias'] ]);
-					
+
 					$salida = '';
-					$salida .= '<a onclick="eliminar_costoAdicional('.$id_costos_adicionales.')" data-rel="tooltip" data-original-title="Eliminar costo"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';				
-					
+					$salida .= '<a onclick="eliminar_costoAdicional('.$id_costos_adicionales.')" data-rel="tooltip" data-original-title="Eliminar costo"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+
 					$row[ $column['dt'] ] = $salida;
 				}else if ( isset( $column['moneda'] ) ){
-					
+
 					$cantidad = ($data[$i][ $column['alias'] ]);
 					$cantidad = money_format('%i',$cantidad);
-					$salida = $cantidad;		
-					
+					$salida = $cantidad;
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class acciones_pendientes extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -3921,25 +3880,25 @@ class acciones_pendientes extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'pendientes\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="viajeAlAire('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Ofrecer servicio al aire"><i class="icofont icofont-wind" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';		
-					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';	
+					$salida .= '<a onclick="viajeAlAire('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Ofrecer servicio al aire"><i class="icofont icofont-wind" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class acciones_enproceso extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -3951,26 +3910,26 @@ class acciones_enproceso extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'proceso\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'proceso\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class acciones_asignados extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -3982,19 +3941,19 @@ class acciones_asignados extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
-					
+
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
 					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
-					
+
 					$salida = '<div class="line_force">';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'asignados\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					
+
 					$cveStat = self::getCurrentCveOperador($id_operador_unidad,$db);
-					
+
 					switch ($cveStat['clave']){
 						case 'R6':	$color = '#9DBF00';	break;
 						case 'F15':	$color = '#697F00';	break;
@@ -4014,26 +3973,26 @@ class acciones_asignados extends SSP{
 						case 'X8':	$color = '#005EE5';	break;
 						default:	$color = '#000000';	break;
 					}
-					
+
 					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background:'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
-						
+
 					$salida .= '<a href="javascript:;" onclick="activar_cancelacion('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar cancelación en operador"><i class="fa fa-ban" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a href="javascript:;" onclick="activar_abandono('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar abandono en operador"><i class="icofont icofont-offside" style="font-size:1.4em; color:#aa2424;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '</div>';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
@@ -4050,7 +4009,7 @@ class acciones_asignados extends SSP{
 			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
 			WHERE
 				crou.id_operador_unidad = $id_operador_unidad
-			AND cm_catalogo.catalogo = 'clavesitio'	
+			AND cm_catalogo.catalogo = 'clavesitio'
 			AND crou.status_operador_unidad = 198
 		";
 		$query = $db->prepare($qry);
@@ -4063,7 +4022,7 @@ class acciones_asignados extends SSP{
 			}
 		}
 		return $array;
-	}	
+	}
 }
 class acciones_tiempo_base extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4076,10 +4035,10 @@ class acciones_tiempo_base extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-					
+
 					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
 					$id_operador = $data[$i][ 'id_operador' ];
-					
+
 					$salida = '';
 
 						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
@@ -4087,34 +4046,34 @@ class acciones_tiempo_base extends SSP{
 							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
-						
+
 					$row[ $column['dt'] ] = $salida;
-					
+
 				}else if ( isset( $column['time_min'] ) ) {
-					
+
 					$min_seg = $data[$i][ 'min_seg' ];
 					$salida = '';
 					$salida .= round(($min_seg/60),0).' min';
 					$row[ $column['dt'] ] = $salida;
-					
+
 				}else if ( isset( $column['time_max'] ) ) {
-					
+
 					$max_seg = $data[$i][ 'max_seg' ];
 					$salida = '';
 					$salida .= round(($max_seg/60),0).' min';
 					$row[ $column['dt'] ] = $salida;
-					
+
 				}else if ( isset( $column['distance'] ) ) {
-					
+
 					$metros = $data[$i][ 'metros' ];
 					$salida = '';
 					$salida .= round(($metros/1000),2).' km';
 					$row[ $column['dt'] ] = $salida;
-					
+
 				}else{
-					
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
-					
+
+					$row[ $column['dt'] ] = $data[$i][$name_column];
+
 				}
 			}
 			$out[] = $row;
@@ -4132,24 +4091,24 @@ class acciones_asiggn extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a href="#">'.$id_cliente.' - '.$id_viaje.'</a>&nbsp;&nbsp;';
-							
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class acciones_proceso extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4161,24 +4120,24 @@ class acciones_proceso extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a href="#">'.$id_cliente.' - '.$id_viaje.'</a>&nbsp;&nbsp;';
-							
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class acciones_completados extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4190,34 +4149,34 @@ class acciones_completados extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
-					
+
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
-					
+
 					$a = ($data[$i][ 'apartado' ] == 1)? '<a data-rel="tooltip" data-original-title="Salida programada" href="javascript:;"><i class="icofont icofont-delivery-time bigger-200 brown darken-1"></i></a>':'<a data-rel="tooltip" data-original-title="Salida inmediata" href="javascript:;"><i class="icofont icofont-fast-delivery bigger-200 blue"></i></a>';
 
 					$salida = $a;
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class acciones_cancelados extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4229,30 +4188,30 @@ class acciones_cancelados extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
-					
+
 					$a = ($data[$i][ 'apartado' ] == 1)? '<a data-rel="tooltip" data-original-title="Salida programada" href="javascript:;"><i class="icofont icofont-delivery-time bigger-200 brown darken-1"></i></a>':'<a data-rel="tooltip" data-original-title="Salida inmediata" href="javascript:;"><i class="icofont icofont-fast-delivery bigger-200 blue"></i></a>';
 
 					$salida = $a;
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class programados_rojo extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4264,32 +4223,32 @@ class programados_rojo extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a onclick="apartado2pendientes('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#d96c00;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a onclick="apartadoAlAire('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Enviar al aire"><i class="icofont icofont-wind" style="font-size:1.4em; color:#4d4cff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a onclick="procesarNormal('.$id_viaje.',\'rojo\')" data-rel="tooltip" data-original-title="Procesar normalmente"><i class="fa fa-play-circle-o" style="font-size:1.4em; color:#00b32d;"></i></a>&nbsp;&nbsp;';
-					
+
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class programados_naranja extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4301,24 +4260,24 @@ class programados_naranja extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'naranja\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';		
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class programados_amarillo extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4330,25 +4289,25 @@ class programados_amarillo extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'amarillo\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class programados_verde extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4360,25 +4319,25 @@ class programados_verde extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a onclick="cancel_apartado('.$id_viaje.',\'verde\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class programados_gris extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4390,24 +4349,24 @@ class programados_gris extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
 					$id_viaje = $data[$i][ 'id_viaje' ];
-					
+
 					$salida = '';
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}	
+	}
 }
 class acciones_cordon extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4422,7 +4381,7 @@ class acciones_cordon extends SSP{
 				if ( isset( $column['acciones'] ) ) {
 					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
 					$id_operador = $data[$i][ 'id_operador' ];
-					
+
 					$salida = '';
 						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
 							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
@@ -4445,10 +4404,10 @@ class acciones_cordon extends SSP{
 					$row[ $column['dt'] ] = self::turno($data[$i][ 'id_operador_unidad' ],$column['base'],$db);
 				}else if ( isset( $column['time_stat'] ) ){
 					$espera = Controller::diferenciaFechasD($data[$i]['llegada'],date("Y-m-d H:i:s"));
-					
+
 					$row[ $column['dt'] ] = substr($data[$i]['llegada'], 11, -3).'&nbsp;/&nbsp;'.substr($espera, 11, -3);
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -4487,7 +4446,7 @@ class acciones_cordon extends SSP{
 			}
 		}
 		return $numero;
-	}	
+	}
 }
 class acciones_activos extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -4501,17 +4460,17 @@ class acciones_activos extends SSP{
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
 					$id_operador = $data[$i][ 'aid_operador' ];
-					
+
 					$salida = '';
 						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
 							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
 							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
-						
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -4532,17 +4491,17 @@ class acciones_unidades_a11 extends SSP{
 				if ( isset( $column['acciones'] ) ) {
 					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
 					$id_operador = $data[$i][ 'id_operador' ];
-					
+
 					$salida = '';
 						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
 							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
 							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
-						
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -4563,17 +4522,17 @@ class acciones_control extends SSP{
 				if ( isset( $column['acciones'] ) ) {
 					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
 					$id_operador = $data[$i][ 'id_operador' ];
-					
+
 					$salida = '';
 						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
 							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
 							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
-						
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -4594,12 +4553,12 @@ class acciones_suspendidas extends SSP{
 				if ( isset( $column['acciones'] ) ) {
 					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
 					$id_operador = '';//$column['id_operador'];
-					
+
 					$salida = '';
-						
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -4620,13 +4579,13 @@ class acciones_inactivos extends SSP{
 				if ( isset( $column['acciones'] ) ) {
 					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
 					$id_operador = '';//$column['id_operador'];
-					
+
 					$salida = '';
 
-						
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
