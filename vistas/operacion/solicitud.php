@@ -607,113 +607,38 @@ span.input-icon > textarea {
 				} );
 			});
 
-			<?php
-			if(SOCKET_PROVIDER == 'ABLY'){
-			?>
-				var conn = new Ably.Realtime('<?=ABLY_API_KEY?>');
-				conn.connection.on('connected', function() {
-				  console.log('✓ Servicio de actualización de cordón activo');
-				})
+			var pusher = new Pusher('<?=PUSHER_KEY?>', {
+				encrypted: true
+			});
 
-				var updChannel1 = conn.channels.get('updcrd1');
-				updChannel1.subscribe(function(resp_success){
-					$('#cordon_kpmg').DataTable().ajax.reload();
-				});
+			pusher.connection.bind('connected', function() {
+				console.log('✓ Servicio de actualización de cordón activo');
+			})
 
-				var updChannel2 = conn.channels.get('updcrd2');
-				updChannel2.subscribe(function(resp_success){
-					$('#cordon_ejnal').DataTable().ajax.reload();
-				});
+			var updChannel1 = pusher.subscribe('updcrd1');
+			updChannel1.bind('evento', function(data) {
+				$('#cordon_kpmg').DataTable().ajax.reload();
+			});
 
-				var updChannel3 = conn.channels.get('updpendientes');
-				updChannel3.subscribe(function(resp_success){
-					$('#tabla_pendientes').DataTable().ajax.reload();
-				});
+			var updChannel2 = pusher.subscribe('updcrd2');
+			updChannel2.bind('evento', function(data) {
+				$('#cordon_ejnal').DataTable().ajax.reload();
+			});
 
-				var updChannel4 = conn.channels.get('updproceso');
-				updChannel4.subscribe(function(resp_success){
-					$('#tabla_proceso').DataTable().ajax.reload();
-				});
+			var updChannel3 = pusher.subscribe('updpendientes');
+			updChannel3.bind('evento', function(data) {
+				$('#tabla_pendientes').DataTable().ajax.reload();
+			});
 
-				var updChannel5 = conn.channels.get('updasignados');
-				updChannel5.subscribe(function(resp_success){
-					$('#tabla_asignados').DataTable().ajax.reload();
-				});
-			<?php
-			}elseif(SOCKET_PROVIDER == 'PUSHER'){
-			?>
-				var pusher = new Pusher('<?=PUSHER_KEY?>', {
-					encrypted: true
-				});
+			var updChannel4 = pusher.subscribe('updproceso');
+			updChannel4.bind('evento', function(data) {
+				$('#tabla_proceso').DataTable().ajax.reload();
+			});
 
-				pusher.connection.bind('connected', function() {
-					console.log('✓ Servicio de actualización de cordón activo');
-				})
+			var updChannel5 = pusher.subscribe('updasignados');
+			updChannel5.bind('evento', function(data) {
+				$('#tabla_asignados').DataTable().ajax.reload();
+			});
 
-				var updChannel1 = pusher.subscribe('updcrd1');
-				updChannel1.bind('evento', function(data) {
-					$('#cordon_kpmg').DataTable().ajax.reload();
-				});
-
-				var updChannel2 = pusher.subscribe('updcrd2');
-				updChannel2.bind('evento', function(data) {
-					$('#cordon_ejnal').DataTable().ajax.reload();
-				});
-
-				var updChannel3 = pusher.subscribe('updpendientes');
-				updChannel3.bind('evento', function(data) {
-					$('#tabla_pendientes').DataTable().ajax.reload();
-				});
-
-				var updChannel4 = pusher.subscribe('updproceso');
-				updChannel4.bind('evento', function(data) {
-					$('#tabla_proceso').DataTable().ajax.reload();
-				});
-
-				var updChannel5 = pusher.subscribe('updasignados');
-				updChannel5.bind('evento', function(data) {
-					$('#tabla_asignados').DataTable().ajax.reload();
-				});
-			<?php
-			}elseif(SOCKET_PROVIDER == 'PUBNUB'){
-			?>
-				var WsPubNub = PUBNUB.init({
-					publish_key: '<?=PUBNUB_PUBLISH?>',
-					subscribe_key: '<?=PUBNUB_SUSCRIBE?>',
-					ssl: true
-				});
-				WsPubNub.subscribe({
-					channel: 'updcrd1',
-					message: function(m){
-						$('#cordon_kpmg').DataTable().ajax.reload();
-					}
-				});
-				WsPubNub.subscribe({
-					channel: 'updcrd2',
-					message: function(m){
-						$('#cordon_ejnal').DataTable().ajax.reload();
-					}
-				});
-				WsPubNub.subscribe({
-					channel: 'updpendientes',
-					message: function(m){
-						$('#tabla_pendientes').DataTable().ajax.reload();
-					}
-				});
-				WsPubNub.subscribe({
-					channel: 'updproceso',
-					message: function(m){
-						$('#tabla_proceso').DataTable().ajax.reload();
-					}
-				});
-				WsPubNub.subscribe({
-					channel: 'updasignados',
-					message: function(m){
-						$('#tabla_asignados').DataTable().ajax.reload();
-					}
-				});
-			<?php
-			}
-			?>
 
 		</script>
