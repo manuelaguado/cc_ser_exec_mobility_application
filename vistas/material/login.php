@@ -16,7 +16,7 @@
 		<link rel="apple-touch-icon" sizes="144x144" href="<?=FW7?>assets/img/favicons/apple-touch-icon-144x144.png">
 		<link rel="apple-touch-icon" sizes="152x152" href="<?=FW7?>assets/img/favicons/apple-touch-icon-152x152.png">
 		<link rel="apple-touch-icon" sizes="180x180" href="<?=FW7?>assets/img/favicons/apple-touch-icon-180x180.png">
-		
+
 		<link rel="icon" type="image/png" href="<?=FW7?>assets/img/favicons/favicon-32x32.png" sizes="32x32">
 		<link rel="icon" type="image/png" href="<?=FW7?>assets/img/favicons/android-chrome-192x192.png" sizes="192x192">
 		<link rel="icon" type="image/png" href="<?=FW7?>assets/img/favicons/favicon-96x96.png" sizes="96x96">
@@ -25,7 +25,7 @@
 		<meta name="msapplication-TileColor" content="#2b5797">
 		<meta name="msapplication-TileImage" content="<?=FW7?>assets/img/favicons/mstile-144x144.png">
 		<meta name="theme-color" content="#ffffff">
-		
+
         <title><?=SITE_NAME?></title>
         <link href="<?=MATERIAL?>vendors/bower_components/animate.css/animate.min.css" rel="stylesheet">
         <link href="<?=MATERIAL?>vendors/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" rel="stylesheet">
@@ -35,7 +35,7 @@
 		<div style="font-weight: 100; font-size:2em; color:#ffffff; z-index:9; position:absolute; top:40px; width:100%; text-align:center;">
 			<img width="70%" src="<?=MATERIAL?>img/logo_intro.png">
 		</div>
-		
+
 		<div class="lc-block toggled" id="l-login" style="display:none">
             <div class="input-group m-b-20">
                 <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
@@ -60,7 +60,7 @@
             <!--<a onclick="valida_logeo(event,'noDec','1');" href="#" class="btn btn-login btn-danger btn-float"><i class="zmdi zmdi-arrow-forward"></i></a>-->
         </div>
 		<div class="lc-block toggled" id="l-loginx">
-            ACCESO INHABILITADO, ACCEDA DESDE LA APLICACION ANDROID 2.7 O SUPERIOR
+            ACCESO INHABILITADO, ACCEDA DESDE CHROME DESKTOP
         </div>
 		<div class="lc-block toggled hidden" id="alertWindow">
             <div class="input-group m-b-20">
@@ -75,22 +75,22 @@
             <div class="clearfix"></div>
             <a onclick="hideAlert();" href="#" class="btn btn-login btn-danger btn-float"><i class="zmdi zmdi-notifications-active animated infinite pulse zmdi-hc-fw mdc-text-blue" style="position:relative; top:2px; left:-1px;"></i></a>
         </div>
-		
+
 		<script>var url_app = '<?=URL_APP?>';</script>
         <script src="<?=MATERIAL?>vendors/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="<?=MATERIAL?>vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="<?=MATERIAL?>vendors/bower_components/Waves/dist/waves.min.js"></script>
         <script src="<?=MATERIAL?>js/functions.js"></script>
 		<script src="<?=MATERIAL?>js/common.js"></script>
-		
+
 		<script src="<?=MATERIAL?>js/indexeddb.js"></script>
-		
+
 		<?php if(DEVELOPMENT){ ?>
 		<style>
 			body.login-content:before {
 				background: #FF6C00;
-			}			
+			}
 		</style>
-		<?php } ?>		
+		<?php } ?>
     </body>
 </html>

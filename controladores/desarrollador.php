@@ -4,7 +4,7 @@ class Desarrollador extends Controlador
 {
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
-	}	
+	}
 	public function image(){
 		$pointsToEncoded = self::PolylineToEncoded();
 		$encoded = EncodedPolylineAlgorithm::encode($pointsToEncoded);
@@ -676,65 +676,7 @@ class Desarrollador extends Controlador
 			echo 'FUERA, '.$clave['etiqueta'];
 		}
 	}
-	public function cron(){
-		$db = Controlador::direct_connectivity();
-		$token = $this->token();
-		$sql1 = "
-			INSERT INTO `cr_sync_ride` (
-				`token`,
-				`id_operador_unidad`,
-				`cat_cve_store`,
-				`valor`,
-				`procesado`,
-				`user_alta`,
-				`fecha_alta`
-			)
-			VALUES
-			(
-				'".$token."',
-				58,
-				40,
-				'val',
-				'0',
-				1,
-				'".date("Y-m-d H:i:s")."'
-			);
-		";
-		//D::debug($sql1);
-		$query1 = $this->db->prepare($sql1);
-		$query1->execute();
-	}
-	public function inicializar_cve(){
-		$db = Controlador::direct_connectivity();
-		$qry = 'select * from cr_operador_unidad';
-		$usr = $db->prepare($qry);
-		$usr->execute();
-		if($usr->rowCount()>=1){
-			$data = $usr->fetchAll();
-			foreach ($data as $row) {
-				$sql1 = "
-					INSERT INTO `cr_sync_ride` (
-						`id_operador_unidad`,
-						`cat_cve_store`,
-						`procesado`,
-						`user_alta`,
-						`fecha_alta`
-					)
-					VALUES
-						(
-							".$row->id_operador_unidad.",
-							116,
-							0,
-							".$_SESSION['id_usuario'].",
-							'".date("Y-m-d H:i:s")."'
-						);
-				";
-				D::debug($sql1);
-				$query1 = $this->db->prepare($sql1);
-				$query1->execute();
-			}
-		}
-	}
+
 	public function crear_perfiles(){
 		$db = Controlador::direct_connectivity();
 

@@ -10,50 +10,6 @@ class OperadoresModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-	function historia($id_operador){
-		$sql="
-			SELECT
-				crn.num,
-				cm1.etiqueta,
-				cm2.valor,
-				sync_ride.fecha_alta,
-				fwu1.usuario AS solicita,
-				fwu2.usuario AS autoriza
-			FROM
-				cr_sync_ride AS sync_ride
-			INNER JOIN cr_operador_unidad AS crou ON sync_ride.id_operador_unidad = crou.id_operador_unidad
-			INNER JOIN cr_operador AS crop ON crou.id_operador = crop.id_operador
-			INNER JOIN cr_operador_numeq AS cron ON cron.id_operador = crop.id_operador
-			INNER JOIN cr_numeq AS crn ON cron.id_numeq = crn.id_numeq
-			INNER JOIN cm_catalogo AS cm1 ON sync_ride.cat_cve_store = cm1.id_cat
-			INNER JOIN fw_usuarios AS fwu1 ON crop.id_usuario = fwu1.id_usuario
-			INNER JOIN cm_catalogo AS cm2 ON cm1.etiqueta = cm2.etiqueta
-			AND cm2.catalogo = 'clavesitio'
-			INNER JOIN fw_usuarios AS fwu2 ON sync_ride.user_alta = fwu2.id_usuario
-			WHERE
-				crop.id_operador = $id_operador
-			ORDER BY
-				sync_ride.id_sync_ride DESC
-			LIMIT 0, 100
-	";
-		$query = $this->db->prepare($sql);
-		$query->execute();
-		$historia = $query->fetchAll();
-		$array = array();
-		if($query->rowCount()>=1){
-			$num=0;
-			foreach ($historia as $row) {
-				$array[$num]['num'] = $row->num;
-				$array[$num]['etiqueta'] = $row->etiqueta;
-				$array[$num]['valor'] = $row->valor;
-				$array[$num]['fecha_alta'] = $row->fecha_alta;
-				$array[$num]['solicita'] = $row->solicita;
-				$array[$num]['autoriza'] = $row->autoriza;
-				$num++;
-			}
-		}
-		return $array ;	
-	}	
 	function listadoTelefonos($id_operador){
 		$sql="
 			SELECT
@@ -80,7 +36,7 @@ class OperadoresModel
 				$num++;
 			}
 		}
-		return $array ;	
+		return $array ;
 	}
 	function listadoDomicilios($id_operador){
 		$sql="
@@ -108,7 +64,7 @@ class OperadoresModel
 				$num++;
 			}
 		}
-		return $array ;	
+		return $array ;
 	}
 	function queryDomicilio($id_operador){
 		$sql_dom="
@@ -117,7 +73,7 @@ class OperadoresModel
 				cr_od.id_operador,
 				cr_od.domicilio,
 				cr_od.cat_tipodomicilio,
-				cr_od.cat_statusdomicilio,				
+				cr_od.cat_statusdomicilio,
 				cat1.etiqueta as etiqueta1,
 				cat2.etiqueta as etiqueta2
 			FROM
@@ -139,7 +95,7 @@ class OperadoresModel
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
-			
+
 			$sql = "
 				INSERT INTO cr_domicilios (
 					id_operador,
@@ -178,7 +134,7 @@ class OperadoresModel
 	public function status_domicilio($id_domicilio,$status){
 		$sql = "
 			UPDATE cr_domicilios
-			SET 
+			SET
 			 cat_statusdomicilio = :status,
 			 user_mod = :user_mod
 			WHERE
@@ -186,7 +142,7 @@ class OperadoresModel
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':status' => $status, 
+			':status' => $status,
 			':user_mod' => $_SESSION['id_usuario'],
 			':id_domicilio' => $id_domicilio
 		);
@@ -198,7 +154,7 @@ class OperadoresModel
 		}
 		return $respuesta;
 	}
-	
+
 	function queryTels($id_operador){
 		$sql_tel="
 			SELECT
@@ -206,7 +162,7 @@ class OperadoresModel
 				clt.id_operador,
 				clt.numero,
 				clt.cat_tipotelefono,
-				clt.cat_statustelefono,				
+				clt.cat_statustelefono,
 				cat1.etiqueta as etiqueta1,
 				cat2.etiqueta as etiqueta2
 			FROM
@@ -228,7 +184,7 @@ class OperadoresModel
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
-			
+
 			$sql = "
 				INSERT INTO cr_telefonos (
 					id_operador,
@@ -267,7 +223,7 @@ class OperadoresModel
 	public function status_telefono($id_telefono,$status){
 		$sql = "
 			UPDATE cr_telefonos
-			SET 
+			SET
 			 cat_statustelefono = :status,
 			 user_mod = :user_mod
 			WHERE
@@ -275,7 +231,7 @@ class OperadoresModel
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':status' => $status, 
+			':status' => $status,
 			':user_mod' => $_SESSION['id_usuario'],
 			':id_telefono' => $id_telefono
 		);
@@ -287,7 +243,7 @@ class OperadoresModel
 		}
 		return $respuesta;
 	}
-	
+
 	function tarifas_del_do($id_tarifa_operador){
 		$sql = "
 			UPDATE fo_tarifas_operadores
@@ -299,7 +255,7 @@ class OperadoresModel
 		$query = $this->db->prepare($sql);
 		$result = $query->execute();
 
-		return $result? array('resp' => true):array('resp' => false);	
+		return $result? array('resp' => true):array('resp' => false);
 	}
 	function nueva_tarifa_do($arreglo){
 		foreach ($arreglo as $key => $value) {
@@ -328,14 +284,14 @@ class OperadoresModel
 		";
 		$query = $this->db->prepare($sql);
 		$result = $query->execute(array(
-			':id_operador' => $this->id_operador, 
-			':costo_base' => $this->costo_base, 
-			':km_adicional' => $this->km_adicional, 
-			':cat_formapago' => $this->cat_formapago, 
+			':id_operador' => $this->id_operador,
+			':costo_base' => $this->costo_base,
+			':km_adicional' => $this->km_adicional,
+			':cat_formapago' => $this->cat_formapago,
 			':nombre' => $this->nombre,
 			':user_alta' => $_SESSION['id_usuario'],
 			':fecha_alta' => date("Y-m-d H:i:s")
-		));		
+		));
 		return $result? array('resp' => true, 'id' => $this->db->lastInsertId()):array('resp' => false);
 	}
 	function setearstatusoperador($arreglo){
@@ -364,7 +320,7 @@ class OperadoresModel
 		$array =  $query->fetchAll();
 		if($query->rowCount()>=1){
 			return $array;
-		}	
+		}
 	}
 	function altaOperador($id_usuario){
 		if(self::noexisteOperador($id_usuario)){
@@ -385,7 +341,7 @@ class OperadoresModel
 			";
 			$query = $this->db->prepare($sql);
 			$result = $query->execute(array(
-				':id_usuario' => $id_usuario, 
+				':id_usuario' => $id_usuario,
 				':cat_statusoperador' => 8,
 				':user_alta' => $_SESSION['id_usuario'],
 				':fecha_alta' => date("Y-m-d H:i:s")
@@ -411,7 +367,7 @@ class OperadoresModel
 		";
 		$query = $this->db->prepare($sql);
 		$result = $query->execute(array(
-			':id_operador' => $id_operador, 
+			':id_operador' => $id_operador,
 			':cat_status_oper_numeq' => 12,
 			':user_alta' => $_SESSION['id_usuario'],
 			':fecha_alta' => date("Y-m-d H:i:s")
@@ -458,7 +414,7 @@ class OperadoresModel
 				$array['etiqueta'] = $row->etiqueta;
 			}
 		}
-		return $array ;	
+		return $array ;
 	}
 	function getOperador($id_operador){
 		$sql="
@@ -480,7 +436,7 @@ class OperadoresModel
 				$array['cat_statusoperador'] = $row->cat_statusoperador;
 			}
 		}
-		return $array ;	
+		return $array ;
 	}
 	function selectNumEq($id_numeq){
 		$array = array();
@@ -494,10 +450,10 @@ class OperadoresModel
 			foreach ($data as $row) {
 				$array[$cont]['value']=$row->id_numeq;
 				$array[$cont]['valor']=$row->num;
-				$cont++;			
+				$cont++;
 			}
 		}
-		return Controller::setOption($array,$id_numeq);		
+		return Controller::setOption($array,$id_numeq);
 	}
 	function selectStatusOperador($id_cat){
 		$array = array();
@@ -510,10 +466,10 @@ class OperadoresModel
 			foreach ($data as $row) {
 				$array[$cont]['value']=$row->id_cat;
 				$array[$cont]['valor']=$row->etiqueta;
-				$cont++;			
+				$cont++;
 			}
 		}
-		return Controller::setOption($array,$id_cat);		
+		return Controller::setOption($array,$id_cat);
 	}
 	function selectStatNumEq($cat_status_oper_numeq){
 		$array = array();
@@ -526,10 +482,10 @@ class OperadoresModel
 			foreach ($data as $row) {
 				$array[$cont]['value']=$row->id_cat;
 				$array[$cont]['valor']=$row->etiqueta;
-				$cont++;			
+				$cont++;
 			}
 		}
-		return Controller::setOption($array,$cat_status_oper_numeq);	
+		return Controller::setOption($array,$cat_status_oper_numeq);
 	}
 	function setStatNumEq($id_numeq,$stat){
 		$sql = "
@@ -577,57 +533,57 @@ class OperadoresModel
 		return $result? array('resp' => true):array('resp' => false);
 	}
 	function obtener_tarifas($array,$id_operador){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'fo_tarifas_operadores';
 		$primaryKey = 'id_tarifa_operador';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'id_tarifa_operador',
 				'dbj' => 'id_tarifa_operador',
 				'real' => 'id_tarifa_operador',
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'nombre AS nombre',
 				'dbj' => 'nombre',
 				'real' => 'nombre',
 				'alias' => 'nombre',
 				'typ' => 'int',
-				'dt' => 1				
+				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'costo_base AS costo_base',
-				'dbj' => 'costo_base',	
+				'dbj' => 'costo_base',
 				'alias' => 'costo_base',
 				'real' => 'costo_base',
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'km_adicional AS km_adicional',
-				'dbj' => 'km_adicional',				
+				'dbj' => 'km_adicional',
 				'real' => 'km_adicional',
 				'alias' => 'km_adicional',
 				'typ' => 'txt',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'cmc.etiqueta AS formapago',
-				'dbj' => 'cmc.etiqueta',				
+				'dbj' => 'cmc.etiqueta',
 				'real' => 'cmc.etiqueta',
 				'alias' => 'formapago',
 				'typ' => 'txt',
 				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'id_tarifa_operador',
 				'dbj' => 'id_tarifa_operador',
 				'real' => 'id_tarifa_operador',
 				'typ' => 'int',
 				'acciones' => true,
 				'id_operador' => $id_operador,
-				'dt' => 5			
+				'dt' => 5
 			)
 		);
 		$render_table = new acciones_tarifas;
@@ -644,11 +600,11 @@ class OperadoresModel
 		);
 	}
 	public function obtener_operadores($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_operador AS cro';
 		$primaryKey = 'id_operador';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cro.id_operador as id_opr',
 				'dbj' => 'cro.id_operador',
 				'real' => 'cro.id_operador',
@@ -656,40 +612,40 @@ class OperadoresModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'fwu.usuario AS usuario',
 				'dbj' => 'fwu.usuario',
 				'real' => 'fwu.usuario',
 				'alias' => 'usuario',
 				'typ' => 'txt',
-				'dt' => 1				
+				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'fwu.correo AS correo',
 				'dbj' => 'fwu.correo',
 				'real' => 'fwu.correo',
 				'alias' => 'correo',
 				'typ' => 'txt',
-				'dt' => 2				
+				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
 				'real' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'txt',
 				'dt' => 3
-			),			
-			array( 
+			),
+			array(
 				'db' => 'fwu.cat_status AS cat_status',
 				'dbj' => 'fwu.cat_status',
 				'real' => 'fwu.cat_status',
 				'alias' => 'cat_status',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'fwu.id_usuario as id_usuario',
 				'dbj' => 'fwu.id_usuario',
 				'real' => 'fwu.id_usuario',
@@ -701,7 +657,7 @@ class OperadoresModel
 		$render_table = new acciones_operador;
 		$inner = '
 			INNER JOIN cr_operador_numeq AS cron ON cron.id_operador = cro.id_operador
-			INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario	
+			INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario
 		';
 		$where = '
 			fwu.cat_status = 3
@@ -713,11 +669,11 @@ class OperadoresModel
 		);
 	}
 	function listado_vigente_get($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cr_operador AS cro';
 		$primaryKey = 'id_operador';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cro.id_operador as id_opr',
 				'dbj' => 'cro.id_operador',
 				'real' => 'cro.id_operador',
@@ -725,86 +681,86 @@ class OperadoresModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'crn.num AS num',
-				'dbj' => 'crn.num',	
+				'dbj' => 'crn.num',
 				'real' => 'crn.num',
 				'alias' => 'num',
 				'typ' => 'int',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
 				'real' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
 				'alias' => 'nombre',
 				'typ' => 'txt',
-				'dt' => 2	
+				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'crc.numero AS numero',
 				'dbj' => 'crc.numero',
 				'real' => 'crc.numero',
 				'alias' => 'numero',
 				'typ' => 'int',
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'crc.marcacion_corta AS marcacion_corta',
 				'dbj' => 'crc.marcacion_corta',
 				'real' => 'crc.marcacion_corta',
 				'alias' => 'marcacion_corta',
 				'typ' => 'int',
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'crm.marca AS marca',
 				'dbj' => 'crm.marca',
 				'real' => 'crm.marca',
 				'alias' => 'marca',
 				'typ' => 'txt',
-				'dt' => 5				
+				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'crmo.modelo AS modelo',
 				'dbj' => 'crmo.modelo',
 				'real' => 'crmo.modelo',
 				'alias' => 'modelo',
 				'typ' => 'txt',
-				'dt' => 6				
+				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'crun.`year` AS agno',
 				'dbj' => 'crun.`year`',
 				'real' => 'crun.`year`',
 				'alias' => 'agno',
 				'typ' => 'int',
-				'dt' => 7				
+				'dt' => 7
 			),
-			array( 
+			array(
 				'db' => 'crun.placas AS placas',
 				'dbj' => 'crun.placas',
 				'real' => 'crun.placas',
 				'alias' => 'placas',
 				'typ' => 'txt',
-				'dt' => 8				
+				'dt' => 8
 			),
-			array( 
+			array(
 				'db' => 'crun.color AS color',
 				'dbj' => 'crun.color',
 				'real' => 'crun.color',
 				'alias' => 'color',
 				'typ' => 'txt',
-				'dt' => 9				
+				'dt' => 9
 			),
-			array( 
+			array(
 				'db' => 'cro.id_usuario AS id_usuario',
 				'dbj' => 'cro.id_usuario',
 				'real' => 'cro.id_usuario',
 				'alias' => 'id_usuario',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 10				
+				'dt' => 10
 			)
 		);
 		$render_table = new acciones_lista_opr;
@@ -817,7 +773,7 @@ class OperadoresModel
 			INNER JOIN cr_operador_unidad AS crou ON crou.id_operador = cro.id_operador
 			INNER JOIN cr_unidades AS crun ON crou.id_unidad = crun.id_unidad
 			INNER JOIN cr_marcas AS crm ON crun.id_marca = crm.id_marca
-			INNER JOIN cr_modelos AS crmo ON crun.id_modelo = crmo.id_modelo		
+			INNER JOIN cr_modelos AS crmo ON crun.id_modelo = crmo.id_modelo
 		';
 		$where = '
 			(cro.cat_statusoperador = 8 OR cro.cat_statusoperador = 10) AND
@@ -844,14 +800,14 @@ class acciones_lista_opr extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-					
+
 					$id_usuario 		= $data[$i][ 'id_usuario' ];
-					
+
 					$operador = self::getOperador($id_usuario,$db);
 					$id_operador = $operador['id_operador'];
-					
+
 					$salida = '';
-					
+
 					switch ($operador['cat_statusoperador']){
 						case 8:
 							$salida .= '<i data-rel="tooltip" data-original-title="Activo" class="green tooltip-success ace-icon fa fa-user bigger-130"></i>&nbsp;&nbsp;';
@@ -874,14 +830,11 @@ class acciones_lista_opr extends SSP{
 					if(Controlador::tiene_permiso('Operadores|ver_direcciones')){
 						$salida .= '<a data-rel="tooltip" data-original-title="Direcciones del operador" class="green tooltip-success" onclick="modal_ver_direcciones('.$id_operador.');"><i class="fa fa-home bigger-130"></i></a>&nbsp;&nbsp;';
 					}
-					if(Controlador::tiene_permiso('Operadores|historia')){
-						$salida .= '<td><a data-rel="tooltip" data-original-title="Historia del operador" class="green tooltip-success" onclick="historia_operador('.$id_operador.')"><i class="ace-icon fa fa-clock-o bigger-130"></i></a></td>';
-					}	
-					
-					
+
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -899,11 +852,11 @@ class acciones_lista_opr extends SSP{
 			WHERE
 				cro.id_operador = $id_operador
 		";
-		
+
 		$query = $db->prepare($query);
 		$query->execute();
 		$result = $query->fetchAll();
-		
+
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				return  $row['num'];
@@ -911,10 +864,10 @@ class acciones_lista_opr extends SSP{
 		}else{
 				return 'NO ASIGNADO';
 		}
-	}	
+	}
 	static function getOperador($id_usuario,$db){
 		$query = "SELECT `id_operador`,`cat_statusoperador` FROM `cr_operador` WHERE `id_usuario` = '$id_usuario'";
-		
+
 		$query = $db->prepare($query);
 		$query->execute();
 		$result = $query->fetchAll();
@@ -941,16 +894,16 @@ class acciones_operador extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-					
+
 					$id_usuario 		= $data[$i][ 'id_usuario' ];
 					$status_usuario 	= $data[$i][ 'cat_status' ];
-					
+
 					$operador = self::getOperador($id_usuario,$db);
 					$id_operador = $operador['id_operador'];
-					
+
 					$salida = '<table id="tb_act_oper"><tr>';
-					
-						
+
+
 						switch ($operador['cat_statusoperador']){
 							case 8:
 								$salida .= '<td><i data-rel="tooltip" data-original-title="Activo" class="green tooltip-success ace-icon fa fa-user bigger-130"></i></td>';
@@ -972,7 +925,7 @@ class acciones_operador extends SSP{
 						}
 						if(Controlador::tiene_permiso('Operadores|gestion_domicilios')){
 							$salida .= '<td><a data-rel="tooltip" data-original-title="Dómicilios del operador" class="green tooltip-success" onclick="modal_domicilios('.$id_operador.');"><i class="ace-icon fa fa-home bigger-130"></i></a></td>';
-						}	
+						}
 						if(Controlador::tiene_permiso('Operadores|relacionar_autos')){
 							$salida .= '<td><a data-rel="tooltip" data-original-title="Autos asignados" class="green tooltip-success" onclick="relacionar_autos('.$id_operador.');"><i class="ace-icon fa fa-car bigger-130"></i></a></td>';
 						}
@@ -980,16 +933,14 @@ class acciones_operador extends SSP{
 							$salida .= '<td><a data-rel="tooltip" data-original-title="Status del operador" class="green tooltip-success" onclick="status_operador('.$id_operador.')"><i class="ace-icon fa fa-check-square-o bigger-130"></i></a></td>';
 						}
 						if(Controlador::tiene_permiso('Operadores|numero_economico')){
-							
+
 							$num_eq = self::numeq($id_operador,$db);
 							if($num_eq == 'NO ASIGNADO'){$nq = '<span style="color:red;">&nbsp;XX</span>';$color="red";}else{$color="green"; $nq = '<span style="color:#375da8;">&nbsp;'.$num_eq.'</span>';}
-							
+
 							$salida .= '<td><a data-rel="tooltip" data-original-title="Número económico" class="'.$color.' tooltip-success" onclick="numero_economico('.$id_operador.')"><i class="ace-icon fa fa-list-ol bigger-130"></i></a></td>';
 							$salida .= '<td>'.$nq.'</td>';
 						}
-						if(Controlador::tiene_permiso('Operadores|historia')){
-							$salida .= '<td><a data-rel="tooltip" data-original-title="Historia del operador" class="green tooltip-success" onclick="historia_operador('.$id_operador.')"><i class="ace-icon fa fa-clock-o bigger-130"></i></a></td>';
-						}						
+
 						/*if(Controlador::tiene_permiso('Operadores|episodios')){
 							$salida .= '<a data-rel="tooltip" data-original-title="Episodios" class="green tooltip-success" onclick="carga_archivo(\'contenedor_principal\',\'' . URL_APP . 'operadores/episodios/'.$id_operador.'/\');"><i class="ace-icon fa fa-calendar bigger-130"></i></a>&nbsp;&nbsp;';
 						}
@@ -1006,10 +957,10 @@ class acciones_operador extends SSP{
 							$salida .= '<a data-rel="tooltip" data-original-title="Favoritos" class="green tooltip-success" onclick="carga_archivo(\'contenedor_principal\',\'' . URL_APP . 'operadores/favoritos/'.$id_operador.'/\');"><i class="ace-icon fa fa-heart bigger-130"></i></a>&nbsp;&nbsp;';
 						}*/
 					$salida .= '</tr></table>';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -1027,11 +978,11 @@ class acciones_operador extends SSP{
 			WHERE
 				cro.id_operador = $id_operador
 		";
-		
+
 		$query = $db->prepare($query);
 		$query->execute();
 		$result = $query->fetchAll();
-		
+
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				return  $row['num'];
@@ -1039,10 +990,10 @@ class acciones_operador extends SSP{
 		}else{
 				return 'NO ASIGNADO';
 		}
-	}	
+	}
 	static function getOperador($id_usuario,$db){
 		$query = "SELECT `id_operador`,`cat_statusoperador` FROM `cr_operador` WHERE `id_usuario` = '$id_usuario'";
-		
+
 		$query = $db->prepare($query);
 		$query->execute();
 		$result = $query->fetchAll();
@@ -1071,16 +1022,16 @@ class acciones_tarifas extends SSP{
 				if ( isset( $column['acciones'] ) ) {
 					$id_tarifa_operador = $data[$i][ 'id_tarifa_operador' ];
 					$id_operador = $column['id_operador'];
-					
+
 					$salida = '';
-						
+
 						if(Controlador::tiene_permiso('Operadores|tarifas_del')){
 							$salida .= '<a data-rel="tooltip" data-original-title="Eliminar" class="green tooltip-success" onclick="eliminar_tarifa('.$id_tarifa_operador.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>&nbsp;&nbsp;';
 						}
-						
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;

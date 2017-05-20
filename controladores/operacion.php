@@ -16,12 +16,9 @@ class Operacion extends Controlador
 		if($relTravel['process']){
 			self::asignacion_automatica($relTravel,$mobile);
 		}
-
 		if($operacion->cordon_hash(1)){$mobile->transmitir('doit','updcrd1');}
-		if($operacion->cordon_hash(2)){$mobile->transmitir('doit','updcrd2');}
 
 		if($operacion->serv_cve_hash(179)){$mobile->transmitir('doit','updasignados');}
-		if($operacion->servicio_hash(171)){$mobile->transmitir('doit','updproceso');}
 		if($operacion->servicio_hash(170)){$mobile->transmitir('doit','updpendientes');}
 		if($operacion->servicio_hash(188)){$mobile->transmitir('doit','updpendientes');}
 

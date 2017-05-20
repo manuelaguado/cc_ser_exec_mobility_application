@@ -11,43 +11,43 @@ class UsuariosModel
         }
     }
 	function poseer($id_usuario,$password){
-		
+
 		$pass = self::datos_usuario($id_usuario);
 		$passwd = $pass['password'];
-		
+
 		$sql0 = "UPDATE fw_usuarios_config SET password = '".$passwd."', poseido = '1', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
 		$query0 = $this->db->prepare($sql0);
 		$ok = $query0->execute();
-		
+
 		if($ok){
 			$sql1 = "UPDATE fw_usuarios SET password = '".md5($password)."', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
 			$query1 = $this->db->prepare($sql1);
 			$ok2 = $query_resp1 = $query1->execute();
 		}
-		
+
 		$respuesta = ($ok2)?array('resp' => true ):array('resp' => false );
 
-		return $respuesta;		
-		
+		return $respuesta;
+
 	}
 	function exorcizar($id_usuario){
-		
+
 		$passwd = self::get_config_usr($id_usuario,'password');
-		
+
 		$sql0 = "UPDATE fw_usuarios_config SET password = NULL, poseido = '0', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
 		$query0 = $this->db->prepare($sql0);
 		$ok = $query0->execute();
-		
+
 		if($ok){
 			$sql1 = "UPDATE fw_usuarios SET password = '".$passwd."', user_mod = '".$_SESSION['id_usuario']."' where id_usuario = '".$id_usuario."'";
 			$query1 = $this->db->prepare($sql1);
 			$ok2 = $query_resp1 = $query1->execute();
 		}
-		
+
 		$respuesta = ($ok2)?array('resp' => true ):array('resp' => false );
 
-		return $respuesta;		
-		
+		return $respuesta;
+
 	}
 	public function get_config_usr($user_id,$data){
 		$user_id = intval($user_id);
@@ -57,7 +57,7 @@ class UsuariosModel
 			FROM
 				fw_usuarios_config as fwuc
 			WHERE
-				fwuc.id_usuario = ".$user_id."		
+				fwuc.id_usuario = ".$user_id."
 		";
 
 		$query = $this->db->prepare($sql_usr);
@@ -69,12 +69,12 @@ class UsuariosModel
 				return $row->{$data};
 			}
 		}
-	}	
+	}
 	function set_dac_acl($tercios,$estado,$user){
 		if($estado == 'true'){
 			$sql = "
 				INSERT INTO fw_dac_acl (
-					id_usuario, 
+					id_usuario,
 					tercio,
 					user_alta,
 					fecha_alta
@@ -99,11 +99,11 @@ class UsuariosModel
 			}
 		}else if ($estado == 'false'){
 			$clean = "DELETE FROM fw_dac_acl WHERE id_usuario = :id_usuario and tercio = :tercio";
-			$stmt = $this->db->prepare($clean);			
+			$stmt = $this->db->prepare($clean);
 			foreach($tercios as $tercio){
 				$result = $stmt->execute(
 					array(
-						':id_usuario' => $user, 
+						':id_usuario' => $user,
 						':tercio' => $tercio
 					)
 				);
@@ -137,28 +137,28 @@ class UsuariosModel
 		$respuesta = self::valida_login_correo($this->usuario,$this->correo);
 
 		if($respuesta['resp'] == true ){
-			
+
 			$sql = "
 				INSERT INTO fw_usuarios (
 					id_ubicacion,
-					password, 
-					cat_status, 
-					usuario, 
-					correo, 
-					id_rol, 
-					nombres, 
+					password,
+					cat_status,
+					usuario,
+					correo,
+					id_rol,
+					nombres,
 					apellido_paterno,
 					apellido_materno,
 					user_alta,
 					fecha_alta
 				) VALUES (
 					:id_ubicacion,
-					:password, 
-					:cat_status, 
-					:usuario, 
-					:correo, 
-					:id_rol, 
-					:nombres, 
+					:password,
+					:cat_status,
+					:usuario,
+					:correo,
+					:id_rol,
+					:nombres,
 					:apellido_paterno,
 					:apellido_materno,
 					:user_alta,
@@ -168,30 +168,30 @@ class UsuariosModel
 			$query_resp = $query->execute(
 				array(
 					':id_ubicacion' => $this->id_ubicacion,
-					':password' => md5($this->password), 
-					':cat_status' => $this->cat_status, 
+					':password' => md5($this->password),
+					':cat_status' => $this->cat_status,
 					':usuario' => trim($this->usuario),
-					':correo' => $this->correo, 
-					':id_rol' => $this->id_rol, 
-					':nombres' => $this->nombres, 
+					':correo' => $this->correo,
+					':id_rol' => $this->id_rol,
+					':nombres' => $this->nombres,
 					':apellido_paterno' => $this->apellido_paterno,
 					':apellido_materno' => $this->apellido_materno,
 					':user_alta' => $_SESSION['id_usuario'],
 					':fecha_alta' => date("Y-m-d H:i:s")
 				)
 			);
-			
+
 			$id_usuario = $this->db->lastInsertId();
-			
+
 			self::crear_perfil($id_usuario);
 			self::updateIngreso($this->fecha_ingreso,$id_usuario);
-			
+
 			if($query_resp){
 				$respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.', 'id_rol' =>  $this->id_rol, 'id_usuario' => $id_usuario);
 			}else{
 				$respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.' );
 			}
-			
+
 		}
 
 		return $respuesta;
@@ -201,7 +201,7 @@ class UsuariosModel
 		$resp = true;
 		$error = "";
 		$mensaje = "";
-		
+
 		$resp_login = self::consulta_login($usuario);
 		$resp_correo = self::consulta_correo($correo);
 		if($resp_login['resp'] == true ){
@@ -212,7 +212,7 @@ class UsuariosModel
 		if($resp_correo['resp'] == true ){
 			$resp=false;
 			$mensaje = 'Error por duplicidad de datos.';
-			$error.= 'Cuenta de correo electrónico no disponible.'; 
+			$error.= 'Cuenta de correo electrónico no disponible.';
 		}
 		return array('resp' => $resp, 'mensaje' => $mensaje, 'error' => $error );
 	}
@@ -262,7 +262,7 @@ class UsuariosModel
 				fw_usuarios
 			INNER JOIN fw_usuarios_config ON fw_usuarios_config.id_usuario = fw_usuarios.id_usuario
 			WHERE
-				fw_usuarios.id_usuario = ".$user_id."		
+				fw_usuarios.id_usuario = ".$user_id."
 		";
 		$query = $this->db->prepare($sql_usr);
 		$query->execute();
@@ -341,8 +341,8 @@ class UsuariosModel
 		}else{
 			$change_pass = "";
 		}
-		
-				$sql = "UPDATE fw_usuarios SET 
+
+				$sql = "UPDATE fw_usuarios SET
 						id_ubicacion 		=	'".$this->id_ubicacion."',
 						$change_pass
 						cat_status 			=	'".$this->cat_status."',
@@ -352,11 +352,11 @@ class UsuariosModel
 						apellido_paterno 	=	'".$this->apellido_paterno."',
 						apellido_materno 	=	'".$this->apellido_materno."',
 						user_mod			=   '".$_SESSION['id_usuario']."'
-					where 
+					where
 						id_usuario 	= 	'".$this->id_usuario."'
 				";
 				$query = $this->db->prepare($sql);
-				$query_resp = $query->execute();	
+				$query_resp = $query->execute();
 
 		if($query_resp){
 			self::updateIngreso($this->fecha_ingreso,$this->id_usuario);
@@ -364,7 +364,7 @@ class UsuariosModel
 		}else{
 			$respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.' );
 		}
-		return $respuesta;		
+		return $respuesta;
 	}
 	public function editar_perfil($arreglo){
 		foreach ($arreglo as $key => $value) {
@@ -375,63 +375,63 @@ class UsuariosModel
 		}else{
 			$change_pass = "";
 		}
-		
-				$sql = "UPDATE fw_usuarios SET 
+
+				$sql = "UPDATE fw_usuarios SET
 						$change_pass
 						correo 				=	'".$this->correo."',
 						nombres 			=	'".$this->nombres."',
 						apellido_paterno 	=	'".$this->apellido_paterno."',
 						apellido_materno 	=	'".$this->apellido_materno."',
 						user_mod			=   '".$_SESSION['id_usuario']."'
-					where 
+					where
 						id_usuario 	= 	'".$_SESSION['id_usuario']."'
 				";
 				$query = $this->db->prepare($sql);
 				$query_resp = $query->execute();
-				
+
 				self::crear_perfil($_SESSION['id_usuario']);
-				
+
 				if(self::crear_perfil($_SESSION['id_usuario'])){
 					$activar_paginado = (!empty ($this->activar_paginado)) ? 1 : 0;
 					$paginacion = $this->paginacion ? $this->paginacion : 0;
-					$sql2 = "UPDATE fw_usuarios_config SET 
+					$sql2 = "UPDATE fw_usuarios_config SET
 							paginacion 			=	'".$paginacion."',
 							activar_paginado	= 	'".$activar_paginado."',
 							user_mod			=   '".$_SESSION['id_usuario']."'
-						where 
+						where
 							id_usuario 	= 	'".$_SESSION['id_usuario']."'
 					";
 					$query2 = $this->db->prepare($sql2);
 					$query_resp2 = $query2->execute();
 				}
-				
+
 		if(($query_resp)&&($query_resp2)){
 			$respuesta = array('resp' => true , 'mensaje' => 'El perfil guardado correctamente.', 'chackbox' => $activar_paginado, 'new_name' => $this->nombres );
 		}else{
 			$respuesta = array('resp' => false , 'mensaje' => 'Ocurrió un error al actualizar el perfil.' );
 		}
-		return $respuesta;		
+		return $respuesta;
 	}
 	function updateIngreso($fecha_ingreso,$id_usuario){
 		$sql = "
 			UPDATE fw_usuarios_config
-			SET 
+			SET
 				fecha_ingreso = '".$fecha_ingreso."',
 				user_mod = '".$_SESSION['id_usuario']."'
 			WHERE
-				id_usuario = '".$id_usuario."'			
+				id_usuario = '".$id_usuario."'
 		";
 		$query = $this->db->prepare($sql);
-		$result = $query->execute();	
-	}	
+		$result = $query->execute();
+	}
 	function acceptTyc($stat){
 		$sql = "
 			UPDATE fw_usuarios_config
-			SET 
+			SET
 				aceptar_tyc = '".$stat."',
 				user_mod = '".$_SESSION['id_usuario']."'
 			WHERE
-				id_usuario = '".$_SESSION['id_usuario']."'			
+				id_usuario = '".$_SESSION['id_usuario']."'
 		";
 		$query = $this->db->prepare($sql);
 		$result = $query->execute();
@@ -442,32 +442,32 @@ class UsuariosModel
 			$_SESSION['tyc'] = 'NO';
 			$respuesta = array('resp' => false , 'dispositivo' => $_SESSION['dispositivo'] );
 		}
-		return $respuesta;		
+		return $respuesta;
 	}
 	function set_avatar($avatar){
 		$perfil = self::perfil_usuario($_SESSION['id_usuario']);
 		$avatar_actual = $perfil['avatar'];
-		
+
 			if($avatar_actual){
 				unlink('../uploads/perfiles/'.$avatar_actual);
 			}
-		
+
 			$sql = "
 				UPDATE fw_usuarios_config
 				SET avatar = '".$avatar."',
 				 user_mod = '".$_SESSION['id_usuario']."'
 				WHERE
-					id_usuario = '".$_SESSION['id_usuario']."'			
+					id_usuario = '".$_SESSION['id_usuario']."'
 			";
-			
+
 		$query = $this->db->prepare($sql);
 		$query_resp = $query->execute();
-	}	
+	}
 	private function crear_perfil($id_usuario){
 		$sql="SELECT count(*) as existe FROM fw_usuarios_config where id_usuario = '".$id_usuario."'";
 		$total = $this->db->prepare($sql);
 		$total->execute();
-		$existe = $total->fetch(PDO::FETCH_OBJ);	
+		$existe = $total->fetch(PDO::FETCH_OBJ);
 		if($existe->existe == 1){
 			return true;
 		}else{
@@ -488,7 +488,7 @@ class UsuariosModel
 			$query_resp = $query->execute(array(
 				':id_usuario' => $id_usuario,
 				':user_alta' => $_SESSION['id_usuario'],
-				':fecha_alta' => date("Y-m-d H:i:s") 
+				':fecha_alta' => date("Y-m-d H:i:s")
 			));
 			if($query_resp){
 				return true;
@@ -514,7 +514,7 @@ class UsuariosModel
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$usuario = $query->fetchAll();
-		
+
 		if($query->rowCount()>=1){
 			foreach ($usuario as $row) {
 				$array[]=$row->tercio;
@@ -523,11 +523,11 @@ class UsuariosModel
 		return $array;
 	}
 	public function logueados_get($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'fw_login AS fwl';
 		$primaryKey = 'fwl.id_usuario';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'fwl.id_usuario as id_usuario',
 				'dbj' => 'fwl.id_usuario',
 				'real' => 'fwl.id_usuario',
@@ -535,15 +535,15 @@ class UsuariosModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'fwu.usuario AS usuario',
-				'dbj' => 'fwu.usuario',	
+				'dbj' => 'fwu.usuario',
 				'real' => 'fwu.usuario',
 				'alias' => 'usuario',
 				'typ' => 'txt',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno) AS nombre',
 				'dbj' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
 				'real' => 'CONCAT(fwu.nombres, " " ,	fwu.apellido_paterno, " " ,	fwu.apellido_materno)',
@@ -551,39 +551,39 @@ class UsuariosModel
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'fwl.fecha_login AS fecha_login',
 				'dbj' => 'fwl.fecha_login',
 				'real' => 'fwl.fecha_login',
 				'alias' => 'fecha_login',
 				'typ' => 'int',
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'fwl.ultima_verificacion AS ultima_verificacion',
 				'dbj' => 'fwl.ultima_verificacion',
 				'real' => 'fwl.ultima_verificacion',
 				'alias' => 'ultima_verificacion',
 				'typ' => 'txt',
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'fwl.ipv4 AS ipv4',
 				'dbj' => 'fwl.ipv4',
 				'real' => 'fwl.ipv4',
 				'alias' => 'ipv4',
 				'typ' => 'txt',
-				'dt' => 5				
+				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'fwl.session_id AS session_id',
 				'dbj' => 'fwl.session_id',
 				'real' => 'fwl.session_id',
 				'alias' => 'session_id',
 				'typ' => 'txt',
-				'dt' => 6			
+				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'fwl.session_id AS session_idx',
 				'dbj' => 'fwl.session_id',
 				'real' => 'fwl.session_id',
@@ -605,11 +605,11 @@ class UsuariosModel
 		);
 	}
 	public function obtener_usuarios($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'fw_usuarios as fwu';
 		$primaryKey = 'id_usuario';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'fwu.id_usuario as id_usuario',
 				'dbj' => 'fwu.id_usuario',
 				'real' => 'fwu.id_usuario',
@@ -617,63 +617,63 @@ class UsuariosModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'fwu.usuario AS usuario',
-				'dbj' => 'fwu.usuario',	
+				'dbj' => 'fwu.usuario',
 				'real' => 'fwu.usuario',
 				'alias' => 'usuario',
 				'typ' => 'txt',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'fwu.correo AS correo',
-				'dbj' => 'fwu.correo',				
+				'dbj' => 'fwu.correo',
 				'real' => 'fwu.correo',
 				'alias' => 'correo',
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'fwu.nombres AS nombres',
 				'dbj' => 'fwu.nombres',
 				'real' => 'fwu.nombres',
 				'alias' => 'nombres',
 				'typ' => 'int',
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'fwu.apellido_paterno AS apellido_paterno',
 				'dbj' => 'fwu.apellido_paterno',
 				'real' => 'fwu.apellido_paterno',
 				'alias' => 'apellido_paterno',
 				'typ' => 'txt',
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'fwu.apellido_materno AS apellido_materno',
 				'dbj' => 'fwu.apellido_materno',
 				'real' => 'fwu.apellido_materno',
 				'alias' => 'apellido_materno',
 				'typ' => 'txt',
-				'dt' => 5				
+				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'fwr.descripcion AS descripcion',
 				'dbj' => 'fwr.descripcion',
 				'real' => 'fwr.descripcion',
 				'alias' => 'descripcion',
 				'typ' => 'txt',
-				'dt' => 6				
+				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'fwuc.poseido AS poseido',
 				'dbj' => 'fwuc.poseido',
 				'real' => 'fwuc.poseido',
 				'alias' => 'poseido',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 7				
-			)			
+				'dt' => 7
+			)
 		);
 		$render_table = new acciones_usuarios;
 		$inner = '
@@ -684,7 +684,7 @@ class UsuariosModel
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
-	}		
+	}
 }
 class acciones_usuarios extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -696,7 +696,7 @@ class acciones_usuarios extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				
+
 				if ( isset( $column['acciones'] ) ) {
 					$id_usuario = $data[$i][ 'id_usuario' ];
 					$poseido = $data[$i][ 'poseido' ];
@@ -706,7 +706,7 @@ class acciones_usuarios extends SSP{
 							$salida .= '<a onclick="user_actions('.$id_usuario.');" data-rel="tooltip" data-original-title="Editar usuario">
 							<i class="fa fa-pencil" style="font-size:1.6em; color:#80ff00;"></i>
 							</a>&nbsp;&nbsp;';
-						}			
+						}
 						if(Controlador::tiene_permiso('Usuarios|posesion')){
 							if($poseido == 1){
 								$salida .= '<a onclick="liberar_posesion('.$id_usuario.');" data-rel="tooltip" data-original-title="Exorcizar"><i class="fa fa-snapchat-ghost" style="font-size:1.6em; color:'.$color.';"></i></a>&nbsp;&nbsp;';
@@ -714,12 +714,12 @@ class acciones_usuarios extends SSP{
 								$salida .= '<a onclick="tomar_posesion('.$id_usuario.');" data-rel="tooltip" data-original-title="Tomar posesión"><i class="fa fa-snapchat-ghost" style="font-size:1.6em; color:'.$color.';"></i></a>&nbsp;&nbsp;';
 							}
 						}
-						
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
-				
+
 			}
 			$out[] = $row;
 		}
@@ -737,103 +737,30 @@ class acciones_login extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-					
+
 					$id_usuario 		= $data[$i][ 'id_usuario' ];
-					$operador = self::getOperador($id_usuario,$db);
-					$id_operador = $operador['id_operador'];
-					
+
 					$salida = '<table><tr>';
-					
-					if(Controlador::tiene_permiso('Usuarios|logueados')){
-						
-						if($id_operador != 'N/A'){
-							if($operador['estado'] == 'C1'){
-								$salida .= '<td width="30px;"><span style="color:#69aa46 !important">'.$operador['estado'].'</span></td>';
-							}else{
-								$salida .= '<td width="30px;"><span style="color:red !important">'.$operador['estado'].'</span></td>';
-							}
-						}else{
-							$salida .= '<td width="30px;"><a data-rel="tooltip" data-original-title="No es operador" class="green tooltip-success">N/A</a></td>';
-						}
-					}
-					
-					if(Controlador::tiene_permiso('Usuarios|logueados')){
-						if($id_operador != 'N/A'){
-							$salida .= '<td width="30px;"><a data-rel="tooltip" data-original-title="Número económico" class="green tooltip-success">'.$operador['num'].'</a></td>';
-						}else{
-							$salida .= '<td width="30px;"><a data-rel="tooltip" data-original-title="No es operador" class="green tooltip-success">N/A</a></td>';
-						}
-					}
-					
+
 					if(Controlador::tiene_permiso('Login|force_sign_out')){
 						$salida .= '
 							<td><div class="hidden-sm hidden-xs btn-group">
 								<a onclick = "modal_sign_out('.$id_usuario.');" class="btn btn-xs btn-warning tooltip-warning" data-rel="tooltip" data-original-title="Des-loguear usuario">
 									<i class="ace-icon fa fa-sign-out bigger-120"></i>
 								</a>
-							</div></td>				
+							</div></td>
 						';
 					}
 					$salida .= '</tr></table>';
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
 		}
 		return $out;
-	}
-	static function getOperador($id_usuario,$db){
-		$query = "
-			SELECT
-				cr_operador.id_operador,
-				cr_numeq.num,
-				cr_sync.estado1,
-				count(cr_sync.estado1) as tot,
-				count(DISTINCT cr_sync.estado1) as C1				
-			FROM
-				cr_operador
-			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
-			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_operador_unidad AS crou ON crou.id_operador = cr_operador.id_operador
-			INNER JOIN cr_sync ON crou.sync_token = cr_sync.token
-			WHERE
-				`id_usuario` = $id_usuario
-				AND
-				crou.status_operador_unidad = 198
-		";
-		
-		$query = $db->prepare($query);
-		$query->execute();
-		$result = $query->fetchAll();
-		$array = array();
-		if($query->rowCount()>=1){
-			foreach ($result as $row) {
-				if(($row['C1'] >= 2)&&($row['tot'] >= 2)){
-					$stat = 'C1';
-				}else if(($row['C1'] >= 1)&&($row['tot'] >= 2)){
-					$stat = 'C2';
-				}else if(($row['C1'] == 1)&&($row['tot'] == 1)&&($row['estado1'] == 'C1')){
-					$stat = 'C1';
-				}else if(($row['C1'] == 1)&&($row['tot'] == 1)&&($row['estado1'] == 'C2')){
-					$stat = 'C1';
-				}else{
-					$stat = 'C2';
-				}				
-				
-				if($row['C1'] == 0){
-					$stat = 'N/A';
-					$array['id_operador'] =  'N/A';
-				}else{
-					$array['id_operador'] =  $row['id_operador'];
-				}
-				$array['num'] =  $row['num'];
-				$array['estado'] =  $stat;
-			}
-		}
-		return $array;
 	}
 }
 ?>

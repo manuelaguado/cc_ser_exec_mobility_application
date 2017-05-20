@@ -666,69 +666,6 @@ class OperacionModel{
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
-	function getTBUnitsRed(){
-		$qry = '
-			SELECT
-				crou.id_operador_unidad,
-				crou.id_operador AS id_operador
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			WHERE
-				(
-					(
-						syc.estado1 = "C1"
-						AND syc.estado2 = "F11"
-					)
-					OR (
-						syc.estado1 = "C1"
-						AND syc.estado3 = "F11"
-					)
-					OR (
-						syc.estado1 = "C1"
-						AND syc.clave = "F14"
-						AND syc.estado3 = "F14"
-					)
-				)
-			AND crou.status_operador_unidad = 198
-		';
-		/*El ultimo OR se agrego para agregar una solicitud F14 a la lista de Tiempo a la Base*/
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$operadores = array();
-		$num = 0;
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row){
-				$operadores[$num]['id_operador'] 		= $row->id_operador;
-				$operadores[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$num++;
-			}
-		}
-		return $operadores;
-	}
-	function getCurrentCveOperador($id_operador_unidad){
-		$qry = "
-			SELECT
-				syc.clave as llave
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
-			WHERE
-				crou.id_operador_unidad = $id_operador_unidad
-			AND cm_catalogo.catalogo = 'clavesitio'
-			AND crou.status_operador_unidad = 198
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$array = array();
-		if($query->rowCount()>=1){
-			foreach ($query->fetchAll() as $row){
-				return	$row->llave;
-			}
-		}
-	}
 	function getTBUnits(){
 		self::adquirirTiemposBase();
 		$qry = '
@@ -1529,62 +1466,6 @@ class OperacionModel{
 		}
 		return json_encode($output);
 	}
-	function c1orc2($id_operador){
-		$qry = "
-			SELECT
-				syc.estado1,
-				count(syc.estado1) as tot,
-				count(DISTINCT syc.estado1) as C1
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			WHERE
-				crou.id_operador = $id_operador
-				AND crou.status_operador_unidad = 198
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$data = $query->fetchAll();
-		$return =  false;
-		if($query->rowCount()>=1){
-			foreach ($data as $row) {
-				if(($row->C1 >= 2)&&($row->tot >= 2)){
-					$return = 'C1';
-				}else if(($row->C1 >= 1)&&($row->tot >= 2)){
-					$return = 'C2';
-				}else if(($row->C1 == 1)&&($row->tot == 1)&&($row->estado1 == 'C1')){
-					$return = 'C1';
-				}else if(($row->C1 == 1)&&($row->tot == 1)&&($row->estado1 == 'C2')){
-					$return = 'C1';
-				}else{
-					$return = 'C2';
-				}
-			}
-		}
-		return $return;
-	}
-	function getSolicitudF14Activa($id_operador){
-		$qry = "
-			SELECT
-				csr.id_sync_ride
-			FROM
-				cr_sync_ride AS csr
-			INNER JOIN cr_operador_unidad AS crou ON csr.id_operador_unidad = crou.id_operador_unidad
-			WHERE
-				csr.cat_cve_store = 132
-			AND csr.procesado = 0
-			AND crou.id_operador = $id_operador
-			AND crou.status_operador_unidad = 198
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		if($query->rowCount()>=1){
-			$return = true;
-		}else{
-			$return = false;
-		}
-		return $return;
-	}
 	function formadoAnyBase(BasesModel $bases, $id_operador_unidad){
 		$return = false;
 		foreach($bases->listarBases() as $base){
@@ -1755,102 +1636,7 @@ class OperacionModel{
 		}
 		return $unitState;
 	}
-	function enC1(){
-		$qry = "
-			SELECT
-				cr_numeq.num AS numeq,
-				crou.id_operador AS id_operador,
-				crou.id_operador_unidad,
-				syc.serie
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_operador_numeq AS crone ON crou.id_operador = crone.id_operador
-			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			WHERE
-				syc.estado1 = 'C1'
-				AND crou.status_operador_unidad = 198
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$unitState = array();
-		$num = 0;
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				$unitState[$num]['numeq'] = $row->numeq;
-				$unitState[$num]['id_operador'] = $row->id_operador;
-				$unitState[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$unitState[$num]['serie'] = $row->serie;
-				$num++;
-			}
-		}
-		return $unitState;
-	}
-	function enC8(){
-		$qry = "
-			SELECT
-				cr_numeq.num AS numeq,
-				crou.id_operador AS id_operador,
-				crou.id_operador_unidad,
-				syc.serie
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_operador_numeq AS crone ON crou.id_operador = crone.id_operador
-			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			WHERE
-				syc.estado1 = 'C8'
-				AND crou.status_operador_unidad = 198
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$unitState = array();
-		$num = 0;
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				$unitState[$num]['numeq'] = $row->numeq;
-				$unitState[$num]['id_operador'] = $row->id_operador;
-				$unitState[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$unitState[$num]['serie'] = $row->serie;
-				$num++;
-			}
-		}
-		return $unitState;
-	}
-	function enA11(){
-		$qry = "
-			SELECT
-				cr_numeq.num AS numeq,
-				crou.id_operador AS id_operador,
-				crou.id_operador_unidad,
-				syc.serie
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_operador_numeq AS crone ON crou.id_operador = crone.id_operador
-			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			WHERE
-				syc.estado1 = 'A11'
-				AND crou.status_operador_unidad = 198
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$unitState = array();
-		$num = 0;
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				$unitState[$num]['numeq'] = $row->numeq;
-				$unitState[$num]['id_operador'] = $row->id_operador;
-				$unitState[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$unitState[$num]['serie'] = $row->serie;
-				$num++;
-			}
-		}
-		return $unitState;
-	}
+
 	function getTokenStatusBase($id_base){
 		$sql = "
 			SELECT
@@ -2031,89 +1817,6 @@ class OperacionModel{
 		}
 		print json_encode($respuesta);
 	}
-	function control_get($array){
-		ini_set('memory_limit', '256M');
-		$table = 'cr_operador_unidad AS crou';
-		$primaryKey = 'id_operador_unidad';
-		$columns = array(
-			array(
-				'db' => 'cr_numeq.num as numeq',
-				'dbj' => 'cr_numeq.num',
-				'real' => 'cr_numeq.num',
-				'alias' => 'numeq',
-				'typ' => 'int',
-				'dt' => 0
-			),
-			array(
-				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
-				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'alias' => 'nombre',
-				'typ' => 'int',
-				'dt' => 1
-			),
-			array(
-				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',
-				'alias' => 'marca',
-				'real' => 'mk.marca',
-				'typ' => 'txt',
-				'dt' => 2
-			),
-			array(
-				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',
-				'real' => '`mod`.modelo',
-				'alias' => 'modelo',
-				'typ' => 'txt',
-				'dt' => 3
-			),
-			array(
-				'db' => 'uni.color AS color',
-				'dbj' => 'uni.color',
-				'real' => 'uni.color',
-				'alias' => 'color',
-				'typ' => 'txt',
-				'dt' => 4
-			),
-			array(
-				'db' => 'crou.id_operador_unidad',
-				'dbj' => 'crou.id_operador_unidad',
-				'real' => 'crou.id_operador_unidad',
-				'typ' => 'int',
-				'acciones' => true,
-				'dt' => 5
-			),
-			array(
-				'db' => 'crou.id_operador as id_operador',
-				'dbj' => 'crou.id_operador',
-				'real' => 'crou.id_operador',
-				'alias' => 'id_operador',
-				'typ' => 'int',
-				'dt' => 6
-			)
-		);
-		$render_table = new acciones_control;
-		$inner = '
-			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
-			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
-			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
-			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
-			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = ope.id_operador
-			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-		';
-		$where = "
-			syc.estado1 = 'C1' and (syc.estado2 = 'A10' OR syc.estado2 = 'F13' OR syc.estado2 = 'A11' OR syc.estado2 = 'C8')
-			AND
-			ope.cat_statusoperador = 8
-			AND crou.status_operador_unidad = 198
-		";
-		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
-		);
-	}
 	function inactivos_get($array){
 		ini_set('memory_limit', '256M');
 		$table = 'cr_operador_unidad AS crou';
@@ -2177,22 +1880,11 @@ class OperacionModel{
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
-			syc.estado1 = 'C2'
-			AND
 			ope.cat_statusoperador = 8
 			AND
-			NOT EXISTS (
-				SELECT
-					1
-				FROM
-					cr_presence
-				WHERE
-					cr_presence.id_operador = crou.id_operador
-			)
-			AND crou.status_operador_unidad = 198
+			crou.status_operador_unidad = 198
 		";
 		$orden = "
 			GROUP BY
@@ -2265,7 +1957,6 @@ class OperacionModel{
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
 			ope.cat_statusoperador = 10
@@ -2275,90 +1966,7 @@ class OperacionModel{
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
 		);
 	}
-	function unidades_a11_get($array){
-		ini_set('memory_limit', '256M');
-		$table = 'cr_operador_unidad AS crou';
-		$primaryKey = 'id_operador_unidad';
-		$columns = array(
-			array(
-				'db' => 'cr_numeq.num as numeq',
-				'dbj' => 'cr_numeq.num',
-				'real' => 'cr_numeq.num',
-				'alias' => 'numeq',
-				'typ' => 'int',
-				'dt' => 0
-			),
-			array(
-				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
-				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'alias' => 'nombre',
-				'typ' => 'int',
-				'dt' => 1
-			),
-			array(
-				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',
-				'alias' => 'marca',
-				'real' => 'mk.marca',
-				'typ' => 'txt',
-				'dt' => 2
-			),
-			array(
-				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',
-				'real' => '`mod`.modelo',
-				'alias' => 'modelo',
-				'typ' => 'txt',
-				'dt' => 3
-			),
-			array(
-				'db' => 'uni.color AS color',
-				'dbj' => 'uni.color',
-				'real' => 'uni.color',
-				'alias' => 'color',
-				'typ' => 'txt',
-				'dt' => 4
-			),
-			array(
-				'db' => 'crou.id_operador_unidad',
-				'dbj' => 'crou.id_operador_unidad',
-				'real' => 'crou.id_operador_unidad',
-				'typ' => 'int',
-				'acciones' => true,
-				'dt' => 5
-			),
-			array(
-				'db' => 'crou.id_operador',
-				'dbj' => 'crou.id_operador',
-				'real' => 'crou.id_operador',
-				'typ' => 'int',
-				'dt' => 6
-			)
-		);
-		$render_table = new acciones_unidades_a11;
-		$inner = '
-			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
-			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
-			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
-			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
-			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
-			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-		';
-		$where = "
-			syc.estado1 = 'C1'
-			AND
-			syc.estado2 = 'A11'
-			AND
-			ope.cat_statusoperador = 8
-			AND crou.status_operador_unidad = 198
-		";
-		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
-		);
-	}
+
 	function activos_get($array){
 		ini_set('memory_limit', '256M');
 		$table = 'cr_operador_unidad AS crou';
@@ -2430,11 +2038,8 @@ class OperacionModel{
 			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
 			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
 			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
 		';
 		$where = "
-			syc.estado1 = 'C1'
-			AND
 			ope.cat_statusoperador = 8
 			AND crou.status_operador_unidad = 198
 		";
@@ -3948,30 +3553,6 @@ class acciones_asignados extends SSP{
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'asignados\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
-					$cveStat = self::getCurrentCveOperador($id_operador_unidad,$db);
-
-					switch ($cveStat['clave']){
-						case 'R6':	$color = '#9DBF00';	break;
-						case 'F15':	$color = '#697F00';	break;
-						case 'A15':	$color = '#001A40';	break;
-						case 'C10':	$color = '#344000';	break;
-						case 'C11':	$color = '#1a6600';	break;
-						case 'C14':	$color = '#BF9A16';	break;
-						case 'C9':	$color = '#403307';	break;
-						case 'C8':	$color = '#E5B81A';	break;
-						case 'A14':	$color = '#BF3000';	break;
-						case 'R2':	$color = '#7F2000';	break;
-						case 'X3':	$color = '#401000';	break;
-						case 'X4':	$color = '#E53A00';	break;
-						case 'X5':	$color = '#004EBF';	break;
-						case 'X6':	$color = '#00347F';	break;
-						case 'X7':	$color = '#001A40';	break;
-						case 'X8':	$color = '#005EE5';	break;
-						default:	$color = '#000000';	break;
-					}
-
-					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background:'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
-
 					$salida .= '<a href="javascript:;" onclick="activar_cancelacion('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar cancelación en operador"><i class="fa fa-ban" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
 					$salida .= '<a href="javascript:;" onclick="activar_abandono('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar abandono en operador"><i class="icofont icofont-offside" style="font-size:1.4em; color:#aa2424;"></i></a>&nbsp;&nbsp;';
@@ -3993,31 +3574,6 @@ class acciones_asignados extends SSP{
 			$out[] = $row;
 		}
 		return $out;
-	}
-	static function getCurrentCveOperador($id_operador_unidad,$db){
-		$qry = "
-			SELECT
-				syc.clave as llave,
-				cm_catalogo.valor as valor
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
-			WHERE
-				crou.id_operador_unidad = $id_operador_unidad
-			AND cm_catalogo.catalogo = 'clavesitio'
-			AND crou.status_operador_unidad = 198
-		";
-		$query = $db->prepare($qry);
-		$query->execute();
-		$array = array();
-		if($query->rowCount()>=1){
-			foreach ($query->fetchAll() as $row){
-				$array['clave']	=	$row['llave'];
-				$array['valor']	=	$row['valor'];
-			}
-		}
-		return $array;
 	}
 }
 class acciones_tiempo_base extends SSP{
