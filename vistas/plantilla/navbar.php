@@ -34,9 +34,9 @@
 				<!-- #section:basics/navbar.dropdown -->
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 					<ul class="nav ace-nav">
-						
+
 						<?php include('notificaciones.php'); ?>
-						
+
 						<!-- #section:basics/navbar.user_menu -->
 						<li class="light-blue">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
@@ -57,7 +57,7 @@
 								)
 								{
 									if($this->tiene_permiso('Usuarios|index')){
-									?>								
+									?>
 									<li>
 										<!-- <a href="<?=URL_APP?>usuarios"> -->
 										<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>usuarios');">
@@ -68,16 +68,16 @@
 									<?php
 									}
 									if($this->tiene_permiso('Controllers|index')){
-									?>	
+									?>
 									<li>
 										<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>controllers');">
 											<i class="fa fa-key"></i>
 											Controladores & Metodos
 										</a>
 									</li>
-									
+
 									<li class="divider"></li>
-									
+
 								<?php
 									}
 								}
@@ -89,7 +89,7 @@
 											<i class="menu-icon fa fa-user"></i>
 											Perfil
 										</a>
-									</li>								
+									</li>
 								<?php
 								}
 								if(isset($_SESSION['token'])){
@@ -109,21 +109,6 @@
 						<!-- /section:basics/navbar.user_menu -->
 					</ul>
 				</div>
-				<?php
-				if(DEVELOPMENT){
-					if($this->tiene_permiso('Mobile|websockets_control')){
-						$acceso = Controlador::getConfig(1,'websockets_control');
-						if($acceso['valor'] == 1){$checked = 'checked';}else{$checked = '';}
-						
-						?>
-						<div class="navbar-header pull-right" id="websockets_switch">					
-							<input onchange='websockets_control()' id="websockets_control" name="websockets_control" class="ace ace-switch ace-switch-5" type="checkbox" <?php echo $checked; ?>/>
-							<span class="lbl" data-lbl="WSS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WSS">&nbsp;&nbsp;</span>
-						</div>
-						<?php
-					}
-				}
-				?>
 				<!-- /section:basics/navbar.dropdown -->
 			</div><!-- /.navbar-container -->
 		</div>

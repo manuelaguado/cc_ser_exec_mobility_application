@@ -2,6 +2,9 @@
 use Pubnub\Pubnub;
 class Desarrollador extends Controlador
 {
+	function __construct(){
+		if(DEVELOPMENT == false){exit();}
+	}	
 	public function image(){
 		$pointsToEncoded = self::PolylineToEncoded();
 		$encoded = EncodedPolylineAlgorithm::encode($pointsToEncoded);
@@ -17,16 +20,16 @@ class Desarrollador extends Controlador
 		fputs($fp, $result);
 		fclose($fp);
 		return $file;
-	}	
+	}
 	public function PolylineToEncoded(){
 		$db = Controlador::direct_connectivity();
-		
+
 		$stmt = $db->prepare("SELECT count(id_gps) as total from gpstmp");
 		$stmt->execute();
 		$rows = $stmt->fetchAll();
 		$puntos = $rows[0]->total;
 		$bucles = ceil($puntos/100);
-		
+
 		for($i = 1; $i <= $bucles; $i++){
 			$sql = "select latitud,longitud  from gpstmp LIMIT " . (($i*100)-100) . ",100;";
 			$qry = $db->prepare($sql);
@@ -50,7 +53,7 @@ class Desarrollador extends Controlador
 			}
 		}
 		return $array;
-	}	
+	}
 	public function distanceMatrix(){
         $url='https://maps.googleapis.com/maps/api/distancematrix/json?origins=19.375489,-99.062057&destinations=20.670867,-103.367144&key=AIzaSyDS6f8F5bj6kKdsfO57Y_2GZQShg79rgnk';
 
@@ -62,10 +65,10 @@ class Desarrollador extends Controlador
 
         $result = curl_exec($curl);
         curl_close($curl);
-		
+
 		print $result;
 		echo '<br><br>';
-		
+
         $decode = json_decode($result);
 		foreach($decode->rows as $num=>$val){
 			foreach($val->elements as $n=>$v){
@@ -77,13 +80,13 @@ class Desarrollador extends Controlador
 	}
 	public function gps(){
 		$db = Controlador::direct_connectivity();
-		
+
 		$stmt = $db->prepare("SELECT count(id_gps) as total from gpstmp");
 		$stmt->execute();
 		$rows = $stmt->fetchAll();
 		$puntos = $rows[0]->total;
 		$bucles = ceil($puntos/100);
-		
+
 		for($i = 1; $i <= $bucles; $i++){
 			$sql = "select latitud,longitud  from gpstmp LIMIT " . (($i*100)-100) . ",100;";
 			$qry = $db->prepare($sql);
@@ -109,10 +112,10 @@ class Desarrollador extends Controlador
 				if($origin == 0){
 					$init = [$val->location->latitude,$val->location->longitude];
 				}
-				
+
 				$mts = self::haversine($init,[$val->location->latitude,$val->location->longitude]);
 				$tms = $tms + $mts;
-				
+
 				$init = [$val->location->latitude,$val->location->longitude];
 				$origin = 1;
 			}
@@ -123,7 +126,7 @@ class Desarrollador extends Controlador
 	public function haversine($init,$end){
 		$lat1 = $init[0];
 		$lon1 = $init[1];
-		
+
 		$lat2 = $end[0];
 		$lon2 = $end[1];
 
@@ -153,7 +156,7 @@ class Desarrollador extends Controlador
         curl_close($curl);
 
         return $result;
-    }	
+    }
 	public function genKml($coords){
 
 		$kml = array('<?xml version=\'1.0\' encoding=\'UTF-8\'?>');
@@ -174,9 +177,9 @@ class Desarrollador extends Controlador
 		$kml[] = ' <LineString>';
 		$kml[] = ' <tessellate>1</tessellate>';
 		$kml[] = ' <coordinates>';
-		
+
 		$kml[] = $coords;
-			
+
 		$kml[] = '</coordinates>';
 		$kml[] = '</LineString>';
 		$kml[] = '</Placemark>';
@@ -222,7 +225,7 @@ class Desarrollador extends Controlador
 		$kml[] = '</Document>';
 		$kml[] = '</kml>';
 		$kmlOutput = join("\n", $kml);
-		
+
 		$file = $this->token(6).".kml";
 		$name = "../public/tmp/".$file;
 		$fp = fopen($name, 'w');
@@ -230,17 +233,14 @@ class Desarrollador extends Controlador
 		fclose($fp);
 		return $file;
 	}
-	
-	function __construct(){
-		if(DEVELOPMENT == false){exit();}
-	}	
+
     public function index()
-    {	
+    {
 		$this->se_requiere_logueo(false);
 		include (URL_TEMPLATE.'404_full.php');
     }
 	function pusherPresence(){
-		
+
 			require_once('../vendor/pusher/Pusher.php');
 			$options = array('encrypted' => true);
 			$pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
@@ -262,14 +262,14 @@ class Desarrollador extends Controlador
 				$regex = '#.*(id_operador_unidad\|).{5}#';
 				$replacement = '';
 				$result = preg_replace($regex, $replacement, $content);
-				
+
 				$regex = '#(";cat_statusoperador).*#';
 				$replacement = '';
 				$id_operador_unidad = preg_replace($regex, $replacement, $result);
-				
+
 			fclose($fp);
 		}
-		print $id_operador_unidad;		
+		print $id_operador_unidad;
 	}
 	function gidops(){
 		$id_operador_unidad = '';
@@ -282,21 +282,21 @@ class Desarrollador extends Controlador
 				$regex = '#.*(id_operador\|).{5}#';
 				$replacement = '';
 				$result = preg_replace($regex, $replacement, $content);
-				
+
 				$regex = '#(";id_operador_unidad).*#';
 				$replacement = '';
 				$id_operador_unidad = preg_replace($regex, $replacement, $result);
-				
+
 			fclose($fp);
 		}
-		print $id_operador_unidad;		
-	}	
+		print $id_operador_unidad;
+	}
 	function ssp(){
 		echo session_save_path();
 	}
 	function cp_import(){
 		$db = Controlador::direct_connectivity();
-		
+
 		/*
 		self::crear_estructura($db);
 		self::cp_clean($db);
@@ -310,9 +310,9 @@ class Desarrollador extends Controlador
 		self::cp_cp($db);
 		self::rename_db($db);
 		*/
-		
+
 	}
-	
+
 	private function rename_db($db){
 		$fix = "RENAME TABLE CPdescarga TO cp_asentamientos;";
 		$qry = $db->prepare($fix);
@@ -329,28 +329,28 @@ class Desarrollador extends Controlador
 		$qry = $db->prepare($fix);
 		$qry->execute();
 	}
-	
+
 	private function crear_estructura($db){
 		$clean = "CREATE TABLE `cp_zn` (`id_zona`  int(6) UNSIGNED NOT NULL AUTO_INCREMENT ,`zona`  varchar(255) NULL ,PRIMARY KEY (`id_zona`));";
 		$qry = $db->prepare($clean);
 		$qry->execute();
-		
+
 		$clean = "CREATE TABLE `cp_ed` (`id_estado`  int(6) UNSIGNED NOT NULL AUTO_INCREMENT ,`estado`  varchar(255) NULL ,PRIMARY KEY (`id_estado`));";
 		$qry = $db->prepare($clean);
 		$qry->execute();
-		
+
 		$clean = "CREATE TABLE `cp_ta` (`id_tipo_asentamiento`  int(6) UNSIGNED NOT NULL AUTO_INCREMENT ,`tipo_asentamiento`  varchar(255) NULL ,PRIMARY KEY (`id_tipo_asentamiento`));";
 		$qry = $db->prepare($clean);
 		$qry->execute();
-		
+
 		$clean = "CREATE TABLE `cp_ci` (`id_ciudad`  int(6) UNSIGNED NOT NULL AUTO_INCREMENT ,`ciudad`  varchar(255) NULL ,PRIMARY KEY (`id_ciudad`));";
 		$qry = $db->prepare($clean);
 		$qry->execute();
-		
+
 		$clean = "CREATE TABLE `cp_mu` (`id_municipio`  int(6) UNSIGNED NOT NULL AUTO_INCREMENT ,`municipio`  varchar(255) NULL ,PRIMARY KEY (`id_municipio`));";
 		$qry = $db->prepare($clean);
 		$qry->execute();
-		
+
 		$clean = "CREATE TABLE `cp_cp` (`id_cp`  int(6) UNSIGNED NOT NULL AUTO_INCREMENT ,`cp`  varchar(255) NULL ,PRIMARY KEY (`id_cp`));";
 		$qry = $db->prepare($clean);
 		$qry->execute();
@@ -362,14 +362,14 @@ class Desarrollador extends Controlador
 	}
 	private function cp_clean($db){
 		$clean = "
-			alter table CPdescarga 
-			drop c_CP, 
-			drop c_estado, 
-			drop c_oficina, 
-			drop d_CP, 
-			drop c_tipo_asenta, 
-			drop c_mnpio, 
-			drop id_asenta_cpcons, 
+			alter table CPdescarga
+			drop c_CP,
+			drop c_estado,
+			drop c_oficina,
+			drop d_CP,
+			drop c_tipo_asenta,
+			drop c_mnpio,
+			drop id_asenta_cpcons,
 			drop c_cve_ciudad;
 		";
 		$qry = $db->prepare($clean);
@@ -384,7 +384,7 @@ class Desarrollador extends Controlador
 			GROUP BY
 				CPdescarga.d_codigo
 			ORDER BY
-				CPdescarga.d_codigo ASC	
+				CPdescarga.d_codigo ASC
 		";
 		$primera_q = $db->prepare($primera);
 		$primera_q->execute();
@@ -397,7 +397,7 @@ class Desarrollador extends Controlador
 				VALUES
 					(
 						'".$row->cp."'
-					);	
+					);
 			";
 			$segunda_q = $db->prepare($segunda);
 			$segunda_q->execute();
@@ -408,8 +408,8 @@ class Desarrollador extends Controlador
 			$tercera_q->execute();
 			echo "import ".$row->cp."<br>";
 		}
-	}	
-	
+	}
+
 	private function cp_municipios($db){
 		$primera = "
 			SELECT
@@ -419,7 +419,7 @@ class Desarrollador extends Controlador
 			GROUP BY
 				CPdescarga.D_mnpio
 			ORDER BY
-				CPdescarga.D_mnpio ASC	
+				CPdescarga.D_mnpio ASC
 		";
 		$primera_q = $db->prepare($primera);
 		$primera_q->execute();
@@ -432,7 +432,7 @@ class Desarrollador extends Controlador
 				VALUES
 					(
 						'".$row->municipio."'
-					);	
+					);
 			";
 			$segunda_q = $db->prepare($segunda);
 			$segunda_q->execute();
@@ -443,8 +443,8 @@ class Desarrollador extends Controlador
 			$tercera_q->execute();
 			echo "import ".$row->municipio."<br>";
 		}
-	}	
-	
+	}
+
 	private function cp_ciudades($db){
 		$primera = "
 			SELECT
@@ -454,7 +454,7 @@ class Desarrollador extends Controlador
 			GROUP BY
 				CPdescarga.d_ciudad
 			ORDER BY
-				CPdescarga.d_ciudad ASC	
+				CPdescarga.d_ciudad ASC
 		";
 		$primera_q = $db->prepare($primera);
 		$primera_q->execute();
@@ -467,7 +467,7 @@ class Desarrollador extends Controlador
 				VALUES
 					(
 						'".$row->ciudad."'
-					);	
+					);
 			";
 			$segunda_q = $db->prepare($segunda);
 			$segunda_q->execute();
@@ -478,7 +478,7 @@ class Desarrollador extends Controlador
 			$tercera_q->execute();
 			echo "import ".$row->ciudad."<br>";
 		}
-	}		
+	}
 	private function cp_tipo_asent($db){
 		$primera = "
 			SELECT
@@ -488,7 +488,7 @@ class Desarrollador extends Controlador
 			GROUP BY
 				CPdescarga.d_tipo_asenta
 			ORDER BY
-				CPdescarga.d_tipo_asenta ASC	
+				CPdescarga.d_tipo_asenta ASC
 		";
 		$primera_q = $db->prepare($primera);
 		$primera_q->execute();
@@ -501,7 +501,7 @@ class Desarrollador extends Controlador
 				VALUES
 					(
 						'".$row->tipo_asentamiento."'
-					);	
+					);
 			";
 			$segunda_q = $db->prepare($segunda);
 			$segunda_q->execute();
@@ -512,7 +512,7 @@ class Desarrollador extends Controlador
 			$tercera_q->execute();
 			echo "import ".$row->tipo_asentamiento."<br>";
 		}
-	}		
+	}
 	private function cp_estados($db){
 		$primera = "
 			SELECT
@@ -522,7 +522,7 @@ class Desarrollador extends Controlador
 			GROUP BY
 				CPdescarga.d_estado
 			ORDER BY
-				CPdescarga.d_estado ASC	
+				CPdescarga.d_estado ASC
 		";
 		$primera_q = $db->prepare($primera);
 		$primera_q->execute();
@@ -535,7 +535,7 @@ class Desarrollador extends Controlador
 				VALUES
 					(
 						'".$row->estado."'
-					);	
+					);
 			";
 			$segunda_q = $db->prepare($segunda);
 			$segunda_q->execute();
@@ -546,7 +546,7 @@ class Desarrollador extends Controlador
 			$tercera_q->execute();
 			echo "import ".$row->estado."<br>";
 		}
-	}	
+	}
 	private function cp_zonas($db){
 		$primera = "
 			SELECT
@@ -556,7 +556,7 @@ class Desarrollador extends Controlador
 			GROUP BY
 				CPdescarga.d_zona
 			ORDER BY
-				CPdescarga.d_zona ASC		
+				CPdescarga.d_zona ASC
 		";
 		$primera_q = $db->prepare($primera);
 		$primera_q->execute();
@@ -569,7 +569,7 @@ class Desarrollador extends Controlador
 				VALUES
 					(
 						'".$row->zona."'
-					);	
+					);
 			";
 			$segunda_q = $db->prepare($segunda);
 			$segunda_q->execute();
@@ -604,7 +604,7 @@ class Desarrollador extends Controlador
 			$query->execute();
 			echo $i.'-6<br>';
 		}
-		
+
 	}
 	public function mismodia(){
 		$date = '2016-07-26 03:44:18';
@@ -620,7 +620,7 @@ class Desarrollador extends Controlador
 		if($date_año == $ahora_año){echo 'igual<br>';}else{echo 'diferente<br>';}
 	}
 	public function pubnub(){
-		
+
 			require_once('../vendor/pubnub/autoloader.php');
 			$pubnub = new Pubnub(PUBNUB_PUBLISH,PUBNUB_SUSCRIBE,PUBNUB_SECRET,false);
 			$response = $pubnub->hereNow('presence-activos');
@@ -635,7 +635,7 @@ class Desarrollador extends Controlador
 		for($i=0;$i<=5;$i++){
 			D::bug( date('h:i:s'));
 			//sleep(2);
-		}		
+		}
 	}
 	public function decode(){
 		$ride = array(
@@ -646,8 +646,8 @@ class Desarrollador extends Controlador
 			'id_viaje' 				=> '309'
 		);
 		$entry = json_encode($ride);
-		$entryData = json_decode($entry, true);	
-		
+		$entryData = json_decode($entry, true);
+
 		echo '<pre>';
 		print_r($ride);
 		echo '<br><br><br>';
@@ -702,7 +702,7 @@ class Desarrollador extends Controlador
 		";
 		//D::debug($sql1);
 		$query1 = $this->db->prepare($sql1);
-		$query1->execute();	
+		$query1->execute();
 	}
 	public function inicializar_cve(){
 		$db = Controlador::direct_connectivity();
@@ -733,23 +733,23 @@ class Desarrollador extends Controlador
 				$query1 = $this->db->prepare($sql1);
 				$query1->execute();
 			}
-		}		
-	}	
+		}
+	}
 	public function crear_perfiles(){
 		$db = Controlador::direct_connectivity();
-		
+
 		$qry = 'select * from fw_usuarios';
 		$usr = $db->prepare($qry);
 		$usr->execute();
 		if($usr->rowCount()>=1){
 			$data = $usr->fetchAll();
 			foreach ($data as $row) {
-				
+
 				$sql="SELECT * FROM fw_usuarios_config where id_usuario = '".$row->id_usuario."'";
 				$total = $db->prepare($sql);
 				$total->execute();
 				if($total->rowCount()<1){
-	
+
 							$sql = "
 								INSERT INTO fw_usuarios_config (
 									id_usuario,
@@ -767,14 +767,14 @@ class Desarrollador extends Controlador
 							$query_resp = $query->execute(array(
 								':id_usuario' => $row->id_usuario,
 								':user_alta' => $row->id_usuario,
-								':fecha_alta' => date("Y-m-d H:i:s") 
+								':fecha_alta' => date("Y-m-d H:i:s")
 							));
 							error_log('tt');
 
 				}
 			}
-		}		
-	}	
+		}
+	}
 	public function difechas(){
 		$init = '2016-12-16 09:27:02';
 		$end  = '2016-12-22 10:27:06';
@@ -782,13 +782,13 @@ class Desarrollador extends Controlador
 		$datetime2 = new DateTime($end);
 		$dteDiff = $datetime1->diff($datetime2);
 		echo $dteDiff->format("0000-%M-%D %H:%I:%S");
-		
+
 	}
 	public function difEnSegundos(){
 		$fechaInicial = '2013-04-11 00:00:00';
 		$fechaFinal = 	'2014-04-11 00:35:50';
 		$segundos = strtotime($fechaFinal) - strtotime($fechaInicial);
-		print round($segundos/60);		
+		print round($segundos/60);
 	}
 	function turno($id_operador_unidad){
 		$db = Controlador::direct_connectivity();
@@ -819,7 +819,7 @@ class Desarrollador extends Controlador
 				if($row->id_operador_unidad == $id_operador_unidad){
 					$numero = $count;
 				}
-				$count++;			
+				$count++;
 			}
 		}
 		if($numero != 0){
@@ -851,7 +851,7 @@ class Desarrollador extends Controlador
 				echo $row->id_operador_unidad;
 			}
 		}
-	}	
+	}
 	public function setlocale(){
 
 		echo "<meta charset='utf-8'>";
@@ -886,7 +886,7 @@ class Desarrollador extends Controlador
 		$poligono = array("-99.2210591 19.431014500000003","-99.2207265 19.4292009","-99.2206058 19.4290213","-99.2193237 19.4292389","-99.2178913 19.4296283","-99.2173121 19.4300078","-99.2157322 19.4309323","-99.2147103 19.4317911","-99.2134952 19.4327485","-99.2126101 19.4329318","-99.2111899 19.4331177","-99.2100379 19.4332961","-99.2103302 19.433541399999996","-99.2114393 19.433323900000005","-99.2125645 19.4331721","-99.2127724 19.4333391","-99.2129776 19.4334908","-99.2128274 19.433931","-99.2127577 19.434398899999998","-99.2128314 19.435025500000002","-99.2127201 19.435083","-99.212246 19.4351444","-99.212249 19.4349133","-99.212468 19.434003","-99.2119892 19.4338311","-99.211723 19.434699899999995","-99.2119743 19.4349291","-99.21229 19.435304999999996","-99.2123661 19.435330999999998","-99.2126598 19.4353202","-99.2129373 19.4352488","-99.21322700000002 19.4349042","-99.2134416 19.434698600000004","-99.2137581 19.434505200000004","-99.2157617 19.4337261","-99.2159629 19.433571799999996","-99.2170518 19.4331368","-99.2169687 19.432731999999998","-99.2171548 19.4326905","-99.2177513 19.432477","-99.2184131 19.4322017","-99.218975 19.4320712","-99.21940150000002 19.431815100000005","-99.2198628 19.431591200000003","-99.2210913 19.4310929","-99.2210591 19.431014500000003");
 		// el primer y ultimo punto de la geocerca deben de ser iguales para cerrar el poligono
 		echo "punto ($punto): " . $geoCerca->puntoEnPoligono($punto, $poligono);
-	}	
+	}
 	public function tiempo(){
 		$time=time();
 		$horas = +0;
@@ -894,19 +894,19 @@ class Desarrollador extends Controlador
 		$time = date("Y-m-d H:i:s", $time );
 		echo $time;
 		echo '<br><br>';
-		
+
 		$mañana = mktime(date("H"),  date("i")-5, 0,  date("m")  , date("d"), date("Y"));
 		echo date("Y-m-d H:i:s", $mañana );
 		echo '<br><br>';
-		
+
 		echo $time;
 		echo '<br><br>';
-		
+
 		$las_cero_de_hoy = mktime(0,  0,  0, date("m")  , date("d"), date("Y"));
 		echo date("Y-m-d H:i:s", $las_cero_de_hoy );
 		echo '<br><br>';
-		
-		
+
+
 		echo '>>>>'.date("Y-m-d H:i:s", time());
 	}
 	public function getAutoCatalog(){
@@ -986,12 +986,12 @@ class Desarrollador extends Controlador
 		$distance = (sin(deg2rad($latitude1)) * sin(deg2rad($latitude2))) + (cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta)));
 		$distance = acos($distance);
 		$distance = rad2deg($distance);
-		$distance = $distance * 60 * 1.1515; 
+		$distance = $distance * 60 * 1.1515;
 		switch($unit) {
-			case 'Mi': 
-			break; 
-			
-			case 'Km' : 
+			case 'Mi':
+			break;
+
+			case 'Km' :
 			$distance = $distance * 1.609344;
 		}
 		return (round($distance,2));
