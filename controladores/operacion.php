@@ -9,26 +9,26 @@ class Operacion extends Controlador
 	public function cron(){
 		session_destroy();
 
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 
 		$relTravel = $operacion->asignar_viajes(1);
 		if($relTravel['process']){
-			self::asignacion_automatica($relTravel,$mobile);
+			self::asignacion_automatica($relTravel,$share);
 		}
-		if($operacion->cordon_hash(1)){$mobile->transmitir('doit','updcrd1');}
+		if($operacion->cordon_hash(1)){$share->transmitir('doit','updcrd1');}
 
-		if($operacion->serv_cve_hash(179)){$mobile->transmitir('doit','updasignados');}
-		if($operacion->servicio_hash(170)){$mobile->transmitir('doit','updpendientes');}
-		if($operacion->servicio_hash(188)){$mobile->transmitir('doit','updpendientes');}
+		if($operacion->serv_cve_hash(179)){$share->transmitir('doit','updasignados');}
+		if($operacion->servicio_hash(170)){$share->transmitir('doit','updpendientes');}
+		if($operacion->servicio_hash(188)){$share->transmitir('doit','updpendientes');}
 
 	}
 	public function cron10(){
 		session_destroy();
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 		$notificaciones = $operacion->notificacionesApartados();
-		$mobile->transmitir(json_encode($notificaciones),'notificarApartados');
+		$share->transmitir(json_encode($notificaciones),'notificarApartados');
 	}
 
 	public function getTBUnits(){
@@ -46,7 +46,7 @@ class Operacion extends Controlador
 	public function asignarViajeAlAire($id_operador_unidad, $id_operador, $id_viaje){
 
 		$operacion = $this->loadModel('Operacion');
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->asignar_viaje($id_viaje,$operador);
@@ -55,7 +55,7 @@ class Operacion extends Controlador
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 120;
 
-		self::asignacion_automatica($relTravel,$mobile);
+		self::asignacion_automatica($relTravel,$share);
 
 		print json_encode(array('resp' => true ));
 	}
@@ -93,9 +93,9 @@ class Operacion extends Controlador
 
 		require URL_VISTA.'modales/operacion/paqueteriaSettings.php';
 	}
-	public function asignacion_automatica($array,MobileModel $model){
+	public function asignacion_automatica($array,ShareModel $share){
 		$token = 'AAT:'.$this->token(62);
-		$model->sxxtoreToSyncRide(1,$token,$array['salida'],$array['id_operador_unidad']);
+		$share->storeToSyncRide(1,$token,$array['salida'],$array['id_operador_unidad']);
 	}
 	public function servicios_asignados(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -193,22 +193,22 @@ class Operacion extends Controlador
 	}
 	public function activar_cancelacion_do($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$token = 'OP:'.$this->token(62);
-		$mobile->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-		$mobile->broadcast($id_operador_unidad);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
+		// no existe el broadcast en version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 	public function activar_abandono_do($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 		$token = 'OP:'.$this->token(62);
-		$mobile->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
-		$mobile->broadcast($id_operador_unidad);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
+		// no existe el broadcast en version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 	public function costos_adicionales_do(){
@@ -342,10 +342,10 @@ class Operacion extends Controlador
 	public function setear_status_viaje(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
-		$mobil = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$operadores = $this->loadModel('Operadores');
 		$login = $this->loadModel('Login');
-		print $modelo->setear_status_viaje($_POST, $mobil, $operadores, $login);
+		print $modelo->setear_status_viaje($_POST, $share, $operadores, $login);
 	}
 	public function cancel_apartado($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -397,7 +397,7 @@ class Operacion extends Controlador
 	public function asignarApartadoAlAire($id_operador_unidad, $id_operador, $id_viaje){
 
 		$operacion = $this->loadModel('Operacion');
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->asignarApartadoAlAire($id_viaje,$operador);
@@ -406,7 +406,7 @@ class Operacion extends Controlador
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 120;
 
-		self::asignacion_automatica($relTravel,$mobile);
+		self::asignacion_automatica($relTravel,$share);
 
 		print json_encode(array('resp' => true ));
 	}
@@ -430,7 +430,7 @@ class Operacion extends Controlador
 	}
 	public function procesarNormalDo(){
 		$operacion = $this->loadModel('Operacion');
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$id_viaje = $_POST['id_viaje'];
 		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
 
@@ -441,22 +441,22 @@ class Operacion extends Controlador
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 197;
 
-		self::asignacion_automatica($relTravel,$mobile);
+		self::asignacion_automatica($relTravel,$share);
 
 		print json_encode(array('resp' => true ));
 	}
 	public function cancel_apartado_set(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
-		$mobil = $this->loadModel('Mobile');
-		print $modelo->cancel_apartado_set($_POST, $mobil);
+		$share = $this->loadModel('Share');
+		print $modelo->cancel_apartado_set($_POST, $share);
 	}
 	public function setPageRemotly(){
 		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
-		$model = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$token = 'OP:'.$this->token(62);
-		$id_operador_unidad = $model->getIdOperadorUnidadEpisode($_POST['id_operador'],'id_operador');
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
+		$id_operador_unidad = $share->getIdOperadorUnidadEpisode($_POST['id_operador'],'id_operador');
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
 		print json_encode(array('resp' => true ));
 	}
 	public function set_page_remotly($id_operador){
@@ -466,12 +466,12 @@ class Operacion extends Controlador
 	public function check_standinLine($id_operador){
 		$this->se_requiere_logueo(true,'Operacion|check_standinLine');
 		$model = $this->loadModel('Operacion');
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 
-		$geotime = $mobile->enGeocercas($id_operador);
+		$geotime = $share->enGeocercas($id_operador);
 
 		$session = $model->getActiveSession($id_operador);
-		$connected = $mobile->inLinkedIn($id_operador);
+		$connected = $share->inLinkedIn($id_operador);
 		$engeocerca1 = $geotime['geo1'];
 		$engeocerca2 =  $geotime['geo2'];
 		$estaEnC1 = $model->c1orc2($id_operador);
@@ -497,12 +497,12 @@ class Operacion extends Controlador
 	}
 	public function enviar_emision(){
 		$this->se_requiere_logueo(true,'Operacion|broadcast_all');
-		$model = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 
 		$mensaje = array(
 			'mensaje' => $_POST['mensaje']
 		);
-		$model->transmitir(json_encode($mensaje),'broadcast');
+		$share->transmitir(json_encode($mensaje),'broadcast');
 		print json_encode(array('resp'=>true));
 	}
 	public function delivery_stat($id_mensaje){
@@ -517,13 +517,13 @@ class Operacion extends Controlador
 	}
 	public function aut_c06($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$model = $this->loadModel('Mobile');
-		$model->set2enc6($id_base);
-		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
+		$share = $this->loadModel('Share');
+		$share->set2enc6($id_base);
+		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$token = 'OP:'.$this->token(62);
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
-		$model->broadcast($id_operador_unidad);
-		$model->formarse_directo($token,$id_operador_unidad,$id_base,115);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
+		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
+		$share->formarse_directo($token,$id_operador_unidad,$id_base,115);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
@@ -533,14 +533,14 @@ class Operacion extends Controlador
 	}
 	public function aut_c02($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$model = $this->loadModel('Mobile');
-		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
-		$id_operador = $model->getIdOperador($id_operador_unidad);
-		$model->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
-		$model->cerrarEpisodio($model->getIdEpisodio($id_operador_unidad),$_SESSION['id_usuario']);
+		$share = $this->loadModel('Share');
+		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
+		$id_operador = $share->getIdOperador($id_operador_unidad);
+		$share->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
+		$share->cerrarEpisodio($share->getIdEpisodio($id_operador_unidad),$_SESSION['id_usuario']);
 		$token = 'OP:'.$this->token(62);
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
-		$model->broadcast($id_operador_unidad);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
+		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
@@ -550,12 +550,12 @@ class Operacion extends Controlador
 	}
 	public function aut_f14($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$model = $this->loadModel('Mobile');
-		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
+		$share = $this->loadModel('Share');
+		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$token = 'OP:'.$this->token(62);
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
-		$model->broadcast($id_operador_unidad);
-		$model->formarse_directo($token,$id_operador_unidad,$id_base,113);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
+		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
+		$share->formarse_directo($token,$id_operador_unidad,$id_base,113);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
@@ -565,15 +565,15 @@ class Operacion extends Controlador
 	}
 	public function aut_f06($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$model = $this->loadModel('Mobile');
-		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
-		$id_operador = $model->getIdOperador($id_operador_unidad);
-		$model->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
+		$share = $this->loadModel('Share');
+		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
+		$id_operador = $share->getIdOperador($id_operador_unidad);
+		$share->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
 		$model2 = $this->loadModel('Operadores');
 		$model2->setearstatusoperador(array('cat_statusoperador'=>'10','id_operador'=>$id_operador));
 		$token = 'OP:'.$this->token(62);
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
-		$model->broadcast($id_operador_unidad);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
+		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
@@ -583,24 +583,24 @@ class Operacion extends Controlador
 	}
 	public function aut_out($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$model = $this->loadModel('Mobile');
-		$model->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
+		$share = $this->loadModel('Share');
+		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 
 		$token = 'OP:'.$this->token(62);
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
-		$model->broadcast($id_operador_unidad);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
+		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
 
 	public function verificar_a10($id_operador_unidad,$id_base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$model = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 
 		$send = 0;
 		for($i=0;$i<=15;$i++){
 
-			$turno = $model->turno($id_operador_unidad,$id_base);
+			$turno = $share->turno($id_operador_unidad,$id_base);
 
 			if($turno == 'No formado'){
 				$state = array('state' => 1);
@@ -610,7 +610,7 @@ class Operacion extends Controlador
 			}
 
 			if($send = 1){
-				$model->transmitir(json_encode($state),'verify_a10_'.$id_operador_unidad.'');
+				$share->transmitir(json_encode($state),'verify_a10_'.$id_operador_unidad.'');
 				exit();
 			}
 
@@ -624,10 +624,10 @@ class Operacion extends Controlador
 	}
 	public function activar_a10($id_operador_unidad,$base){
 		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$model = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$token = 'OP:'.$this->token(62);
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,118,$id_operador_unidad);
-		$model->broadcast($id_operador_unidad);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,118,$id_operador_unidad);
+		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
@@ -637,10 +637,10 @@ class Operacion extends Controlador
 	}
 	public function activar_f13($id_operador_unidad){
 		$this->se_requiere_logueo(true,'Operacion|activar_f13');
-		$model = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$token = 'OP:'.$this->token(62);
-		$model->sxxtoreToSyncRide($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
-		$model->broadcast($id_operador_unidad);
+		$share->storeToSyncRide($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
+		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 	public function dataGeocerca($geocerca){
@@ -734,7 +734,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$cliente= $this->loadModel('Clientes');
 		$operacion = $this->loadModel('Operacion');
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		////////////////////////////////////////////////////////////////////variables del form
 		$num = 0;
 		$service = new stdClass;
@@ -795,7 +795,7 @@ class Operacion extends Controlador
 			$relTravel['id_viaje'] 	= $service->id_viaje;
 			$relTravel['salida'] 	= 120;
 
-			self::asignacion_automatica($relTravel,$mobile);
+			self::asignacion_automatica($relTravel,$share);
 		}
 
 		////////////////////////////////////////////////////////////////////salida por sitio
@@ -807,7 +807,7 @@ class Operacion extends Controlador
 			$relTravel['id_viaje'] 	= $service->id_viaje;
 			$relTravel['salida'] 	= 119;
 
-			self::asignacion_automatica($relTravel,$mobile);
+			self::asignacion_automatica($relTravel,$share);
 		}
 		print json_encode(array('resp' => true ));
 	}

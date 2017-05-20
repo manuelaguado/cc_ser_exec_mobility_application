@@ -30,11 +30,11 @@ class Login extends Controlador
 		$login = $this->loadModel('Login');
 		$whosLogin = $login->whoisLogged();
 
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 
 		foreach ($whosLogin as $logged){
 			$token = 'LGN:'.$this->token(60);
-			$id_operador_unidad = $mobile->getIdOperadorUnidadEpisode($logged['id_usuario'],'user_alta');
+			$id_operador_unidad = $share->getIdOperadorUnidadEpisode($logged['id_usuario'],'user_alta');
 
 			$login->signout($logged['id_usuario']);
 		}
@@ -61,10 +61,9 @@ class Login extends Controlador
 	public function sign_out($id_usuario){
 		$this->se_requiere_logueo(true,'Login|force_sign_out');
 
-		$mobile = $this->loadModel('Mobile');
+		$share = $this->loadModel('Share');
 		$token = 'LGN:'.$this->token(60);
-		$id_operador_unidad = $mobile->getIdOperadorUnidadEpisode($id_usuario,'user_alta');
-	
+		$id_operador_unidad = $share->getIdOperadorUnidadEpisode($id_usuario,'user_alta');
 
 		$model = $this->loadModel('Login');
 		print $model->signout($id_usuario);
@@ -114,8 +113,8 @@ class Login extends Controlador
 		header('Access-Control-Allow-Origin: *');
 		$this->se_requiere_logueo(false);
 		$obtener_modelo = $this->loadModel('Login');
-		$mobile = $this->loadModel('Mobile');
-		$loguear = $obtener_modelo->logear($mobile);
+		$share = $this->loadModel('Share');
+		$loguear = $obtener_modelo->logear();
 
 			if(($loguear[1]['dispositivo'] == 'celular')&&($loguear[2]['via'] == 'correcta')&&($_SESSION['id_operador_unidad'])!= 'select'){
 				$operacion = $this->loadModel('Operacion');
@@ -123,7 +122,7 @@ class Login extends Controlador
 				$tail = $operacion->formadoAnyBase($bases, $_SESSION['id_operador_unidad']);
 				if($tail){
 					D::bug('Se quitó del cordon '.$tail);
-					$mobile->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
+					$share->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
 				}
 			}
 

@@ -12,7 +12,7 @@ class SSP {
 				if ( isset( $column['formatter'] ) ) {
 					$row[ $column['dt'] ] = $column['formatter']( $data[$i][ $name_column ], $data[$i] );
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -49,7 +49,7 @@ class SSP {
 					}else{
 						$orderBy[] = ''.$column['db'].' '.$dir;
 					}
-					
+
 				}
 			}
 			$order = 'ORDER BY '.implode(', ', $orderBy);
@@ -93,8 +93,8 @@ class SSP {
 				}else{
 					$columnSearch[] = "`".$column['db']."` LIKE ".$binding;
 				}
-				
-				
+
+
 			}
 		}
 		$where = '';
@@ -131,7 +131,7 @@ class SSP {
 		$recordsFiltered = $resFilterLength[0][0];
 		$resTotalLength = self::sql_exec( $db,
 			" SELECT COUNT('{$primaryKey}')
-			 FROM   $table 
+			 FROM   $table
 			 $inner"
 		);
 		$recordsTotal = $resTotalLength[0][0];
@@ -184,7 +184,7 @@ class SSP {
 		$recordsFiltered = $resFilterLength[0][0];
 		$resTotalLength = self::sql_exec( $db, $bindings,
 			"SELECT COUNT('{$primaryKey}')
-			 FROM   $table 
+			 FROM   $table
 			 $inner".
 			$whereAllSql
 		);
@@ -200,7 +200,7 @@ class SSP {
 	static function sql_exec ( $db, $bindings, $sql=null )
 	{
 		//echo($sql);
-		//D::bug($sql);
+		D::bug($sql);
 		if ( $sql === null ) {
 			$sql = $bindings;
 		}
@@ -221,7 +221,7 @@ class SSP {
 	}
 	static function fatal ( $msg )
 	{
-		echo json_encode( array( 
+		echo json_encode( array(
 			"error" => $msg
 		) );
 

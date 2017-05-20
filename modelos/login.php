@@ -90,7 +90,7 @@ class LoginModel
 		}
 		return $ids;
 	}
-	public function session_duplicada($id_usuario, MobileModel $mobile){
+	public function session_duplicada($id_usuario){
 		$sql = "
 			SELECT
 				fwl.id_login,
@@ -115,7 +115,7 @@ class LoginModel
 			}
 		}
 	}
-	public function session_duplicada_no_operador($id_usuario, MobileModel $mobile){
+	public function session_duplicada_no_operador($id_usuario){
 		$sql = "
 			SELECT
 				fwl.id_login,
@@ -137,7 +137,7 @@ class LoginModel
 			}
 		}
 	}
-	public function logear(MobileModel $mobile){
+	public function logear(){
 
 		$stat = self::getStatusUser($_POST['usuario']);
 		if($stat == 131){
@@ -180,7 +180,7 @@ class LoginModel
 
 				}else if(($_SESSION['id_rol']==2)&&($_SESSION['dispositivo'] == 'celular')){
 
-					self::session_duplicada($row->id_usuario,$mobile);
+					self::session_duplicada($row->id_usuario);
 
 					$acceso = Controlador::getConfig(1,'login_operadores');
 					if($acceso['valor'] == 1){
@@ -235,7 +235,7 @@ class LoginModel
 
 				}else if(($_SESSION['id_rol']!=2)&&($_SESSION['dispositivo'] == 'pc')){
 
-					self::session_duplicada_no_operador($row->id_usuario,$mobile);
+					self::session_duplicada_no_operador($row->id_usuario);
 
 					self::permisos($_SESSION['id_rol']);
 					self::permisos_acl($_SESSION['id_usuario']);

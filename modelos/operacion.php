@@ -851,7 +851,7 @@ class OperacionModel{
 		}
 		if($alAire == 0){return false;}else{return true;}
 	}
-	function setear_status_viaje($post, MobileModel $mobile=NULL, OperadoresModel $operadores = NULL, LoginModel $login = NULL){
+	function setear_status_viaje($post, ShareModel $share=NULL, OperadoresModel $operadores = NULL, LoginModel $login = NULL){
 
 		$stat_process = true;
 		$qrymissing = array();
@@ -905,18 +905,18 @@ class OperacionModel{
 
 						break;
 						case 'cola':
-							$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
+							$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
 
 						break;
 						case 'suspender':
 							/*Setear en suspendido*/
 							$operador['cat_statusoperador'] = 10;
-							$operador['id_operador'] = $mobile->getIdOperador($id_operador_unidad);
+							$operador['id_operador'] = $share->getIdOperador($id_operador_unidad);
 							$operadores->setearstatusoperador($operador);
 
 							/*desloguear*/
 
-							$id_usuario = $mobile->getIdUsuario($id_operador_unidad);
+							$id_usuario = $share->getIdUsuario($id_operador_unidad);
 							$login->signout($id_usuario);
 						break;
 						case 'omitir':
@@ -932,7 +932,7 @@ class OperacionModel{
 
 							break;
 							case 'cola':
-								$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
+								$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
 							break;
 							case 'omitir':
 
@@ -952,7 +952,7 @@ class OperacionModel{
 			return json_encode($print);
 		}
 	}
-	function cancel_apartado_set($post, MobileModel $mobile=NULL){
+	function cancel_apartado_set($post, ShareModel $share=NULL){
 
 		$stat_process = true;
 		$qrymissing = array();
@@ -996,7 +996,7 @@ class OperacionModel{
 
 					break;
 					case 'cola':
-						$mobile->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
+						$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
 
 					break;
 					case 'omitir':
@@ -1887,8 +1887,7 @@ class OperacionModel{
 			crou.status_operador_unidad = 198
 		";
 		$orden = "
-			GROUP BY
-				nombre
+
 		";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden  )
