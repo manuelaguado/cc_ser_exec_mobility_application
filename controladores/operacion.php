@@ -720,7 +720,6 @@ class Operacion extends Controlador
 	public function tiempo_base_get(){
 		$this->se_requiere_logueo(true,'Operacion|inactivos');
 		$modelo = $this->loadModel('Operacion');
-		$modelo->adquirirTiemposBase();
 		print $modelo->tiempo_base_get($_POST);
 	}
 	public function getTarifa($id_cliente){

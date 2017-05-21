@@ -577,57 +577,7 @@ class OperacionModel{
 		}
 		return $apartados;
 	}
-	function adquirirTiemposBase(){
-		$units = self::getTBUnitsRed();
-		self::vaciarTiempoBase();
-		$oper = array();
-		$oper_unit = array();
-		$coordsUnits = '';
-		foreach($units as $unit){
-			$qry = "
-				SELECT
-					gps.id_gps,
-					gps.latitud,
-					gps.longitud,
-					gps.tiempo,
-					gps.`timestamp`
-				FROM
-					gps
-				WHERE
-					gps.id_operador = ".$unit['id_operador']."
-				ORDER BY
-					gps.id_gps DESC
-				LIMIT 0,
-				 1
-			";
-			$query = $this->db->prepare($qry);
-			$query->execute();
-			if($query->rowCount()>=1){
-				$data = $query->fetchAll();
-				foreach ($data as $row){
-					$coordsUnits .= $row->latitud.','.$row->longitud.'|';
-					$oper[] = $unit['id_operador'];
-					$oper_unit[] = $unit['id_operador_unidad'];
-					$latLng[] = $row->latitud.','.$row->longitud;
-				}
-			}
-		}
-		if($coordsUnits != ''){
-			$coordBase = '19.434830,-99.211976';
-			$coordsUnits = substr($coordsUnits, 0, -1);
-			$resultado = self::distancematrix($coordsUnits,$coordBase);
-			$array = array();
-			foreach($resultado->rows as $n => $tb_units){
-				$array['distancia'] = $tb_units->elements[0]->distance->value;
-				$array['min'] = $tb_units->elements[0]->duration->value;
-				$array['max'] = $tb_units->elements[0]->duration_in_traffic->value;
-				$array['id_operador'] = $oper[$n];
-				$array['id_operador_unidad'] = $oper_unit[$n];
-				$array['latLng'] = $latLng[$n];
-				self::storeTB($array);
-			}
-		}
-	}
+
 	function distancematrix($coordsUnits,$coordBase){
 		$url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$coordsUnits.'&destinations='.$coordBase.'&mode=driving&traffic_model=pessimistic&departure_time=now&language=es-ES&key='.GOOGLE_MAPS;
 		$ch = curl_init();
@@ -666,8 +616,32 @@ class OperacionModel{
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
+       function getTBUnitsRed(){
+		$qry = '
+			SELECT
+				crou.id_operador_unidad,
+				crou.id_operador AS id_operador
+			FROM
+				cr_operador_unidad AS crou
+			WHERE
+			crou.status_operador_unidad = 198
+		';
+		/*El ultimo OR se agrego para agregar una solicitud F14 a la lista de Tiempo a la Base*/
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$operadores = array();
+		$num = 0;
+		if($query->rowCount()>=1){
+			$data = $query->fetchAll();
+			foreach ($data as $row){
+				$operadores[$num]['id_operador'] 		= $row->id_operador;
+				$operadores[$num]['id_operador_unidad'] = $row->id_operador_unidad;
+				$num++;
+			}
+		}
+		return $operadores;
+	}
 	function getTBUnits(){
-		self::adquirirTiemposBase();
 		$qry = '
 			SELECT
 				cr_numeq.num AS numeq,

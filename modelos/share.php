@@ -452,13 +452,13 @@ class ShareModel
            $query->execute(
                   array(
                          ':id_operador_unidad' 	=> 	$id_operador_unidad,
-                         ':id_episodio' 			=> 	self::getIdEpisodio($id_operador_unidad),
-                         ':id_base' 				=> 	$id_base,
+                         ':id_episodio' 		=> 	self::getIdEpisodio($id_operador_unidad),
+                         ':id_base' 		=> 	$id_base,
                          ':cat_statuscordon' 	=> 	$statuscordon,
-                         ':llegada' 				=> 	date("Y-m-d H:i:s"),
-                         ':token' 				=> 	$token,
-                         ':user_alta' 			=> 	$_SESSION['id_usuario'],
-                         ':fecha_alta' 			=> 	date("Y-m-d H:i:s")
+                         ':llegada' 		=> 	date("Y-m-d H:i:s"),
+                         ':token' 			=> 	$token,
+                         ':user_alta' 		=> 	$_SESSION['id_usuario'],
+                         ':fecha_alta' 		=> 	date("Y-m-d H:i:s")
                   )
            );
            self::solicitarAcuseCordon();
