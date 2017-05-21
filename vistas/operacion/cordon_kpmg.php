@@ -66,50 +66,18 @@ $(document).ready(function() {
     } );
 } );
 
-<?php
-if(SOCKET_PROVIDER == 'ABLY'){
-?>
-	var conn = new Ably.Realtime('<?=ABLY_API_KEY?>');
-	conn.connection.on('connected', function() {
-	  console.log('✓ Servicio de actualización de cordón activo');
-	})
 
-	var updChannel = conn.channels.get('updcrd1');
-	updChannel.subscribe(function(resp_success){
-		$('#cordon').DataTable().ajax.reload();
-	});
-<?php
-}elseif(SOCKET_PROVIDER == 'PUSHER'){
-?>
-	var pusher = new Pusher('<?=PUSHER_KEY?>', {
-		encrypted: true
-	});
-	
-	var updChannel = pusher.subscribe('updcrd1');
-	
-	pusher.connection.bind('connected', function() {
-		console.log('✓ Servicio de actualización de cordón activo');
-	})
-	updChannel.bind('evento', function(data) {
-		$('#cordon').DataTable().ajax.reload();
-	});
-<?php
-}elseif(SOCKET_PROVIDER == 'PUBNUB'){
-?>
-	var WsPubNub = PUBNUB.init({
-		publish_key: '<?=PUBNUB_PUBLISH?>',
-		subscribe_key: '<?=PUBNUB_SUSCRIBE?>',
-		ssl: true
-	});
-	
-	WsPubNub.subscribe({
-		channel: 'updcrd1',
-		message: function(m){
-			$('#cordon').DataTable().ajax.reload();
-		}
-	});
-	
-<?php
-}
-?>
+var pusher = new Pusher('<?=PUSHER_KEY?>', {
+	encrypted: true
+});
+
+var updChannel = pusher.subscribe('updcrd1');
+
+pusher.connection.bind('connected', function() {
+	console.log('✓ Servicio de actualización de cordón activo');
+})
+updChannel.bind('evento', function(data) {
+	$('#cordon').DataTable().ajax.reload();
+});
+
 </script>

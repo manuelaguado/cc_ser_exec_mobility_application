@@ -1793,231 +1793,237 @@ class OperacionModel{
 	}
 	function inactivos_get($array){
 		ini_set('memory_limit', '256M');
-		$table = 'cr_operador_unidad AS crou';
-		$primaryKey = 'id_operador_unidad';
+		$table = 'cr_state AS stt';
+		$primaryKey = 'id_state';
 		$columns = array(
 			array(
-				'db' => 'cr_numeq.num as numeq',
-				'dbj' => 'cr_numeq.num',
-				'real' => 'cr_numeq.num',
-				'alias' => 'numeq',
+				'db' => 'stt.id_state as id',
+				'dbj' => 'stt.id_state',
+				'real' => 'stt.id_state',
+				'alias' => 'id',
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array(
-				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
-				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'alias' => 'nombre',
+                     array(
+				'db' => 'stt.numeq as num',
+				'dbj' => 'stt.numeq',
+				'real' => 'stt.numeq',
+				'alias' => 'num',
 				'typ' => 'int',
 				'dt' => 1
 			),
 			array(
-				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',
-				'alias' => 'marca',
-				'real' => 'mk.marca',
-				'typ' => 'txt',
+				'db' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno) AS nombre',
+				'dbj' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno)',
+				'real' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno)',
+				'alias' => 'nombre',
+				'typ' => 'int',
 				'dt' => 2
 			),
-			array(
-				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',
-				'real' => '`mod`.modelo',
-				'alias' => 'modelo',
-				'typ' => 'txt',
+                     array(
+				'db' => 'stt.id_operador as id_operador',
+				'dbj' => 'stt.id_operador',
+				'real' => 'stt.id_operador',
+				'alias' => 'id_operador',
+                            'acciones' => true,
+				'typ' => 'int',
 				'dt' => 3
 			),
-			array(
-				'db' => 'uni.color AS color',
-				'dbj' => 'uni.color',
-				'real' => 'uni.color',
-				'alias' => 'color',
-				'typ' => 'txt',
+                     array(
+				'db' => 'stt.id_operador_unidad as id_operador_unidad',
+				'dbj' => 'stt.id_operador_unidad',
+				'real' => 'stt.id_operador_unidad',
+				'alias' => 'id_operador_unidad',
+				'typ' => 'int',
 				'dt' => 4
 			),
-			array(
-				'db' => 'crou.id_operador_unidad',
-				'dbj' => 'crou.id_operador_unidad',
-				'real' => 'crou.id_operador_unidad',
+                     array(
+				'db' => 'stt.id_episodio as id_episodio',
+				'dbj' => 'stt.id_episodio',
+				'real' => 'stt.id_episodio',
+				'alias' => 'id_episodio',
 				'typ' => 'int',
-				'acciones' => true,
 				'dt' => 5
+			),
+                     array(
+				'db' => 'fwu.id_usuario as id_usuario',
+				'dbj' => 'fwu.id_usuario',
+				'real' => 'fwu.id_usuario',
+				'alias' => 'id_usuario',
+				'typ' => 'int',
+				'dt' => 6
 			)
 		);
 		$render_table = new acciones_inactivos;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
-			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
-			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
-			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
-			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
-			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
+              INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
+              INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario
 		';
 		$where = "
-			ope.cat_statusoperador = 8
-			AND
-			crou.status_operador_unidad = 198
+                     stt.activo = 1
+                     AND stt.state = 'C2'
+                     AND stt.flag1 = 'C2'
 		";
-		$orden = "
-
-		";
+		$orden = "";
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden  )
 		);
 	}
 	function suspendidas_get($array){
-		ini_set('memory_limit', '256M');
-		$table = 'cr_operador_unidad AS crou';
-		$primaryKey = 'id_operador_unidad';
+              ini_set('memory_limit', '256M');
+		$table = 'cr_state AS stt';
+		$primaryKey = 'id_state';
 		$columns = array(
 			array(
-				'db' => 'cr_numeq.num as numeq',
-				'dbj' => 'cr_numeq.num',
-				'real' => 'cr_numeq.num',
-				'alias' => 'numeq',
+				'db' => 'stt.id_state as id',
+				'dbj' => 'stt.id_state',
+				'real' => 'stt.id_state',
+				'alias' => 'id',
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array(
-				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
-				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'alias' => 'nombre',
+                     array(
+				'db' => 'stt.numeq as num',
+				'dbj' => 'stt.numeq',
+				'real' => 'stt.numeq',
+				'alias' => 'num',
 				'typ' => 'int',
 				'dt' => 1
 			),
 			array(
-				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',
-				'alias' => 'marca',
-				'real' => 'mk.marca',
-				'typ' => 'txt',
+				'db' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno) AS nombre',
+				'dbj' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno)',
+				'real' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno)',
+				'alias' => 'nombre',
+				'typ' => 'int',
 				'dt' => 2
 			),
-			array(
-				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',
-				'real' => '`mod`.modelo',
-				'alias' => 'modelo',
-				'typ' => 'txt',
+                     array(
+				'db' => 'stt.id_operador as id_operador',
+				'dbj' => 'stt.id_operador',
+				'real' => 'stt.id_operador',
+				'alias' => 'id_operador',
+                            'acciones' => true,
+				'typ' => 'int',
 				'dt' => 3
 			),
-			array(
-				'db' => 'uni.color AS color',
-				'dbj' => 'uni.color',
-				'real' => 'uni.color',
-				'alias' => 'color',
-				'typ' => 'txt',
+                     array(
+				'db' => 'stt.id_operador_unidad as id_operador_unidad',
+				'dbj' => 'stt.id_operador_unidad',
+				'real' => 'stt.id_operador_unidad',
+				'alias' => 'id_operador_unidad',
+				'typ' => 'int',
 				'dt' => 4
 			),
-			array(
-				'db' => 'crou.id_operador_unidad',
-				'dbj' => 'crou.id_operador_unidad',
-				'real' => 'crou.id_operador_unidad',
+                     array(
+				'db' => 'stt.id_episodio as id_episodio',
+				'dbj' => 'stt.id_episodio',
+				'real' => 'stt.id_episodio',
+				'alias' => 'id_episodio',
 				'typ' => 'int',
-				'acciones' => true,
 				'dt' => 5
+			),
+                     array(
+				'db' => 'fwu.id_usuario as id_usuario',
+				'dbj' => 'fwu.id_usuario',
+				'real' => 'fwu.id_usuario',
+				'alias' => 'id_usuario',
+				'typ' => 'int',
+				'dt' => 6
 			)
 		);
 		$render_table = new acciones_suspendidas;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
-			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
-			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
-			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
-			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
-			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
+              INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
+              INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario
 		';
 		$where = "
-			ope.cat_statusoperador = 10
-			AND crou.status_operador_unidad = 198
+                     stt.activo = 1
+                     AND stt.state = 'F6'
+                     AND stt.flag1 = 'F6'
 		";
+		$orden = "";
 		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden  )
 		);
 	}
 
 	function activos_get($array){
-		ini_set('memory_limit', '256M');
-		$table = 'cr_operador_unidad AS crou';
-		$primaryKey = 'id_operador_unidad';
+              ini_set('memory_limit', '256M');
+		$table = 'cr_state AS stt';
+		$primaryKey = 'id_state';
 		$columns = array(
 			array(
-				'db' => 'cr_numeq.num as numeq',
-				'dbj' => 'cr_numeq.num',
-				'real' => 'cr_numeq.num',
-				'alias' => 'numeq',
+				'db' => 'stt.id_state as id',
+				'dbj' => 'stt.id_state',
+				'real' => 'stt.id_state',
+				'alias' => 'id',
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array(
-				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
-				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'alias' => 'nombre',
+                     array(
+				'db' => 'stt.numeq as num',
+				'dbj' => 'stt.numeq',
+				'real' => 'stt.numeq',
+				'alias' => 'num',
 				'typ' => 'int',
 				'dt' => 1
 			),
 			array(
-				'db' => 'mk.marca AS marca',
-				'dbj' => 'mk.marca',
-				'alias' => 'marca',
-				'real' => 'mk.marca',
-				'typ' => 'txt',
+				'db' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno) AS nombre',
+				'dbj' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno)',
+				'real' => 'CONCAT(fwu.nombres, " " ,fwu.apellido_paterno, " " ,fwu.apellido_materno)',
+				'alias' => 'nombre',
+				'typ' => 'int',
 				'dt' => 2
 			),
-			array(
-				'db' => '`mod`.modelo AS modelo',
-				'dbj' => '`mod`.modelo',
-				'real' => '`mod`.modelo',
-				'alias' => 'modelo',
-				'typ' => 'txt',
+                     array(
+				'db' => 'stt.id_operador as id_operador',
+				'dbj' => 'stt.id_operador',
+				'real' => 'stt.id_operador',
+				'alias' => 'id_operador',
+                            'acciones' => true,
+				'typ' => 'int',
 				'dt' => 3
 			),
-			array(
-				'db' => 'uni.color AS color',
-				'dbj' => 'uni.color',
-				'real' => 'uni.color',
-				'alias' => 'color',
-				'typ' => 'txt',
+                     array(
+				'db' => 'stt.id_operador_unidad as id_operador_unidad',
+				'dbj' => 'stt.id_operador_unidad',
+				'real' => 'stt.id_operador_unidad',
+				'alias' => 'id_operador_unidad',
+				'typ' => 'int',
 				'dt' => 4
 			),
-			array(
-				'db' => 'crou.id_operador AS aid_operador',
-				'dbj' => 'crou.id_operador',
-				'real' => 'crou.id_operador',
-				'alias' => 'aid_operador',
+                     array(
+				'db' => 'stt.id_episodio as id_episodio',
+				'dbj' => 'stt.id_episodio',
+				'real' => 'stt.id_episodio',
+				'alias' => 'id_episodio',
 				'typ' => 'int',
 				'dt' => 5
 			),
-			array(
-				'db' => 'crou.id_operador_unidad',
-				'dbj' => 'crou.id_operador_unidad',
-				'real' => 'crou.id_operador_unidad',
+                     array(
+				'db' => 'fwu.id_usuario as id_usuario',
+				'dbj' => 'fwu.id_usuario',
+				'real' => 'fwu.id_usuario',
+				'alias' => 'id_usuario',
 				'typ' => 'int',
-				'acciones' => true,
 				'dt' => 6
 			)
 		);
 		$render_table = new acciones_activos;
 		$inner = '
-			INNER JOIN cr_operador AS ope ON crou.id_operador = ope.id_operador
-			INNER JOIN fw_usuarios AS usu ON ope.id_usuario = usu.id_usuario
-			INNER JOIN cr_unidades AS uni ON crou.id_unidad = uni.id_unidad
-			INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
-			INNER JOIN cr_marcas AS mk ON uni.id_marca = mk.id_marca
-			INNER JOIN cr_operador_numeq AS crone ON crone.id_operador = ope.id_operador
-			INNER JOIN cr_numeq ON crone.id_numeq = cr_numeq.id_numeq
+              INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
+              INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario
 		';
 		$where = "
-			ope.cat_statusoperador = 8
-			AND crou.status_operador_unidad = 198
+                     stt.activo = 1
+                     AND stt.state = 'C1'
+                     AND stt.flag1 = 'C1'
 		";
+		$orden = "";
 		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner )
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden  )
 		);
 	}
 	function cordon_get($array, $base){
@@ -3984,14 +3990,9 @@ class acciones_activos extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-					$id_operador = $data[$i][ 'aid_operador' ];
+                                   $id_usuario = $data[$i][ 'num' ];
 
-					$salida = '';
-						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
-							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
-							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
-							</a>&nbsp;&nbsp;';
-						}
+					$salida = $id_usuario;
 
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -4076,10 +4077,10 @@ class acciones_suspendidas extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
-					$id_operador = '';//$column['id_operador'];
+                                   $id_usuario = $data[$i][ 'num' ];
 
-					$salida = '';
+					$salida = $id_usuario;
+
 
 					$row[ $column['dt'] ] = $salida;
 				}else{
@@ -4102,10 +4103,10 @@ class acciones_inactivos extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
-					$id_operador = '';//$column['id_operador'];
 
-					$salida = '';
+					$id_usuario = $data[$i][ 'num' ];
+
+					$salida = $id_usuario;
 
 
 					$row[ $column['dt'] ] = $salida;

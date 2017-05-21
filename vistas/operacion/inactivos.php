@@ -29,11 +29,9 @@ div.table-responsive div#inactivos_wrapper.dataTables_wrapper.form-inline.dt-boo
 				<table id="inactivos" class="display table table-striped" cellspacing="0" width="100%">
 					<thead>
 						<tr>
+							<th>ID</th>
 							<th>NUM EQ</th>
 							<th>Nombre</th>
-							<th>Marca</th>
-							<th>Modelo</th>
-							<th>Color</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -48,12 +46,29 @@ $(document).ready(function() {
 		"fnDrawCallback": function( oSettings ) {
 		  $('[data-rel=tooltip]').tooltip();
 		},
-        "processing": true,
-        "serverSide": true,
+        	"processing": true,
+        	"serverSide": true,
 		"ajax": {
-            "url": "operacion/inactivos_get",
-            "type": "POST"
-        }
+            		"url": "operacion/inactivos_get",
+            		"type": "POST",
+		},
+		"columnDefs": [
+			{
+				"targets": 4,
+				"visible": false,
+				"searchable":false
+			},
+			{
+				"targets": 5,
+				"visible": false,
+				"searchable":false
+			},
+			{
+				"targets": 6,
+				"visible": false,
+				"searchable":false
+			}
+		]
     } );
 } );
 </script>

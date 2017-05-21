@@ -1,9 +1,65 @@
 <?php
-use Pubnub\Pubnub;
 class Desarrollador extends Controlador
 {
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
+	}
+	public function initstate(){
+		$db = Controlador::direct_connectivity();
+		$sql="
+		SELECT
+		op.id_operador,
+		opu.id_operador_unidad,
+		cel.serie,
+		num.num
+		FROM
+		cr_operador AS op
+		INNER JOIN cr_operador_unidad AS opu ON opu.id_operador = op.id_operador
+		INNER JOIN cr_operador_celular AS opcel ON opcel.id_operador = op.id_operador
+		INNER JOIN cr_celulares AS cel ON opcel.id_celular = cel.id_celular
+		INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = op.id_operador
+		INNER JOIN cr_numeq AS num ON cr_operador_numeq.id_numeq = num.id_numeq
+		WHERE
+		opcel.cat_status_operador_celular = 31 AND
+		cel.cat_status_celular = 28 AND
+		opu.status_operador_unidad = 198 AND
+		op.cat_statusoperador = 8 AND
+		cr_operador_numeq.cat_status_oper_numeq = 12
+		GROUP BY
+		opu.id_operador
+		ORDER BY
+		op.id_operador ASC
+
+		";
+		$stmt = $db->prepare($sql);
+		$stmt->execute();
+		$data = $stmt->fetchAll();
+		foreach ($data as $row) {
+			$sql = "
+				INSERT INTO `cr_state` (
+					`id_operador`,
+					`id_operador_unidad`,
+					`numeq`,
+					`state`,
+					`flag1`,
+					`serie`,
+					`activo`
+				)
+				VALUES
+					(
+						'".$row->id_operador."',
+						'".$row->id_operador_unidad."',
+						'".$row->num."',
+						'C2',
+						'C2',
+						'".$row->serie."',
+						'1'
+					);
+			";
+			D::bug($sql);
+			$populate = $db->prepare($sql);
+			$populate->execute();
+		}
 	}
 	public function image(){
 		$pointsToEncoded = self::PolylineToEncoded();
@@ -618,18 +674,6 @@ class Desarrollador extends Controlador
 		echo $date_año.'<br>';
 		echo $ahora_año.'<br>';
 		if($date_año == $ahora_año){echo 'igual<br>';}else{echo 'diferente<br>';}
-	}
-	public function pubnub(){
-
-			require_once('../vendor/pubnub/autoloader.php');
-			$pubnub = new Pubnub(PUBNUB_PUBLISH,PUBNUB_SUSCRIBE,PUBNUB_SECRET,false);
-			$response = $pubnub->hereNow('presence-activos');
-			$num = 0;
-			foreach($response['uuids'] as $num => $oper){
-				$id_operadores[$num]['id_operador'] = $oper;
-				$num++;
-			}
-			print_r($id_operadores);
 	}
 	public function espera(){
 		for($i=0;$i<=5;$i++){

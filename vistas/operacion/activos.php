@@ -29,12 +29,9 @@ div.table-responsive div#activos_wrapper.dataTables_wrapper.form-inline.dt-boots
 				<table id="activos" class="display table table-striped" cellspacing="0" width="100%">
 					<thead>
 						<tr>
+							<th>ID</th>
 							<th>NUM EQ</th>
 							<th>Nombre</th>
-							<th>Marca</th>
-							<th>Modelo</th>
-							<th>Color</th>
-							<th>id_operador</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -46,22 +43,32 @@ div.table-responsive div#activos_wrapper.dataTables_wrapper.form-inline.dt-boots
 <script type="text/javascript" language="javascript" class="init">
 $(document).ready(function() {
     $('#activos').dataTable( {
-		"fnDrawCallback": function( oSettings ) {
-		  $('[data-rel=tooltip]').tooltip();
-		},
-        "processing": true,
-        "serverSide": true,
-		"ajax": {
-            "url": "operacion/activos_get",
-            "type": "POST"
-        },
-		"columnDefs": [
-			{
-				"targets": 5,
-				"visible": false,
-				"searchable":false
-			}
-		]
+	    "fnDrawCallback": function( oSettings ) {
+	      $('[data-rel=tooltip]').tooltip();
+	    },
+	    "processing": true,
+	    "serverSide": true,
+	    "ajax": {
+		    "url": "operacion/activos_get",
+		    "type": "POST",
+	    },
+	    "columnDefs": [
+		    {
+			    "targets": 4,
+			    "visible": false,
+			    "searchable":false
+		    },
+		    {
+			    "targets": 5,
+			    "visible": false,
+			    "searchable":false
+		    },
+		    {
+			    "targets": 6,
+			    "visible": false,
+			    "searchable":false
+		    }
+	    ]
     } );
 } );
 </script>
