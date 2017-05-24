@@ -188,6 +188,10 @@ class ShareModel
                      ";
                      $query = $this->db->prepare($sql);
                      $query_resp = $query->execute();
+
+                     $id_operador = self::getIdOperador($id_operador_unidad);
+                     $id_episodio = self::getIdEpisodio($id_operador_unidad);
+                     self::setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C18','C1','C18','NULL','NULL','NULL','NULL');
            }
     }
     function turno($id_operador_unidad,$id_base){
@@ -442,7 +446,7 @@ class ShareModel
            $query = $this->db->prepare($sql);
            $query_resp = $query->execute();
     }
-    function formarse_directo($token,$id_operador_unidad,$id_base,$statuscordon){
+    function formarse_directo($id_episodio,$id_operador_unidad,$id_base,$statuscordon){
            $sql = "
                   INSERT INTO cr_cordon (
                          id_operador_unidad,
@@ -450,7 +454,6 @@ class ShareModel
                          id_base,
                          cat_statuscordon,
                          llegada,
-                         token,
                          user_alta,
                          fecha_alta
                   ) VALUES (
@@ -459,7 +462,6 @@ class ShareModel
                          :id_base,
                          :cat_statuscordon,
                          :llegada,
-                         :token,
                          :user_alta,
                          :fecha_alta
                   )";
@@ -467,28 +469,62 @@ class ShareModel
            $query->execute(
                   array(
                          ':id_operador_unidad' 	=> 	$id_operador_unidad,
-                         ':id_episodio' 		=> 	self::getIdEpisodio($id_operador_unidad),
+                         ':id_episodio' 		=> 	$id_episodio,
                          ':id_base' 		=> 	$id_base,
                          ':cat_statuscordon' 	=> 	$statuscordon,
                          ':llegada' 		=> 	date("Y-m-d H:i:s"),
-                         ':token' 			=> 	$token,
                          ':user_alta' 		=> 	$_SESSION['id_usuario'],
                          ':fecha_alta' 		=> 	date("Y-m-d H:i:s")
                   )
            );
+           $id_operador = self::getIdOperador($id_operador_unidad);
+           self::setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'F12','C1','B1','NULL','NULL','NULL','NULL');
+    }
+    function setstatlocal($id_operador,$id_operador_unidad,$id_episodio,$state,$flag1,$flag2,$flag3,$flag4,$motivo,$id_viaje){
+           $setStat['id_operador'] = $id_operador;
+           $setStat['id_operador_unidad'] = $id_operador_unidad;
+           $setStat['id_episodio'] = $id_episodio;
+           $setStat['id_viaje'] = $id_viaje;
+           $setStat['num'] = self::getNumEq($id_operador_unidad);
+           $setStat['state'] = $state;
+           $setStat['flag1'] = $flag1;
+           $setStat['flag2'] = $flag2;
+           $setStat['flag3'] = $flag3;
+           $setStat['flag4'] = $flag4;
+           $setStat['motivo'] = $motivo;
+           self::setStatOper($setStat);
+    }
+    function getNumEq($id_operador_unidad){
+           $qry = "
+                  SELECT
+                  	cr_numeq.num
+                  FROM
+                  	cr_operador_unidad
+                  INNER JOIN cr_operador ON cr_operador_unidad.id_operador = cr_operador.id_operador
+                  INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
+                  INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+                  WHERE
+                  	cr_operador_unidad.id_operador_unidad = $id_operador_unidad
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $data = $query->fetchAll();
+           foreach ($data as $row) {
+                  return $row->num;
+           }
     }
     function getIdEpisodio($id_operador_unidad){
            $qry = "
                   SELECT
-                         cre.id_episodio
+                  	cre.id_episodio
                   FROM
-                         cr_operador_unidad as crou
-                  INNER JOIN cr_episodios as cre ON crou.id_operador = cre.id_operador
+                  	cr_operador_unidad AS crou
+                  INNER JOIN cr_episodios AS cre ON crou.id_operador = cre.id_operador
                   WHERE
-                         crou.id_operador_unidad = ".$id_operador_unidad."
-                         AND crou.status_operador_unidad = 198
+                  	crou.id_operador_unidad = $id_operador_unidad
+                  AND cre.tiempo IS NULL
                   ORDER BY
-                         cre.id_episodio DESC
+                  	cre.id_episodio DESC
                   LIMIT 0,
                    1
            ";

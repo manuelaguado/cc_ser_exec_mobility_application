@@ -19,44 +19,44 @@
   }
 }
 */
- 
+
  [class^="icon-centralcar"]:before, [class*=" icon-centralcar"]:before {
   font-family: "mediasite";
   font-style: normal;
   font-weight: normal;
   speak: none;
- 
+
   display: inline-block;
   text-decoration: inherit;
   width: 1em;
   margin-right: .2em;
   text-align: center;
   /* opacity: .8; */
- 
+
   /* For safety - reset parent styles, that can break glyph codes*/
   font-variant: normal;
   text-transform: none;
- 
+
   /* fix buttons height, for twitter bootstrap */
   line-height: 1em;
- 
+
   /* Animation center compensation - margins should be symmetric */
   /* remove if not needed */
   margin-left: .2em;
- 
+
   /* you can be more comfortable with increased icons size */
   /* font-size: 120%; */
- 
+
   /* Font smoothing. That was taken from TWBS */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
- 
+
   /* Uncomment for 3D effect */
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
 
 .icon-centralcar_geolocalizacion:before { content: '\e800'; } /* '' */
-.icon-centralcar_star_gradient:before { 
+.icon-centralcar_star_gradient:before {
 		background: -webkit-linear-gradient(45deg, #c9c900 5%,#fefcea 36%,#c9c900 100%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
@@ -64,7 +64,7 @@
 		margin-left: 0em;
 		width:250px;
 		position:relative; left:-20px; font-size:4em;
-		content: '\e801'; 
+		content: '\e801';
 } /* '' */
 .icon-centralcar_star:before { content: '\e801'; } /* '' */
 .icon-centralcar:before { content: '\e802'; } /* '' */
@@ -72,3 +72,26 @@
 .icon-centralcar_favicon:before { content: '\e804'; } /* '' */
 .icon-centralcar_logo:before { content: '\e805'; } /* '' */
 .icon-centralcar_path:before { content: '\e806'; } /* '' */
+
+@-webkit-keyframes heartbeat{
+    0%{-webkit-transform:scale(1)}
+    50%{-webkit-transform:scale(1.4)}
+    100%{-webkit-transform:scale(1)}
+}
+@-moz-keyframes heartbeat{
+    0%{-moz-transform:scale(1)}
+    50%{-moz-transform:scale(1.4)}
+    100%{-moz-transform:scale(1)}
+}
+@-o-keyframes heartbeat{
+    0%{-o-transform:scale(1)}
+    50%{-o-transform:scale(1.4)}
+    100%{-o-transform:scale(1)}
+}
+@keyframes heartbeat{
+    0%{transform:scale(1)}
+    50%{transform:scale(1.4)}
+    100%{transform:scale(1)}
+}
+.heartbeat{ -webkit-animation-name:heartbeat; -moz-animation-name:heartbeat; -o-animation-name:heartbeat; animation-name:heartbeat; }
+.animate-infinite-heartbeat { -webkit-animation: heartbeat 2s infinite; /* Chrome, Safari, Opera */ animation: heartbeat 2s infinite; }

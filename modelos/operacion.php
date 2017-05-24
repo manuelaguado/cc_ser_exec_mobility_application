@@ -588,93 +588,61 @@ class OperacionModel{
 		$resultado = curl_exec ($ch);
 		return json_decode($resultado);
 	}
-	function vaciarTiempoBase(){
-		$sql = "TRUNCATE cr_tiempo_base";
-		$query = $this->db->prepare($sql);
-		$query->execute();
-	}
-	function storeTB($array){
-		$sql = "
-			INSERT INTO `cr_tiempo_base` (
-				`id_operador`,
-				`id_operador_unidad`,
-				`distancia`,
-				`min_min`,
-				`min_max`,
-				`latlng`
-			)
-			VALUES
-				(
-					'".$array['id_operador']."',
-					'".$array['id_operador_unidad']."',
-					'".$array['distancia']."',
-					'".$array['min']."',
-					'".$array['max']."',
-					'".$array['latLng']."'
-				);
-		";
-		$query = $this->db->prepare($sql);
-		$query->execute();
-	}
-       function getTBUnitsRed(){
-		$qry = '
-			SELECT
-				crou.id_operador_unidad,
-				crou.id_operador AS id_operador
-			FROM
-				cr_operador_unidad AS crou
-			WHERE
-			crou.status_operador_unidad = 198
-		';
-		/*El ultimo OR se agrego para agregar una solicitud F14 a la lista de Tiempo a la Base*/
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$operadores = array();
-		$num = 0;
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row){
-				$operadores[$num]['id_operador'] 		= $row->id_operador;
-				$operadores[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$num++;
-			}
-		}
-		return $operadores;
-	}
 	function getTBUnits(){
-		$qry = '
-			SELECT
-				cr_numeq.num AS numeq,
-				CONCAT(
-					usu.nombres,
-					" ",
-					usu.apellido_paterno,
-					" ",
-					usu.apellido_materno
-				) AS nombre,
-				crou.id_operador_unidad,
-				cr_operador.id_operador,
-				cr_marcas.marca,
-				cr_modelos.modelo,
-				cr_unidades.color,
-				cr_tiempo_base.latlng,
-				cr_tiempo_base.distancia,
-				cr_tiempo_base.min_min,
-				cr_tiempo_base.min_max
-			FROM
-				cr_tiempo_base
-			INNER JOIN cr_operador ON cr_tiempo_base.id_operador = cr_operador.id_operador
-			INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
-			INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
-			INNER JOIN fw_usuarios AS usu ON cr_operador.id_usuario = usu.id_usuario
-			INNER JOIN cr_operador_unidad as crou ON crou.id_operador = cr_operador.id_operador
-			INNER JOIN cr_unidades ON crou.id_unidad = cr_unidades.id_unidad
-			INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
-			INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
-			WHERE
-				cr_tiempo_base.id_operador_unidad = crou.id_operador_unidad
-				AND crou.status_operador_unidad = 198
-		';
+		$qry = "
+                     SELECT
+                     	CONCAT(
+                     		usu.nombres,
+                     		' ',
+                     		usu.apellido_paterno,
+                     		' ',
+                     		usu.apellido_materno
+                     	) AS nombre,
+                     	cr_numeq.num,
+                     	cr_marcas.marca,
+                     	cr_modelos.modelo,
+                     	cr_unidades.color,
+                     	cr_unidades.placas,
+                     	stt.id_operador,
+                     	stt.id_operador_unidad,
+                     	stt.id_episodio,
+                     	stt.id_viaje
+                     FROM
+                     	cr_state AS stt
+                     INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
+                     INNER JOIN fw_usuarios AS usu ON cro.id_usuario = usu.id_usuario
+                     INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cro.id_operador
+                     INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+                     INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador_unidad = stt.id_operador_unidad
+                     INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
+                     INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
+                     INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
+                     WHERE
+                     	(
+                     (
+              		stt.state = 'C1'
+              		AND stt.flag1 = 'C1'
+              		AND stt.flag2 = 'F11'
+              	)
+                     OR (
+                     	stt.state = 'C6'
+                     	AND stt.flag1 = 'C1'
+                     	AND stt.flag2 = 'C6'
+                     	AND stt.flag3 = 'F11'
+                     )
+                     OR (
+                     	stt.state = 'C9'
+                     	AND stt.flag1 = 'C1'
+                     	AND stt.flag2 = 'C9'
+                     	AND stt.flag3 = 'F11'
+                     )OR (
+                     	stt.state = 'C18'
+                     	AND stt.flag1 = 'C1'
+                     	AND stt.flag2 = 'C18'
+                     )
+                     )
+                     AND stt.activo = 1
+		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		$operadores = array();
@@ -682,21 +650,14 @@ class OperacionModel{
 		if($query->rowCount()>=1){
 			$data = $query->fetchAll();
 			foreach ($data as $row){
-				$operadores[$num]['numeq'] 				= $row->numeq;
+				$operadores[$num]['numeq'] 				= $row->num;
 				$operadores[$num]['nombre'] 			= $row->nombre;
 				$operadores[$num]['marca'] 				= $row->marca;
 				$operadores[$num]['modelo'] 			= $row->modelo;
 				$operadores[$num]['color'] 				= $row->color;
-				$operadores[$num]['id_operador_unidad'] = $row->id_operador_unidad;
-				$operadores[$num]['id_operador'] 		= $row->id_operador;
-
-				$operadores[$num]['distancia'] 			= $row->distancia;
-				$operadores[$num]['min_min'] 			= $row->min_min;
-				$operadores[$num]['min_max'] 			= $row->min_max;
-
-				$coord = explode(',',$row->latlng);
-				$operadores[$num]['latitud'] 			= $coord[0];
-				$operadores[$num]['longitud'] 			= $coord[1];
+				$operadores[$num]['id_operador_unidad']          = $row->id_operador_unidad;
+				$operadores[$num]['id_operador'] 		       = $row->id_operador;
+                            $operadores[$num]['id_episodio'] 		       = $row->id_episodio;
 
 				$num++;
 			}
@@ -2054,7 +2015,6 @@ class OperacionModel{
 		';
 		$where = "
                      stt.activo = 1
-                     AND stt.state = 'C1'
                      AND stt.flag1 = 'C1'
 		";
 		$orden = "";
@@ -3273,117 +3233,6 @@ class OperacionModel{
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
 	}
-	function tiempo_base_get($array){
-		ini_set('memory_limit', '256M');
-		$table = 'cr_tiempo_base AS crtb';
-		$primaryKey = 'id_tiempo_base';
-		$columns = array(
-			array(
-				'db' => 'crnq.num AS numeq',
-				'dbj' => 'crnq.num',
-				'real' => 'crnq.num',
-				'alias' => 'numeq',
-				'typ' => 'int',
-				'dt' => 0
-			),
-			array(
-				'db' => 'crtb.distancia AS metros',
-				'dbj' => 'crtb.distancia',
-				'real' => 'crtb.distancia',
-				'alias' => 'metros',
-				'typ' => 'int',
-				'distance' => true,
-				'dt' => 1
-			),
-			array(
-				'db' => 'crtb.min_min AS min_seg',
-				'dbj' => 'crtb.min_min',
-				'real' => 'crtb.min_min',
-				'alias' => 'min_seg',
-				'typ' => 'int',
-				'time_min' => true,
-				'dt' => 2
-			),
-			array(
-				'db' => 'crtb.min_max AS max_seg',
-				'dbj' => 'crtb.min_max',
-				'real' => 'crtb.min_max',
-				'alias' => 'max_seg',
-				'typ' => 'int',
-				'time_max' => true,
-				'dt' => 3
-			),
-			array(
-				'db' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno) AS nombre',
-				'dbj' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'real' => 'CONCAT(usu.nombres, " " ,	usu.apellido_paterno, " " ,	usu.apellido_materno)',
-				'alias' => 'nombre',
-				'typ' => 'int',
-				'dt' => 4
-			),
-			array(
-				'db' => 'crmk.marca AS marca',
-				'dbj' => 'crmk.marca',
-				'real' => 'crmk.marca',
-				'alias' => 'marca',
-				'typ' => 'txt',
-				'dt' => 5
-			),
-			array(
-				'db' => 'crmd.modelo AS modelo',
-				'dbj' => 'crmd.modelo',
-				'real' => 'crmd.modelo',
-				'alias' => 'modelo',
-				'typ' => 'txt',
-				'dt' => 6
-			),
-			array(
-				'db' => 'cru.color AS color',
-				'dbj' => 'cru.color',
-				'real' => 'cru.color',
-				'alias' => 'color',
-				'typ' => 'txt',
-				'dt' => 7
-			),
-			array(
-				'db' => 'crou.id_operador_unidad AS id_operador_unidad',
-				'dbj' => 'crou.id_operador_unidad',
-				'real' => 'crou.id_operador_unidad',
-				'alias' => 'id_operador_unidad',
-				'typ' => 'int',
-				'acciones' => true,
-				'dt' => 8
-			),
-			array(
-				'db' => 'crop.id_operador AS id_operador',
-				'dbj' => 'crop.id_operador',
-				'real' => 'crop.id_operador',
-				'alias' => 'id_operador',
-				'typ' => 'int',
-				'dt' => 9
-			)
-		);
-		$render_table = new acciones_tiempo_base;
-		$inner = '
-			INNER JOIN cr_operador AS crop ON crtb.id_operador = crop.id_operador
-			INNER JOIN cr_operador_numeq AS cron ON cron.id_operador = crop.id_operador
-			INNER JOIN cr_numeq AS crnq ON cron.id_numeq = crnq.id_numeq
-			INNER JOIN fw_usuarios AS usu ON crop.id_usuario = usu.id_usuario
-			INNER JOIN cr_operador_unidad AS crou ON crou.id_operador = crop.id_operador
-			INNER JOIN cr_unidades AS cru ON crou.id_unidad = cru.id_unidad
-			INNER JOIN cr_modelos AS crmd ON cru.id_modelo = crmd.id_modelo
-			INNER JOIN cr_marcas AS crmk ON cru.id_marca = crmk.id_marca
-		';
-		$where = "
-			crtb.id_operador_unidad = crou.id_operador_unidad
-			AND
-				crou.status_operador_unidad = 198
-		";
-		$orden = "";
-		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
-		);
-	}
 	function queryCostosAdicionales($array,$id_viaje){
 		ini_set('memory_limit', '256M');
 		$table = 'vi_costos_adicionales AS vca';
@@ -3585,63 +3434,6 @@ class acciones_asignados extends SSP{
 					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}
-}
-class acciones_tiempo_base extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
-
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				if ( isset( $column['acciones'] ) ) {
-
-					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
-					$id_operador = $data[$i][ 'id_operador' ];
-
-					$salida = '';
-
-						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
-							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
-							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
-							</a>&nbsp;&nbsp;';
-						}
-
-					$row[ $column['dt'] ] = $salida;
-
-				}else if ( isset( $column['time_min'] ) ) {
-
-					$min_seg = $data[$i][ 'min_seg' ];
-					$salida = '';
-					$salida .= round(($min_seg/60),0).' min';
-					$row[ $column['dt'] ] = $salida;
-
-				}else if ( isset( $column['time_max'] ) ) {
-
-					$max_seg = $data[$i][ 'max_seg' ];
-					$salida = '';
-					$salida .= round(($max_seg/60),0).' min';
-					$row[ $column['dt'] ] = $salida;
-
-				}else if ( isset( $column['distance'] ) ) {
-
-					$metros = $data[$i][ 'metros' ];
-					$salida = '';
-					$salida .= round(($metros/1000),2).' km';
-					$row[ $column['dt'] ] = $salida;
-
-				}else{
-
-					$row[ $column['dt'] ] = $data[$i][$name_column];
-
-				}
 			}
 			$out[] = $row;
 		}

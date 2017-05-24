@@ -33,6 +33,7 @@ span.input-icon > textarea {
 					<form class="form-horizontal" role="form" id="nuevo_servicio">
 						<div class="page-header" style="margin-bottom: 26px;">
 							<h1>&nbsp;<br>
+
 							<a class="btn btn-info" href="#" onclick="procesar_servicio()" style="position:relative; float:right; top:-30px;">
 								<i class="ace-icon fa fa-gear bigger-110"></i>
 								Procesar
@@ -334,7 +335,9 @@ span.input-icon > textarea {
 						<div class="widget-toolbar no-border">
 							<ul class="nav nav-tabs" id="recent-tab">
 								<li class="active">
-									<a data-toggle="tab" href="#table_kpmg" aria-expanded="false">KPMG</a>
+									<a data-toggle="tab" href="#table_kpmg" aria-expanded="false">
+                                                               <span id="fillcordon" style="z-index:500"><i class="fa fa-plus heartbeat animate-infinite-heartbeat" style="color:#bf5f06;"></i></span>
+                                                               &nbsp;&nbsp;&nbsp;KPMG</a>
 								</li>
 
 								<li class="">

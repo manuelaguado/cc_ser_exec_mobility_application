@@ -437,7 +437,7 @@ function aut_out(id_operador_unidad,id_base){
 				success: function(resp_success){
 					if (resp_success['resp'] == true) {
 						$('#myModal').modal('hide');
-						$('#cordon').DataTable().ajax.reload();
+						$('#cordon_kpmg').DataTable().ajax.reload();
 					}else{
 						alerta('Alerta!','Error de conectividad de red OPRN-37');
 					}
@@ -1480,6 +1480,40 @@ function desactivar_f06_do(num,id_operador){
 				}
 			},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-94');}
+		});
+	} );
+}
+$("body").on("click", "#fillcordon", function() {
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/intoCordon',
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-95');}
+		});
+	} );
+});
+function meteralCordon(id_operador_unidad,id_episodio,base,statuscordon){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/meteralCordon/' + id_episodio + '/' + id_operador_unidad + '/' + base + '/' + statuscordon,
+			dataType: 'json',
+				success: function(resp_success){
+					if (resp_success['resp'] == true) {
+						$('#myModal').modal('hide');
+						$('#cordon_kpmg').DataTable().ajax.reload();
+					}else{
+						alerta('Alerta!','Error de conectividad de red OPRN-96');
+					}
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-97');}
 		});
 	} );
 }

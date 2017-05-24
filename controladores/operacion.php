@@ -49,7 +49,7 @@ class Operacion extends Controlador
               $setStat['num'] = $num;
               $setStat['state'] = 'C1';
               $setStat['flag1'] = 'C1';
-              $setStat['flag2'] = 'NULL';
+              $setStat['flag2'] = 'F11';
               $setStat['flag3'] = 'NULL';
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'NULL';
@@ -109,6 +109,18 @@ class Operacion extends Controlador
 		$operadores = $model->getTBUnits();
 		require URL_VISTA.'modales/operacion/getTBUnits.php';
 	}
+       public function intoCordon(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$model = $this->loadModel('Operacion');
+		$operadores = $model->getTBUnits();
+		require URL_VISTA.'modales/operacion/intoCordon.php';
+	}
+       public function meteralCordon($id_episodio,$id_operador_unidad,$id_base,$statuscordon){
+              $this->se_requiere_logueo(true,'Operacion|solicitud');
+              $share = $this->loadModel('Share');
+              $share->formarse_directo($id_episodio,$id_operador_unidad,$id_base,$statuscordon);
+              print json_encode(array('resp' => true , 'mensaje' => 'El operador se formo correctamente.' ));
+       }
 	public function viajeAlAire($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');
@@ -595,7 +607,7 @@ class Operacion extends Controlador
 		$token = 'OP:'.$this->token(62);
 		$share->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
 		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
-		$share->formarse_directo($token,$id_operador_unidad,$id_base,115);
+		//$share->formarse_directo($id_episodio,$id_operador_unidad,$id_base,115);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
@@ -637,7 +649,7 @@ class Operacion extends Controlador
 		$token = 'OP:'.$this->token(62);
 		$share->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
 		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
-		$share->formarse_directo($token,$id_operador_unidad,$id_base,113);
+		//$share->formarse_directo($id_episodio,$id_operador_unidad,$id_base,113);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
@@ -659,17 +671,13 @@ class Operacion extends Controlador
 	}
 
 	public function modal_activar_out($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/activar_out.php';
 	}
 	public function aut_out($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$share = $this->loadModel('Share');
 		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
-
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'regreso');
-		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
