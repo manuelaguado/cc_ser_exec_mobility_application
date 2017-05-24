@@ -4034,7 +4034,7 @@ class acciones_activos extends SSP{
                                    $salida = '';
 						if(Controlador::tiene_permiso('Operacion|activar_c2')){
                                                  $salida .= '<a onclick="modal_activar_c02('.$id_operador.','.$num.','.$id_operador_unidad.')" data-rel="tooltip" data-original-title="Fin de operaciones">
-							<i class="fa fa-sign-in" style="font-size:1.8em; color:green;"></i>
+							<i class="fa fa-sign-out" style="font-size:1.8em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
 
@@ -4069,7 +4069,7 @@ class acciones_suspendidas extends SSP{
 
 						if(Controlador::tiene_permiso('Operacion|desactivar_f06')){
                                                  $salida .= '<a onclick="modal_desactivar_f06('.$id_operador.','.$num.')" data-rel="tooltip" data-original-title="Activar Operador">
-							<i class="fa fa-sign-in" style="font-size:1.8em; color:green;"></i>
+							<i class="fa fa-check-circle-o" style="font-size:1.8em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
 
@@ -4107,7 +4107,7 @@ class acciones_inactivos extends SSP{
 						}
                                           if(Controlador::tiene_permiso('Operacion|activar_f6')){
                                                  $salida .= '<a onclick="modal_activar_f6('.$id_operador.','.$num.')" data-rel="tooltip" data-original-title="Suspender Operador">
-							<i class="fa fa-sign-in" style="font-size:1.8em; color:green;"></i>
+							<i class="fa fa-ban" style="font-size:1.8em; color:red;"></i>
 							</a>&nbsp;&nbsp;';
 						}
 
