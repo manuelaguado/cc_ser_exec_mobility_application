@@ -11,8 +11,8 @@
 					La siguiente acción suspende al operador,
 					<br><br>¿Está seguro de continuar con esta acción?
 			</div>
-			<div class="modal-footer">					
-				<button onclick="aut_f06(<?=$id_operador_unidad?>,<?=$id_base?>);" class="btn btn-ar btn-success" type="button" id="add">Suspender operador</button>
+			<div class="modal-footer">
+				<button onclick="activar_f6_do(<?=$num?>,<?=$id_operador?>);" class="btn btn-ar btn-success" type="button" id="add">Suspender operador</button>
 				<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cerrar</button>
 			</div>
 		</div>

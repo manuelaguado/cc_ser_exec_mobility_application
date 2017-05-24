@@ -31,6 +31,78 @@ class Operacion extends Controlador
 		$share->transmitir(json_encode($notificaciones),'notificarApartados');
 	}
 
+       public function modal_activar_c1($id_operador, $num){
+		$this->se_requiere_logueo(true,'Operacion|activar_c1');
+		$model = $this->loadModel('Operacion');
+		$vehiculos = $model->elegirVehiculo($id_operador);
+		require URL_VISTA.'modales/operacion/activar_c01.php';
+	}
+	public function activar_c1($id_operador_unidad,$id_operador,$num){
+		$this->se_requiere_logueo(true,'Operacion|activar_c1');
+		$share = $this->loadModel('Share');
+              $id_episodio = $share->getEpisodio($id_operador,$_SESSION['id_usuario'],$id_operador_unidad);
+
+              $setStat['id_operador'] = $id_operador;
+              $setStat['id_operador_unidad'] = $id_operador_unidad;
+              $setStat['id_episodio'] = $id_episodio;
+              $setStat['id_viaje'] = 'NULL';
+              $setStat['num'] = $num;
+              $setStat['state'] = 'C1';
+              $setStat['flag1'] = 'C1';
+              $setStat['flag2'] = 'NULL';
+              $setStat['flag3'] = 'NULL';
+              $setStat['flag4'] = 'NULL';
+              $setStat['motivo'] = 'NULL';
+
+		$share->setStatOper($setStat);
+		print json_encode(array('resp' => true , 'mensaje' => 'El operador inició operaciones correctamente.' ));
+	}
+       public function modal_activar_f6($id_operador, $num){
+		$this->se_requiere_logueo(true,'Operacion|activar_f6');
+		require URL_VISTA.'modales/operacion/activar_f06.php';
+	}
+	public function activar_f6($id_operador,$num){
+		$this->se_requiere_logueo(true,'Operacion|activar_f6');
+		$share = $this->loadModel('Share');
+
+              $setStat['id_operador'] = $id_operador;
+              $setStat['id_operador_unidad'] = 'NULL';
+              $setStat['id_episodio'] = 'NULL';
+              $setStat['id_viaje'] = 'NULL';
+              $setStat['num'] = $num;
+              $setStat['state'] = 'F6';
+              $setStat['flag1'] = 'F6';
+              $setStat['flag2'] = 'NULL';
+              $setStat['flag3'] = 'NULL';
+              $setStat['flag4'] = 'NULL';
+              $setStat['motivo'] = 'NULL';
+
+		$share->setStatOper($setStat);
+		print json_encode(array('resp' => true , 'mensaje' => 'El operador se suspendió correctamente.' ));
+	}
+       public function modal_desactivar_f06($id_operador, $num){
+		$this->se_requiere_logueo(true,'Operacion|desactivar_f06');
+		require URL_VISTA.'modales/operacion/desactivar_f06.php';
+	}
+	public function desactivar_f06_do($id_operador,$num){
+		$this->se_requiere_logueo(true,'Operacion|desactivar_f06');
+		$share = $this->loadModel('Share');
+
+              $setStat['id_operador'] = $id_operador;
+              $setStat['id_operador_unidad'] = 'NULL';
+              $setStat['id_episodio'] = 'NULL';
+              $setStat['id_viaje'] = 'NULL';
+              $setStat['num'] = $num;
+              $setStat['state'] = 'C2';
+              $setStat['flag1'] = 'C2';
+              $setStat['flag2'] = 'NULL';
+              $setStat['flag3'] = 'NULL';
+              $setStat['flag4'] = 'NULL';
+              $setStat['motivo'] = 'NULL';
+
+		$share->setStatOper($setStat);
+		print json_encode(array('resp' => true , 'mensaje' => 'El operador se suspendió correctamente.' ));
+	}
 	public function getTBUnits(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$model = $this->loadModel('Operacion');
@@ -527,21 +599,31 @@ class Operacion extends Controlador
 		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
-	public function modal_activar_c02($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
+	public function modal_activar_c02($id_operador, $num, $id_operador_unidad){
+              $this->se_requiere_logueo(true,'Operacion|activar_c2');
 		require URL_VISTA.'modales/operacion/activar_c02.php';
 	}
-	public function aut_c02($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$share = $this->loadModel('Share');
-		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
-		$id_operador = $share->getIdOperador($id_operador_unidad);
-		$share->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
-		$share->cerrarEpisodio($share->getIdEpisodio($id_operador_unidad),$_SESSION['id_usuario']);
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,'inicio');
-		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
+	public function aut_c02($id_operador_unidad,$id_operador,$num){
+		$this->se_requiere_logueo(true,'Operacion|activar_c2');
+              $share = $this->loadModel('Share');
+              $share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
+              $id_episodio = $share->getIdEpisodio($id_operador_unidad);
+              $share->cerrarEpisodio($id_episodio,$_SESSION['id_usuario']);
+
+              $setStat['id_operador'] = $id_operador;
+              $setStat['id_operador_unidad'] = $id_operador_unidad;
+              $setStat['id_episodio'] = $id_episodio;
+              $setStat['id_viaje'] = 'NULL';
+              $setStat['num'] = $num;
+              $setStat['state'] = 'C2';
+              $setStat['flag1'] = 'C2';
+              $setStat['flag2'] = 'NULL';
+              $setStat['flag3'] = 'NULL';
+              $setStat['flag4'] = 'NULL';
+              $setStat['motivo'] = 'NULL';
+
+		$share->setStatOper($setStat);
+		print json_encode(array('resp' => true , 'mensaje' => 'El operador inició operaciones correctamente.' ));
 	}
 
 	public function modal_activar_f14($id_operador_unidad,$id_base){
@@ -568,7 +650,6 @@ class Operacion extends Controlador
 		$share = $this->loadModel('Share');
 		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
 		$id_operador = $share->getIdOperador($id_operador_unidad);
-		$share->ponerEnC2($id_operador_unidad,$id_base,$id_operador);
 		$model2 = $this->loadModel('Operadores');
 		$model2->setearstatusoperador(array('cat_statusoperador'=>'10','id_operador'=>$id_operador));
 		$token = 'OP:'.$this->token(62);

@@ -1978,21 +1978,12 @@ class OperacionModel{
 				'dt' => 2
 			),
                      array(
-				'db' => 'stt.id_operador as id_operador',
-				'dbj' => 'stt.id_operador',
-				'real' => 'stt.id_operador',
-				'alias' => 'id_operador',
-                            'acciones' => true,
-				'typ' => 'int',
-				'dt' => 3
-			),
-                     array(
 				'db' => 'stt.id_operador_unidad as id_operador_unidad',
 				'dbj' => 'stt.id_operador_unidad',
 				'real' => 'stt.id_operador_unidad',
 				'alias' => 'id_operador_unidad',
 				'typ' => 'int',
-				'dt' => 4
+				'dt' => 3
 			),
                      array(
 				'db' => 'stt.id_episodio as id_episodio',
@@ -2000,7 +1991,7 @@ class OperacionModel{
 				'real' => 'stt.id_episodio',
 				'alias' => 'id_episodio',
 				'typ' => 'int',
-				'dt' => 5
+				'dt' => 4
 			),
                      array(
 				'db' => 'fwu.id_usuario as id_usuario',
@@ -2008,13 +1999,58 @@ class OperacionModel{
 				'real' => 'fwu.id_usuario',
 				'alias' => 'id_usuario',
 				'typ' => 'int',
+				'dt' => 5
+			),
+                     array(
+				'db' => 'mrc.marca as marca',
+				'dbj' => 'mrc.marca',
+				'real' => 'mrc.marca',
+				'alias' => 'marca',
+				'typ' => 'txt',
 				'dt' => 6
-			)
+			),
+                     array(
+				'db' => '`mod`.modelo as modelo',
+				'dbj' => '`mod`.modelo',
+				'real' => '`mod`.modelo',
+				'alias' => 'modelo',
+				'typ' => 'txt',
+				'dt' => 7
+			),
+                     array(
+				'db' => 'uni.color as color',
+				'dbj' => 'uni.color',
+				'real' => 'uni.color',
+				'alias' => 'color',
+				'typ' => 'txt',
+				'dt' => 8
+			),
+                     array(
+				'db' => 'uni.placas as placas',
+				'dbj' => 'uni.placas',
+				'real' => 'uni.placas',
+				'alias' => 'placas',
+				'typ' => 'txt',
+				'dt' => 9
+			),
+                     array(
+				'db' => 'stt.id_operador as id_operador',
+				'dbj' => 'stt.id_operador',
+				'real' => 'stt.id_operador',
+				'alias' => 'id_operador',
+                            'acciones' => true,
+				'typ' => 'int',
+				'dt' => 10
+			),
 		);
 		$render_table = new acciones_activos;
 		$inner = '
               INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
               INNER JOIN fw_usuarios AS fwu ON cro.id_usuario = fwu.id_usuario
+              INNER JOIN cr_operador_unidad AS opu ON stt.id_operador_unidad = opu.id_operador_unidad
+              INNER JOIN cr_unidades AS uni ON opu.id_unidad = uni.id_unidad
+              INNER JOIN cr_marcas AS mrc ON uni.id_marca = mrc.id_marca
+              INNER JOIN cr_modelos AS `mod` ON uni.id_modelo = `mod`.id_modelo
 		';
 		$where = "
                      stt.activo = 1
@@ -3990,73 +4026,21 @@ class acciones_activos extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-                                   $id_usuario = $data[$i][ 'num' ];
 
-					$salida = $id_usuario;
-
-					$row[ $column['dt'] ] = $salida;
-				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];
-				}
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}
-}
-class acciones_unidades_a11 extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
-
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				if ( isset( $column['acciones'] ) ) {
-					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
 					$id_operador = $data[$i][ 'id_operador' ];
+                                   $num = $data[$i][ 'num' ];
+                                   $id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
 
-					$salida = '';
-						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
-							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
-							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
+                                   $salida = '';
+						if(Controlador::tiene_permiso('Operacion|activar_c2')){
+                                                 $salida .= '<a onclick="modal_activar_c02('.$id_operador.','.$num.','.$id_operador_unidad.')" data-rel="tooltip" data-original-title="Fin de operaciones">
+							<i class="fa fa-sign-in" style="font-size:1.8em; color:green;"></i>
 							</a>&nbsp;&nbsp;';
 						}
 
-					$row[ $column['dt'] ] = $salida;
-				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];
-				}
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}
-}
-class acciones_control extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
-
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-				if ( isset( $column['acciones'] ) ) {
-					$id_tarifa_operador = '';//$data[$i][ 'id_tarifa_operador' ];
-					$id_operador = $data[$i][ 'id_operador' ];
-
-					$salida = '';
-						if(Controlador::tiene_permiso('Gps|geolocalizacion')){
-							$salida .= '<a onclick="modal_geolocalizacion('.$id_operador.');" data-rel="tooltip" data-original-title="Geolocalizar Unidad">
-							<i class="icon-centralcar_geolocalizacion" style="font-size:2em; color:green;"></i>
-							</a>&nbsp;&nbsp;';
-						}
 
 					$row[ $column['dt'] ] = $salida;
+
 				}else{
 					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
@@ -4077,9 +4061,17 @@ class acciones_suspendidas extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
-                                   $id_usuario = $data[$i][ 'num' ];
 
-					$salida = $id_usuario;
+                                   $id_operador = $data[$i][ 'id_operador' ];
+                                   $num = $data[$i][ 'num' ];
+
+                                   $salida = '';
+
+						if(Controlador::tiene_permiso('Operacion|desactivar_f06')){
+                                                 $salida .= '<a onclick="modal_desactivar_f06('.$id_operador.','.$num.')" data-rel="tooltip" data-original-title="Activar Operador">
+							<i class="fa fa-sign-in" style="font-size:1.8em; color:green;"></i>
+							</a>&nbsp;&nbsp;';
+						}
 
 
 					$row[ $column['dt'] ] = $salida;
@@ -4104,9 +4096,20 @@ class acciones_inactivos extends SSP{
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 				if ( isset( $column['acciones'] ) ) {
 
-					$id_usuario = $data[$i][ 'num' ];
+					$id_operador = $data[$i][ 'id_operador' ];
+                                   $num = $data[$i][ 'num' ];
 
-					$salida = $id_usuario;
+                                   $salida = '';
+						if(Controlador::tiene_permiso('Operacion|activar_c1')){
+                                                 $salida .= '<a onclick="modal_activar_c1('.$id_operador.','.$num.')" data-rel="tooltip" data-original-title="Inicio de operaciones">
+							<i class="fa fa-sign-in" style="font-size:1.8em; color:green;"></i>
+							</a>&nbsp;&nbsp;';
+						}
+                                          if(Controlador::tiene_permiso('Operacion|activar_f6')){
+                                                 $salida .= '<a onclick="modal_activar_f6('.$id_operador.','.$num.')" data-rel="tooltip" data-original-title="Suspender Operador">
+							<i class="fa fa-sign-in" style="font-size:1.8em; color:green;"></i>
+							</a>&nbsp;&nbsp;';
+						}
 
 
 					$row[ $column['dt'] ] = $salida;

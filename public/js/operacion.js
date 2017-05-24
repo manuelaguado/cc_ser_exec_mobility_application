@@ -11,7 +11,7 @@ function activar_f13(id_operador_unidad){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-01');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-01');}
 		});
 	} );
 }
@@ -29,7 +29,7 @@ function activar_f13_do(id_operador_unidad){
 					alerta('Alerta!','Error de conectividad de red OPRN-02');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-03');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-03');}
 		});
 	} );
 }
@@ -39,7 +39,7 @@ function activar_a10(id_operador_unidad,base){
 		$.ajax({
 			url: 'operacion/modal_activar_a10/' + id_operador_unidad + '/' + base,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -47,19 +47,19 @@ function activar_a10(id_operador_unidad,base){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-10');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-10');}
 		});
 	} );
 }
 function verificar_a10(id_operador_unidad,base){
 	$(document).ready(function() {
-		
+
 		$.post( 'operacion/verificar_a10/' + id_operador_unidad + '/' + base);
-		
+
 		/*Ably
-		
+
 		var channel = conn.channels.get('verify_a10_'+id_operador_unidad+'');
-		
+
 		channel.subscribe(function(message){
 			var resp = JSON.parse(message.data);
 			if(resp['state'] == '1'){
@@ -78,7 +78,7 @@ function verificar_a10(id_operador_unidad,base){
 				$('#cordon').DataTable().ajax.reload();
 				$('#myModal').modal('hide');
 			}
-		});			
+		});
 	});
 }
 
@@ -97,14 +97,14 @@ function activar_a10_do(id_operador_unidad,base){
 					$('#aut_f06').css("display", "");
 					$('#aut_out').css("display", "");
 					$('#dis_a10').css("display", "");
-					
+
 					verificar_a10(id_operador_unidad,base);
-					
+
 				}else{
 					alerta('Alerta!','Error de conectividad de red OPRN-11');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-12');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-12');}
 		});
 	} );
 }
@@ -113,7 +113,7 @@ function aut_c06(id_operador_unidad,id_base){
 		$.ajax({
 			url: 'operacion/aut_c06/' + id_operador_unidad + '/' + id_base ,
 			dataType: 'json',
-				success: function(resp_success){				
+				success: function(resp_success){
 					if (resp_success['resp'] == true) {
 						$('#myModal').modal('hide');
 						$('#cordon').DataTable().ajax.reload();
@@ -121,24 +121,24 @@ function aut_c06(id_operador_unidad,id_base){
 						alerta('Alerta!','Error de conectividad de red OPRN-13');
 					}
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-14');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-14');}
 		});
 	} );
 }
-function aut_c02(id_operador_unidad,id_base){
+function aut_c02(num,id_operador,id_operador_unidad){
 	$(document).ready(function() {
 		$.ajax({
-			url: 'operacion/aut_c02/' + id_operador_unidad + '/' + id_base ,
+			url: 'operacion/aut_c02/' + id_operador_unidad + '/' + id_operador + '/' + num,
 			dataType: 'json',
-				success: function(resp_success){	
-					if (resp_success['resp'] == true) {
-						$('#myModal').modal('hide');
-						$('#cordon').DataTable().ajax.reload();
-					}else{
-						alerta('Alerta!','Error de conectividad de red OPRN-15');
-					}
-				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-16');}	
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#activos').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-15');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-16');}
 		});
 	} );
 }
@@ -147,7 +147,7 @@ function aut_f14(id_operador_unidad,id_base){
 		$.ajax({
 			url: 'operacion/aut_f14/' + id_operador_unidad + '/' + id_base ,
 			dataType: 'json',
-				success: function(resp_success){	
+				success: function(resp_success){
 					if (resp_success['resp'] == true) {
 						$('#myModal').modal('hide');
 						$('#cordon').DataTable().ajax.reload();
@@ -155,7 +155,7 @@ function aut_f14(id_operador_unidad,id_base){
 						alerta('Alerta!','Error de conectividad de red OPRN-17');
 					}
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-18');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-18');}
 		});
 	} );
 }
@@ -164,7 +164,7 @@ function aut_f06(id_operador_unidad,id_base){
 		$.ajax({
 			url: 'operacion/aut_f06/' + id_operador_unidad + '/' + id_base ,
 			dataType: 'json',
-				success: function(resp_success){	
+				success: function(resp_success){
 					if (resp_success['resp'] == true) {
 						$('#myModal').modal('hide');
 						$('#cordon').DataTable().ajax.reload();
@@ -172,7 +172,7 @@ function aut_f06(id_operador_unidad,id_base){
 						alerta('Alerta!','Error de conectividad de red OPRN-19');
 					}
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-20');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-20');}
 		});
 	} );
 }
@@ -181,7 +181,7 @@ function modal_activar_c06(id_operador_unidad,id_base){
 		$.ajax({
 			url: 'operacion/modal_activar_c06/' + id_operador_unidad + '/' + id_base,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -189,16 +189,16 @@ function modal_activar_c06(id_operador_unidad,id_base){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-21');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-21');}
 		});
 	} );
 }
-function modal_activar_c02(id_operador_unidad,id_base){
+function modal_activar_c02(id_operador,num,id_operador_unidad){
 	$(document).ready(function() {
 		$.ajax({
-			url: 'operacion/modal_activar_c02/' + id_operador_unidad + '/' + id_base,
+			url: 'operacion/modal_activar_c02/' + id_operador + '/' + num + '/' + id_operador_unidad,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -206,7 +206,7 @@ function modal_activar_c02(id_operador_unidad,id_base){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-22');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-22');}
 		});
 	} );
 }
@@ -215,7 +215,7 @@ function modal_activar_f14(id_operador_unidad,id_base){
 		$.ajax({
 			url: 'operacion/modal_activar_f14/' + id_operador_unidad + '/' + id_base,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -223,7 +223,7 @@ function modal_activar_f14(id_operador_unidad,id_base){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-23');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-23');}
 		});
 	} );
 }
@@ -240,7 +240,7 @@ function modal_activar_f06(id_operador_unidad,id_base){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-24');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-24');}
 		});
 	} );
 }
@@ -249,7 +249,7 @@ function modal_mensajeria(id_operador){
 		$.ajax({
 			url: 'operacion/modal_mensajeria/' + id_operador,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -257,7 +257,7 @@ function modal_mensajeria(id_operador){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-25');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-25');}
 		});
 	} );
 }
@@ -266,14 +266,14 @@ function delivery_stat(id_mensaje){
 		$.ajax({
 			url: 'operacion/delivery_stat/' + id_mensaje,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					if( resp_success == '1'){
 						$('#msj_info').css('display','none');
 						$('#msj_verify').css('display','none');
 						$('#msj_delivery').css('display','');
 					}
 				},
-			error: function(respuesta){ return false;}	
+			error: function(respuesta){ return false;}
 		});
 	} );
 }
@@ -281,7 +281,7 @@ function guardar_mensaje(){
 	var msj_error="";
 	if( $('#id_operador_msg_mod').get(0).value == "" )	msj_error+='Error de conectividad de red OPRN-26';
 	if( $('#mensaje').get(0).value == "")	msj_error+='Es necesario precisar el mensaje.<br />';
-	
+
 	if( !msj_error == "" ){
 		alerta('Faltan datos', msj_error);
 		return false;
@@ -303,7 +303,7 @@ function guardar_mensaje(){
 					alerta('Alerta!', 'Error de conectividad de red OPRN-27');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-28');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-28');}
 		});
 	} );
 }
@@ -312,7 +312,7 @@ function broadcast_all(){
 		$.ajax({
 			url: 'operacion/broadcast_all',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -320,14 +320,14 @@ function broadcast_all(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-29');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-29');}
 		});
 	} );
 }
 function enviar_emision(){
 	var msj_error="";
 	if( $('#mensaje').get(0).value == "")	msj_error+='Es necesario precisar el mensaje.<br />';
-	
+
 	if( !msj_error == "" ){
 		alerta('Faltan datos', msj_error);
 		return false;
@@ -347,7 +347,7 @@ function enviar_emision(){
 					alerta('Alerta!', 'Error de conectividad de red OPRN-30');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-31');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-31');}
 		});
 	} );
 }
@@ -356,7 +356,7 @@ function check_standinLine(id_operador){
 		$.ajax({
 			url: 'operacion/check_standinLine/' + id_operador,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -364,7 +364,7 @@ function check_standinLine(id_operador){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-32');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-32');}
 		});
 	} );
 }
@@ -374,7 +374,7 @@ function set_page_remotly(id_operador){
 		$.ajax({
 			url: 'operacion/set_page_remotly/' + id_operador,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -382,7 +382,7 @@ function set_page_remotly(id_operador){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-33');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-33');}
 		});
 	} );
 }
@@ -390,7 +390,7 @@ function set_page_remotly(id_operador){
 function setPageRemotly(){
 	var msj_error="";
 	if( $('#page').get(0).value == "")	msj_error+='Es necesario seleccionar una página de la lista.<br />';
-	
+
 	if( !msj_error == "" ){
 		alerta('Faltan datos', msj_error);
 		return false;
@@ -408,7 +408,7 @@ function setPageRemotly(){
 					alerta('Alerta!', 'Error de conectividad de red OPRN-34');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-35');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-35');}
 		});
 	} );
 }
@@ -417,7 +417,7 @@ function modal_activar_out(id_operador_unidad,id_base){
 		$.ajax({
 			url: 'operacion/modal_activar_out/' + id_operador_unidad + '/' + id_base,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -425,7 +425,7 @@ function modal_activar_out(id_operador_unidad,id_base){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-36');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-36');}
 		});
 	} );
 }
@@ -434,7 +434,7 @@ function aut_out(id_operador_unidad,id_base){
 		$.ajax({
 			url: 'operacion/aut_out/' + id_operador_unidad + '/' + id_base ,
 			dataType: 'json',
-				success: function(resp_success){	
+				success: function(resp_success){
 					if (resp_success['resp'] == true) {
 						$('#myModal').modal('hide');
 						$('#cordon').DataTable().ajax.reload();
@@ -442,7 +442,7 @@ function aut_out(id_operador_unidad,id_base){
 						alerta('Alerta!','Error de conectividad de red OPRN-37');
 					}
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-38');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-38');}
 		});
 	} );
 }
@@ -451,7 +451,7 @@ function modal_extra_origen(){
 		$.ajax({
 			url: 'operacion/modal_extra_origen/',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -459,7 +459,7 @@ function modal_extra_origen(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-39');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-39');}
 		});
 	} );
 }
@@ -468,7 +468,7 @@ function modal_extra_destino(){
 		$.ajax({
 			url: 'operacion/modal_extra_destino/',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -476,7 +476,7 @@ function modal_extra_destino(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-40');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-40');}
 		});
 	} );
 }
@@ -484,12 +484,12 @@ function removeClient(id){
 
 	$('#client'+id).remove();
 	$('#usuario_'+id).remove();
-	
+
 	pasajeros = $.grep(pasajeros, function(value) {
 		return value != id;
 	});
-	
-	
+
+
 	var destinos = $('#pasajeros_list > div').length;
 	if(destinos == 0){
 		$('#user_list').addClass('hide');
@@ -509,46 +509,46 @@ function procesar_servicio(){
 
 	if( $('input[id ^= usuario]').val() == null)
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Es necesario por lo menos un pasajero para procesar el servicio.</li>';}
-	
+
 	if( $('#forma_pago').val() == "")
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Debe de indicar una forma de pago antes de procesar el servicio.</li>';}
-	
+
 	if( $('#cat_tiposervicio').val() == "" )
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Indique el tipo de servicio.</li>';}
-	
+
 	if(($('#cat_tiposervicio').val() == 166 )&&($('#id_operador_unidad').val() == ""))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Indispensable seleccionar al operador que cubrirá la recepción</li>';}
-	
+
 	if( $('#cat_tipo_salida').val() == "" )
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Indique el tipo de salida.</li>';}
 
 	if(( $('#cat_tipo_salida').val() == 182 )&&($("input[name='sitio_select_oper']:checked" ).val() === undefined))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Seleccione al operador que va de salida por sitio.</li>';}
-	
+
 	if(( $('#cat_tipo_salida').val() == 181 )&&($('#id_operador_unidad').val() == ""))
-		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Es requerido el operador al que asignará el viaje al aire.</li>';}	
-	
+		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Es requerido el operador al que asignará el viaje al aire.</li>';}
+
 	if( $('#fecha_hora').val() == "" )
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Precise la hora a la cual se requiere el servicio.</li>';}
-	
+
 	if(( $('#geocodificacion_inversa_origen').val() == "" )&&($('#id_cliente_origen').val() === null))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Necesita indicar al menos una fuente de origen.</li>';}
 
 	if(( $('#geocodificacion_inversa_destino').val() == "" )&&($('#id_cliente_destino').val() === null))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Necesita indicar al menos una fuente de destino.</li>';}
-	
+
 	if(($('#temporicidad').val() == 162 )&&($('#id_operador_unidad').val() == ""))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Indispensable seleccionar al operador que cubrirá el apartado</li>';}
-	
+
 	if(($('#cat_tiposervicio').val() == 163 )&&($('#mensajes').val() == ""))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Indispensable seleccionar la descripción de mensajes que se enviarán o bien seleccionar la opción "otro" de la lista.</li>';}
-	
+
 	if(($('#cat_tiposervicio').val() == 164 )&&($('#paquetes').val() == ""))
 		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>Indispensable seleccionar la descripción de paquetes que se enviarán o bien seleccionar la opción "otro" de la lista.</li>';}
-	
+
 	if($('#exist_tarifa').val() == 0)
-		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>El cliente seleccionado no tiene tarifas activas para procesar el viaje</li>';} 
-	 
+		{msj_error+='<li><i class="ace-icon fa fa-times bigger-110 red"></i>El cliente seleccionado no tiene tarifas activas para procesar el viaje</li>';}
+
 	if( !msj_error == "" ){
 		alerta('Alerta','<ul class="list-unstyled spaced">'+msj_error+'</ul>');
 		return false;
@@ -567,17 +567,17 @@ function procesar_servicio(){
 					alerta('Alerta!','Error de conectividad de red OPRN-41');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-42');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-42');}
 		});
 	} );
-	
+
 }
 function mapCoordSelect_origen(){
 	$(document).ready(function() {
 		$.ajax({
 			url: 'operacion/mapCoordSelect_origen/',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -587,7 +587,7 @@ function mapCoordSelect_origen(){
 						$( ".pac-container" ).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-43');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-43');}
 		});
 	} );
 }
@@ -596,7 +596,7 @@ function mapCoordSelect_destino(){
 		$.ajax({
 			url: 'operacion/mapCoordSelect_destino/',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -606,7 +606,7 @@ function mapCoordSelect_destino(){
 						$( ".pac-container" ).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-44');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-44');}
 		});
 	} );
 }
@@ -615,7 +615,7 @@ function iframeSetReference(){
 		$.ajax({
 			url: 'operacion/iframeSetReference/',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -623,7 +623,7 @@ function iframeSetReference(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-45');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-45');}
 		});
 	} );
 }
@@ -632,7 +632,7 @@ function iframeSetReferenceD(){
 		$.ajax({
 			url: 'operacion/iframeSetReferenceD/',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -640,7 +640,7 @@ function iframeSetReferenceD(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-46');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-46');}
 		});
 	} );
 }
@@ -677,7 +677,7 @@ function pop_alaire(){
 		$.ajax({
 			url: 'operacion/getTBUnits',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -685,7 +685,7 @@ function pop_alaire(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-47');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-47');}
 		});
 	} );
 }
@@ -710,7 +710,7 @@ function pop_apartado(){
 		$.ajax({
 			url: 'operacion/pulledApart',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -718,7 +718,7 @@ function pop_apartado(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-48');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-48');}
 		});
 	} );
 }
@@ -727,7 +727,7 @@ function pop_mensajeria(){
 		$.ajax({
 			url: 'operacion/mensajeriaSettings',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -735,7 +735,7 @@ function pop_mensajeria(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-49');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-49');}
 		});
 	} );
 }
@@ -744,7 +744,7 @@ function pop_paqueteria(){
 		$.ajax({
 			url: 'operacion/paqueteriaSettings',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -752,7 +752,7 @@ function pop_paqueteria(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-50');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-50');}
 		});
 	} );
 }
@@ -768,7 +768,7 @@ function apartadoActive(){
 		pop_apartado();
 		time.setSeconds(3600);
 		$('#fecha_hora').val(time.toMysqlFormat());
-		
+
 		$("#cat_tipo_salida option[value='180']").prop('selected', true);
 		$("#cat_tipo_salida option[value='180']").removeAttr('disabled');
 		$("#cat_tipo_salida option[value='181']").attr('disabled','disabled');
@@ -796,7 +796,7 @@ function Apartar(){
 	$("#cat_tipo_salida option[value='180']").prop('selected', true);
 	$("#cat_tipo_salida option[value='180']").removeAttr('disabled');
 	$("#cat_tipo_salida option[value='181']").attr('disabled','disabled');
-	$("#cat_tipo_salida option[value='182']").attr('disabled','disabled');	
+	$("#cat_tipo_salida option[value='182']").attr('disabled','disabled');
 	$("#tipo_temporicidad").prop("checked", "checked");
 	$("#tipo_temporicidad").attr('disabled','disabled');
 	$('#temporicidad').val('162');
@@ -834,7 +834,7 @@ function set_status_viaje(id_viaje,stat,origen){
 		$.ajax({
 			url: 'operacion/set_status_viaje/' + id_viaje + '/' + stat + '/' + origen,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -842,7 +842,7 @@ function set_status_viaje(id_viaje,stat,origen){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-51');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-51');}
 		});
 	} );
 }
@@ -851,7 +851,7 @@ function setear_status_viaje(){
 		$.ajax({
 			url: 'operacion/setear_status_viaje',
 			type: 'POST',
-			data: $("#setear_status_viaje").serialize(),			
+			data: $("#setear_status_viaje").serialize(),
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -867,7 +867,7 @@ function setear_status_viaje(){
 					}
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-53');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-53');}
 		});
 	} );
 }
@@ -876,7 +876,7 @@ function viajeAlAire(id_viaje){
 		$.ajax({
 			url: 'operacion/viajeAlAire/' + id_viaje,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -884,7 +884,7 @@ function viajeAlAire(id_viaje){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-54');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-54');}
 		});
 	} );
 }
@@ -900,7 +900,7 @@ function asignarViajeAlAire(id_operador_unidad,id_operador,id_viaje){
 					alerta('Alerta!','Error de conectividad de red OPRN-55');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-56');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-56');}
 		});
 	} );
 }
@@ -910,7 +910,7 @@ function activar_cancelacion(id_viaje){
 		$.ajax({
 			url: 'operacion/activar_cancelacion/' + id_viaje,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -918,7 +918,7 @@ function activar_cancelacion(id_viaje){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-57');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-57');}
 		});
 	} );
 }
@@ -927,7 +927,7 @@ function activar_abandono(id_viaje){
 		$.ajax({
 			url: 'operacion/activar_abandono/' + id_viaje,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -935,7 +935,7 @@ function activar_abandono(id_viaje){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-58');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-58');}
 		});
 	} );
 }
@@ -951,12 +951,12 @@ function costos_adicionales(id_viaje){
 					$( "#add" ).click(function() {
 						$("#add_field").css({ display: "" });
 						$("#footer_main").css({ display: "none" });
-					});	
+					});
 				}).on('hidden.bs.modal',function(){
 					$(this).remove();
 				});
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-59');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-59');}
 		});
 	} );
 }
@@ -965,7 +965,7 @@ function cambiar_tarifa(id_viaje){
 		$.ajax({
 			url: 'operacion/cambiar_tarifa/' + id_viaje,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -973,7 +973,7 @@ function cambiar_tarifa(id_viaje){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-60');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-60');}
 		});
 	} );
 }
@@ -990,7 +990,7 @@ function activar_cancelacion_do(id_viaje){
 					alerta('Alerta!','Error de conectividad de red OPRN-61');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-62');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-62');}
 		});
 	} );
 }
@@ -1006,7 +1006,7 @@ function activar_abandono_do(id_viaje){
 					alerta('Alerta!','Error de conectividad de red OPRN-63');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-64');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-64');}
 		});
 	} );
 }
@@ -1015,7 +1015,7 @@ function costos_adicionales_do(){
 	if( $('#cat_concepto').get(0).value == "" )	msj_error+='Seleccione el concepto del costo adicional.<br />';
 	if( $('#costo').get(0).value == "" )		msj_error+='Ingrese el costo adicional.<br />';
 	if( $('#id_viaje').get(0).value == "" )	msj_error+='Falta id_viaje, no deberia ocurrir esto.<br />';
-	
+
 	if( !msj_error == "" ){
 		alerta('Alerta!',msj_error);
 		return false;
@@ -1037,14 +1037,14 @@ function costos_adicionales_do(){
 					 alerta('Alerta!','Error de conectividad de red OPRN-85');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-86');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-86');}
 		});
 	} );
 }
 function cambiar_tarifa_do(id_tarifa_cliente,id_viaje){
 	$(document).ready(function() {
 		$.ajax({
-			url: 'operacion/cambiar_tarifa_do/' + id_tarifa_cliente + '/' + id_viaje,		
+			url: 'operacion/cambiar_tarifa_do/' + id_tarifa_cliente + '/' + id_viaje,
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -1054,7 +1054,7 @@ function cambiar_tarifa_do(id_tarifa_cliente,id_viaje){
 					alerta('Alerta!','Error de conectividad de red OPRN-67');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-68');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-68');}
 		});
 	} );
 }
@@ -1065,7 +1065,7 @@ function close_costos_form(){
 function eliminar_costoAdicional(id_costos_adicionales){
 	$(document).ready(function() {
 		$.ajax({
-			url: 'operacion/eliminar_costoAdicional/' + id_costos_adicionales,		
+			url: 'operacion/eliminar_costoAdicional/' + id_costos_adicionales,
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -1074,7 +1074,7 @@ function eliminar_costoAdicional(id_costos_adicionales){
 					alerta('Alerta!','Error de conectividad de red OPRN-69');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-70');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-70');}
 		});
 	} );
 }
@@ -1084,7 +1084,7 @@ function cancel_apartado(id_viaje,origen){
 		$.ajax({
 			url: 'operacion/cancel_apartado/' + id_viaje + '/' + origen,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -1092,7 +1092,7 @@ function cancel_apartado(id_viaje,origen){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-71');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-71');}
 		});
 	} );
 }
@@ -1101,7 +1101,7 @@ function cancel_apartado_set(){
 		$.ajax({
 			url: 'operacion/cancel_apartado_set',
 			type: 'POST',
-			data: $("#cancel_apartado_set").serialize(),			
+			data: $("#cancel_apartado_set").serialize(),
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -1117,7 +1117,7 @@ function cancel_apartado_set(){
 					}
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-73');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-73');}
 		});
 	} );
 }
@@ -1127,7 +1127,7 @@ function apartado2pendientes(id_viaje,origen){
 		$.ajax({
 			url: 'operacion/apartado2pendientes/' + id_viaje + '/' + origen,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -1135,7 +1135,7 @@ function apartado2pendientes(id_viaje,origen){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-74');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-74');}
 		});
 	} );
 }
@@ -1144,7 +1144,7 @@ function apartado2pendientesDo(){
 		$.ajax({
 			url: 'operacion/apartado2pendientesDo',
 			type: 'POST',
-			data: $("#apartado2pendientesDo").serialize(),			
+			data: $("#apartado2pendientesDo").serialize(),
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -1154,19 +1154,19 @@ function apartado2pendientesDo(){
 					alerta('Alerta!','Error de conectividad de red OPRN-75');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-76');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-76');}
 		});
 	} );
 }
 
 
 
-function apartadoAlAire(id_viaje,origen){	
+function apartadoAlAire(id_viaje,origen){
 	$(document).ready(function() {
 		$.ajax({
 			url: 'operacion/apartadoAlAire/' + id_viaje + '/' + origen,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -1174,7 +1174,7 @@ function apartadoAlAire(id_viaje,origen){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-77');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-77');}
 		});
 	} );
 }
@@ -1191,7 +1191,7 @@ function asignarApartadoAlAire(id_operador_unidad,id_operador,id_viaje){
 					alerta('Alerta!','Error de conectividad de red OPRN-78');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-79');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-79');}
 		});
 	} );
 }
@@ -1202,7 +1202,7 @@ function procesarNormal(id_viaje,origen){
 		$.ajax({
 			url: 'operacion/procesarNormal/' + id_viaje + '/' + origen,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -1210,7 +1210,7 @@ function procesarNormal(id_viaje,origen){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-80');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-80');}
 		});
 	} );
 }
@@ -1219,7 +1219,7 @@ function procesarNormalDo(){
 		$.ajax({
 			url: 'operacion/procesarNormalDo',
 			type: 'POST',
-			data: $("#procesarNormalDo").serialize(),			
+			data: $("#procesarNormalDo").serialize(),
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
@@ -1235,7 +1235,7 @@ function procesarNormalDo(){
 					}
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-82');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-82');}
 		});
 	} );
 }
@@ -1246,7 +1246,7 @@ $(function() {
 	notif = new buzz.sound( "dist/audio/notif_loop", {
 		formats: ['mp3']
 	}).setVolume(0).play();
-});  
+});
 
 $("body").on("click", ".notif-off", function() {
 	notif.pause().fadeOut(3000);
@@ -1263,9 +1263,9 @@ function notifyRender(data) {
 			$.each(resp_success, function( key, value ) {
 				$('.badge-success').html(value['total']);
 				$('#notificaciones_count').html(value['total']);
-				
+
 				var time = new Date();
-				
+
 				if(value['fecha'] > time.toMysqlFormat()){
 					var classe = 'num_notif';
 				}else{
@@ -1295,7 +1295,7 @@ function notifyRender(data) {
 						'</span>'+
 					'</a>'+
 				'</li>');
-				
+
 
 			});
 		}
@@ -1314,7 +1314,7 @@ function dataViaje(id_viaje){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-83');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-83');}
 		});
 	} );
 }
@@ -1323,7 +1323,7 @@ function elegirVehiculo(id_operador){
 		$.ajax({
 			url: 'operacion/elegirVehiculo/' + id_operador,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						$('#pulledApart').modal('hide');
@@ -1331,7 +1331,7 @@ function elegirVehiculo(id_operador){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-84');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-84');}
 		});
 	} );
 }
@@ -1340,7 +1340,7 @@ $("body").on("click", ".add_user_form", function() {
 		$.ajax({
 			url: 'operacion/addClienteUsuario',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -1348,7 +1348,7 @@ $("body").on("click", ".add_user_form", function() {
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-85');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-85');}
 		});
 	} );
 });
@@ -1373,6 +1373,113 @@ $("body").on("click", ".add_user_do", function() {
 		success: function(resp_success){
 			$('#myModal').modal('hide');
 		},
-		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-04');}	
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-86');}
 	});
 });
+
+function modal_activar_c1(id_operador,num){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/modal_activar_c1/' + id_operador + '/' + num,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-87');}
+		});
+	} );
+}
+
+function activar_c1_do(num,id_operador,id_operador_unidad){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/activar_c1/' + id_operador_unidad + '/' + id_operador + '/' + num,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#inactivos').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-88');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-89');}
+		});
+	} );
+}
+
+function modal_activar_f6(id_operador,num){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/modal_activar_f6/' + id_operador + '/' + num,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-90');}
+		});
+	} );
+}
+
+function activar_f6_do(num,id_operador){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/activar_f6/' + id_operador + '/' + num,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#inactivos').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-91');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-92');}
+		});
+	} );
+}
+function modal_desactivar_f06(id_operador,num){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/modal_desactivar_f06/' + id_operador + '/' + num,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-93');}
+		});
+	} );
+}
+
+function desactivar_f06_do(num,id_operador){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/desactivar_f06_do/' + id_operador + '/' + num,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#suspendidas').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-91');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-94');}
+		});
+	} );
+}

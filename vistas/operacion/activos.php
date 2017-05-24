@@ -32,6 +32,13 @@ div.table-responsive div#activos_wrapper.dataTables_wrapper.form-inline.dt-boots
 							<th>ID</th>
 							<th>NUM EQ</th>
 							<th>Nombre</th>
+							<th>id_operador_unidad</th>
+							<th>id_episodio</th>
+							<th>id_usuario</th>
+							<th>Marca</th>
+							<th>Modelo</th>
+							<th>Color</th>
+							<th>Placas</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -54,17 +61,22 @@ $(document).ready(function() {
 	    },
 	    "columnDefs": [
 		    {
+			    "targets": 0,
+			    "visible": false,
+			    "searchable":false
+		    },
+		    {
+			    "targets": 3,
+			    "visible": false,
+			    "searchable":false
+		    },
+		    {
 			    "targets": 4,
 			    "visible": false,
 			    "searchable":false
 		    },
 		    {
 			    "targets": 5,
-			    "visible": false,
-			    "searchable":false
-		    },
-		    {
-			    "targets": 6,
 			    "visible": false,
 			    "searchable":false
 		    }
