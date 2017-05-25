@@ -2949,7 +2949,7 @@ forEach({
         return this;
       } else {
         // we are a read, so read the first child.
-        // TODO: do we still need this?
+        // TO_DO do we still need this?
         var value = fn.$dv;
         // Only if we have $dv do we iterate over all, otherwise it is just the first element.
         var jj = (value === undefined) ? Math.min(nodeCount, 1) : nodeCount;
@@ -3013,7 +3013,7 @@ function createEventHandler(element, events) {
     }
   };
 
-  // TODO: this is a hack for angularMocks/clearDataCache that makes it possible to deregister all
+  // TO_DO this is a hack for angularMocks/clearDataCache that makes it possible to deregister all
   //       events on `element`
   eventHandler.elem = element;
   return eventHandler;
@@ -6708,7 +6708,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {string=} attrName Optional none normalized name. Defaults to key.
        */
       $set: function(key, value, writeAttr, attrName) {
-        // TODO: decide whether or not to throw an error if "class"
+        // TO_DO decide whether or not to throw an error if "class"
         //is set through this function since it may cause $updateClass to
         //become unstable.
 
@@ -6957,7 +6957,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
     }
 
     function detectNamespaceForChildElements(parentElement) {
-      // TODO: Make this detect MathML as well...
+      // TO_DO Make this detect MathML as well...
       var node = parentElement && parentElement[0];
       if (!node) {
         return 'html';
@@ -7577,7 +7577,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         }
 
         if (controllerDirectives) {
-          // TODO: merge `controllers` and `elementControllers` into single object.
+          // TO_DO merge `controllers` and `elementControllers` into single object.
           controllers = {};
           elementControllers = {};
           forEach(controllerDirectives, function(directive) {
@@ -25693,7 +25693,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
             }
             return toDisplay;
           } else if (values) {
-            // TODO: Add a test for this case
+            // TO_DO Add a test for this case
             toDisplay = {};
             for (var prop in values) {
               if (values.hasOwnProperty(prop)) {

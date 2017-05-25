@@ -3,7 +3,7 @@
 
 module.exports = function( grunt ) {
   grunt.initConfig({
-    // TODO: change to read component.json
+    // TO_DO change to read component.json
     pkg: require('./package.json'),
 
     uglify: {

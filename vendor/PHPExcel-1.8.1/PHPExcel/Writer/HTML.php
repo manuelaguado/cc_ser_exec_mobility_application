@@ -1515,7 +1515,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 				}
 			}
 
-			// TODO: Same for columns
+			// TO_DO Same for columns
 		}
 
 		// We have calculated the spans

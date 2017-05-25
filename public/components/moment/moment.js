@@ -269,7 +269,7 @@
 
     function loadLocale(name) {
         var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
+        // TO_DO Find a better way to register and load all the locales in Node
         if (!locales[name] && (typeof module !== 'undefined') &&
                 module && module.exports) {
             try {
@@ -711,10 +711,10 @@
             return mom;
         }
 
-        // TODO: Move this out of here!
+        // TO_DO Move this out of here!
         if (typeof value === 'string') {
             value = mom.localeData().monthsParse(value);
-            // TODO: Another silent failure?
+            // TO_DO Another silent failure?
             if (typeof value !== 'number') {
                 return mom;
             }
@@ -1221,7 +1221,7 @@
             dow = 1;
             doy = 4;
 
-            // TODO: We need to take the current isoWeekYear, but that depends on
+            // TO_DO We need to take the current isoWeekYear, but that depends on
             // how we interpret now (local, utc, fixed offset). So create
             // a now version of current config (take local/utc/offset flags, and
             // create now).
@@ -1271,7 +1271,7 @@
 
     // date from string and format string
     function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
+        // TO_DO Move this to another part of the creation flow to prevent circular deps
         if (config._f === utils_hooks__hooks.ISO_8601) {
             configFromISO(config);
             return;
@@ -1555,7 +1555,7 @@
         return res;
     }
 
-    // TODO: Use [].sort instead?
+    // TO_DO Use [].sort instead?
     function min () {
         var args = [].slice.call(arguments, 0);
 
@@ -1926,7 +1926,7 @@
         return res;
     }
 
-    // TODO: remove 'name' arg after deprecation is removed
+    // TO_DO remove 'name' arg after deprecation is removed
     function createAdder(direction, name) {
         return function (val, period) {
             var dur, tmp;
@@ -3351,7 +3351,7 @@
         }
     }
 
-    // TODO: Use this.as('ms')?
+    // TO_DO Use this.as('ms')?
     function duration_as__valueOf () {
         return (
             this._milliseconds +

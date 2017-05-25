@@ -61,7 +61,7 @@ PR['registerLangHandler'](
           null, '0123456789']
         ],
         [
-         // TODO: catch @declarations inside comments
+         // TO_DO catch @declarations inside comments
 
          // Comments in erlang are started with % and go till a newline
          [PR['PR_COMMENT'], /^%[^\n]*/],

@@ -103,14 +103,14 @@ if (!window.CanvasRenderingContext2D) {
 
       var attrs = el.attributes;
       if (attrs.width && attrs.width.specified) {
-        // TODO: use runtimeStyle and coordsize
+        // TO_DO use runtimeStyle and coordsize
         // el.getContext().setWidth_(attrs.width.nodeValue);
         el.style.width = attrs.width.nodeValue + 'px';
       } else {
         el.width = el.clientWidth;
       }
       if (attrs.height && attrs.height.specified) {
-        // TODO: use runtimeStyle and coordsize
+        // TO_DO use runtimeStyle and coordsize
         // el.getContext().setHeight_(attrs.height.nodeValue);
         el.style.height = attrs.height.nodeValue + 'px';
       } else {
@@ -446,14 +446,14 @@ if (!window.CanvasRenderingContext2D) {
     var root = getRoot(this);
     root.children.clear();
 
-    // TODO: Implement
+    // TO_DO Implement
     this.currentPath_ = [];
     this.lastCanvas_ = null;
 
   };
 
   contextPrototype.beginPath = function() {
-    // TODO: Branch current matrix so that save/restore has no effect
+    // TO_DO Branch current matrix so that save/restore has no effect
     //       as per safari docs.
 
     this.currentPath_ = [];
@@ -485,7 +485,7 @@ if (!window.CanvasRenderingContext2D) {
 
   contextPrototype.arcTo = function(x1, y1, x2, y2, radius) {
     if (this.currentPath_.length == 0) return;
-    // TODO: Implement
+    // TO_DO Implement
   };
 
   contextPrototype.arc = function(aX, aY, aRadius,
@@ -664,7 +664,7 @@ if (!window.CanvasRenderingContext2D) {
     path.data.fillRule = 'NonZero';
     path.fill = createBrushObject(this, this.fillStyle);
     path.fill.opacity = this.globalAlpha;
-    // TODO: What about even-odd etc?
+    // TO_DO What about even-odd etc?
   };
 
   contextPrototype.closePath = function() {

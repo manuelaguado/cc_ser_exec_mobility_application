@@ -294,7 +294,7 @@
       if (this.opt.starType === 'img') {
         cancel.attr({ src: icon, alt: 'x' });
       } else {
-        // TODO: use $.data
+        // TO_DO use $.data
         cancel.attr('data-alt', 'x').addClass(icon);
       }
 
@@ -320,7 +320,7 @@
           attrs = { alt: i, src: this.opt.path + this.opt[name] };
 
         if (this.opt.starType !== 'img') {
-          attrs = { 'data-alt': i, 'class': attrs.src }; // TODO: use $.data.
+          attrs = { 'data-alt': i, 'class': attrs.src }; // TO_DO use $.data.
         }
 
         attrs.title = methods._getHint.call(this, i);

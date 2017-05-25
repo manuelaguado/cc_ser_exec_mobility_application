@@ -756,7 +756,7 @@ uis.controller('uiSelectCtrl',
     }
 
     // if(~[KEY.ESC,KEY.TAB].indexOf(key)){
-    //   //TODO: SEGURO?
+    //   //TO_DO SEGURO?
     //   ctrl.close();
     // }
 

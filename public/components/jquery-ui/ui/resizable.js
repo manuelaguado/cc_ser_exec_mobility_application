@@ -74,7 +74,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 			return true;
 		}
 
-		// TODO: determine which cases actually cause this to happen
+		// TO_DO determine which cases actually cause this to happen
 		// if the element doesn't have the scroll set, see if it's possible to
 		// set the scroll
 		el[ scroll ] = 1;
@@ -224,7 +224,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 			}
 		};
 
-		// TODO: make renderAxis a prototype function
+		// TO_DO make renderAxis a prototype function
 		this._renderAxis(this.element);
 
 		this._handles = this._handles.add( this.element.find( ".ui-resizable-handle" ) );
@@ -279,7 +279,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 						.remove();
 			};
 
-		// TODO: Unwrap at same DOM position
+		// TO_DO Unwrap at same DOM position
 		if (this.elementIsWrapper) {
 			_destroy(this.element);
 			wrapper = this.element;
@@ -654,7 +654,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 
 			prel = this._proportionallyResizeElements[i];
 
-			// TODO: Seems like a bug to cache this.outerDimensions
+			// TO_DO Seems like a bug to cache this.outerDimensions
 			// considering that we are in a loop.
 			if (!this.outerDimensions) {
 				this.outerDimensions = this._getPaddingPlusBorderDimensions( prel );
@@ -684,7 +684,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 				position: "absolute",
 				left: this.elementOffset.left + "px",
 				top: this.elementOffset.top + "px",
-				zIndex: ++o.zIndex //TODO: Don't modify option
+				zIndex: ++o.zIndex //TO_DO Don't modify option
 			});
 
 			this.helper

@@ -672,7 +672,7 @@ function isPromiseLike(obj) {
 var trim = (function() {
   // native trim is way faster: http://jsperf.com/angular-trim-test
   // but IE doesn't have it... :-(
-  // TODO: we should move this into IE/ES5 polyfill
+  // TO_DO we should move this into IE/ES5 polyfill
   if (!String.prototype.trim) {
     return function(value) {
       return isString(value) ? value.replace(/^\s\s*/, '').replace(/\s\s*$/, '') : value;
@@ -2796,7 +2796,7 @@ forEach({
         return this;
       } else {
         // we are a read, so read the first child.
-        // TODO: do we still need this?
+        // TO_DO do we still need this?
         var value = fn.$dv;
         // Only if we have $dv do we iterate over all, otherwise it is just the first element.
         var jj = (value === undefined) ? Math.min(nodeCount, 1) : nodeCount;
@@ -5907,7 +5907,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {string=} attrName Optional none normalized name. Defaults to key.
        */
       $set: function(key, value, writeAttr, attrName) {
-        // TODO: decide whether or not to throw an error if "class"
+        // TO_DO decide whether or not to throw an error if "class"
         //is set through this function since it may cause $updateClass to
         //become unstable.
 
@@ -18396,7 +18396,7 @@ var ngBindDirective = ngDirective({
  */
 var ngBindTemplateDirective = ['$interpolate', function($interpolate) {
   return function(scope, element, attr) {
-    // TODO: move this to scenario runner
+    // TO_DO move this to scenario runner
     var interpolateFn = $interpolate(element.attr(attr.$attr.ngBindTemplate));
     element.addClass('ng-binding').data('$binding', interpolateFn);
     attr.$observe('ngBindTemplate', function(value) {

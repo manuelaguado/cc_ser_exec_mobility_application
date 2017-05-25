@@ -114,10 +114,10 @@ export function setMonth (mom, value) {
         return mom;
     }
 
-    // TODO: Move this out of here!
+    // TO_DO Move this out of here!
     if (typeof value === 'string') {
         value = mom.localeData().monthsParse(value);
-        // TODO: Another silent failure?
+        // TO_DO Another silent failure?
         if (typeof value !== 'number') {
             return mom;
         }

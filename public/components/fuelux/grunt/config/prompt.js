@@ -322,7 +322,7 @@ module.exports = function (grunt) {
 						grunt.log.writeln('About to generate changelogs between ' + answers['release.generatelogsmanuallystart'] + ' and ' + answers['release.generatelogsmanuallyend'] + '.');
 						grunt.log.writeln('There will be no more output for possibly several minutes.');
 						grunt.log.writeln('Thank you for your patience, have an ohana mahalo kilikilikiwana day.');
-						grunt.log.writeln('//TODO: Insert tiki dancing nyan cat here. --jschmidt');
+						grunt.log.writeln('//TO_DO Insert tiki dancing nyan cat here. --jschmidt');
 						grunt.task.run(['shell:manualnotes']);
 					} else {
 						grunt.log.writeln('You have failed us all. You are no longer ohana.');

@@ -90,7 +90,7 @@ function dayOfYearFromWeekInfo(config) {
         dow = 1;
         doy = 4;
 
-        // TODO: We need to take the current isoWeekYear, but that depends on
+        // TO_DO We need to take the current isoWeekYear, but that depends on
         // how we interpret now (local, utc, fixed offset). So create
         // a now version of current config (take local/utc/offset flags, and
         // create now).

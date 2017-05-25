@@ -88,7 +88,7 @@
 				var $containerToggle = this.$toggleContainer;
 
 				// set class on outer container too...to support highlighting
-				// TODO: verify inline checkboxes, also test with MCTheme
+				// TO_DO verify inline checkboxes, also test with MCTheme
 
 				if ( checked ) {
 					$chk.prop( 'checked', true );

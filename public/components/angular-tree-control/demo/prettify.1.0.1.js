@@ -226,7 +226,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
 // expression immediately follows another since a regular expression may
 // have flags for case-sensitivity and the like.  Having regexp tokens
 // adjacent is not valid in any language I'm aware of, so I'm punting.
-// TODO: maybe style special characters inside a regexp as punctuation.
+// TO_DO maybe style special characters inside a regexp as punctuation.
 
 
   /**
@@ -445,7 +445,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
           if (p.length >= 2 && ch0 === '[') {
             parts[i] = caseFoldCharset(p);
           } else if (ch0 !== '\\') {
-            // TODO: handle letters in numeric escapes.
+            // TO_DO handle letters in numeric escapes.
             parts[i] = p.replace(
                 /[a-zA-Z]/g,
                 function (ch) {
@@ -546,7 +546,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
             } else {
               text = text.replace(/\r\n?/g, '\n');  // Normalize newlines.
             }
-            // TODO: handle tabs here?
+            // TO_DO handle tabs here?
             chunks[k] = text;
             spans[k << 1] = length;
             length += text.length;
@@ -1195,7 +1195,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
           span.appendChild(textNode);
           if (sourceIndex < spanEnd) {  // Split off a text node.
             spans[spanIndex + 1] = textNode
-                // TODO: Possibly optimize by using '' if there's no flicker.
+                // TO_DO Possibly optimize by using '' if there's no flicker.
                 = document.createTextNode(source.substring(end, spanEnd));
             parentNode.insertBefore(textNode, span.nextSibling);
           }

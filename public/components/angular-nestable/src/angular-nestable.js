@@ -123,7 +123,7 @@
 								 * get executed
 								 */
 								model = runFormatters(model, $ngModel);
-								// TODO: optimize as rebuilding is not necessary here
+								// TO_DO optimize as rebuilding is not necessary here
 								var root = buildNestableHtml(model, itemTemplate);
 								$element.empty().append(root);
 								$compile(root)($scope);

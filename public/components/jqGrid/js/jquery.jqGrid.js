@@ -11316,7 +11316,7 @@ $.jgrid.extend({
 							.attr("id", newCboxId)
 							.attr("name", newCboxId);
 					}
-					// TODO: to test the case of frozen columns
+					// TO_DO to test the case of frozen columns
 				}
 				if($t.p.inlineData === undefined) { $t.p.inlineData ={}; }
 				tmp = $.extend({},tmp,$t.p.inlineData,o.extraparam);

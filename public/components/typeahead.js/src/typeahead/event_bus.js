@@ -67,7 +67,7 @@ var EventBus = (function() {
 
       this._trigger(type, [].slice.call(arguments, 1));
 
-      // TODO: remove in v1
+      // TO_DO remove in v1
       if (deprecatedType = deprecationMap[type]) {
         this._trigger(deprecatedType, [].slice.call(arguments, 1));
       }

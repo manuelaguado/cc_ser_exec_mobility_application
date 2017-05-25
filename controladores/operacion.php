@@ -859,7 +859,7 @@ class Operacion extends Controlador
 			$operacion->asignar_apartado($service->id_viaje,$operador);
 
 		}
-//TODO: aqui me quede
+// TODO: aqui me quede
 		////////////////////////////////////////////////////////////////////servicio al aire
 		if($service->cat_tipo_salida == 181){
                      $id_episodio = $share->getIdEpisodio($service->id_operador_unidad);

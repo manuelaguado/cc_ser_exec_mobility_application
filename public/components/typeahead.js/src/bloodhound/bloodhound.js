@@ -118,7 +118,7 @@ var Bloodhound = (function() {
       return !this.initPromise || force ? this._initialize() : this.initPromise;
     },
 
-    // TODO: before initialize what happens?
+    // TO_DO before initialize what happens?
     add: function add(data) {
       this.index.add(data);
       return this;

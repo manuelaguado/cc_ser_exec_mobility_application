@@ -13,7 +13,7 @@ hooks.ISO_8601 = function () {};
 
 // date from string and format string
 export function configFromStringAndFormat(config) {
-    // TODO: Move this to another part of the creation flow to prevent circular deps
+    // TO_DO Move this to another part of the creation flow to prevent circular deps
     if (config._f === hooks.ISO_8601) {
         configFromISO(config);
         return;

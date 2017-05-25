@@ -118,7 +118,7 @@ class BufferStream implements StreamInterface
     {
         $this->buffer .= $string;
 
-        // TODO: What should happen here?
+        // TO_DO What should happen here?
         if (strlen($this->buffer) >= $this->hwm) {
             return false;
         }

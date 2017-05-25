@@ -11,10 +11,10 @@
  * Registers: unnamed, -, a-z, A-Z, 0-9
  *   (Does not respect the special case for number registers when delete
  *    operator is made with these commands: %, (, ),  , /, ?, n, N, {, } )
- *   TODO: Implement the remaining registers.
+ *   TO_DO Implement the remaining registers.
  *
  * Marks: a-z, A-Z, and 0-9
- *   TODO: Implement the remaining special marks. They have more complex
+ *   TO_DO Implement the remaining special marks. They have more complex
  *       behavior.
  *
  * Events:
@@ -313,7 +313,7 @@
         // Vim does not support modifier only keys.
         return false;
       }
-      // TODO: Current bindings expect the character to be lower case, but
+      // TO_DO Current bindings expect the character to be lower case, but
       // it looks like vim key notation uses upper case.
       if (isUpperCase(lastPiece)) {
         pieces[pieces.length - 1] = lastPiece.toLowerCase();
@@ -657,7 +657,7 @@
     var lastInsertModeKeyTimer;
     var vimApi= {
       buildKeyMap: function() {
-        // TODO: Convert keymap into dictionary format for fast lookup.
+        // TO_DO Convert keymap into dictionary format for fast lookup.
       },
       // Testing hook, though it might be useful to expose the register
       // controller anyways.
@@ -685,7 +685,7 @@
       unmap: function(lhs, ctx) {
         exCommandDispatcher.unmap(lhs, ctx);
       },
-      // TODO: Expose setOption and getOption as instance methods. Need to decide how to namespace
+      // TO_DO Expose setOption and getOption as instance methods. Need to decide how to namespace
       // them, or somehow make them work with the existing CodeMirror setOption/getOption API.
       setOption: setOption,
       getOption: getOption,
@@ -743,7 +743,7 @@
           }
         }
         function doKeyToKey(keys) {
-          // TODO: prevent infinite recursion.
+          // TO_DO prevent infinite recursion.
           var match;
           while (keys) {
             // Pull off one command key, which is either a single character
@@ -812,7 +812,7 @@
         if (command === false) {
           return undefined;
         } else if (command === true) {
-          // TODO: Look into using CodeMirror's multi-key handling.
+          // TO_DO Look into using CodeMirror's multi-key handling.
           // Return no-op since we are caching the key. Counts as handled, but
           // don't want act on it just yet.
           return function() {};
@@ -1381,7 +1381,7 @@
         var operatorArgs = inputState.operatorArgs || {};
         var registerName = inputState.registerName;
         var sel = vim.sel;
-        // TODO: Make sure cm and vim selections are identical outside visual mode.
+        // TO_DO Make sure cm and vim selections are identical outside visual mode.
         var origHead = copyCursor(vim.visualMode ? clipCursorToContent(cm, sel.head): cm.getCursor('head'));
         var origAnchor = copyCursor(vim.visualMode ? clipCursorToContent(cm, sel.anchor) : cm.getCursor('anchor'));
         var oldHead = copyCursor(origHead);
@@ -1435,7 +1435,7 @@
           } else {
             newHead = motionResult;
           }
-          // TODO: Handle null returns from motion commands better.
+          // TO_DO Handle null returns from motion commands better.
           if (!newHead) {
             newHead = copyCursor(origHead);
           }
@@ -1848,10 +1848,10 @@
                    findFirstNonWhiteSpaceCharacter(cm.getLine(lineNum)));
       },
       textObjectManipulation: function(cm, head, motionArgs, vim) {
-        // TODO: lots of possible exceptions that can be thrown here. Try da(
+        // TO_DO lots of possible exceptions that can be thrown here. Try da(
         //     outside of a () block.
 
-        // TODO: adding <> >< to this map doesn't work, presumably because
+        // TO_DO adding <> >< to this map doesn't work, presumably because
         // they're operators
         var mirroredPairs = {'(': ')', ')': '(',
                              '{': '}', '}': '{',
@@ -1868,7 +1868,7 @@
         }
 
         // Inclusive is the difference between a and i
-        // TODO: Instead of using the additional text object map to perform text
+        // TO_DO Instead of using the additional text object map to perform text
         //     object operations, merge the map into the defaultKeyMap and use
         //     motionArgs to define behavior. Define separate entries for 'aw',
         //     'iw', 'a[', 'i[', etc.
@@ -2242,7 +2242,7 @@
         var repeat = actionArgs.repeat;
         var anchor = cm.getCursor();
         var head;
-        // TODO: The repeat should actually select number of characters/lines
+        // TO_DO The repeat should actually select number of characters/lines
         //     equal to the repeat times the size of the previous visual
         //     operation.
         if (!vim.visualMode) {
@@ -3127,7 +3127,7 @@
           return found;
         }
       },
-      // TODO: The original Vim implementation only operates on level 1 and 2.
+      // TO_DO The original Vim implementation only operates on level 1 and 2.
       // The current implementation doesn't check for code block level and
       // therefore it operates on any levels.
       method: {
@@ -3450,7 +3450,7 @@
       return { start: start, end: end };
     }
 
-    // TODO: perhaps this finagling of start and end positions belonds
+    // TO_DO perhaps this finagling of start and end positions belonds
     // in codmirror/replaceRange?
     function selectCompanionObject(cm, head, symb, inclusive) {
       var cur = head, start, end;
@@ -4769,7 +4769,7 @@
     defineOption('insertModeEscKeysTimeout', 200, 'number');
 
     CodeMirror.keyMap['vim-insert'] = {
-      // TODO: override navigation keys so that Esc will cancel automatic
+      // TO_DO override navigation keys so that Esc will cancel automatic
       // indentation from o, O, i_<CR>
       'Ctrl-N': 'autocomplete',
       'Ctrl-P': 'autocomplete',

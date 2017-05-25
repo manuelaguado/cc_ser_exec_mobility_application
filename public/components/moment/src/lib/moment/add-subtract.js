@@ -4,7 +4,7 @@ import { createDuration } from '../duration/create';
 import { deprecateSimple } from '../utils/deprecate';
 import { hooks } from '../utils/hooks';
 
-// TODO: remove 'name' arg after deprecation is removed
+// TO_DO remove 'name' arg after deprecation is removed
 function createAdder(direction, name) {
     return function (val, period) {
         var dur, tmp;

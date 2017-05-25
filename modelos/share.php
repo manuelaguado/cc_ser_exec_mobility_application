@@ -279,7 +279,7 @@ class ShareModel
                          id_operador_unidad = $id_operador_unidad
            ";
            $query = $this->db->prepare($qry);
-           $query->execute();
+           $query->execute();// TODO: aqui marca un error cuando se asignan viajes al aire que fueron creados desde la solicitud y reasignados
            if($query->rowCount()>=1){
                   $data = $query->fetchAll();
                   foreach ($data as $row) {

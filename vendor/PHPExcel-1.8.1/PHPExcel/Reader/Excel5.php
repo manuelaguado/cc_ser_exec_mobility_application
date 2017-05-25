@@ -4863,7 +4863,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 					break;
 
 				case 0x28:
-					// TODO: Investigate structure for .xls SHEETLAYOUT record as saved by MS Office Excel 2007
+					// TO_DO Investigate structure for .xls SHEETLAYOUT record as saved by MS Office Excel 2007
 					return;
 					break;
 			}
@@ -6221,7 +6221,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 		list($baseCol, $baseRow) = PHPExcel_Cell::coordinateFromString($baseCell);
 		$baseCol = PHPExcel_Cell::columnIndexFromString($baseCol) - 1;
 
-		// TODO: if cell range is just a single cell, should this funciton
+		// TO_DO if cell range is just a single cell, should this funciton
 		// not just return e.g. 'A1' and not 'A1:A1' ?
 
 		// offset: 0; size: 2; first row
@@ -6395,7 +6395,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 					break;
 
 				default:
-					// TODO: external sheet support
+					// TO_DO external sheet support
 					throw new PHPExcel_Reader_Exception('Excel5 reader only supports internal sheets in fomulas');
 					break;
 			}

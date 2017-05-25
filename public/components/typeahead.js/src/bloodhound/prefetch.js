@@ -64,7 +64,7 @@ var Prefetch = (function() {
         stored.thumbprint !== this.thumbprint ||
         stored.protocol !== location.protocol;
 
-      // TODO: if expired, remove from local storage
+      // TO_DO if expired, remove from local storage
 
       return stored.data && !isExpired ? stored.data : null;
     },

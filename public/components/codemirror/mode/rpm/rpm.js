@@ -97,7 +97,7 @@ CodeMirror.defineMode("rpm-spec", function() {
         return "def";
       }
 
-      //TODO: Include bash script sub-parser (CodeMirror supports that)
+      //TO_DO Include bash script sub-parser (CodeMirror supports that)
       stream.next();
       return null;
     }

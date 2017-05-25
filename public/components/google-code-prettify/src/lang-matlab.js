@@ -81,8 +81,8 @@
     [PR.PR_PLAIN, /^[ \t\r\n\v\f\xA0]+/, null, " \t\r\n\u000b\u000c\u00a0"],
 
     // block comments
-    //TODO: chokes on nested block comments
-    //TODO: false positives when the lines with %{ and %} contain non-spaces
+    //TO_DO chokes on nested block comments
+    //TO_DO false positives when the lines with %{ and %} contain non-spaces
     //[PR.PR_COMMENT, /^%(?:[^\{].*|\{(?:%|%*[^\}%])*(?:\}+%?)?)/, null],
     [PR.PR_COMMENT, /^%\{[^%]*%+(?:[^\}%][^%]*%+)*\}/, null],
 

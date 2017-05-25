@@ -276,12 +276,12 @@ function $UrlRouterProvider(   $locationProvider,   $urlMatcherFactory) {
       return url;
     }
 
-    // TODO: Optimize groups of rules with non-empty prefix into some sort of decision tree
+    // TO_DO Optimize groups of rules with non-empty prefix into some sort of decision tree
     function update(evt) {
       if (evt && evt.defaultPrevented) return;
       var ignoreUpdate = lastPushedUrl && $location.url() === lastPushedUrl;
       lastPushedUrl = undefined;
-      // TODO: Re-implement this in 1.0 for https://github.com/angular-ui/ui-router/issues/1573
+      // TO_DO Re-implement this in 1.0 for https://github.com/angular-ui/ui-router/issues/1573
       //if (ignoreUpdate) return true;
 
       function check(rule) {

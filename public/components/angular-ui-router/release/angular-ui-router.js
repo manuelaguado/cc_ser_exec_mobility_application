@@ -1273,7 +1273,7 @@ function $UrlMatcherFactory() {
     "string": {
       encode: valToString,
       decode: valFromString,
-      // TODO: in 1.0, make string .is() return false if value is undefined/null by default.
+      // TO_DO in 1.0, make string .is() return false if value is undefined/null by default.
       // In 0.2.x, string params are optional by default for backwards compat
       is: function(val) { return val == null || !isDefined(val) || typeof val === "string"; },
       pattern: /[^/]*/
@@ -2029,12 +2029,12 @@ function $UrlRouterProvider(   $locationProvider,   $urlMatcherFactory) {
       return url;
     }
 
-    // TODO: Optimize groups of rules with non-empty prefix into some sort of decision tree
+    // TO_DO Optimize groups of rules with non-empty prefix into some sort of decision tree
     function update(evt) {
       if (evt && evt.defaultPrevented) return;
       var ignoreUpdate = lastPushedUrl && $location.url() === lastPushedUrl;
       lastPushedUrl = undefined;
-      // TODO: Re-implement this in 1.0 for https://github.com/angular-ui/ui-router/issues/1573
+      // TO_DO Re-implement this in 1.0 for https://github.com/angular-ui/ui-router/issues/1573
       //if (ignoreUpdate) return true;
 
       function check(rule) {
@@ -3216,7 +3216,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
 
       // If we're going to the same state and all locals are kept, we've got nothing to do.
       // But clear 'transition', as we still want to cancel any other pending transitions.
-      // TODO: We may not want to bump 'transition' if we're called from a location change
+      // TO_DO We may not want to bump 'transition' if we're called from a location change
       // that we've initiated ourselves, because we might accidentally abort a legitimate
       // transition initiated from code?
       if (shouldSkipReload(to, toParams, from, fromParams, locals, options)) {

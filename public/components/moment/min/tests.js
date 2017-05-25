@@ -41926,7 +41926,7 @@
 
     module('locale', {
         setup : function () {
-            // TODO: Remove once locales are switched to ES6
+            // TO_DO Remove once locales are switched to ES6
             each([{
                 name: 'en-gb',
                 data: {}
@@ -42368,7 +42368,7 @@
     });
 
 
-    // TODO: Enable this after fixing pl months parse hack hack
+    // TO_DO Enable this after fixing pl months parse hack hack
     // test('monthsParseExact', function (assert) {
     //     var locale = 'test-months-parse-exact';
 
