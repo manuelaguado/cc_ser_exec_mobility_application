@@ -14,7 +14,7 @@
 							<table id="domicilios" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>
-										
+
 										<th>Unidad</th>
 										<th>Operador</th>
 										<th>Auto</th>
@@ -33,7 +33,7 @@
 													<button onclick='asignarDirecto(".$operador['id_operador_unidad']."); setIdens(".$operador['numeq'].",".$operador['id_operador'].",\"".$operador['nombre']."\");' class='btn btn-xs btn-success'>
 															Seleccionar
 														<i class='ace-icon fa fa-arrow-right icon-on-right'></i>
-													</button>												
+													</button>
 												</td>
 											</tr>
 											";
@@ -45,7 +45,7 @@
 							</table>
 						</div>
 					</div>
-				</div>			
+				</div>
 			</div>
 		</div>
 	</div>

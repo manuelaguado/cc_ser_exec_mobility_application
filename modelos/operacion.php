@@ -635,10 +635,18 @@ class OperacionModel{
                      	AND stt.flag1 = 'C1'
                      	AND stt.flag2 = 'C9'
                      	AND stt.flag3 = 'F11'
-                     )OR (
+                     )
+                     OR (
                      	stt.state = 'C18'
                      	AND stt.flag1 = 'C1'
                      	AND stt.flag2 = 'C18'
+                            AND stt.flag3 = 'F11'
+                     )
+                     OR (
+                     	stt.state = 'C19'
+                     	AND stt.flag1 = 'C1'
+                     	AND stt.flag2 = 'C19'
+                            AND stt.flag3 = 'F11'
                      )
                      )
                      AND stt.activo = 1
@@ -664,41 +672,17 @@ class OperacionModel{
 		}
 		return $operadores;
 	}
-	function asignar_viajes($base){
-		$operador 	= self::unidades_formadas($base);
+	function asignar_viajes($base,ShareModel $share){
+		$operador            = self::unidades_formadas($base);
 		$viajes		= self::viajes_pendientes();
 		$array = array();
 		if(($operador['procesar'])&&($viajes['procesar'])){
+
 			self::asignar_viaje($viajes['id_viaje'],$operador);
 
-			$array['id_operador_unidad'] = $operador['id_operador_unidad'];
-			$array['id_viaje'] 	= $viajes['id_viaje'];
-			$array['salida'] 	= self::getSalidaId($viajes['salida']);
-			$array['process'] 	= true;
-
-		}else{
-			$array['process'] = false;
-		}
-		return $array;
-	}
-	function getSalidaId($salida){
-		$sql = "
-			SELECT
-				cm_catalogo.valor
-			FROM
-				cm_catalogo
-			WHERE
-				cm_catalogo.id_cat = $salida
-		";
-		$query = $this->db->prepare($sql);
-		$query->execute();
-		if($query->rowCount()>=1){
-			foreach ($query->fetchAll() as $row) {
-				return $row->valor;
-			}
+                     $share->cordonFinishSuccess($_SESSION['id_usuario'],$operador['id_operador_unidad'],$viajes['id_viaje']);
 		}
 	}
-
 
 	function asignar_apartado($id_viaje,$operador){
 		self::relacionar_operador_apartado($id_viaje,$operador);
@@ -753,7 +737,7 @@ class OperacionModel{
 			 $cordon
 			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
-			 cat_status_viaje	= '171'
+			 cat_status_viaje	= '179'
 			WHERE
 				id_viaje = ".$id_viaje."
 		";
@@ -786,7 +770,7 @@ class OperacionModel{
 		}
 		if($alAire == 0){return false;}else{return true;}
 	}
-	function setear_status_viaje($post, ShareModel $share=NULL, OperadoresModel $operadores = NULL, LoginModel $login = NULL){
+	function setear_status_viaje($post, ShareModel $share=NULL, OperadoresModel $operadores = NULL){
 
 		$stat_process = true;
 		$qrymissing = array();
@@ -832,30 +816,22 @@ class OperacionModel{
 		}
 
 		if($success){
+                     $id_operador = $share->getIdOperador($id_operador_unidad);
+                     $id_episodio = $share->getIdEpisodio($id_operador_unidad);
 			switch($post['stat']){
 				case '170':
 					$token = 'SOL:'.Controller::token(60);
 					switch($post['status_operador']){
-						case 'segundo':
-
-						break;
-						case 'cola':
-							$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-
-						break;
 						case 'suspender':
 							/*Setear en suspendido*/
 							$operador['cat_statusoperador'] = 10;
-							$operador['id_operador'] = $share->getIdOperador($id_operador_unidad);
+                                                 $operador['id_operador']=$id_operador;
 							$operadores->setearstatusoperador($operador);
-
-							/*desloguear*/
-
-							$id_usuario = $share->getIdUsuario($id_operador_unidad);
-							$login->signout($id_usuario);
+							/*desloguear si existiera la version mobil*/
+                                                 $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'F6','F6','NULL','NULL','NULL','VIAJE EN PROCESO',$post['id_viaje']);
 						break;
 						case 'omitir':
-
+                                                 $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C19','C1','C19','F11','NULL','CLIENTE REASIGNADO',$post['id_viaje']);
 						break;
 					}
 				break;
@@ -864,13 +840,17 @@ class OperacionModel{
 						$token = 'SOL:'.Controller::token(60);
 						switch($post['status_operador']){
 							case 'segundo':
-
+                                                        $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
+                                                        /*se ingresa al cordon de segundo*/
+                                                        $share->formarse_directo($id_episodio,$id_operador_unidad,'1','115');
 							break;
 							case 'cola':
-								$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
+                                                        $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
+                                                        /*Se ingresa al cordon*/
+                                                        $share->formarse_directo($id_episodio,$id_operador_unidad,'1','113');
 							break;
 							case 'omitir':
-
+                                                        $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
 							break;
 						}
 
@@ -1113,23 +1093,26 @@ class OperacionModel{
 	}
 	function unidadenSitio($numCordon,$base){
 		$sql ="
-			SELECT
-				cr_cordon.id_cordon,
-				cr_cordon.id_operador_unidad,
-				cr_cordon.id_episodio
-			FROM
-				cr_cordon
-			WHERE
-				cr_cordon.id_base = $base
-			AND (
-				cr_cordon.cat_statuscordon = 113
-				OR cr_cordon.cat_statuscordon = 115
-			)
-			ORDER BY
-				cr_cordon.cat_statuscordon DESC,
-				cr_cordon.id_cordon ASC
-			LIMIT 0,
-			 2
+                     SELECT
+                     cr_cordon.id_cordon,
+                     cr_cordon.id_operador_unidad,
+                     cr_cordon.id_episodio,
+                     cr_operador_unidad.id_operador
+                     FROM
+                     cr_cordon
+                     INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador_unidad = cr_cordon.id_operador_unidad
+                     WHERE
+                     				cr_cordon.id_base = 1
+                     			AND (
+                     				cr_cordon.cat_statuscordon = 113
+                     				OR cr_cordon.cat_statuscordon = 115
+                     			)
+                     ORDER BY
+                     				cr_cordon.cat_statuscordon DESC,
+                     				cr_cordon.id_cordon ASC
+                     LIMIT 0,
+                     			 2
+
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1142,6 +1125,7 @@ class OperacionModel{
 					$array['id_operador_unidad'] = $row->id_operador_unidad;
 					$array['id_episodio'] = $row->id_episodio;
 					$array['id_cordon'] = $row->id_cordon;
+                                   $array['id_operador'] = $row->id_operador;
 					$array['procesar'] = true;
 				}
 				$num++;
@@ -1153,21 +1137,51 @@ class OperacionModel{
 	}
 	function unidadalAire($id_operador_unidad){
 		$sql ="
-			SELECT
-				cre.id_episodio
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_operador AS cro ON crou.id_operador = cro.id_operador
-			INNER JOIN cr_episodios AS cre ON cre.id_operador = cro.id_operador
-			WHERE
-				crou.id_operador_unidad = $id_operador_unidad
-			AND cre.fin IS NULL
-			AND cre.tiempo IS NULL
-			AND crou.status_operador_unidad = 198
-			ORDER BY
-				cre.id_episodio DESC
-			LIMIT 0,
-			 1
+                     SELECT
+                     	stt.id_operador,
+                     	stt.id_operador_unidad,
+                     	stt.id_episodio,
+                     	cr_numeq.num
+                     FROM
+                     	cr_state AS stt
+                     INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
+                     INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador_unidad = stt.id_operador_unidad
+                     INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cro.id_operador
+                     INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+                     WHERE
+                     	(
+                     		(
+                     			stt.state = 'C1'
+                     			AND stt.flag1 = 'C1'
+                     			AND stt.flag2 = 'F11'
+                     		)
+                     		OR (
+                     			stt.state = 'C6'
+                     			AND stt.flag1 = 'C1'
+                     			AND stt.flag2 = 'C6'
+                     			AND stt.flag3 = 'F11'
+                     		)
+                     		OR (
+                     			stt.state = 'C9'
+                     			AND stt.flag1 = 'C1'
+                     			AND stt.flag2 = 'C9'
+                     			AND stt.flag3 = 'F11'
+                     		)
+                     		OR (
+                     			stt.state = 'C18'
+                     			AND stt.flag1 = 'C1'
+                     			AND stt.flag2 = 'C18'
+                     			AND stt.flag3 = 'F11'
+                     		)
+                     		OR (
+                     			stt.state = 'C19'
+                     			AND stt.flag1 = 'C1'
+                     			AND stt.flag2 = 'C19'
+                     			AND stt.flag3 = 'F11'
+                     		)
+                     	)
+                     AND stt.activo = 1
+                     AND stt.id_operador_unidad = $id_operador_unidad
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -1694,6 +1708,28 @@ class OperacionModel{
 		}
 		if($change){self::tokenStatusViaje($status,$output);}
 		return $change;
+	}
+       function getCurrentCveOperador($id_operador_unidad){
+		$qry = "
+			SELECT
+				syc.clave as llave
+			FROM
+				cr_operador_unidad AS crou
+			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
+			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
+			WHERE
+				crou.id_operador_unidad = $id_operador_unidad
+			AND cm_catalogo.catalogo = 'clavesitio'
+			AND crou.status_operador_unidad = 198
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row){
+				return	$row->llave;
+			}
+		}
 	}
 	function servicio_hash($status){
 		$sql ="
@@ -3414,12 +3450,10 @@ class acciones_asignados extends SSP{
 					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
 
 					$salida = '<div class="line_force">';
-					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'asignados\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
-					$salida .= '<a href="javascript:;" onclick="activar_cancelacion('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar cancelación en operador"><i class="fa fa-ban" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+                                   $salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'asignados\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
-					$salida .= '<a href="javascript:;" onclick="activar_abandono('.$id_viaje.')" data-rel="tooltip" data-original-title="Activar abandono en operador"><i class="icofont icofont-offside" style="font-size:1.4em; color:#aa2424;"></i></a>&nbsp;&nbsp;';
+                                   $salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 
@@ -3440,64 +3474,7 @@ class acciones_asignados extends SSP{
 		return $out;
 	}
 }
-class acciones_asiggn extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
 
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-
-				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
-					$id_viaje = $data[$i][ 'id_viaje' ];
-
-					$salida = '';
-					$salida .= '<a href="#">'.$id_cliente.' - '.$id_viaje.'</a>&nbsp;&nbsp;';
-
-					$row[ $column['dt'] ] = $salida;
-				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];
-				}
-
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}
-}
-class acciones_proceso extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
-
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-
-				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
-					$id_viaje = $data[$i][ 'id_viaje' ];
-
-					$salida = '';
-					$salida .= '<a href="#">'.$id_cliente.' - '.$id_viaje.'</a>&nbsp;&nbsp;';
-
-					$row[ $column['dt'] ] = $salida;
-				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];
-				}
-
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}
-}
 class acciones_completados extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{

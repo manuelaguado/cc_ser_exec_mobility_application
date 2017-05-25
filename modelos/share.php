@@ -13,11 +13,7 @@ class ShareModel
               foreach ($setStat as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
-
-              $sqlc = "UPDATE cr_state SET activo = 0 WHERE id_operador = $this->id_operador";
-              $queryc = $this->db->prepare($sqlc);
-              $query_respc = $queryc->execute();
-
+              if(!$_SESSION['id_usuario']){$user = 1;}else{$user = $_SESSION['id_usuario'];}
               $sql = "
                      INSERT INTO `cr_state` (
                            `id_operador`,
@@ -49,12 +45,19 @@ class ShareModel
                                   '".$this->flag4."',
                                   '".$this->motivo."',
                                   '1',
-                                  ".$_SESSION['id_usuario'].",
+                                  ".$user.",
                                   '".date("Y-m-d H:i:s")."'
                            );
               ";
               $query = $this->db->prepare($sql);
-              $query_resp = $query->execute();
+              $result = $query_resp = $query->execute();
+              $lastInsertId = $this->db->lastInsertId();
+              if(!$result){D::bug('FAILED: '.$sql); error_log($sql);}
+              else{
+                     $sqlc = "UPDATE cr_state SET activo = 0 WHERE id_operador = $this->id_operador AND id_state <> $lastInsertId ";
+                     $queryc = $this->db->prepare($sqlc);
+                     $query_respc = $queryc->execute();
+              }
        }
     function exitCordonFromLogin($id_usuario,$id_operador_unidad){
            $dataFull = "
@@ -191,8 +194,26 @@ class ShareModel
 
                      $id_operador = self::getIdOperador($id_operador_unidad);
                      $id_episodio = self::getIdEpisodio($id_operador_unidad);
-                     self::setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C18','C1','C18','NULL','NULL','NULL','NULL');
+                     self::setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C18','C1','C18','F11','NULL','NULL','NULL');
            }
+    }
+    function cordonFinishSuccess($id_usuario,$id_operador_unidad,$id_viaje){
+              $sql = "
+              UPDATE cr_cordon
+              SET
+                     cat_statuscordon	=	'". 114 ."',
+                     salida			=	'".date("Y-m-d H:i:s")."',
+                     user_mod 		= 	'".$id_usuario."'
+              WHERE
+                     id_operador_unidad = ".$id_operador_unidad."
+                     AND cat_statuscordon <> 114
+              ";
+              $query = $this->db->prepare($sql);
+              $query_resp = $query->execute();
+
+              $id_operador = self::getIdOperador($id_operador_unidad);
+              $id_episodio = self::getIdEpisodio($id_operador_unidad);
+              self::setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'A10','C1','A10','NULL','NULL','NULL',$id_viaje);
     }
     function turno($id_operador_unidad,$id_base){
            $qry = "

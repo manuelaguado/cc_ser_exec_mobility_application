@@ -623,19 +623,9 @@ span.input-icon > textarea {
 				$('#cordon_kpmg').DataTable().ajax.reload();
 			});
 
-			var updChannel2 = pusher.subscribe('updcrd2');
-			updChannel2.bind('evento', function(data) {
-				$('#cordon_ejnal').DataTable().ajax.reload();
-			});
-
 			var updChannel3 = pusher.subscribe('updpendientes');
 			updChannel3.bind('evento', function(data) {
 				$('#tabla_pendientes').DataTable().ajax.reload();
-			});
-
-			var updChannel4 = pusher.subscribe('updproceso');
-			updChannel4.bind('evento', function(data) {
-				$('#tabla_proceso').DataTable().ajax.reload();
 			});
 
 			var updChannel5 = pusher.subscribe('updasignados');

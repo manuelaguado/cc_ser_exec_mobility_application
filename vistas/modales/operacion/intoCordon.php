@@ -38,6 +38,8 @@
 											</tr>
 											";
 										}
+									}else{
+										echo "<tr><td colspan='4' style='text-align:center'> SIN UNIDADES EN TIEMPO A LA BASE</td></tr>";
 									}
 									?>
 									</tbody>

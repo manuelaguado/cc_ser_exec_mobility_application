@@ -7,20 +7,18 @@ class Operacion extends Controlador
        require URL_VISTA.'operacion/index.php';
     }
 	public function cron(){
-		session_destroy();
+              //exit();
+              session_destroy();
 
 		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 
-		$relTravel = $operacion->asignar_viajes(1);
-		if($relTravel['process']){
-			self::asignacion_automatica($relTravel,$share);
-		}
 		if($operacion->cordon_hash(1)){$share->transmitir('doit','updcrd1');}
-
 		if($operacion->serv_cve_hash(179)){$share->transmitir('doit','updasignados');}
 		if($operacion->servicio_hash(170)){$share->transmitir('doit','updpendientes');}
 		if($operacion->servicio_hash(188)){$share->transmitir('doit','updpendientes');}
+
+              $operacion->asignar_viajes(1,$share);
 
 	}
 	public function cron10(){
@@ -135,11 +133,8 @@ class Operacion extends Controlador
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->asignar_viaje($id_viaje,$operador);
 
-		$relTravel['id_operador_unidad'] = $id_operador_unidad;
-		$relTravel['id_viaje'] 	= $id_viaje;
-		$relTravel['salida'] 	= 120;
-
-		self::asignacion_automatica($relTravel,$share);
+              $id_episodio = $share->getIdEpisodio($id_operador_unidad);
+              $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'F15','C1','F15','NULL','NULL','Servicio al aire desde pendientes',$id_viaje);
 
 		print json_encode(array('resp' => true ));
 	}
@@ -176,10 +171,6 @@ class Operacion extends Controlador
 		$actual = $model->turnoApart($anterior['valor']);
 
 		require URL_VISTA.'modales/operacion/paqueteriaSettings.php';
-	}
-	public function asignacion_automatica($array,ShareModel $share){
-		$token = 'AAT:'.$this->token(62);
-		$share->storeToSyncRide(1,$token,$array['salida'],$array['id_operador_unidad']);
 	}
 	public function servicios_asignados(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -428,8 +419,7 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		$share = $this->loadModel('Share');
 		$operadores = $this->loadModel('Operadores');
-		$login = $this->loadModel('Login');
-		print $modelo->setear_status_viaje($_POST, $share, $operadores, $login);
+		print $modelo->setear_status_viaje($_POST, $share, $operadores);
 	}
 	public function cancel_apartado($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -490,8 +480,6 @@ class Operacion extends Controlador
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 120;
 
-		self::asignacion_automatica($relTravel,$share);
-
 		print json_encode(array('resp' => true ));
 	}
 	public function procesarNormal($id_viaje,$origen){
@@ -524,8 +512,6 @@ class Operacion extends Controlador
 		$relTravel['id_operador_unidad'] = $id_operador_unidad;
 		$relTravel['id_viaje'] 	= $id_viaje;
 		$relTravel['salida'] 	= 197;
-
-		self::asignacion_automatica($relTravel,$share);
 
 		print json_encode(array('resp' => true ));
 	}
@@ -873,17 +859,16 @@ class Operacion extends Controlador
 			$operacion->asignar_apartado($service->id_viaje,$operador);
 
 		}
-
+//TODO: aqui me quede
 		////////////////////////////////////////////////////////////////////servicio al aire
 		if($service->cat_tipo_salida == 181){
-			$operador = $operacion->unidadalAire($service->id_operador_unidad);
+                     $id_episodio = $share->getIdEpisodio($service->id_operador_unidad);
+                     $operador['id_operador_unidad']=$service->id_operador_unidad;
+                     $operador['id_episodio']=$id_episodio;
+                     $operador['id_cordon']='';
 			$operacion->asignar_viaje($service->id_viaje,$operador);
 
-			$relTravel['id_operador_unidad'] = $service->id_operador_unidad;
-			$relTravel['id_viaje'] 	= $service->id_viaje;
-			$relTravel['salida'] 	= 120;
-
-			self::asignacion_automatica($relTravel,$share);
+                     $share->setstatlocal($service->id_operador,$service->id_operador_unidad,$id_episodio,'F15','C1','F15','NULL','NULL','Servicio al aire desde solicitud',$service->id_viaje);
 		}
 
 		////////////////////////////////////////////////////////////////////salida por sitio
@@ -891,11 +876,10 @@ class Operacion extends Controlador
 			$operador = $operacion->unidadenSitio($service->sitio_select_oper,1);
 			$operacion->asignar_viaje($service->id_viaje,$operador);
 
-			$relTravel['id_operador_unidad'] = $operador['id_operador_unidad'];
-			$relTravel['id_viaje'] 	= $service->id_viaje;
-			$relTravel['salida'] 	= 119;
+                     $share->cordonFinishSuccess($_SESSION['id_usuario'],$operador['id_operador_unidad'],$service->id_viaje);
 
-			self::asignacion_automatica($relTravel,$share);
+                     $share->setstatlocal($operador['id_operador'],$operador['id_operador_unidad'],$operador['id_episodio'],'F13','C1','F13','NULL','NULL','Salida por sitio',$service->id_viaje);
+
 		}
 		print json_encode(array('resp' => true ));
 	}
