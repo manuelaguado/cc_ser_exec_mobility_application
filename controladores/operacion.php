@@ -839,7 +839,7 @@ class Operacion extends Controlador
 		foreach($clientes as $key => $id_cliente){
 			$operacion->insert_viajeClientes($service->id_viaje,$id_cliente);
 		}
-
+// TODO: El servicio de apartados queda proximo a depurar
 		////////////////////////////////////////////////////////////////////servicio de apartado
 		if($service->temporicidad == 162){
 			$turno = $service->turno_apartado;
@@ -859,7 +859,6 @@ class Operacion extends Controlador
 			$operacion->asignar_apartado($service->id_viaje,$operador);
 
 		}
-// TODO: aqui me quede
 		////////////////////////////////////////////////////////////////////servicio al aire
 		if($service->cat_tipo_salida == 181){
                      $id_episodio = $share->getIdEpisodio($service->id_operador_unidad);
