@@ -1110,8 +1110,6 @@ function cancel_apartado_set(){
 				}else{
 						  if(resp_success['qrymissing'] == 'cat_cancelaciones'){
 						alerta('Alerta!','Se requiere que seleccione un motivo de cancelación');
-					}else if(resp_success['qrymissing'] == 'status_operador'){
-						alerta('Alerta!','Indique el estado del operador');
 					}else{
 						alerta('Alerta!','Error de conectividad de red OPRN-72');
 					}

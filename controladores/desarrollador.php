@@ -10,21 +10,13 @@ class Desarrollador extends Controlador
 		SELECT
 		op.id_operador,
 		opu.id_operador_unidad,
-		cel.serie,
 		num.num
 		FROM
 		cr_operador AS op
 		INNER JOIN cr_operador_unidad AS opu ON opu.id_operador = op.id_operador
 		INNER JOIN cr_operador_celular AS opcel ON opcel.id_operador = op.id_operador
-		INNER JOIN cr_celulares AS cel ON opcel.id_celular = cel.id_celular
 		INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = op.id_operador
 		INNER JOIN cr_numeq AS num ON cr_operador_numeq.id_numeq = num.id_numeq
-		WHERE
-		opcel.cat_status_operador_celular = 31 AND
-		cel.cat_status_celular = 28 AND
-		opu.status_operador_unidad = 198 AND
-		op.cat_statusoperador = 8 AND
-		cr_operador_numeq.cat_status_oper_numeq = 12
 		GROUP BY
 		opu.id_operador
 		ORDER BY
@@ -42,7 +34,6 @@ class Desarrollador extends Controlador
 					`numeq`,
 					`state`,
 					`flag1`,
-					`serie`,
 					`activo`
 				)
 				VALUES
@@ -52,7 +43,6 @@ class Desarrollador extends Controlador
 						'".$row->num."',
 						'C2',
 						'C2',
-						'".$row->serie."',
 						'1'
 					);
 			";

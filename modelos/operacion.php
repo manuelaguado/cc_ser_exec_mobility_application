@@ -287,6 +287,7 @@ class OperacionModel{
 		$query = $this->db->prepare($qry);
 		$query->execute();
 	}
+       // TODO: Aqui aparecio un error lineas 346 y 358 al crear un apartado
 	function resetOrIncrement($id_operador){
 		$qry = "
 			SELECT
@@ -693,7 +694,6 @@ class OperacionModel{
 		$sql = "
 			UPDATE vi_viaje
 			SET
-			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
 			 cat_status_viaje	= '195'
 			WHERE
@@ -714,7 +714,7 @@ class OperacionModel{
 			SET
 			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
-			 cat_status_viaje	= '171',
+			 cat_status_viaje	= '179',
 			 cat_tipotemporicidad = '184'
 			WHERE
 				id_viaje = ".$id_viaje."
@@ -750,7 +750,7 @@ class OperacionModel{
 			SET
 			 id_episodio 		= '".$operador['id_episodio']."',
 			 id_operador_unidad = '".$operador['id_operador_unidad']."',
-			 cat_status_viaje	= '171',
+			 cat_status_viaje	= '179',
 			 cat_tipotemporicidad = '184'
 			WHERE
 				id_viaje = ".$id_viaje."
@@ -763,8 +763,6 @@ class OperacionModel{
 		$alAire = 0;
 		if(count($operadores)>0){
 			foreach ($operadores as $operador) {
-				D::bug('1>>>'.$id_operador_unidad);
-				D::bug('2>>>'.$operador['id_operador_unidad']);
 				if($id_operador_unidad == $operador['id_operador_unidad']){$alAire++;}
 			}
 		}
@@ -877,10 +875,7 @@ class OperacionModel{
 			$qrymissing = array('qrymissing' => 'cat_cancelaciones' );
 			$stat_process = false;
 		}
-		if(($post['origen'] == 'rojo')&&(!isset($post['status_operador']))){
-			$qrymissing = array('qrymissing' => 'status_operador' );
-			$stat_process = false;
-		}
+
 		$sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
 
 		if($stat_process){
@@ -903,24 +898,6 @@ class OperacionModel{
 		}
 
 		if($success){
-
-			if($post['origen'] == 'rojo'){
-				$token = 'APA:'.Controller::token(60);
-				switch($post['status_operador']){
-					case 'segundo':
-
-					break;
-					case 'cola':
-						$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
-
-					break;
-					case 'omitir':
-
-					break;
-				}
-
-			}
-
 			$output = array('resp' => true , 'mensaje' => 'se seteo a 173 satisfactoriamente' );
 			$print = $output + $qrymissing;
 			return json_encode($print);
@@ -1135,6 +1112,40 @@ class OperacionModel{
 		}
 		return $array;
 	}
+       function unidadaGlobal($id_operador_unidad){
+		$sql ="
+                     SELECT
+                     	stt.id_operador,
+                     	stt.id_operador_unidad,
+                     	stt.id_episodio,
+                     	cr_numeq.num
+                     FROM
+                     	cr_state AS stt
+                     INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
+                     INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador_unidad = stt.id_operador_unidad
+                     INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cro.id_operador
+                     INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+                     WHERE
+                     	stt.id_operador_unidad = $id_operador_unidad
+                     AND stt.activo = 1
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row) {
+				$array['id_operador_unidad'] = $id_operador_unidad;
+                            $array['id_operador'] = $row->id_operador;
+                            $array['num'] = $row->num;
+				$array['id_episodio'] = $row->id_episodio;
+				$array['id_cordon'] = '';
+				$array['procesar'] = true;
+			}
+		}else{
+			$array['procesar'] = false;
+		}
+		return $array;
+	}
 	function unidadalAire($id_operador_unidad){
 		$sql ="
                      SELECT
@@ -1188,7 +1199,9 @@ class OperacionModel{
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($query->fetchAll() as $row) {
-				$array['id_operador_unidad'] = $id_operador_unidad;
+				$array['id_operador'] = $row->id_operador;
+                            $array['id_operador_unidad'] = $id_operador_unidad;
+                            $array['num'] = $row->num;
 				$array['id_episodio'] = $row->id_episodio;
 				$array['id_cordon'] = '';
 				$array['procesar'] = true;
@@ -3770,10 +3783,10 @@ class acciones_cordon extends SSP{
 		";
 		$query = $db->prepare($qry);
 		$query->execute();
+              $numero = 0;
 		if($query->rowCount()>=1){
 			$data = $query->fetchAll();
 			$count = 1;
-			$numero = 0;
 			foreach ($data as $row) {
 				if($row['id_operador_unidad'] == $id_operador_unidad){
 					$numero = $count;

@@ -476,9 +476,19 @@ class Operacion extends Controlador
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->asignarApartadoAlAire($id_viaje,$operador);
 
-		$relTravel['id_operador_unidad'] = $id_operador_unidad;
-		$relTravel['id_viaje'] 	= $id_viaje;
-		$relTravel['salida'] 	= 120;
+              $setStat['id_operador'] = $operador['id_operador'];
+              $setStat['id_operador_unidad'] = $id_operador_unidad;
+              $setStat['id_episodio'] = $operador['id_episodio'];
+              $setStat['id_viaje'] = $id_viaje;
+              $setStat['num'] = $operador['num'];
+              $setStat['state'] = 'T2';
+              $setStat['flag1'] = 'C1';
+              $setStat['flag2'] = 'T2';
+              $setStat['flag3'] = 'NULL';
+              $setStat['flag4'] = 'NULL';
+              $setStat['motivo'] = 'Se asignó el apartado al aire';
+
+		$share->setStatOper($setStat);
 
 		print json_encode(array('resp' => true ));
 	}
@@ -509,17 +519,28 @@ class Operacion extends Controlador
 		$operador = $operacion->unidadalAire($id_operador_unidad);
 		$operacion->activarApartado($id_viaje,$operador);
 
-		$relTravel['id_operador_unidad'] = $id_operador_unidad;
-		$relTravel['id_viaje'] 	= $id_viaje;
-		$relTravel['salida'] 	= 197;
+              $setStat['id_operador'] = $operador['id_operador'];
+              $setStat['id_operador_unidad'] = $id_operador_unidad;
+              $setStat['id_episodio'] = $operador['id_episodio'];
+              $setStat['id_viaje'] = $_POST['id_viaje'];
+              $setStat['num'] = $operador['num'];
+              $setStat['state'] = 'T1';
+              $setStat['flag1'] = 'C1';
+              $setStat['flag2'] = 'T1';
+              $setStat['flag3'] = 'NULL';
+              $setStat['flag4'] = 'NULL';
+              $setStat['motivo'] = 'Se asignó el apartado de forma normal';
+
+		$share->setStatOper($setStat);
 
 		print json_encode(array('resp' => true ));
 	}
 	public function cancel_apartado_set(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$modelo = $this->loadModel('Operacion');
+		$operacion = $this->loadModel('Operacion');
 		$share = $this->loadModel('Share');
-		print $modelo->cancel_apartado_set($_POST, $share);
+
+		print $operacion->cancel_apartado_set($_POST, $share);
 	}
 	public function setPageRemotly(){
 		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
@@ -839,7 +860,6 @@ class Operacion extends Controlador
 		foreach($clientes as $key => $id_cliente){
 			$operacion->insert_viajeClientes($service->id_viaje,$id_cliente);
 		}
-// TODO: El servicio de apartados queda proximo a depurar
 		////////////////////////////////////////////////////////////////////servicio de apartado
 		if($service->temporicidad == 162){
 			$turno = $service->turno_apartado;
@@ -848,14 +868,14 @@ class Operacion extends Controlador
 			$operacion->countApart($service->id_operador,$hit,$service->id_operador_turno);
 
 				$data['id_site']	= 1;
-				$data['descripcion']= 'turno_apartados';
-				$data['valor']		= $turno;
+				$data['descripcion'] = 'turno_apartados';
+				$data['valor']	= $turno;
 				$data['tmp_val']	= 0;
 				$data['data']		= 0;
 
 			self::setConfig($data);
 
-			$operador = $operacion->unidadalAire($service->id_operador_unidad);
+			$operador = $operacion->unidadaGlobal($service->id_operador_unidad);
 			$operacion->asignar_apartado($service->id_viaje,$operador);
 
 		}
