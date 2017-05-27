@@ -46,7 +46,7 @@
 		 window.jQuery || document.write("<script src='<?=ACE?>js/jquery1x.js'>"+"<"+"/script>");
 		</script>
 		<![endif]-->
-		
+
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<?=ACE?>js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
@@ -56,7 +56,7 @@
 		<!--[if lte IE 8]>
 		  <script src="<?=ACE?>js/excanvas.js"></script>
 		<![endif]-->
-		
+
 		<!-- Datatables -->
 		<script src="<?=URL_PUBLIC?>components/datatables/media/js/jquery.dataTables.js"></script>
 		<script src="<?=URL_PUBLIC?>components/_mod/datatables/jquery.dataTables.bootstrap.js"></script>
@@ -66,13 +66,13 @@
 		<script src="<?=URL_PUBLIC?>components/datatables.net-buttons/js/buttons.print.js"></script>
 		<script src="<?=URL_PUBLIC?>components/datatables.net-buttons/js/buttons.colVis.js"></script>
 		<script src="<?=URL_PUBLIC?>components/datatables.net-select/js/dataTables.select.js"></script>
-		
+
 		<!-- Componentes -->
 		<script src="<?=URL_PUBLIC?>components/bootstrap/dist/js/bootstrap.js"></script>
 		<script src="<?=URL_PUBLIC?>components/_mod/jquery-ui.custom/jquery-ui.custom.js"></script>
 		<script src="<?=URL_PUBLIC?>components/jquery.gritter/js/jquery.gritter.min.js"></script>
 		<script src="<?=URL_PUBLIC?>components/_mod/x-editable/bootstrap-editable.min.js"></script>
-		<script src="<?=URL_PUBLIC?>components/_mod/x-editable/ace-editable.min.js"></script>		
+		<script src="<?=URL_PUBLIC?>components/_mod/x-editable/ace-editable.min.js"></script>
 		<script src="<?=URL_PUBLIC?>components/jqueryui-touch-punch/jquery.ui.touch-punch.js"></script>
 		<script src="<?=URL_PUBLIC?>components/jquery-slimscroll/jquery.slimscroll.js"></script>
 		<script src="<?=URL_PUBLIC?>components/chosen/chosen.jquery.js"></script>
@@ -140,7 +140,7 @@
 
 		<!--mis Librerias-->
 		<script src="<?=URL_PUBLIC?>js/jquery.autocomplete.js"></script>
-		<script src="<?=URL_PUBLIC?>js/jquery.filedrop.js"></script> 
+		<script src="<?=URL_PUBLIC?>js/jquery.filedrop.js"></script>
 
 		<!--app library-->
 		<script src="<?=URL_PUBLIC?>js/controllers.js"></script>
@@ -161,100 +161,51 @@
 		<script src="<?=URL_PUBLIC?>js/pdf.js"></script>
 		<script src="<?=URL_PUBLIC?>js/operacion.js"></script>
 		<script src="<?=URL_PUBLIC?>js/catalogo.js"></script>
-		
+
 		<script src="<?=URL_PUBLIC?>components/buzz/buzz.min.js"></script>
-		
+
 		<script src="<?=URL_PUBLIC?>dist/js/wow.min.js"></script>
-		
+
 		<!-- dhtmlxScheduler -->
 		<script src="<?=URL_PUBLIC?>dhtmlxScheduler/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
-		<link rel="stylesheet" href="<?=URL_PUBLIC?>dhtmlxScheduler/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">	
+		<link rel="stylesheet" href="<?=URL_PUBLIC?>dhtmlxScheduler/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">
 		<script src="<?=URL_PUBLIC?>dhtmlxScheduler/locale/locale_es.js" type="text/javascript" charset="utf-8"></script>
-	
-<?php
-if(SOCKET_PROVIDER == 'ABLY'){	
-?>
-<script lang="text/javascript" src="//cdn.ably.io/lib/ably.min.js"></script>
-<script>
-	var conn = new Ably.Realtime('<?=ABLY_API_KEY?>');
-	conn.connection.on('connected', function() {
-	  console.log('✓ Servicio de notificaciones para apartados');
-	})
-
-	var ntfChannel = conn.channels.get('notificarApartados');
-	ntfChannel.subscribe(function(resp_success){
-		$('#cordon').DataTable().ajax.reload();
-	});
-</script>
-<?php
-}elseif(SOCKET_PROVIDER == 'PUSHER'){
-?>
-<script src="https://js.pusher.com/3.1/pusher.min.js"></script>
-<script>
-	var pusher = new Pusher('<?=PUSHER_KEY?>', {
-		encrypted: true
-	});
-	
-	var ntfChannel = pusher.subscribe('notificarApartados');
-	
-	pusher.connection.bind('connected', function() {
-		console.log('✓ Servicio de notificaciones para apartados');
-	})
-	ntfChannel.bind('evento', function(data) {
-		var convert_json = JSON.stringify(data.message);
-		notifyRender(convert_json);
-	});
-</script>
-<?php	
-}elseif(SOCKET_PROVIDER == 'PUBNUB'){
-?>
-<script src="https://cdn.pubnub.com/pubnub-3.15.2.min.js"></script>
-<script>	
-	var ntfChannel = PUBNUB.init({
-		publish_key: '<?=PUBNUB_PUBLISH?>',
-		subscribe_key: '<?=PUBNUB_SUSCRIBE?>',
-		ssl: true
-	});
-	
-	ntfChannel.subscribe({
-		channel: 'notificarApartados',
-		message: function(m){
-			$('#cordon').DataTable().ajax.reload();
-		}
-	});
-</script>	
-<?php
-}
-?>
 
 
-<?php if(CRONEXEC == 'JAVASCRIPT'){ ?>
-<script>
-var cron = function () {
-    var cronjob = function () {
-    	setInterval('$.post( "<?=URL_PUBLIC?>operacion/cron" )',1000);
-    };
-    return {
-        init: function () {
-			cronjob();
-        }
-    };
-}();
-jQuery(document).ready(function() {
-	cron.init();
-});
-</script>
-<?php } ?>
+		<script src="https://js.pusher.com/3.1/pusher.min.js"></script>
+		<script>
 
-<?php if(DEVELOPMENT == false){ ?>
-<script>
-    (function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:185472,hjsv:5};
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-</script>
-<?php } ?>
+			var pusher = new Pusher('<?=PUSHER_KEY?>', {
+				encrypted: true
+			});
+
+			var ntfChannel = pusher.subscribe('notificarApartados');
+
+			pusher.connection.bind('connected', function() {
+				console.log('✓ Servicio de notificaciones para apartados');
+			});
+
+			ntfChannel.bind('evento', function(data) {
+				var convert_json = JSON.stringify(data.message);
+				notifyRender(convert_json);
+			});
+
+			pusher.connection.bind('connected', function() {
+				console.log('✓ Servicio de actualización de cordón activo');
+			});
+
+			var updChannel1 = pusher.subscribe('updcrd1');
+			updChannel1.bind('evento', function(data) {
+				$('#cordon_kpmg').DataTable().ajax.reload();
+			});
+
+			var updChannel3 = pusher.subscribe('updpendientes');
+			updChannel3.bind('evento', function(data) {
+				$('#tabla_pendientes').DataTable().ajax.reload();
+			});
+
+			var updChannel5 = pusher.subscribe('updasignados');
+			updChannel5.bind('evento', function(data) {
+				$('#tabla_asignados').DataTable().ajax.reload();
+			});
+		</script>

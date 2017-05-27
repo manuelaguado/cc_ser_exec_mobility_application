@@ -416,222 +416,209 @@ span.input-icon > textarea {
 		</div>
 	</div>
 </div>
-		<script type="text/javascript">
-			var globalTypeUser = 'init';
-			var pasajeros = [];
-			jQuery(function($) {
-				$('#user').autocomplete({
-					serviceUrl: 'operacion/busqueda_usuario',
-					minChars: 3,
-					onSelect: function (suggestion) {
-						if((globalTypeUser == suggestion.parent)||(globalTypeUser == 'init')){
 
-							globalTypeUser = suggestion.parent;
+<script>
+var solicitudInit = function () {
+       return {
+              init: function () {
+                     var globalTypeUser = 'init';
+                     var pasajeros = [];
+                     $('#user').autocomplete({
+                            serviceUrl: 'operacion/busqueda_usuario',
+                            minChars: 3,
+                            onSelect: function (suggestion) {
+                                   if((globalTypeUser == suggestion.parent)||(globalTypeUser == 'init')){
 
-							if(jQuery.inArray(suggestion.id, pasajeros) === -1){
+                                          globalTypeUser = suggestion.parent;
 
-								pasajeros.push(suggestion.id);
+                                          if(jQuery.inArray(suggestion.id, pasajeros) === -1){
 
-								$('#input_pasajeros').append('<input type="hidden" id="usuario_'+suggestion.id+'" name="usuario_'+suggestion.id+'" value="'+suggestion.id+'" />');
-								$('#pasajeros_list').append('<div class="tipo_cliente" id="client'+suggestion.id+'"><a onclick="removeClient('+suggestion.id+');" href="javascript:void(0);"><i class="fa fa-times-circle orange" aria-hidden="true"></i></a>&nbsp;&nbsp;'+suggestion.nombre+'</div>');
+                                                 pasajeros.push(suggestion.id);
 
-								$('#dta_name').html(suggestion.etiqueta + ' > ' +  suggestion.parent);
+                                                 $('#input_pasajeros').append('<input type="hidden" id="usuario_'+suggestion.id+'" name="usuario_'+suggestion.id+'" value="'+suggestion.id+'" />');
+                                                 $('#pasajeros_list').append('<div class="tipo_cliente" id="client'+suggestion.id+'"><a onclick="removeClient('+suggestion.id+');" href="javascript:void(0);"><i class="fa fa-times-circle orange" aria-hidden="true"></i></a>&nbsp;&nbsp;'+suggestion.nombre+'</div>');
 
-								$('#user').val('');
-								$('#user_list').removeClass('hide');
-								$('#spinDestinos').removeClass('hide');
+                                                 $('#dta_name').html(suggestion.etiqueta + ' > ' +  suggestion.parent);
 
-
-								var destinos = $('#pasajeros_list > div').length;
-								if(destinos == 0){
-									$('#user_list').addClass('hide');
-									$('#spinDestinos').addClass('hide');
-									$('#dta_name').html('user');
-									$("#id_cliente_origen").val('');
-									$("#id_cliente_destino").val('');
-									$("#id_cliente_origen").html('<option value="" disabled selected>Origenes guardados</option>');
-									$("#id_cliente_destino").html('<option value="" disabled selected>Destinos guardados</option>');
-									globalTypeUser = 'init';
-									pasajeros = [];
-								}
-
-								if(destinos == 1){
-									$.ajax({
-										url: 'operacion/getTarifa/'+suggestion.id,
-										dataType: 'json',
-											success: function(resp_success){
-												if (resp_success['resp'] == true) {
-													if(resp_success['tarifa'] == ''){
-														alerta('Cuenta sin tarifa','No existen tarifas relacionadas al cliente <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span>');
-													}else{
-														$("#exist_tarifa").val('1');
-													}
-												}
-											},
-										error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}
-									});
-									if(suggestion.tipocliente == '201'){
-										$("#id_cliente_origen").html('<option value="" disabled selected>No disponible para usuario concentrador</option>');
-										$("#id_cliente_destino").html('<option value="" disabled selected>No disponible para usuario concentrador</option>');
-									}else{
-										$.ajax({
-											url: 'operacion/selectOrigenes/'+suggestion.id,
-											dataType: 'html',
-												success: function(resp_success){
-													if( resp_success == "<option value=''>Seleccione...</option>"){
-														$('#id_cliente_origen').html("<option disabled selected value=''>Sin datos de origenes</option>");
-													}else{
-														$('#id_cliente_origen').html(resp_success);
-													}
-												},
-											error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}
-										});
-										$.ajax({
-											url: 'operacion/selectDestinos/'+suggestion.id,
-											dataType: 'html',
-												success: function(resp_success){
-													if( resp_success == "<option value=''>Seleccione...</option>"){
-														$('#id_cliente_destino').html("<option disabled selected value=''>Sin datos de destinos</option>");
-													}else{
-														$('#id_cliente_destino').html(resp_success);
-													}
-												},
-											error: function(respuesta){ alerta('Info!','Error de al seleccionar los destinos');}
-										});
-									}
-								}
-
-							}else{
-
-								alerta('Pasajero duplicado','El pasajero <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span> ya estaba en la lista.');
-								$('#user').val('');
-
-							}
-
-						}else{
-
-							alerta('Cuentas diferentes','Los usuarios deben de pertenecer a la misma cuenta, no mezcle usuarios de diferentes cuentas en un mismo viaje.');
-							$('#user').val('');
-
-						}
-					}
-				});
-
-				$('#fecha_hora').datetimepicker({
-					minDate: moment("<?=date("Y-m-d H:i")?>"),
-					defaultDate: moment("<?=date("Y-m-d H:i")?>"),
-					format: 'YYYY-MM-DD HH:mm',
-					locale: 'es',
-					icons: {
-						time: 'fa fa-clock-o',
-						date: 'fa fa-calendar',
-						up: 'fa fa-chevron-up',
-						down: 'fa fa-chevron-down',
-						previous: 'fa fa-chevron-left',
-						next: 'fa fa-chevron-right',
-						today: 'fa fa-arrows ',
-						clear: 'fa fa-trash',
-						close: 'fa fa-times'
-					}
-				}).next().on(ace.click_event, function(){
-					$(this).prev().focus();
-				});
+                                                 $('#user').val('');
+                                                 $('#user_list').removeClass('hide');
+                                                 $('#spinDestinos').removeClass('hide');
 
 
-				autosize($('textarea[class*=autosize]'));
+                                                 var destinos = $('#pasajeros_list > div').length;
+                                                 if(destinos == 0){
+                                                        $('#user_list').addClass('hide');
+                                                        $('#spinDestinos').addClass('hide');
+                                                        $('#dta_name').html('user');
+                                                        $("#id_cliente_origen").val('');
+                                                        $("#id_cliente_destino").val('');
+                                                        $("#id_cliente_origen").html('<option value="" disabled selected>Origenes guardados</option>');
+                                                        $("#id_cliente_destino").html('<option value="" disabled selected>Destinos guardados</option>');
+                                                        globalTypeUser = 'init';
+                                                        pasajeros = [];
+                                                 }
 
-				$('#spinDestino').ace_spinner({value:1,min:1,max:50,step:1, touch_spinner: true, icon_up:'ace-icon fa fa-caret-up bigger-110', icon_down:'ace-icon fa fa-caret-down bigger-110'});
+                                                 if(destinos == 1){
+                                                        $.ajax({
+                                                               url: 'operacion/getTarifa/'+suggestion.id,
+                                                               dataType: 'json',
+                                                                      success: function(resp_success){
+                                                                             if (resp_success['resp'] == true) {
+                                                                                    if(resp_success['tarifa'] == ''){
+                                                                                           alerta('Cuenta sin tarifa','No existen tarifas relacionadas al cliente <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span>');
+                                                                                    }else{
+                                                                                           $("#exist_tarifa").val('1');
+                                                                                    }
+                                                                             }
+                                                                      },
+                                                               error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}
+                                                        });
+                                                        if(suggestion.tipocliente == '201'){
+                                                               $("#id_cliente_origen").html('<option value="" disabled selected>No disponible para usuario concentrador</option>');
+                                                               $("#id_cliente_destino").html('<option value="" disabled selected>No disponible para usuario concentrador</option>');
+                                                        }else{
+                                                               $.ajax({
+                                                                      url: 'operacion/selectOrigenes/'+suggestion.id,
+                                                                      dataType: 'html',
+                                                                             success: function(resp_success){
+                                                                                    if( resp_success == "<option value=''>Seleccione...</option>"){
+                                                                                           $('#id_cliente_origen').html("<option disabled selected value=''>Sin datos de origenes</option>");
+                                                                                    }else{
+                                                                                           $('#id_cliente_origen').html(resp_success);
+                                                                                    }
+                                                                             },
+                                                                      error: function(respuesta){ alerta('Info!','Error de al seleccionar los origenes');}
+                                                               });
+                                                               $.ajax({
+                                                                      url: 'operacion/selectDestinos/'+suggestion.id,
+                                                                      dataType: 'html',
+                                                                             success: function(resp_success){
+                                                                                    if( resp_success == "<option value=''>Seleccione...</option>"){
+                                                                                           $('#id_cliente_destino').html("<option disabled selected value=''>Sin datos de destinos</option>");
+                                                                                    }else{
+                                                                                           $('#id_cliente_destino').html(resp_success);
+                                                                                    }
+                                                                             },
+                                                                      error: function(respuesta){ alerta('Info!','Error de al seleccionar los destinos');}
+                                                               });
+                                                        }
+                                                 }
 
-				$('#cordon_kpmg').dataTable( {
-					"fnDrawCallback": function( oSettings ) {
-					  $('[data-rel=tooltip]').tooltip();
-					  $('.dataTables_empty').attr('colspan',8);
-					},
-					"ordering": false,
-					"processing": true,
-					"serverSide": true,
-					"pageLength": 20,
+                                          }else{
 
-					"ajax": {
-						"url": "operacion/cordon_kpmg_get",
-						"type": "POST"
-					},
-					"columnDefs": [
-						{
-							"targets": 8,
-							"visible": false,
-							"searchable":false
-						}
-					]
-				} );
+                                                 alerta('Pasajero duplicado','El pasajero <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span> ya estaba en la lista.');
+                                                 $('#user').val('');
 
-				$('#tabla_pendientes').dataTable( {
-					"fnDrawCallback": function( oSettings ) {
-					  $('[data-rel=tooltip]').tooltip();
-					  $('.dataTables_empty').attr('colspan',8);
-					},
-					"ordering": false,
-					"processing": true,
-					"serverSide": true,
-					"pageLength": 20,
-					"ajax": {
-						"url": "operacion/servicios_pendientes",
-						"type": "POST"
-					},
-					"columnDefs": [
-						{
-							"targets": 1,
-							"visible": false,
-							"searchable":false
-						}
-					]
-				} );
-				$('#tabla_asignados').dataTable( {
-					"fnDrawCallback": function( oSettings ) {
-					  $('[data-rel=tooltip]').tooltip();
-					  $('.dataTables_empty').attr('colspan',8);
-					},
-					"ordering": false,
-					"processing": true,
-					"serverSide": true,
-					"pageLength": 20,
+                                          }
 
-					"ajax": {
-						"url": "operacion/servicios_asignados",
-						"type": "POST"
-					},
-					"columnDefs": [
-						{
-							"targets": 1,
-							"visible": false,
-							"searchable":false
-						}
-					]
-				} );
-			});
+                                   }else{
 
-			var pusher = new Pusher('<?=PUSHER_KEY?>', {
-				encrypted: true
-			});
+                                          alerta('Cuentas diferentes','Los usuarios deben de pertenecer a la misma cuenta, no mezcle usuarios de diferentes cuentas en un mismo viaje.');
+                                          $('#user').val('');
 
-			pusher.connection.bind('connected', function() {
-				console.log('✓ Servicio de actualización de cordón activo');
-			})
-
-			var updChannel1 = pusher.subscribe('updcrd1');
-			updChannel1.bind('evento', function(data) {
-				$('#cordon_kpmg').DataTable().ajax.reload();
-			});
-
-			var updChannel3 = pusher.subscribe('updpendientes');
-			updChannel3.bind('evento', function(data) {
-				$('#tabla_pendientes').DataTable().ajax.reload();
-			});
-
-			var updChannel5 = pusher.subscribe('updasignados');
-			updChannel5.bind('evento', function(data) {
-				$('#tabla_asignados').DataTable().ajax.reload();
-			});
+                                   }
+                            }
+                     });
+                     Date.prototype.toMysqlFormat = function() {
+                         return this.getFullYear() + "-" + twoDigits(1 + this.getMonth()) + "-" + twoDigits(this.getDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getMinutes()) + ":" + twoDigits(this.getSeconds());
+                     };
+                     var time = new Date();
+                     $('#fecha_hora').datetimepicker({
+                            minDate: moment(time.toMysqlFormat()),
+                            defaultDate: moment(time.toMysqlFormat()),
+                            format: 'YYYY-MM-DD HH:mm',
+                            locale: 'es',
+                            icons: {
+                                   time: 'fa fa-clock-o',
+                                   date: 'fa fa-calendar',
+                                   up: 'fa fa-chevron-up',
+                                   down: 'fa fa-chevron-down',
+                                   previous: 'fa fa-chevron-left',
+                                   next: 'fa fa-chevron-right',
+                                   today: 'fa fa-arrows ',
+                                   clear: 'fa fa-trash',
+                                   close: 'fa fa-times'
+                            }
+                     }).next().on(ace.click_event, function(){
+                            $(this).prev().focus();
+                     });
 
 
-		</script>
+                     autosize($('textarea[class*=autosize]'));
+
+                     $('#spinDestino').ace_spinner({value:1,min:1,max:50,step:1, touch_spinner: true, icon_up:'ace-icon fa fa-caret-up bigger-110', icon_down:'ace-icon fa fa-caret-down bigger-110'});
+
+                     $('#cordon_kpmg').dataTable( {
+                            "fnDrawCallback": function( oSettings ) {
+                              $('[data-rel=tooltip]').tooltip();
+                              $('.dataTables_empty').attr('colspan',8);
+                            },
+                            "ordering": false,
+                            "processing": true,
+                            "serverSide": true,
+                            "pageLength": 20,
+
+                            "ajax": {
+                                   "url": "operacion/cordon_kpmg_get",
+                                   "type": "POST"
+                            },
+                            "columnDefs": [
+                                   {
+                                          "targets": 8,
+                                          "visible": false,
+                                          "searchable":false
+                                   }
+                            ]
+                     } );
+
+                     $('#tabla_pendientes').dataTable( {
+                            "fnDrawCallback": function( oSettings ) {
+                              $('[data-rel=tooltip]').tooltip();
+                              $('.dataTables_empty').attr('colspan',8);
+                            },
+                            "ordering": false,
+                            "processing": true,
+                            "serverSide": true,
+                            "pageLength": 20,
+                            "ajax": {
+                                   "url": "operacion/servicios_pendientes",
+                                   "type": "POST"
+                            },
+                            "columnDefs": [
+                                   {
+                                          "targets": 1,
+                                          "visible": false,
+                                          "searchable":false
+                                   }
+                            ]
+                     } );
+                     $('#tabla_asignados').dataTable( {
+                            "fnDrawCallback": function( oSettings ) {
+                              $('[data-rel=tooltip]').tooltip();
+                              $('.dataTables_empty').attr('colspan',8);
+                            },
+                            "ordering": false,
+                            "processing": true,
+                            "serverSide": true,
+                            "pageLength": 20,
+
+                            "ajax": {
+                                   "url": "operacion/servicios_asignados",
+                                   "type": "POST"
+                            },
+                            "columnDefs": [
+                                   {
+                                          "targets": 1,
+                                          "visible": false,
+                                          "searchable":false
+                                   }
+                            ]
+                     } );
+              }
+       };
+}();
+
+jQuery(document).ready(function() {
+       solicitudInit.init();
+});
+</script>

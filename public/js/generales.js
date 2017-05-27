@@ -5,13 +5,14 @@
 		dataType: "json",
 		success: function(respuesta){
 			if(respuesta[0].resp=='timeout'){
-				window.location = url_app +  "login";   	 	 	
+				window.location = url_app +  "login";
 			}
-		}, 
+		},
 	error: function(){console.log('error de conectividad');}
 	});
 }
 function carga_archivo(div_contenedor,ruta,parametros){
+	$('#'+div_contenedor).empty();
 	$('#preloader').html('<span><img src="public/img/loading.gif"></span>');
 	$('#'+div_contenedor).load(ruta,parametros, function(){
 		$('#preloader').html('');
@@ -21,8 +22,8 @@ function limpia_div(div){
 	$('#'+div).html('');
 }
 function alerta(header,body){
-	
-	var modal =  
+
+	var modal =
 	'<div class="modal fade" id="myModal" tabindex="-1" role="dialog"'+
 		'aria-labelledby="myModalLabel" aria-hidden="true">'+
 		'<div class="modal-dialog">'+
@@ -62,36 +63,36 @@ function getNotificaciones(){
 			type: 'POST',
 			dataType: "json",
 			success: function(respuesta){
-				
+
 				$("#notifiaciones").html(respuesta.html);
 				$("#requisitados_validador").html(respuesta.html_req);
-				
-				
+
+
 				$('#p_notif').slimScroll({height: '260px'});
 
 				if(respuesta.count>0){
-					$('#icon-msg-noti').addClass('icon-animated-vertical');	
+					$('#icon-msg-noti').addClass('icon-animated-vertical');
 				}
-				
+
 				if(respuesta.total_planes>0){
-					$('#icon-req-noti').addClass('icon-animated-vertical');	
+					$('#icon-req-noti').addClass('icon-animated-vertical');
 				}
-				
-			}, 
+
+			},
 			error: function(){alerta('Alerta!','Error de conectividad de red GNRL-01');}
 		});
 
 	}, 100);
-	
+
 }
 var normalize = (function() {
-  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç", 
+  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç",
       to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
       mapping = {};
- 
+
   for(var i = 0, j = from.length; i < j; i++ )
       mapping[ from.charAt( i ) ] = to.charAt( i );
- 
+
   return function( str ) {
       var ret = [];
       for( var i = 0, j = str.length; i < j; i++ ) {
@@ -100,8 +101,8 @@ var normalize = (function() {
               ret.push( mapping[ c ] );
           else
               ret.push( c );
-      }      
+      }
       return ret.join( '' );
   }
- 
+
 })();
