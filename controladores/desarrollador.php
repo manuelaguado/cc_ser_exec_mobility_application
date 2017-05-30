@@ -4,6 +4,84 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
+	function adquirirTiemposBase(){
+		$coordBase = '19.434830,-99.211976';
+		$coordsUnits = substr($coordsUnits, 0, -1);
+		$resultado = self::distancematrix($coordsUnits,$coordBase);
+		$array = array();
+		foreach($resultado->rows as $n => $tb_units){
+			$array['distancia'] = $tb_units->elements[0]->distance->value;
+			$array['min'] = $tb_units->elements[0]->duration->value;
+			$array['max'] = $tb_units->elements[0]->duration_in_traffic->value;
+			$array['id_operador'] = $oper[$n];
+			$array['id_operador_unidad'] = $oper_unit[$n];
+			$array['latLng'] = $latLng[$n];
+			self::storeTB($array);
+		}
+	}
+	public function minimap(){
+
+		$url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&key=AIzaSyDXtWmQa-KeoTv_VopVhSJ-hPCTx92GMXE';
+
+	        $curl = curl_init();
+	        curl_setopt($curl, CURLOPT_URL, $url);
+	        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+	        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+	        $result = curl_exec($curl);
+	        curl_close($curl);
+	        $decode = json_decode($result);
+		 	/*
+			foreach($decode->routes as $num=>$val){
+				$kapa = $val->overview_polyline->points;
+			}
+			*/
+			$kapa = $decode->routes[0]->overview_polyline->points;
+
+		$result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
+		$imagen = $this->token(6).".png";
+		$name = "../public/tmp/".$imagen;
+		$fp = fopen($name, 'w');
+		fputs($fp, $result);
+		fclose($fp);
+		echo '<img src="../plugs/timthumb.php?src=tmp/'.$imagen.'&w=150&a=c">';
+		//echo '<img src="../tmp/'.$imagen.'">';
+	}
+	public function directions(){
+
+		$url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&key=AIzaSyDXtWmQa-KeoTv_VopVhSJ-hPCTx92GMXE';
+
+	        $curl = curl_init();
+	        curl_setopt($curl, CURLOPT_URL, $url);
+	        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+	        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+	        $result = curl_exec($curl);
+	        curl_close($curl);
+	        $decode = json_decode($result);
+		 $map = '';
+			foreach($decode->routes as $num=>$val){
+				foreach($val->legs as $n=>$v){
+					$array[] = array($v->start_location->lat,$v->start_location->lng);
+					foreach($v->steps as $m=>$k){
+						$array[] = array($k->end_location->lat,$k->end_location->lng);
+
+					}
+				}
+			}
+		$encoded = EncodedPolylineAlgorithm::encode($array);
+		echo '<br><br>'.$encoded;
+		$result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:4%7Cenc:'.$encoded.'&key='.GOOGLE_MAPS);
+		$imagen = $this->token(6).".png";
+		$name = "../public/tmp/".$imagen;
+		$fp = fopen($name, 'w');
+		fputs($fp, $result);
+		fclose($fp);
+		//echo '<img src="../plugs/timthumb.php?src=tmp/'.$imagen.'&w=150&a=c">';
+		echo '<img src="../tmp/'.$imagen.'">';
+	}
 	public function initstate(){
 		$db = Controlador::direct_connectivity();
 		$sql="
