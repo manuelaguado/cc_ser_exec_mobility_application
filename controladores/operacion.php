@@ -67,6 +67,7 @@ class Operacion extends Controlador
 	public function activar_f6($id_operador,$num){
 		$this->se_requiere_logueo(true,'Operacion|activar_f6');
 		$share = $this->loadModel('Share');
+              $operacion = $this->loadModel('Operacion');
 
               $setStat['id_operador'] = $id_operador;
               $setStat['id_operador_unidad'] = 'NULL';
@@ -80,6 +81,7 @@ class Operacion extends Controlador
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'NULL';
 
+              $operacion->setF6($id_operador);
 		$share->setStatOper($setStat);
 		print json_encode(array('resp' => true , 'mensaje' => 'El operador se suspendió correctamente.' ));
 	}
@@ -90,6 +92,7 @@ class Operacion extends Controlador
 	public function desactivar_f06_do($id_operador,$num){
 		$this->se_requiere_logueo(true,'Operacion|desactivar_f06');
 		$share = $this->loadModel('Share');
+              $operacion = $this->loadModel('Operacion');
 
               $setStat['id_operador'] = $id_operador;
               $setStat['id_operador_unidad'] = 'NULL';
@@ -103,6 +106,7 @@ class Operacion extends Controlador
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'NULL';
 
+              $operacion->unSetF6($id_operador);
 		$share->setStatOper($setStat);
 		print json_encode(array('resp' => true , 'mensaje' => 'El operador se suspendió correctamente.' ));
 	}
@@ -893,9 +897,8 @@ class Operacion extends Controlador
 				$data['data']		= 0;
 
 			self::setConfig($data);
-
-			$operador = $operacion->unidadaGlobal($service->id_operador_unidad);
-			$operacion->asignar_apartado($service->id_viaje,$operador);
+                     
+			$operacion->asignar_apartado($service->id_viaje,$service->id_operador_unidad);
 
 		}
 		////////////////////////////////////////////////////////////////////servicio al aire

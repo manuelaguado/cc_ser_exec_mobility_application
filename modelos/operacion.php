@@ -222,7 +222,7 @@ class OperacionModel{
                      $setStat['state'] = $clave;
                      $setStat['flag1'] = 'C1';
                      $setStat['flag2'] = $clave;
-                     $setStat['flag3'] = 'NULL';
+                     $setStat['flag3'] = 'F11';
                      $setStat['flag4'] = 'NULL';
                      $setStat['motivo'] = 'Viaje Concluido';
 
@@ -893,16 +893,16 @@ class OperacionModel{
 		}
 	}
 
-	function asignar_apartado($id_viaje,$operador){
-		self::relacionar_operador_apartado($id_viaje,$operador);
+	function asignar_apartado($id_viaje,$id_operador_unidad){
+		self::relacionar_operador_apartado($id_viaje,$id_operador_unidad);
 		self::set_fecha_asignacion($id_viaje);
 	}
-	function relacionar_operador_apartado($id_viaje,$operador){
+	function relacionar_operador_apartado($id_viaje,$id_operador_unidad){
 
 		$sql = "
 			UPDATE vi_viaje
 			SET
-			 id_operador_unidad = '".$operador['id_operador_unidad']."',
+			 id_operador_unidad = '".$id_operador_unidad."',
 			 cat_status_viaje	= '195'
 			WHERE
 				id_viaje = ".$id_viaje."
@@ -1321,40 +1321,14 @@ class OperacionModel{
 		}
 		return $array;
 	}
-       function unidadaGlobal($id_operador_unidad){
-		$sql ="
-                     SELECT
-                     	stt.id_operador,
-                     	stt.id_operador_unidad,
-                     	stt.id_episodio,
-                     	cr_numeq.num
-                     FROM
-                     	cr_state AS stt
-                     INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
-                     INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador_unidad = stt.id_operador_unidad
-                     INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cro.id_operador
-                     INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
-                     WHERE
-                     	stt.id_operador_unidad = $id_operador_unidad
-                     AND stt.activo = 1
-		";
-		$query = $this->db->prepare($sql);
-		$query->execute();
-		$array = array();
-		if($query->rowCount()>=1){
-			foreach ($query->fetchAll() as $row) {
-				$array['id_operador_unidad'] = $id_operador_unidad;
-                            $array['id_operador'] = $row->id_operador;
-                            $array['num'] = $row->num;
-				$array['id_episodio'] = $row->id_episodio;
-				$array['id_cordon'] = '';
-				$array['procesar'] = true;
-			}
-		}else{
-			$array['procesar'] = false;
-		}
-		return $array;
-	}
+       function setF6($id_operador){
+              $this->db->exec("UPDATE cr_operador SET cat_statusoperador = '10' WHERE id_operador = ".$id_operador);
+              $this->db->exec("UPDATE cr_operador_unidad SET status_operador_unidad = '199' WHERE id_operador = ".$id_operador);
+       }
+       function unSetF6($id_operador){
+              $this->db->exec("UPDATE cr_operador SET cat_statusoperador = '8' WHERE id_operador = ".$id_operador);
+              $this->db->exec("UPDATE cr_operador_unidad SET status_operador_unidad = '198' WHERE id_operador = ".$id_operador);
+       }
 	function unidadalAire($id_operador_unidad){
 		$sql ="
                      SELECT
