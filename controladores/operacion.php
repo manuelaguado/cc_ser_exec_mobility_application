@@ -54,6 +54,12 @@ class Operacion extends Controlador
 		$share->setStatOper($setStat);
 		print json_encode(array('resp' => true , 'mensaje' => 'El operador inició operaciones correctamente.' ));
 	}
+       public function historia_viaje($id_viaje){
+              $this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Operacion');
+		$historia = $modelo->historia_viaje($id_viaje);
+		require URL_VISTA.'modales/operacion/historia.php';
+       }
        public function modal_activar_f6($id_operador, $num){
 		$this->se_requiere_logueo(true,'Operacion|activar_f6');
 		require URL_VISTA.'modales/operacion/activar_f06.php';

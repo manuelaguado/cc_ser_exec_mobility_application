@@ -9,6 +9,51 @@ class OperacionModel{
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function historia_viaje($id_viaje){
+           $sql="
+           SELECT
+                      	num.num,
+                      	cm1.etiqueta,
+                      	cm2.valor,
+                      	stt.fecha_alta,
+                      	fwu.usuario AS solicita,
+                      	fwu2.usuario AS autoriza
+           FROM
+                      	cr_state AS stt
+                      INNER JOIN cr_operador_unidad AS crou ON stt.id_operador_unidad = crou.id_operador_unidad
+                      INNER JOIN cr_operador AS crop ON crou.id_operador = crop.id_operador
+                      INNER JOIN cr_operador_numeq AS opnum ON opnum.id_operador = crop.id_operador
+                      INNER JOIN cr_numeq AS num ON opnum.id_numeq = num.id_numeq
+                      INNER JOIN cm_catalogo AS cm1 ON cm1.etiqueta = stt.state
+                      INNER JOIN fw_usuarios AS fwu ON crop.id_usuario = fwu.id_usuario
+                      INNER JOIN cm_catalogo AS cm2 ON cm1.etiqueta = cm2.etiqueta
+                      INNER JOIN fw_usuarios AS fwu2 ON fwu2.id_usuario = stt.user_alta
+           WHERE
+           stt.id_viaje = $id_viaje
+           ORDER BY
+                      	stt.id_state ASC
+           LIMIT 0,
+                       100
+
+    ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $historia = $query->fetchAll();
+           $array = array();
+           if($query->rowCount()>=1){
+                  $num=0;
+                  foreach ($historia as $row) {
+                         $array[$num]['num'] = $row->num;
+                         $array[$num]['etiqueta'] = $row->etiqueta;
+                         $array[$num]['valor'] = $row->valor;
+                         $array[$num]['fecha_alta'] = $row->fecha_alta;
+                         $array[$num]['solicita'] = $row->solicita;
+                         $array[$num]['autoriza'] = $row->autoriza;
+                         $num++;
+                  }
+           }
+           return $array ;
+    }
     function dataViaje($id_viaje){
            $qry = "
                   SELECT
@@ -3521,7 +3566,11 @@ class acciones_asignados extends SSP{
 
 
 
-
+                                   $salida .= "
+                                          <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
+                                                 <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                          </a>
+                                   ";
 
 
 
@@ -3598,6 +3647,12 @@ class acciones_completados extends SSP{
 
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 
+                                   $salida .= "
+                                          <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
+                                                 <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                          </a>
+                                   ";
+
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
 
@@ -3632,6 +3687,12 @@ class acciones_cancelados extends SSP{
 					$salida = '';
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+
+                                   $salida .= "
+                                          <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
+                                                 <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                          </a>
+                                   ";
 
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
@@ -3908,6 +3969,12 @@ class acciones_activos extends SSP{
 							</a>&nbsp;&nbsp;';
 						}
 
+                                   $salida .= "
+                                          <a onclick='historia_operador(".$id_operador.")' data-rel='tooltip' data-original-title='Historia'>
+                                                 <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                          </a>
+                                   ";
+
 
 					$row[ $column['dt'] ] = $salida;
 
@@ -3981,6 +4048,11 @@ class acciones_inactivos extends SSP{
 							</a>&nbsp;&nbsp;';
 						}
 
+                                          $salida .= "
+                                                 <a onclick='historia_operador(".$id_operador.")' data-rel='tooltip' data-original-title='Historia'>
+                                                        <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                                 </a>
+                                          ";
 
 					$row[ $column['dt'] ] = $salida;
 				}else{

@@ -10,6 +10,50 @@ class OperadoresModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function historia($id_operador){
+           $sql="
+           SELECT
+           	num.num,
+           	cm1.etiqueta,
+           	cm2.valor,
+           	stt.fecha_alta,
+           	fwu.usuario AS solicita,
+           	fwu2.usuario AS autoriza
+           FROM
+           	cr_state AS stt
+           INNER JOIN cr_operador_unidad AS crou ON stt.id_operador_unidad = crou.id_operador_unidad
+           INNER JOIN cr_operador AS crop ON crou.id_operador = crop.id_operador
+           INNER JOIN cr_operador_numeq AS opnum ON opnum.id_operador = crop.id_operador
+           INNER JOIN cr_numeq AS num ON opnum.id_numeq = num.id_numeq
+           INNER JOIN cm_catalogo AS cm1 ON cm1.etiqueta = stt.state
+           INNER JOIN fw_usuarios AS fwu ON crop.id_usuario = fwu.id_usuario
+           INNER JOIN cm_catalogo AS cm2 ON cm1.etiqueta = cm2.etiqueta
+           INNER JOIN fw_usuarios AS fwu2 ON fwu2.id_usuario = stt.user_alta
+           WHERE
+           	crop.id_operador = $id_operador
+           ORDER BY
+           	stt.id_state DESC
+           LIMIT 0,
+            100
+    ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $historia = $query->fetchAll();
+           $array = array();
+           if($query->rowCount()>=1){
+                  $num=0;
+                  foreach ($historia as $row) {
+                         $array[$num]['num'] = $row->num;
+                         $array[$num]['etiqueta'] = $row->etiqueta;
+                         $array[$num]['valor'] = $row->valor;
+                         $array[$num]['fecha_alta'] = $row->fecha_alta;
+                         $array[$num]['solicita'] = $row->solicita;
+                         $array[$num]['autoriza'] = $row->autoriza;
+                         $num++;
+                  }
+           }
+           return $array ;
+    }
 	function listadoTelefonos($id_operador){
 		$sql="
 			SELECT

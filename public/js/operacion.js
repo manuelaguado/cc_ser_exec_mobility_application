@@ -1568,3 +1568,20 @@ function setClaveOk(id_viaje,clave){
 		});
 	} );
 }
+function historia_viaje(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/historia_viaje/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPER-101');}	
+		});
+	} );
+}
