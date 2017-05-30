@@ -28,7 +28,6 @@ class Operacion extends Controlador
 		$notificaciones = $operacion->notificacionesApartados();
 		$share->transmitir(json_encode($notificaciones),'notificarApartados');
 	}
-
        public function modal_activar_c1($id_operador, $num){
 		$this->se_requiere_logueo(true,'Operacion|activar_c1');
 		$model = $this->loadModel('Operacion');
@@ -176,11 +175,6 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->servicios_asignados($_POST);
-	}
-	public function servicios_enProceso(){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$modelo = $this->loadModel('Operacion');
-		print $modelo->servicios_enProceso($_POST);
 	}
 	public function servicios_pendientes(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -766,6 +760,25 @@ class Operacion extends Controlador
 		$data = $operacion->dataViaje($id_viaje);
 		require URL_VISTA.'modales/operacion/dataViaje.php';
 	}
+       public function selectClave($id_viaje){
+              $this->se_requiere_logueo(true,'Operacion|solicitud');
+              $operacion = $this->loadModel('Operacion');
+
+		$claves = $operacion->selectClave();
+
+		require URL_VISTA.'modales/operacion/selectClave.php';
+       }
+       public function setClaveNum($id_viaje,$clave){
+              $this->se_requiere_logueo(true,'Operacion|solicitud');
+              require URL_VISTA.'modales/operacion/setClaveNumConfirm.php';
+       }
+       public function setClaveOk($id_viaje,$clave){
+              $this->se_requiere_logueo(true,'Operacion|solicitud');
+              $operacion = $this->loadModel('Operacion');
+              $share = $this->loadModel('Share');
+              $operacion->setClaveOk($id_viaje,$clave,$share);
+              print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
+       }
 	public function cordon_ejnal(){
 		$this->se_requiere_logueo(true,'Operacion|cordon_ejnal');
 		$modelo = $this->loadModel('Operacion');

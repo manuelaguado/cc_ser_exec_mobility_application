@@ -9,101 +9,264 @@ class OperacionModel{
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-	function dataViaje($id_viaje){
-		$qry = "
-			SELECT
-				viv.id_viaje,
-				vid.fecha_solicitud,
-				vid.fecha_asignacion,
-				vid.observaciones,
-				clc.nombre,
-				dir1.calle AS calleo,
-				dir1.num_ext AS exto,
-				dir1.num_int AS int_o,
-				dir1.telefono AS telo,
-				dir1.celular AS celo,
-				dir1.referencia AS refo,
-				dir1.geocodificacion_inversa AS invo,
-				dir1.geocoordenadas AS coodo,
-				dir2.calle AS called,
-				dir2.num_ext AS extd,
-				dir2.num_int AS int_d,
-				dir2.telefono AS teld,
-				dir2.celular AS celd,
-				dir2.referencia AS refd,
-				dir2.geocodificacion_inversa AS invd,
-				dir2.geocoordenadas AS coodd,
-				cm1.etiqueta AS status_viaje,
-				cm2.etiqueta AS tipo_servicio,
-				cm3.etiqueta AS forma_pago,
-				emp.nombre AS empresa,
-				vid.redondo AS redondo,
-				vid.apartado AS apartado
-			FROM
-				vi_viaje AS viv
-			INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
-			INNER JOIN vi_viaje_clientes AS vic ON vic.id_viaje = viv.id_viaje
-			INNER JOIN cl_clientes AS clc ON vic.id_cliente = clc.id_cliente
-			INNER JOIN it_cliente_origen AS clo ON viv.id_cliente_origen = clo.id_cliente_origen
-			INNER JOIN it_origenes AS ito ON clo.id_origen = ito.id_origen
-			INNER JOIN it_direcciones AS dir1 ON ito.id_direccion = dir1.id_direccion
-			INNER JOIN it_viaje_destino AS itvd ON itvd.id_viaje = viv.id_viaje
-			INNER JOIN it_cliente_destino AS itcd ON itvd.id_cliente_destino = itcd.id_cliente_destino
-			INNER JOIN it_destinos AS itd ON itcd.id_destino = itd.id_destino
-			INNER JOIN it_direcciones AS dir2 ON itd.id_direccion = dir2.id_direccion
-			INNER JOIN vi_viaje_formapago AS vfp ON vfp.id_viaje = viv.id_viaje
-			INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
-			INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
-			INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
+    function dataViaje($id_viaje){
+           $qry = "
+                  SELECT
+                         viv.id_viaje,
+                         vid.fecha_solicitud,
+                         vid.fecha_asignacion,
+                         vid.observaciones,
+                         clc.nombre,
+                         dir1.calle AS calleo,
+                         dir1.num_ext AS exto,
+                         dir1.num_int AS int_o,
+                         dir1.telefono AS telo,
+                         dir1.celular AS celo,
+                         dir1.referencia AS refo,
+                         dir1.geocodificacion_inversa AS invo,
+                         dir1.geocoordenadas AS coodo,
+                         dir2.calle AS called,
+                         dir2.num_ext AS extd,
+                         dir2.num_int AS int_d,
+                         dir2.telefono AS teld,
+                         dir2.celular AS celd,
+                         dir2.referencia AS refd,
+                         dir2.geocodificacion_inversa AS invd,
+                         dir2.geocoordenadas AS coodd,
+                         cm1.etiqueta AS status_viaje,
+                         cm2.etiqueta AS tipo_servicio,
+                         cm3.etiqueta AS forma_pago,
+                         emp.nombre AS empresa,
+                         vid.redondo AS redondo,
+                         vid.apartado AS apartado
+                  FROM
+                         vi_viaje AS viv
+                  INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
+                  INNER JOIN vi_viaje_clientes AS vic ON vic.id_viaje = viv.id_viaje
+                  INNER JOIN cl_clientes AS clc ON vic.id_cliente = clc.id_cliente
+                  INNER JOIN it_cliente_origen AS clo ON viv.id_cliente_origen = clo.id_cliente_origen
+                  INNER JOIN it_origenes AS ito ON clo.id_origen = ito.id_origen
+                  INNER JOIN it_direcciones AS dir1 ON ito.id_direccion = dir1.id_direccion
+                  INNER JOIN it_viaje_destino AS itvd ON itvd.id_viaje = viv.id_viaje
+                  INNER JOIN it_cliente_destino AS itcd ON itvd.id_cliente_destino = itcd.id_cliente_destino
+                  INNER JOIN it_destinos AS itd ON itcd.id_destino = itd.id_destino
+                  INNER JOIN it_direcciones AS dir2 ON itd.id_direccion = dir2.id_direccion
+                  INNER JOIN vi_viaje_formapago AS vfp ON vfp.id_viaje = viv.id_viaje
+                  INNER JOIN cm_catalogo AS cm1 ON viv.cat_status_viaje = cm1.id_cat
+                  INNER JOIN cm_catalogo AS cm2 ON viv.cat_tiposervicio = cm2.id_cat
+                  INNER JOIN cm_catalogo AS cm3 ON vfp.cat_formapago = cm3.id_cat
 
-			INNER JOIN cl_clientes AS emp ON clc.parent = emp.id_cliente
-			WHERE
-				viv.id_viaje = $id_viaje
-		";
-		$query = $this->db->prepare($qry);
-		$query->execute();
-		$array = array();
-		if($query->rowCount()>=1){
-			$data = $query->fetchAll();
-			foreach ($data as $row) {
-				$array['ID'] 					= $row->id_viaje;
-				$array['Status'] 				= $row->status_viaje;
-				$array['Tipo'] 			= $row->tipo_servicio;
-				$array['Solicitado el'] 			= $row->fecha_solicitud;
-				$array['Asignado el'] 			= $row->fecha_asignacion;
-				$array['Forma de pago'] 			= $row->forma_pago;
-				$array['Redondo'] 			= $row->redondo;
-				$array['Apartado'] 			= $row->apartado;
-				$array['Empresa'] 			= $row->empresa;
-				$array['Cliente'] =$row->nombre;
+                  INNER JOIN cl_clientes AS emp ON clc.parent = emp.id_cliente
+                  WHERE
+                         viv.id_viaje = $id_viaje
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $array = array();
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  foreach ($data as $row) {
+                         $array['ID'] 					= $row->id_viaje;
+                         $array['Status'] 				= $row->status_viaje;
+                         $array['Tipo'] 			= $row->tipo_servicio;
+                         $array['Solicitado el'] 			= $row->fecha_solicitud;
+                         $array['Asignado el'] 			= $row->fecha_asignacion;
+                         $array['Forma de pago'] 			= $row->forma_pago;
+                         $array['Redondo'] 			= $row->redondo;
+                         $array['Apartado'] 			= $row->apartado;
+                         $array['Empresa'] 			= $row->empresa;
+                         $array['Cliente'] =$row->nombre;
 
-				$o5 = ($row->celo != '')?'<br><strong>Cel:</strong> '.$row->celo:'';
-				$o4 = ($row->telo != '')?'<br><strong>Tel:</strong> '.$row->telo:'';
-				$o2 = ($row->int_o != '')?'<br><strong>Int:</strong> '.$row->int_o:'';
-				$o3 = ($row->exto != '')?'<br><strong>Ext:</strong> '.$row->exto:'';
-				$o1 = ($row->calleo != '')?'<br><br><strong>Calle:</strong> '.$row->calleo:'';
+                         $o5 = ($row->celo != '')?'<br><strong>Cel:</strong> '.$row->celo:'';
+                         $o4 = ($row->telo != '')?'<br><strong>Tel:</strong> '.$row->telo:'';
+                         $o2 = ($row->int_o != '')?'<br><strong>Int:</strong> '.$row->int_o:'';
+                         $o3 = ($row->exto != '')?'<br><strong>Ext:</strong> '.$row->exto:'';
+                         $o1 = ($row->calleo != '')?'<br><br><strong>Calle:</strong> '.$row->calleo:'';
 
-				$d5 = ($row->celd != '')?'<br><strong>Cel:</strong> '.$row->celd:'';
-				$d4 = ($row->teld != '')?'<br><strong>Tel:</strong> '.$row->teld:'';
-				$d2 = ($row->int_d != '')?'<br><strong>Int:</strong> '.$row->int_d:'';
-				$d3 = ($row->extd != '')?'<br><strong>Ext:</strong> '.$row->extd:'';
-				$d1 = ($row->called != '')?'<br><br><strong>Calle:</strong> '.$row->called:'';
+                         $d5 = ($row->celd != '')?'<br><strong>Cel:</strong> '.$row->celd:'';
+                         $d4 = ($row->teld != '')?'<br><strong>Tel:</strong> '.$row->teld:'';
+                         $d2 = ($row->int_d != '')?'<br><strong>Int:</strong> '.$row->int_d:'';
+                         $d3 = ($row->extd != '')?'<br><strong>Ext:</strong> '.$row->extd:'';
+                         $d1 = ($row->called != '')?'<br><br><strong>Calle:</strong> '.$row->called:'';
 
-				$dato =  $o1.$o2.$o3.$o4.$o5;
-				$datd =  $d1.$d2.$d3.$d4.$d5;
+                         $dato =  $o1.$o2.$o3.$o4.$o5;
+                         $datd =  $d1.$d2.$d3.$d4.$d5;
 
 
-				$ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
-				$rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
+                         $ro = ($row->refo != '')?'<br><br><strong>Ref:</strong> '.$row->refo.'<br>':'';
+                         $rd = ($row->refd != '')?'<br><br><strong>Ref:</strong> '.$row->refd.'<br>':'';
 
-				$array['Origen'] 	= $row->invo.$dato.$ro;
-				$array['Destino'] 	= $row->invd.$datd.$rd;
+                         $array['Origen'] 	= $row->invo.$dato.$ro;
+                         $array['Destino'] 	= $row->invd.$datd.$rd;
 
-				$array['Observaciones'] 			= $row->observaciones;
-			}
-		}
-		return $array;
-	}
+                         $array['Observaciones'] 			= $row->observaciones;
+                  }
+           }
+           return $array;
+    }
+    function selectClave(){
+           /*TDS = Tipo de salida puede ser A10, F15, F13 o T1*/
+       $claves = array(
+              array(
+                     'clave' => 'A11',
+                     'descripcion' => 'En el punto'
+              ),
+              array(
+                     'clave' => 'A14',
+                     'descripcion' => 'Abandono'
+              ),
+              array(
+                     'clave' => 'C8',
+                     'descripcion' => 'Servidio a bordo'
+              ),
+              array(
+                     'clave' => 'A2',
+                     'descripcion' => 'Servicio por tiempo'
+              ),
+              array(
+                     'clave' => 'C9',
+                     'descripcion' => 'Servicio concluido'
+              ),
+              array(
+                     'clave' => 'C14',
+                     'descripcion' => 'Destino parcial'
+              ),
+              array(
+                     'clave' => 'C10',
+                     'descripcion' => 'Inicio de escala'
+              ),
+              array(
+                     'clave' => 'C11',
+                     'descripcion' => 'Fin de escala'
+              ),
+              array(
+                     'clave' => 'C12',
+                     'descripcion' => 'Cambio de ruta'
+              )
+       );
+
+       return $claves;
+    }
+    function setClaveOk($id_viaje,$clave,ShareModel $share){
+           $viaje = self::idensViaje($id_viaje);
+           $tds = self::tipoServicio($viaje['id_operador_unidad']);
+
+           $setStat['id_operador'] = $viaje['id_operador'];
+           $setStat['id_operador_unidad'] = $viaje['id_operador_unidad'];
+           $setStat['id_episodio'] = $viaje['id_episodio'];
+           $setStat['id_viaje'] = $id_viaje;
+           $setStat['num'] = $viaje['num'];
+           $setStat['state'] = $clave;
+           $setStat['flag1'] = 'C1';
+           $setStat['flag2'] = $tds;
+           $setStat['flag3'] = $clave;
+           $setStat['flag4'] = 'NULL';
+           $setStat['motivo'] = 'NULL';
+
+           $share->setStatOper($setStat);
+
+           switch($clave){
+                  case 'C9':
+                     $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '172' WHERE id_viaje = ".$id_viaje);
+
+                     $setStat['id_operador'] = $viaje['id_operador'];
+                     $setStat['id_operador_unidad'] = $viaje['id_operador_unidad'];
+                     $setStat['id_episodio'] = $viaje['id_episodio'];
+                     $setStat['id_viaje'] = 'NULL';
+                     $setStat['num'] = $viaje['num'];
+                     $setStat['state'] = $clave;
+                     $setStat['flag1'] = 'C1';
+                     $setStat['flag2'] = $clave;
+                     $setStat['flag3'] = 'NULL';
+                     $setStat['flag4'] = 'NULL';
+                     $setStat['motivo'] = 'Viaje Concluido';
+
+                     $share->setStatOper($setStat);
+                  break;
+                  case 'A14':
+                     $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '188' WHERE id_viaje = ".$id_viaje);
+
+                     $setStat['id_operador'] = $viaje['id_operador'];
+                     $setStat['id_operador_unidad'] = $viaje['id_operador_unidad'];
+                     $setStat['id_episodio'] = $viaje['id_episodio'];
+                     $setStat['id_viaje'] = 'NULL';
+                     $setStat['num'] = $viaje['num'];
+                     $setStat['state'] = 'C2';
+                     $setStat['flag1'] = 'C2';
+                     $setStat['flag2'] = 'NULL';
+                     $setStat['flag3'] = 'NULL';
+                     $setStat['flag4'] = 'NULL';
+                     $setStat['motivo'] = 'Abandono';
+
+                     $share->setStatOper($setStat);
+                  break;
+                  default:
+                  break;
+          }
+
+    }
+    function tipoServicio($id_operador_unidad){
+    		$query = "
+                     SELECT
+                     	cr_state.flag2
+                     FROM
+                     	cr_state
+                     WHERE
+                     	cr_state.id_operador_unidad = $id_operador_unidad
+                     AND (
+                     	cr_state.flag2 = 'A10'
+                     	OR cr_state.flag2 = 'F15'
+                     	OR cr_state.flag2 = 'F13'
+                     	OR cr_state.flag2 = 'T1'
+                     	OR cr_state.flag2 = 'T2'
+                     )
+                     ORDER BY
+                     	cr_state.id_state DESC
+                     LIMIT 0,
+                      1
+    		";
+    		$query = $this->db->prepare($query);
+    		$query->execute();
+    		$result = $query->fetchAll();
+    		$output = '';
+    		if($query->rowCount()>=1){
+    			foreach ($result as $row) {
+    				$output =  $row->flag2;
+    			}
+    		}
+    		return $output;
+    }
+    function idensViaje($id_viaje){
+           $qry = "
+                  SELECT
+                  	vi.id_operador_unidad,
+                  	vi.id_episodio,
+                  	vi.id_viaje,
+                  	opu.id_operador,
+                  	num.num
+                  FROM
+                  	vi_viaje AS vi
+                  INNER JOIN cr_operador_unidad AS opu ON vi.id_operador_unidad = opu.id_operador_unidad
+                  INNER JOIN cr_operador_numeq AS opnum ON opu.id_operador = opnum.id_operador
+                  INNER JOIN cr_numeq AS num ON opnum.id_numeq = num.id_numeq
+                  WHERE
+                  	vi.id_viaje = $id_viaje
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $viaje = array();
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  foreach ($data as $row){
+                         $viaje['id_operador_unidad'] 	= $row->id_operador_unidad;
+                         $viaje['id_episodio'] 		= $row->id_episodio;
+                         $viaje['id_viaje'] 	= $row->id_viaje;
+                         $viaje['id_operador']= $row->id_operador;
+                         $viaje['num']= $row->num;
+                  }
+           }
+           return $viaje;
+    }
 	function notificacionesApartados(){
 		$qry = "
 			SELECT
@@ -130,7 +293,7 @@ class OperacionModel{
 			AND viv.cat_tipotemporicidad = 162
 			AND vcd.fecha_requerimiento > DATE_SUB(NOW(), INTERVAL 30 MINUTE)
 			AND vcd.fecha_requerimiento < DATE_ADD(NOW(), INTERVAL 65 MINUTE)
-			AND crou.status_operador_unidad = 198
+
 			GROUP BY
 				viv.id_viaje
 			ORDER BY
@@ -1037,6 +1200,7 @@ class OperacionModel{
 		$query->execute();
 	}
 	function viajes_pendientes(){
+              // TODO: el tipo de viaje 188 abandono se da al aire por tratarse de un evento prioritario	viv.cat_status_viaje = 188
 		$sql ="
 			SELECT
 				viv.id_viaje AS id_viaje,
@@ -1044,7 +1208,7 @@ class OperacionModel{
 			FROM
 				vi_viaje AS viv
 			WHERE
-				(viv.cat_status_viaje = 170 OR viv.cat_status_viaje = 188)
+				viv.cat_status_viaje = 170
 				AND
 				viv.cat_tipotemporicidad = 184
 				AND
@@ -1711,7 +1875,7 @@ class OperacionModel{
 		if($query->rowCount()>=1){
 			$data = $query->fetchAll();
 			foreach ($data as $row) {
-				$output .=  $row->id_viaje.self::getCurrentCveOperador($row->id_operador_unidad);
+				$output .=  $row->id_viaje.self::getCurrentCveState($row->id_operador_unidad,$row->id_viaje);
 			}
 			$output = md5($output);
 			$change = ($output != $token)?true:false;
@@ -1722,25 +1886,26 @@ class OperacionModel{
 		if($change){self::tokenStatusViaje($status,$output);}
 		return $change;
 	}
-       function getCurrentCveOperador($id_operador_unidad){
+       function getCurrentCveState($id_operador_unidad,$id_viaje){
 		$qry = "
-			SELECT
-				syc.clave as llave
-			FROM
-				cr_operador_unidad AS crou
-			INNER JOIN cr_sync AS syc ON crou.sync_token = syc.token
-			INNER JOIN cm_catalogo ON syc.clave = cm_catalogo.etiqueta
-			WHERE
-				crou.id_operador_unidad = $id_operador_unidad
-			AND cm_catalogo.catalogo = 'clavesitio'
-			AND crou.status_operador_unidad = 198
+                     SELECT
+                     	cr_state.state
+                     FROM
+                     	cr_state
+                     WHERE
+                     	cr_state.id_operador_unidad = $id_operador_unidad
+                     AND cr_state.id_viaje = $id_viaje
+                     ORDER BY
+                     	cr_state.id_state DESC
+                     LIMIT 0,
+                      1
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		$array = array();
 		if($query->rowCount()>=1){
 			foreach ($query->fetchAll() as $row){
-				return	$row->llave;
+			       return $row->state;
 			}
 		}
 	}
@@ -2170,7 +2335,6 @@ class OperacionModel{
 				crc.cat_statuscordon = 113
 				OR crc.cat_statuscordon = 115
 			)
-			AND crou.status_operador_unidad = 198
 
 		";
 		$orden = "
@@ -2286,7 +2450,6 @@ class OperacionModel{
 			viv.cat_status_viaje = 179
 			AND
 			viv.cat_tipotemporicidad = 184
-			AND crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -2295,114 +2458,6 @@ class OperacionModel{
 				viv.id_viaje DESC
 		';
 		$render_table = new acciones_asignados;
-		return json_encode(
-			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
-		);
-	}
-	function servicios_enProceso($array){
-		ini_set('memory_limit', '256M');
-		$table = 'vi_viaje AS viv';
-		$primaryKey = 'id_viaje';
-		$columns = array(
-			array(
-				'db' => 'viv.id_viaje as id_viaje',
-				'dbj' => 'viv.id_viaje',
-				'real' => 'viv.id_viaje',
-				'alias' => 'id_viaje',
-				'typ' => 'int',
-				'dt' => 0
-			),
-			array(
-				'db' => 'viv.cat_status_viaje as status_viaje',
-				'dbj' => 'viv.cat_status_viaje',
-				'real' => 'viv.cat_status_viaje',
-				'alias' => 'status_viaje',
-				'typ' => 'int',
-				'dt' => 1
-			),
-			array(
-				'db' => 'vcd.fecha_solicitud as solicitud',
-				'dbj' => 'vcd.fecha_solicitud',
-				'real' => 'vcd.fecha_solicitud',
-				'alias' => 'solicitud',
-				'typ' => 'int',
-				'dt' => 2
-			),
-			array(
-				'db' => 'clc.nombre AS cliente',
-				'dbj' => 'clc.nombre',
-				'real' => 'clc.nombre',
-				'alias' => 'cliente',
-				'typ' => 'txt',
-				'dt' => 3
-			),
-			array(
-				'db' => 'clp.nombre AS empresa',
-				'dbj' => 'clp.nombre',
-				'real' => 'clp.nombre',
-				'alias' => 'empresa',
-				'typ' => 'txt',
-				'dt' => 4
-			),
-			array(
-				'db' => 'service.etiqueta AS servicio',
-				'dbj' => 'service.etiqueta',
-				'real' => 'service.etiqueta',
-				'alias' => 'servicio',
-				'typ' => 'txt',
-				'dt' => 5
-			),
-			array(
-				'db' => 'tempo.etiqueta AS temporicidad',
-				'dbj' => 'tempo.etiqueta',
-				'real' => 'tempo.etiqueta',
-				'alias' => 'temporicidad',
-				'typ' => 'txt',
-				'dt' => 6
-			),
-			array(
-				'db' => 'num_eq.num AS numq',
-				'dbj' => 'num_eq.num',
-				'real' => 'num_eq.num',
-				'alias' => 'numq',
-				'typ' => 'int',
-				'dt' => 7
-			),
-			array(
-				'db' => 'vcl.id_cliente AS id_cliente',
-				'dbj' => 'vcl.id_cliente',
-				'real' => 'vcl.id_cliente',
-				'alias' => 'id_cliente',
-				'typ' => 'int',
-				'acciones' => true,
-				'dt' => 8
-			)
-		);
-		$inner = '
-			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
-			INNER JOIN vi_viaje_clientes AS vcl ON vcl.id_viaje = viv.id_viaje
-			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
-			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
-			INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
-			INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
-			INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
-			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
-			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
-			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
-		';
-		$where = '
-			viv.cat_status_viaje = 171
-			AND
-			viv.cat_tipotemporicidad = 184
-			AND crou.status_operador_unidad = 198
-		';
-		$orden = '
-			GROUP BY
-				viv.id_viaje
-			ORDER BY
-				viv.id_viaje DESC
-		';
-		$render_table = new acciones_enproceso;
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
@@ -2601,8 +2656,7 @@ class OperacionModel{
 				NOW() < vcd.fecha_requerimiento
 			AND
 				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 60 MINUTE)
-			AND
-				crou.status_operador_unidad = 198
+
 		';
 		$orden = '
 			GROUP BY
@@ -2714,8 +2768,7 @@ class OperacionModel{
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 60 MINUTE)
 			AND
 				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 90 MINUTE)
-			AND
-				crou.status_operador_unidad = 198
+
 		';
 		$orden = '
 			GROUP BY
@@ -2827,8 +2880,7 @@ class OperacionModel{
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 90 MINUTE)
 			AND
 				vcd.fecha_requerimiento < DATE_ADD(NOW(),	INTERVAL 1 DAY)
-			AND
-				crou.status_operador_unidad = 198
+
 		';
 		$orden = '
 			GROUP BY
@@ -2938,8 +2990,7 @@ class OperacionModel{
 				viv.cat_tipotemporicidad = 162
 			AND
 				vcd.fecha_requerimiento >= DATE_ADD(NOW(),	INTERVAL 1 DAY)
-			AND
-				crou.status_operador_unidad = 198
+
 		';
 		$orden = '
 			GROUP BY
@@ -3070,8 +3121,6 @@ class OperacionModel{
 				viv.cat_tipotemporicidad = 162
 			AND
 				NOW() > vcd.fecha_requerimiento
-			AND
-				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3178,8 +3227,6 @@ class OperacionModel{
 		';
 		$where = '
 			viv.cat_status_viaje = 172
-			AND
-				crou.status_operador_unidad = 198
 		';
 		$orden = '
 			GROUP BY
@@ -3414,37 +3461,6 @@ class acciones_pendientes extends SSP{
 		return $out;
 	}
 }
-class acciones_enproceso extends SSP{
-	static function data_output ( $columns, $data, $db )
-	{
-		$out = array();
-		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-			$row = array();
-
-			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-				$column = $columns[$j];
-				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-
-				if ( isset( $column['acciones'] ) ) {
-					$id_cliente = $data[$i][ 'id_cliente' ];
-					$id_viaje = $data[$i][ 'id_viaje' ];
-
-					$salida = '';
-					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'proceso\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'proceso\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
-
-					$row[ $column['dt'] ] = $salida;
-				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];
-				}
-
-			}
-			$out[] = $row;
-		}
-		return $out;
-	}
-}
 class acciones_asignados extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{
@@ -3474,6 +3490,44 @@ class acciones_asignados extends SSP{
 
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 
+                                   $salida .= '<a onclick="selectClave('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Establecer Clave"><i class="fa fa-sliders" style="font-size:1.4em; color:#b16500;"></i></a>&nbsp;&nbsp;';
+
+
+
+
+
+
+                                   $cveStat = self::getCurrentCveOperador($id_operador_unidad,$db);
+
+					switch ($cveStat['clave']){
+						case 'A10':	$color = '#9DBF00';	break;
+						case 'F15':	$color = '#697F00';	break;
+						case 'F13':	$color = '#001A40';	break;
+						case 'T1':	$color = '#344000';	break;
+						case 'T2':	$color = '#1a6600';	break;
+						case 'A11':	$color = '#BF9A16';	break;
+						case 'A14':	$color = '#403307';	break;
+						case 'C8':	$color = '#E5B81A';	break;
+						case 'A2':	$color = '#BF3000';	break;
+						case 'C9':	$color = '#7F2000';	break;
+						case 'C14':	$color = '#401000';	break;
+						case 'C10':	$color = '#E53A00';	break;
+						case 'C11':	$color = '#004EBF';	break;
+						case 'C12':	$color = '#00347F';	break;
+						default:	$color = '#000000';	break;
+					}
+
+					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background:'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
+
+
+
+
+
+
+
+
+
+
 					$salida .= '</div>';
 
 					$row[ $column['dt'] ] = $salida;
@@ -3486,8 +3540,42 @@ class acciones_asignados extends SSP{
 		}
 		return $out;
 	}
-}
+       static function getCurrentCveOperador($id_operador_unidad,$db){
+		$qry = "
+                     SELECT
+                     	cr_state.state,
+                     	cm_catalogo.valor
+                     FROM
+                     	cr_state
+                     INNER JOIN cm_catalogo ON cr_state.state = cm_catalogo.etiqueta
+                     WHERE
+                     	cr_state.id_operador_unidad = $id_operador_unidad
+                     AND (
+                     	cr_state.flag2 = 'A10'
+                     	OR cr_state.flag2 = 'F15'
+                     	OR cr_state.flag2 = 'F13'
+                     	OR cr_state.flag2 = 'T1'
+                     	OR cr_state.flag2 = 'T2'
+                     )
+                     AND cm_catalogo.catalogo = 'clavesitio'
+                     ORDER BY
+                     	cr_state.id_state DESC
+                     LIMIT 0,
+                      1
+		";
+		$query = $db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row){
+				$array['clave']	=	$row['state'];
+				$array['valor']	=	$row['valor'];
+			}
+		}
+		return $array;
+	}
 
+}
 class acciones_completados extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{
@@ -3498,7 +3586,7 @@ class acciones_completados extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-
+#ffc700
 				if ( isset( $column['acciones'] ) ) {
 					$id_viaje = $data[$i][ 'id_viaje' ];
 

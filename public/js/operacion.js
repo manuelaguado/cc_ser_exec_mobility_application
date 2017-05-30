@@ -1515,3 +1515,56 @@ function meteralCordon(id_operador_unidad,id_episodio,base,statuscordon){
 		});
 	} );
 }
+function selectClave(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/selectClave/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-98');}
+		});
+	} );
+}
+function setClaveNum(clave,id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/setClaveNum/' + id_viaje + '/' + clave,
+			dataType: 'html',
+				success: function(resp_success){
+					$('#myModal').modal('hide');
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-99');}
+		});
+	} );
+}
+function setClaveOk(id_viaje,clave){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/setClaveOk/' + id_viaje + '/' + clave,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+					$('#myModal2').modal('hide');
+					$('#tabla_asignados').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-100');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-100');}
+		});
+	} );
+}
