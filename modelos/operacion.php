@@ -495,7 +495,6 @@ class OperacionModel{
 		$query = $this->db->prepare($qry);
 		$query->execute();
 	}
-       // TODO: Aqui aparecio un error lineas 346 y 358 al crear un apartado
 	function resetOrIncrement($id_operador){
 		$qry = "
 			SELECT
@@ -1245,7 +1244,7 @@ class OperacionModel{
 		$query->execute();
 	}
 	function viajes_pendientes(){
-              // TODO: el tipo de viaje 188 abandono se da al aire por tratarse de un evento prioritario	viv.cat_status_viaje = 188
+
 		$sql ="
 			SELECT
 				viv.id_viaje AS id_viaje,

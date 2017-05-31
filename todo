@@ -1,3 +1,4 @@
 TODO: se debe de eliminar la base de datos vi_viajes_claves por ya no ser util
 TODO: verificar la tabla de incidencias de viajes y ver donde se requisita
 TODO: verificar el comportamiento de las alertas de los apartados por que se muestran los caducos
+TODO: crear claves para un viaje que cambio de destino y setearlas controladores > operacion > modificar_destino_do
