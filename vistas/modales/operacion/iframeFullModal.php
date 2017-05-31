@@ -52,7 +52,7 @@
 		}
 		#target {
 			width: 345px;
-		}			
+		}
 	</style>
     <script>
 		function initMap() {
@@ -65,16 +65,16 @@
 				zoom: 12,
 				center: latLng
 			});
-			
+
 			var input = document.getElementById('pac-input');
 			var searchBox = new google.maps.places.SearchBox(input);
 			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
 			map.addListener('bounds_changed', function() {
 				searchBox.setBounds(map.getBounds());
-			});			
+			});
 
-			
+
 			var markers = [];
 			searchBox.addListener('places_changed', function() {
 				var places = searchBox.getPlaces();
@@ -113,8 +113,8 @@
 				map.fitBounds(bounds);
 				$('#origen_referencia', window.parent.document).val($('#pac-input').val() + ' ');
 			});
-			
-			
+
+
 			google.maps.event.addListener(map, "dblclick", function(event) {
 				var lat = event.latLng.lat();
 				var lng = event.latLng.lng();
@@ -122,14 +122,14 @@
 				$.post( "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"&key=<?=GOOGLE_MAPS?>", function( data ) {
 					var promise = new Promise(function(done,fail){
 						$( "#geocodificacion_inversa_origen", window.parent.document ).val(data.results[0].formatted_address);
-						
+
 						var breakit = (data.results[0].address_components).length;
 						for(var i in data.results[0].address_components){
 							for(var k in data.results[0].address_components[i].types){
-								
+
 								switch (data.results[0].address_components[i].types[k]) {
-									
-									
+
+
 									case 'locality':
 										$('#origen_referencia', window.parent.document).val($('#origen_referencia', window.parent.document).val() + data.results[0].address_components[i].long_name + ' ');
 										break;
@@ -151,14 +151,7 @@
 										$('#origen_hide_ok', window.parent.document).removeClass('hide');
 										break;
 									case 'postal_code':
-										$.post( "../asentamientos/busqueda_cp?query="+data.results[0].address_components[i].long_name, function( result ) {
-											
-											var dat = JSON.parse(result);
-											if(dat.suggestions[0] != null){
-												$('#id_asentamiento_origen', window.parent.document).val(dat.suggestions[0].data);
-												$('#asentamiento_origen', window.parent.document).val(dat.suggestions[0].colonia+', '+dat.suggestions[0].cp+',  '+dat.suggestions[0].ciudad+', '+dat.suggestions[0].municipio+', '+dat.suggestions[0].estado);
-											}
-										});
+										
 										break;
 									default:
 										break;
@@ -181,14 +174,14 @@
 					})
 				});
 			});
-		}	
+		}
     </script>
 	</head>
 	<body>
 		<input id="pac-input" class="controls" type="text" placeholder="Referencia">
 		<div id="map" style="height:740px !important"></div>
 	</body>
-	
+
 	<script src="<?=URL_PUBLIC?>js/generales.js"></script>
 	<script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=<?=GOOGLE_MAPS?>&libraries=places&signed_in=true&callback=initMap" async defer></script>

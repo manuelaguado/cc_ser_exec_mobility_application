@@ -14,6 +14,13 @@ span.input-icon > textarea {
 #cordon_kpmg > tbody > tr > td:nth-child(8){padding: 0px;vertical-align: middle;}
 #cordon_kpmg > tbody > tr > td:nth-child(8) > a:nth-child(1){position:relative; top:-7px;}
 .autocomplete-suggestions{width:auto !important;}
+.inside{
+       position: relative;
+       font-size: .7em;
+       left: -10px;
+       top: 5px;
+       color: #000;
+}
 </style>
 <div class="main-content">
 	<div class="main-content-inner">
@@ -38,33 +45,35 @@ span.input-icon > textarea {
 								<i class="ace-icon fa fa-gear bigger-110"></i>
 								Procesar
 							</a>
-
-							<input type="hidden" id="origen_calle" name="origen_calle" value="" />
-							<input type="hidden" id="origen_num_ext" name="origen_num_ext" value="" />
-							<input type="hidden" id="origen_num_int" name="origen_num_int" value="" />
-							<input type="hidden" id="origen_telefono" name="origen_telefono" value="" />
-							<input type="hidden" id="origen_celular" name="origen_celular" value="" />
-
-							<input type="hidden" id="destino_calle" name="destino_calle" value="" />
-							<input type="hidden" id="destino_num_ext" name="destino_num_ext" value="" />
-							<input type="hidden" id="destino_num_int" name="destino_num_int" value="" />
-							<input type="hidden" id="destino_telefono" name="destino_telefono" value="" />
-							<input type="hidden" id="destino_celular" name="destino_celular" value="" />
-
-							<input type="hidden" id="id_operador_unidad" name="id_operador_unidad" value="" />
-							<input type="hidden" id="id_operador" name="id_operador" value="" />
-							<input type="hidden" id="id_operador_turno" name="id_operador_turno" value="" />
-							<input type="hidden" id="turno_apartado" name="turno_apartado" value="" />
-							<input type="hidden" id="numero_economico" name="numero_economico" value="" />
-
-							<input type="hidden" id="msgPaqArray" name="msgPaqArray" value="" />
-
-							<input type="hidden" id="temporicidad" name="temporicidad" value="184" />
-							<input type="hidden" id="exist_tarifa" name="exist_tarifa" value="0" />
-
 							<span id="input_pasajeros"></span>
 							</h1>
 						</div>
+
+                                          <input type="hidden" id="origen_calle" name="origen_calle" value="" />
+                                          <input type="hidden" id="origen_num_ext" name="origen_num_ext" value="" />
+                                          <input type="hidden" id="origen_num_int" name="origen_num_int" value="" />
+                                          <input type="hidden" id="origen_telefono" name="origen_telefono" value="" />
+                                          <input type="hidden" id="origen_celular" name="origen_celular" value="" />
+
+                                          <input type="hidden" id="destino_calle" name="destino_calle" value="" />
+                                          <input type="hidden" id="destino_num_ext" name="destino_num_ext" value="" />
+                                          <input type="hidden" id="destino_num_int" name="destino_num_int" value="" />
+                                          <input type="hidden" id="destino_telefono" name="destino_telefono" value="" />
+                                          <input type="hidden" id="destino_celular" name="destino_celular" value="" />
+
+                                          <input type="hidden" id="id_operador_unidad" name="id_operador_unidad" value="" />
+                                          <input type="hidden" id="id_operador" name="id_operador" value="" />
+                                          <input type="hidden" id="id_operador_turno" name="id_operador_turno" value="" />
+                                          <input type="hidden" id="turno_apartado" name="turno_apartado" value="" />
+                                          <input type="hidden" id="numero_economico" name="numero_economico" value="" />
+
+                                          <input type="hidden" id="msgPaqArray" name="msgPaqArray" value="" />
+
+                                          <input type="hidden" id="temporicidad" name="temporicidad" value="184" />
+                                          <input type="hidden" id="exist_tarifa" name="exist_tarifa" value="0" />
+
+                                          <input type="hidden" id="refmod_aux" name="refmod_aux" value="" />
+
 						<div class="row">
 								<div class="col-sm-3">
 									<div class="widget-header widget-header-flat">

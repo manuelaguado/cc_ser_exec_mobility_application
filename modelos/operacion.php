@@ -1453,6 +1453,26 @@ class OperacionModel{
 		}
 		return $output;
 	}
+       function idClienteViaje($id_viaje){
+              $qry = "
+                     SELECT
+                     	cd.id_cliente
+                     FROM
+                     	it_cliente_destino AS cd
+                     INNER JOIN it_viaje_destino AS vd ON vd.id_cliente_destino = cd.id_cliente_destino
+                     INNER JOIN vi_viaje AS vi ON vd.id_viaje = vi.id_viaje
+                     WHERE
+                     	vi.id_viaje = $id_viaje
+		";
+		$query = $this->db->prepare($qry);
+		$query->execute();
+		$array = array();
+		if($query->rowCount()>=1){
+			foreach ($query->fetchAll() as $row){
+			       return $row->id_cliente;
+			}
+		}
+       }
 	function insert_viaje($service){
 		$id_tarifa_cliente = self::id_tarifa_cliente($service->id_cliente);
 		$sql = "
@@ -1528,6 +1548,17 @@ class OperacionModel{
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
 				);
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}
+       function update_viajeDestino($service){
+              $sql = "
+			UPDATE it_viaje_destino
+			SET
+			 id_cliente_destino 	= '".$service->id_cliente_destino."'
+			WHERE
+				id_viaje = ".$service->id_viaje."
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -3547,7 +3578,11 @@ class acciones_asignados extends SSP{
                                    ";
 
 
-
+                                   $salida .= "
+                                          <a onclick='modificar_destino(".$id_viaje.")' data-rel='tooltip' data-original-title='Modificar destino'>
+                                                 <i class='fa fa-map-o' style='font-size:1.4em; color:green; position:relative; top:-5px;'><i class='fa-location-arrow fa_asub red'></i></i>
+                                          </a>
+                                   ";
 
 
 
@@ -3624,6 +3659,12 @@ class acciones_completados extends SSP{
                                    $salida .= "
                                           <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
                                                  <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                          </a>
+                                   ";
+
+                                   $salida .= "
+                                          <a onclick='modificar_destino(".$id_viaje.")' data-rel='tooltip' data-original-title='Modificar destino'>
+                                                 <i class='fa fa-map-o' style='font-size:1.4em; color:green; position:relative; top:-5px;'><i class='fa-location-arrow fa_asub red'></i></i>
                                           </a>
                                    ";
 

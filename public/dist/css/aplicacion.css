@@ -1,7 +1,7 @@
 #preloader span{
     background: none repeat scroll 0 0 #FFF;
 	margin:-15px;
-	
+
     text-align: center;
     width: 100%;
 	height:2000px;
@@ -156,44 +156,44 @@
 	font-family:courier;
 	color:red;
 }
-.autocomplete-suggestions { 
-	border:1px solid #999; 
-	background-color:#FFFFFF; 
-	position:absolute; 
-	top:-5px; 
+.autocomplete-suggestions {
+	border:1px solid #999;
+	background-color:#FFFFFF;
+	position:absolute;
+	top:-5px;
 	left:-5px;
 	overflow:scroll;
 	overflow-x:hidden;
-	overflow-y:scroll;	
-	_background:none; 
+	overflow-y:scroll;
+	_background:none;
 	_margin:1px 0 0 0;
-} 
-.autocomplete-suggestion { 
-	background:#FFF; 
-	cursor:default; 
-	text-align:left; 
-	max-height:350px; 
-	_height:350px;  
-	_margin:0; 
-	_overflow-x:hidden; 
-	max-height: 400px; 
+}
+.autocomplete-suggestion {
+	background:#FFF;
+	cursor:default;
+	text-align:left;
+	max-height:350px;
+	_height:350px;
+	_margin:0;
+	_overflow-x:hidden;
+	max-height: 400px;
 	z-index: 10000;
-	margin:3px 3px 0 10px;	
-} 
-.autocomplete-suggestion:hover{ 
+	margin:3px 3px 0 10px;
+}
+.autocomplete-suggestion:hover{
 	background:#E0E6FF;
-} 
-.autocomplete-suggestion .selected { 
-	background:#F0F0F0; 
-} 
-.autocomplete-suggestion div { 
-	padding:2px 5px; 
-	white-space:nowrap; 
-	overflow:hidden; 
-} 
-.autocomplete-suggestion strong { 
-	font-weight:normal; 
-	color:#3399FF; 
+}
+.autocomplete-suggestion .selected {
+	background:#F0F0F0;
+}
+.autocomplete-suggestion div {
+	padding:2px 5px;
+	white-space:nowrap;
+	overflow:hidden;
+}
+.autocomplete-suggestion strong {
+	font-weight:normal;
+	color:#3399FF;
 }
 
 
@@ -230,7 +230,7 @@ header:before,
 	max-height:90px;
 	border:3px solid #fff;
 	display: block;
-	
+
 	box-shadow:0 0 2px #000;
 }
 #dropbox .imageHolder{
@@ -265,9 +265,9 @@ header:before,
 	height:100%;
 	left:0;
 	width:0;
-	
+
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.4) inset;
-	
+
 	-moz-transition:0.25s;
 	-webkit-transition:0.25s;
 	-o-transition:0.25s;
@@ -291,9 +291,9 @@ header:before,
 	cursor:pointer !important;
 }
 .new_folio{
-	font-size:1.5em; 
-	margin:5px; 
-	text-indent:20px; 
+	font-size:1.5em;
+	margin:5px;
+	text-indent:20px;
 	color:#098500;
 }
 .new_folio:before { content: "Nuevo folio en CAU: "; }
@@ -397,7 +397,7 @@ header:before,
 .notifica_msg > li > a {
  border-bottom: 1px solid;
     border-bottom-color: #e4ecf3;
-    
+
     font-size: 12px !important;
     line-height: 16px;
     margin: 0;
@@ -411,7 +411,7 @@ header:before,
     display: block;
     font-weight: normal;
     line-height: 1.42857;
-    
+
     white-space: nowrap;
 
 }
@@ -431,7 +431,7 @@ a:hover, a:focus {
     text-decoration: none !important;
 }
 .scroll_fail{
-	max-height:250px; 
+	max-height:250px;
 	overflow-x:hidden;
 	overflow-y:hidden;
 }
@@ -495,7 +495,7 @@ div.dataTables_processing {
 .mensaje_box{
 	margin: 0px;
     width: 100%;
-    height: 164px;	
+    height: 164px;
 }
 .msj_verify {
     position: relative;
@@ -553,7 +553,7 @@ table#tb_act_oper tbody > tr > td{
   height: auto;
 }
 .origen_destiono_set{
-	position:relative; 
+	position:relative;
 	float:right;
 	font-size:3em;
 	color:#d7f28c;
@@ -601,7 +601,7 @@ table#tb_act_oper tbody > tr > td{
     padding: 10px 5px;
     width: 40px;
     position: relative;
-    border-radius: 9px;	
+    border-radius: 9px;
 	-webkit-box-shadow: 1px 1px 4px 0px #1e77c4;
 }
 .num_notif_red{
@@ -616,12 +616,12 @@ table#tb_act_oper tbody > tr > td{
     padding: 10px 5px;
     width: 40px;
     position: relative;
-    border-radius: 9px;	
+    border-radius: 9px;
 	-webkit-box-shadow: 1px 1px 4px 0px #1e77c4;
 }
 #websockets_switch{
 	position:relative;
-	top:10px;	
+	top:10px;
 }
 #websockets_switch > input[type=checkbox].ace.ace-switch.ace-switch-4:checked + .lbl::before,#websockets_switch >  input[type=checkbox].ace.ace-switch.ace-switch-5:checked + .lbl::before{
     text-indent: 5px;
@@ -643,4 +643,39 @@ table#tb_act_oper tbody > tr > td{
     display: inline-block;
     color: #909090;
     font-size: 16px;
+}
+.fa_sup{
+       position: relative;
+       font-size: .7em;
+       left: -10px;
+       top: -10px;
+       color: #000;
+}
+.fa_sub{
+       position: relative;
+       font-size: .7em;
+       left: -10px;
+       top: 5px;
+       color: #000;
+}
+.fa_asup{
+       position: relative;
+       font-size: .7em;
+       left: -25px;
+       top: -10px;
+       color: #000;
+}
+.fa_asub{
+       position: relative;
+       font-size: .7em;
+       left: -25px;
+       top: 5px;
+       color: #000;
+}
+.fa_inside{
+       position: relative;
+       font-size: .6em;
+       left: -17px;
+       top: -2px;
+       color: #000;
 }

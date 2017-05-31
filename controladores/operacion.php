@@ -236,6 +236,47 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/mapCoordSelect_destino.php';
 	}
+       public function modificar_destinoMap($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$_SESSION['busqueda_ciudad'] = '102';
+		require URL_VISTA.'modales/operacion/modificar_destinoMap.php';
+	}
+       public function modificar_destino($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		require URL_VISTA.'modales/operacion/modificar_destino.php';
+	}
+       public function modificar_destino_do(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+              $cliente = $this->loadModel('Clientes');
+              $operacion = $this->loadModel('Operacion');
+              /*
+              destino_referencia = a
+              destino_calle = b
+              destino_numero_exterior = c
+              geocoordenadas destino = d
+              geocodificacion_inversa_destino = e
+              id_viaje = f
+              */
+              // TODO: esto podria duplicar direcciones existentes, pero es el camino lógico
+              // TODO: crear claves para un viaje que cambio de destino y setearlas aqui, considerar id_operador_unidad
+              $service = new stdClass;
+
+              $service->id_viaje                               =$_POST['f'];
+              $service->destino_calle                          =$_POST['b'];
+              $service->destino_num_ext                        =$_POST['c'];
+              $service->destino_num_int                        ='';
+              $service->destino_telefono                       ='';
+              $service->destino_celular                        ='';
+              $service->destino_referencia                     =$_POST['a'];
+              $service->geocodificacion_inversa_destino        =$_POST['e'];
+              $service->geocoordenadas_destino                 =$_POST['d'];
+              $service->id_cliente                             =$operacion->idClienteViaje($service->id_viaje);
+              $service->id_cliente_destino                     =$cliente->insertDestino($service);
+
+
+              $operacion->update_viajeDestino($service);
+              print json_encode(array('resp' => true));
+	}
 	public function activar_cancelacion($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/activar_cancelacion.php';
@@ -897,7 +938,7 @@ class Operacion extends Controlador
 				$data['data']		= 0;
 
 			self::setConfig($data);
-                     
+
 			$operacion->asignar_apartado($service->id_viaje,$service->id_operador_unidad);
 
 		}

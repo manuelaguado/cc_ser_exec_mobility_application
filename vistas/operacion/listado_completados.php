@@ -45,6 +45,7 @@ div.table-responsive div#completados_wrapper.dataTables_wrapper.form-inline.dt-b
 		</div>
 	</div>
 </div>
+<input type="hidden" id="refmod_aux" name="refmod_aux" value="" />
 <script type="text/javascript" language="javascript" class="init">
 $(document).ready(function() {
 	$('#completados').dataTable( {
