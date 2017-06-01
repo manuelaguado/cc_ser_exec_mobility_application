@@ -217,9 +217,9 @@ class OperacionModel{
            //obtener km PROMEDIO
            //obtener mapas
            //geocoordenadas de origen
-           //geocoordenadas destino           
-                     $id_statics =  self::insertStatic($viaje);
-                     $route = self::routesalternatives($origen,$destino,$id_statics);
+           //geocoordenadas destino
+                     $id_statics =  self::insertStatic($viaje,$time_arribo,$tiempo_espera,$tiempo_viaje);
+                     self::routesalternatives($origen,$destino,$id_statics);
 
            //obtener el costo del viaje
            //obtener costos adicionales
@@ -348,32 +348,6 @@ class OperacionModel{
                   VALUES
                          (
                                 '".$id_statics."',
-                                '".$this->ruta_file."',
-                                '".$this->km."',
-                                '".$this->minutos."',
-                                '".$this->sumario."',
-                                '".$_SESSION['id_usuario']."',
-                                '".date("Y-m-d H:i:s")."'
-                         );
-           ";
-           $query = $this->db->prepare($qry);
-           $query->execute();
-    }
-    public function insertAlternativa($arreglo){
-           foreach ($arreglo as $key => $value) {
-                  $this->$key = strip_tags($value);
-           }
-           $qry = "
-                  INSERT INTO `vi_viaje_alternativas` (
-                         `ruta_file`,
-                         `km`,
-                         `minutos`,
-                         `sumario`,
-                         `user_alta`,
-                         `fecha_alta`
-                  )
-                  VALUES
-                         (
                                 '".$this->ruta_file."',
                                 '".$this->km."',
                                 '".$this->minutos."',
