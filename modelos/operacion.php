@@ -192,6 +192,12 @@ class OperacionModel{
 
        return $claves;
     }
+    function diferenciaFechasxx($init,$end){
+           $datetime1 = new DateTime($init);
+           $datetime2 = new DateTime($end);
+           $dteDiff = $datetime1->diff($datetime2);
+           return $dteDiff->format("%H:%I:%S");
+    }
     function procesarViajeFinalizado($viaje,$tds){
            foreach ($viaje as $key => $value) {
                   $this->$key = strip_tags($value);
@@ -201,13 +207,13 @@ class OperacionModel{
            //obtener tiempo entre tds(A10,F13,F15,T1,T2) y A11 Tiempo de llegada
                      $init_tds = self::init_tds($this->id_viaje);
                      $time_a11 = self::getDateClave($this->id_viaje,'A11');
-                     $time_arribo = diferenciaFechas($init_tds,$end_tds);
+                     $time_arribo = Controller::diferenciaFechas($init_tds,$time_a11);
            //obtener tiempo entre A11 y C8 Tiempo de espera
                      $time_c8 = self::getDateClave($this->id_viaje,'C8');
-                     $tiempo_espera = diferenciaFechas($time_a11,$time_c8);
+                     $tiempo_espera = Controller::diferenciaFechas($time_a11,$time_c8);
            //obtener tiempo entre C8 y C9 Tiempo del viaje
                      $time_c9 = self::getDateClave($this->id_viaje,'C9');
-                     $tiempo_viaje = diferenciaFechas($time_c8,$time_c9);
+                     $tiempo_viaje = Controller::diferenciaFechas($time_c8,$time_c9);
            //obtener alternativas de curso
            //obtener tiempo entre origen y destino MAX
            //obtener tiempo entre origen y destino MIN
@@ -219,11 +225,89 @@ class OperacionModel{
            //geocoordenadas de origen
            //geocoordenadas destino
                      $id_statics =  self::insertStatic($viaje,$time_arribo,$tiempo_espera,$tiempo_viaje);
-                     self::routesalternatives($origen,$destino,$id_statics);
+                     $upsSttcs = self::routesalternatives($this->georigen,$this->geodestino,$id_statics,$this->id_viaje);
 
            //obtener el costo del viaje
+                     $costoData = self::getCostViaje($this->id_viaje,$upsSttcs['kmss_max']);
+
            //obtener costos adicionales
-           //obtener costo total del viaje
+                     $adicional = self::getCostosAdicionales($this->id_viaje);
+                     self::updateStaticsCosts($costoData['costo'],$adicional,$id_statics,$costoData['id_tarifa_cliente']);
+
+    }
+    public function updateStaticsCosts($costo,$adicional,$id_statics,$id_tarifa_cliente){
+           $total = $costo + $adicional;
+           $qry = "
+                  UPDATE `vi_viaje_statics`
+                  SET
+                     `id_tarifa_cliente` = '".$id_tarifa_cliente."',
+                     `costo_viaje` = '".$costo."',
+                     `costos_adicionales` = '".$adicional."',
+                     `costo_total` = '".$total."'
+
+                  WHERE
+                         (`id_viaje_statics` = $id_statics);
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+    }
+    function getCostosAdicionales($id_viaje){
+           $sql ="
+                  SELECT
+                  	Sum(
+                  		vi_costos_adicionales.costo
+                  	) AS total
+                  FROM
+                  	vi_costos_adicionales
+                  WHERE
+                  	vi_costos_adicionales.id_viaje = $id_viaje
+           ";
+
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $array = array();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         return  $row->total;
+                  }
+           }
+    }
+    function getCostViaje($id_viaje,$km){
+           $sql ="
+                  SELECT
+                  	tc.costo_base,
+                  	tc.km_adicional,
+                  	tc.tabulado,
+                  	c2.etiqueta AS tipo,
+                     vi.id_tarifa_cliente
+                  FROM
+                  	vi_viaje AS vi
+                  INNER JOIN cl_tarifas_clientes AS tc ON vi.id_tarifa_cliente = tc.id_tarifa_cliente
+                  INNER JOIN cm_catalogo AS c2 ON tc.cat_tipo_tarifa = c2.id_cat
+                  WHERE
+                  	vi.id_viaje = $id_viaje
+           ";
+
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $array = array();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         $array['costo_base'] = $row->costo_base;
+                         $array['km_adicional'] = $row->km_adicional;
+                         $array['tabulado'] = $row->tabulado;
+                         $array['tipo'] = $row->tipo;
+                         $array['id_tarifa_cliente'] = $row->id_tarifa_cliente;
+                  }
+           }
+           if($km <= 4){
+                  $costo = $array['costo_base'];
+                  $array['costo'] = $costo;
+          }elseif($km > 4 ){
+                  $excedente = ceil($km - 4);
+                  $array['costo'] =  $excedente * $array['km_adicional'];
+          }
+          return $array;
     }
     public function insertStatic($viaje,$t1,$t2,$t3){
            foreach ($viaje as $key => $value) {
@@ -232,30 +316,24 @@ class OperacionModel{
            $qry = "
                   INSERT INTO `vi_viaje_statics` (
                      `id_viaje`,
-                     `id_tarifa_cliente`,
                      `cat_status_statics`,
                      `time_arribo`,
                      `time_espera`,
                      `time_viaje`,
                      `geo_origen`,
                      `geo_destino`,
-                     `costo_viaje`,
-                     `costos_adicionales`,
                      `user_alta`,
                      `fecha_alta`
                   )
                   VALUES
                          (
                                    '".$this->id_viaje."',
-                                   '".id_tarifa_cliente."',
                                    '222',
                                    '".$t1."',
                                    '".$t2."',
                                    '".$t3."',
                                    '".$this->georigen."',
                                    '".$this->geodestino."',
-                                   '0',
-                                   '0',
                                    '".$_SESSION['id_usuario']."',
                                    '".date("Y-m-d H:i:s")."'
                          );
@@ -264,7 +342,7 @@ class OperacionModel{
            $query->execute();
            return $this->db->lastInsertId();
     }
-    public function routesalternatives($origen,$destino,$id_statics){
+    public function routesalternatives($origen,$destino,$id_statics,$id_viaje){
             $url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&alternatives=true&key='.GOOGLE_DIRECTIONS;
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
@@ -278,8 +356,8 @@ class OperacionModel{
 
             $date = date("Y-m-d H:i:s");
             $year = substr($date,0,4);
-            $mes = substr($date,0,7);
-            $dia = substr($date,0,7);
+            $mes = substr($date,5,2);
+            $dia = substr($date,8,2);
 
             $kms = array();
             $time = array();
@@ -287,9 +365,20 @@ class OperacionModel{
            foreach($decode->routes as $num=>$val){
                   $kapa = $val->overview_polyline->points;
                   $result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
-                  $imagen = $this->token(6).".png";
+                  $imagen = Controller::token(6).".png";
+                  chdir('../archivo');
+                  $dir = $year."/".$mes."/".$dia."/".$id_viaje."/";
+                  $alt['ruta_file'] = $dir.$imagen;
 
-                  $alt['ruta_file'] = "../archivo/".$year."/".$mes."/".$dia."/".$viaje."/".$imagen;
+                  if(!file_exists($year)){mkdir($year, 0777);}
+                  chdir($year);
+                  if(!file_exists($mes)){mkdir($mes, 0777);}
+                  chdir($mes);
+                  if(!file_exists($dia)){mkdir($dia, 0777);}
+                  chdir($dia);
+                  if(!file_exists($id_viaje)){mkdir($id_viaje, 0777);}
+                  chdir('../../../');
+
                   if($num == 0){$image_main = $alt['ruta_file'];}
                   $fp = fopen($alt['ruta_file'], 'w');
                   fputs($fp, $result);
@@ -305,11 +394,17 @@ class OperacionModel{
            }
            $upsSttcs['kmss_max'] = max($kms);
            $upsSttcs['kmss_min'] = min($kms);
-           $upsSttcs['kmss_pro'] = avg($kms);
+           $upsSttcs['kmss_pro'] = self::avg($kms);
            $upsSttcs['time_max'] = max($time);
            $upsSttcs['time_min'] = min($time);
-           $upsSttcs['time_pro'] = avg($time);
+           $upsSttcs['time_pro'] = self::avg($time);
            self::updateStaticsVals($upsSttcs,$image_main,$id_statics);
+           return $upsSttcs;
+    }
+    function avg($arrayData){
+           $size = count($arrayData);
+           $arrayFinal = array_sum($arrayData);
+           return $arrayFinal / $size;
     }
     public function updateStaticsVals($arreglo,$image_main,$id_statics){
            foreach ($arreglo as $key => $value) {
@@ -350,7 +445,7 @@ class OperacionModel{
                                 '".$id_statics."',
                                 '".$this->ruta_file."',
                                 '".$this->km."',
-                                '".$this->minutos."',
+                                '".$this->min."',
                                 '".$this->sumario."',
                                 '".$_SESSION['id_usuario']."',
                                 '".date("Y-m-d H:i:s")."'
@@ -422,7 +517,7 @@ class OperacionModel{
               $kapa = $decode->routes[0]->overview_polyline->points;
 
               $result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=640x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
-              $imagen = $this->token(6).".png";
+              $imagen = Controller::token(6).".png";
 
               $date = date("Y-m-d H:i:s");
               $year = substr($date,0,4);

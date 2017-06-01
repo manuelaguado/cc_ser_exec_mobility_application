@@ -4,6 +4,15 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
+	public function km($km){
+		if($km <= 4){
+                     $costo = '45';
+			echo $costo;
+             }elseif($km > 4 ){
+                    $excedente = ceil($km - 4);
+		      echo $excedente * 8;
+             }
+	}
 	function adquirirTiemposBase(){
 		$coordBase = '19.434830,-99.211976';
 		$coordsUnits = substr($coordsUnits, 0, -1);
