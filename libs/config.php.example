@@ -17,16 +17,8 @@ define('SLOGAN_NAME','Activemedia & DCID Software',true);
 
 /*API DE GOOGLE MAPS*/
 define('GOOGLE_MAPS','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
-
-/*SOCKET_PROVIDER: ABLY*/
-define('ABLY_API_KEY','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
-define('ABLY_PRESENCE','activos',false);
-
-/*SOCKET_PROVIDER: PUBNUB*/
-define('PUBNUB_PUBLISH','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
-define('PUBNUB_SUSCRIBE','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
-define('PUBNUB_SECRET','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
-define('PUBNUB_PRESENCE','presence-activos',false);
+/*API DE GOOGLE directions*/
+define('GOOGLE_DIRECTIONS','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);
 
 /*SOCKET_PROVIDER: PUSHER*/
 define('PUSHER_APP_ID','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',false);

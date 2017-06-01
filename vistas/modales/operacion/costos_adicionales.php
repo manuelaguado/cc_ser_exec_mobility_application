@@ -23,10 +23,10 @@
 										<th>Fecha</th>
 										<th>Acciones</th>
 									</tr>
-								</thead>									
-							</table>					
+								</thead>
+							</table>
 							<script>
-								jQuery(function($) {							
+								jQuery(function($) {
 									$('#costosAdicionales').dataTable( {
 										"fnDrawCallback": function( oSettings ) {
 										  $('[data-rel=tooltip]').tooltip();
@@ -48,23 +48,23 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row" id="add_field" style="display:none;">
 				<style>
 				#costos_adicionales > div.modal-footer{
 					margin: 12px;
 				}
 				</style>
-					<form role="form" id="costos_adicionales">					
+					<form role="form" id="costos_adicionales">
 						<div class="panel panel-primary" style="border-color: #e0e0e0; margin: 12px;">
-							<div class="panel-body">			
+							<div class="panel-body">
 								<div class="row">
 									<div class="col-md-6">
 										<label for="cat_concepto">Concepto</label>
 										<select  class="form-control" id="cat_concepto" name="cat_concepto">
 										<?php echo $cat_concepto; ?>
 										</select>
-									</div>									
+									</div>
 									<div class="col-md-6">
 										  <div class="form-group">
 											<label for="costo">Costo base</label>
@@ -73,19 +73,19 @@
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
-						
+
 						<div id="error_alerta" > </div>
-						
-						
+
+
 						<input type="hidden" id="id_viaje" name="id_viaje" value="<?=$id_viaje?>" />
 						<div class="modal-footer">
 							<div class="ca_flt_modal" id="total2"></div>
 							<button  class="btn btn-ar btn-success" type="button" onclick="costos_adicionales_do();">Capturar</button>
 							<button  onclick="close_costos_form();" class="btn btn-ar btn-default" type="button">Cerrar</button>
 						</div>
-					</form>				
+					</form>
 				</div>
 				<br>
 				<div class="modal-footer" id="footer_main">
@@ -96,11 +96,11 @@
 					<script type="text/javascript">
 						jQuery(function($) {
 							autosize($('textarea[class*=autosize]'));
-							
-							$('.money').maskMoney();
-							
+
+							$('.money').maskMoney({allowNegative:true});
+
 						});
-					</script>					
+					</script>
 			</div>
 		</div>
 	</div>

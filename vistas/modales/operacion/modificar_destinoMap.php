@@ -177,6 +177,7 @@
                                           $.post( "../modificar_destino_do", {a:mod_ref,b:mod_stre,c:mod_ext,d:mod_gcd,e:mod_inv,f:<?=$id_viaje?>}).done(function( data ) {
                                                  dato = $.parseJSON(data);
                                                  if(dato.resp == true){
+								$.post( "../setClaveOk/<?=$id_viaje?>/T3");
                                                         alert('destino modificado');
                                                         $( '.modal-backdrop', window.parent.document ).remove();
               						$( '#myModal', window.parent.document ).remove();

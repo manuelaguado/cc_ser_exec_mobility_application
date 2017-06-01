@@ -19,9 +19,42 @@ class Desarrollador extends Controlador
 			self::storeTB($array);
 		}
 	}
+	public function routesalternatives(){
+	        $url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&alternatives=true&key='.GOOGLE_DIRECTIONS;
+	        $curl = curl_init();
+	        curl_setopt($curl, CURLOPT_URL, $url);
+	        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+	        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+		 $result = curl_exec($curl);
+		 curl_close($curl);
+		 $decode = json_decode($result);
+
+		 $date = date("Y-m-d H:i:s");
+		 $year = substr($date,0,4);
+		 $mes = substr($date,0,7);
+		 $dia = substr($date,0,7);
+
+		foreach($decode->routes as $num=>$val){
+			$kapa = $val->overview_polyline->points;
+			$result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
+			$imagen = $this->token(6).".png";
+
+	              $name = "../archivo/".$year."/".$mes."/".$dia."/".$viaje."/".$imagen;
+			$fp = fopen($name, 'w');
+			fputs($fp, $result);
+			fclose($fp);
+			foreach($val->legs as $elm){
+				$km = ($elm->distance->value)/1000;
+				$min = ($elm->duration->value)/60;
+			}
+			$numario = $val->summary;
+		}
+	}
 	public function minimap(){
 
-		$url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&key=AIzaSyDXtWmQa-KeoTv_VopVhSJ-hPCTx92GMXE';
+		$url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&key='.GOOGLE_DIRECTIONS;
 
 	        $curl = curl_init();
 	        curl_setopt($curl, CURLOPT_URL, $url);
@@ -50,7 +83,7 @@ class Desarrollador extends Controlador
 	}
 	public function directions(){
 
-		$url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&key=AIzaSyDXtWmQa-KeoTv_VopVhSJ-hPCTx92GMXE';
+		$url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&key='.GOOGLE_DIRECTIONS;
 
 	        $curl = curl_init();
 	        curl_setopt($curl, CURLOPT_URL, $url);
@@ -179,7 +212,8 @@ class Desarrollador extends Controlador
 		return $array;
 	}
 	public function distanceMatrix(){
-        $url='https://maps.googleapis.com/maps/api/distancematrix/json?origins=19.375489,-99.062057&destinations=20.670867,-103.367144&key=AIzaSyDS6f8F5bj6kKdsfO57Y_2GZQShg79rgnk';
+        //gdl mexico //$url='https://maps.googleapis.com/maps/api/distancematrix/json?origins=19.375489,-99.062057&destinations=20.670867,-103.367144&key=AIzaSyDS6f8F5bj6kKdsfO57Y_2GZQShg79rgnk';
+	 /*leyes de reforma a reforma social*/$url='https://maps.googleapis.com/maps/api/distancematrix/json?origins=19.375437,-99.062105&destinations=19.430477,-99.217740&departure_time=now&traffic_model=pessimistic&key=AIzaSyDS6f8F5bj6kKdsfO57Y_2GZQShg79rgnk';
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -190,8 +224,9 @@ class Desarrollador extends Controlador
         $result = curl_exec($curl);
         curl_close($curl);
 
-		print $result;
-		echo '<br><br>';
+		echo '<pre>';
+		print_r ($result);
+		echo '</pre><br><br>';
 
         $decode = json_decode($result);
 		foreach($decode->rows as $num=>$val){

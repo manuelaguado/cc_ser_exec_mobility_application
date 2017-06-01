@@ -257,8 +257,6 @@ class Operacion extends Controlador
               geocodificacion_inversa_destino = e
               id_viaje = f
               */
-              // TODO: esto podria duplicar direcciones existentes, pero es el camino lógico
-              // TODO: crear claves para un viaje que cambio de destino y setearlas aqui, considerar id_operador_unidad
               $service = new stdClass;
 
               $service->id_viaje                               =$_POST['f'];

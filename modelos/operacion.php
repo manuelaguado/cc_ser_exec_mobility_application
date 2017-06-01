@@ -192,6 +192,275 @@ class OperacionModel{
 
        return $claves;
     }
+    function procesarViajeFinalizado($viaje,$tds){
+           foreach ($viaje as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           //$viaje['id_operador_unidad']['id_episodio']['id_viaje']['id_operador']['num']['id_cliente']['empresa']['georigen']['geodestino']
+
+           //obtener tiempo entre tds(A10,F13,F15,T1,T2) y A11 Tiempo de llegada
+                     $init_tds = self::init_tds($this->id_viaje);
+                     $time_a11 = self::getDateClave($this->id_viaje,'A11');
+                     $time_arribo = diferenciaFechas($init_tds,$end_tds);
+           //obtener tiempo entre A11 y C8 Tiempo de espera
+                     $time_c8 = self::getDateClave($this->id_viaje,'C8');
+                     $tiempo_espera = diferenciaFechas($time_a11,$time_c8);
+           //obtener tiempo entre C8 y C9 Tiempo del viaje
+                     $time_c9 = self::getDateClave($this->id_viaje,'C9');
+                     $tiempo_viaje = diferenciaFechas($time_c8,$time_c9);
+           //obtener alternativas de curso
+           //obtener tiempo entre origen y destino MAX
+           //obtener tiempo entre origen y destino MIN
+           //obtener tiempo entre origen y destino PROMEDIO
+           //obtener km MAX
+           //obtener km MIN
+           //obtener km PROMEDIO
+           //obtener mapas
+           //geocoordenadas de origen
+           //geocoordenadas destino           
+                     $id_statics =  self::insertStatic($viaje);
+                     $route = self::routesalternatives($origen,$destino,$id_statics);
+
+           //obtener el costo del viaje
+           //obtener costos adicionales
+           //obtener costo total del viaje
+    }
+    public function insertStatic($viaje,$t1,$t2,$t3){
+           foreach ($viaje as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $qry = "
+                  INSERT INTO `vi_viaje_statics` (
+                     `id_viaje`,
+                     `id_tarifa_cliente`,
+                     `cat_status_statics`,
+                     `time_arribo`,
+                     `time_espera`,
+                     `time_viaje`,
+                     `geo_origen`,
+                     `geo_destino`,
+                     `costo_viaje`,
+                     `costos_adicionales`,
+                     `user_alta`,
+                     `fecha_alta`
+                  )
+                  VALUES
+                         (
+                                   '".$this->id_viaje."',
+                                   '".id_tarifa_cliente."',
+                                   '222',
+                                   '".$t1."',
+                                   '".$t2."',
+                                   '".$t3."',
+                                   '".$this->georigen."',
+                                   '".$this->geodestino."',
+                                   '0',
+                                   '0',
+                                   '".$_SESSION['id_usuario']."',
+                                   '".date("Y-m-d H:i:s")."'
+                         );
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           return $this->db->lastInsertId();
+    }
+    public function routesalternatives($origen,$destino,$id_statics){
+            $url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&alternatives=true&key='.GOOGLE_DIRECTIONS;
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $result = curl_exec($curl);
+            curl_close($curl);
+            $decode = json_decode($result);
+
+            $date = date("Y-m-d H:i:s");
+            $year = substr($date,0,4);
+            $mes = substr($date,0,7);
+            $dia = substr($date,0,7);
+
+            $kms = array();
+            $time = array();
+
+           foreach($decode->routes as $num=>$val){
+                  $kapa = $val->overview_polyline->points;
+                  $result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
+                  $imagen = $this->token(6).".png";
+
+                  $alt['ruta_file'] = "../archivo/".$year."/".$mes."/".$dia."/".$viaje."/".$imagen;
+                  if($num == 0){$image_main = $alt['ruta_file'];}
+                  $fp = fopen($alt['ruta_file'], 'w');
+                  fputs($fp, $result);
+                  fclose($fp);
+                  foreach($val->legs as $elm){
+                         $alt['km'] = ($elm->distance->value)/1000;
+                         $alt['min'] = ($elm->duration->value)/60;
+                  }
+                  $alt['sumario'] = $val->summary;
+                  self::insertAlternativa($alt,$id_statics);
+                  $kms[$num] = $alt['km'];
+                  $time[$num]= $alt['min'];
+           }
+           $upsSttcs['kmss_max'] = max($kms);
+           $upsSttcs['kmss_min'] = min($kms);
+           $upsSttcs['kmss_pro'] = avg($kms);
+           $upsSttcs['time_max'] = max($time);
+           $upsSttcs['time_min'] = min($time);
+           $upsSttcs['time_pro'] = avg($time);
+           self::updateStaticsVals($upsSttcs,$image_main,$id_statics);
+    }
+    public function updateStaticsVals($arreglo,$image_main,$id_statics){
+           foreach ($arreglo as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $qry = "
+                  UPDATE `vi_viaje_statics`
+                  SET
+                     `mapa` = '".$image_main."',
+                     `time_or_des_max` = '".$this->time_max."',
+                     `time_or_des_min` = '".$this->time_min."',
+                     `time_or_des_pro` = '".$this->time_pro."',
+                     `km_max_maps` = '".$this->kmss_max."',
+                     `km_min_maps` = '".$this->kmss_min."',
+                     `km_pro_maps` = '".$this->kmss_pro."'
+                  WHERE
+                         (`id_viaje_statics` = $id_statics);
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+    }
+    public function insertAlternativa($arreglo,$id_statics){
+           foreach ($arreglo as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $qry = "
+                  INSERT INTO `vi_viaje_alternativas` (
+                         `id_viaje_statics`,
+                         `ruta_file`,
+                         `km`,
+                         `minutos`,
+                         `sumario`,
+                         `user_alta`,
+                         `fecha_alta`
+                  )
+                  VALUES
+                         (
+                                '".$id_statics."',
+                                '".$this->ruta_file."',
+                                '".$this->km."',
+                                '".$this->minutos."',
+                                '".$this->sumario."',
+                                '".$_SESSION['id_usuario']."',
+                                '".date("Y-m-d H:i:s")."'
+                         );
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+    }
+    public function insertAlternativa($arreglo){
+           foreach ($arreglo as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $qry = "
+                  INSERT INTO `vi_viaje_alternativas` (
+                         `ruta_file`,
+                         `km`,
+                         `minutos`,
+                         `sumario`,
+                         `user_alta`,
+                         `fecha_alta`
+                  )
+                  VALUES
+                         (
+                                '".$this->ruta_file."',
+                                '".$this->km."',
+                                '".$this->minutos."',
+                                '".$this->sumario."',
+                                '".$_SESSION['id_usuario']."',
+                                '".date("Y-m-d H:i:s")."'
+                         );
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+    }
+    function getDateClave($viaje,$clave){
+           $qry = "
+                  SELECT
+                  	stt.fecha_alta
+                  FROM
+                  	cr_state AS stt
+                  INNER JOIN cm_catalogo AS cm1 ON cm1.etiqueta = stt.state
+                  WHERE
+                  	stt.id_viaje = $viaje
+                  AND cm1.etiqueta = '".$clave."'
+                  ORDER BY
+                  	stt.id_state ASC
+                  LIMIT 0,
+                   1
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  foreach ($data as $row) {
+                         return $row->fecha_alta;
+                  }
+           }
+    }
+
+    function init_tds($viaje){
+           $qry = "
+                  SELECT
+                  	stt.fecha_alta
+                  FROM
+                  	cr_state AS stt
+                  WHERE
+                  	stt.id_viaje = $viaje
+                  ORDER BY
+                  	stt.id_state ASC
+                  LIMIT 0,
+                   1
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  foreach ($data as $row) {
+                         return $row->fecha_alta;
+                  }
+           }
+    }
+    function mapa($origen,$destino,$viaje){
+
+              $url='https://maps.googleapis.com/maps/api/directions/json?origin='.$origen.'&destination='.$destino.'&key='.GOOGLE_DIRECTIONS;
+
+              $curl = curl_init();
+              curl_setopt($curl, CURLOPT_URL, $url);
+              curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+              curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+              curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+              $result = curl_exec($curl);
+              curl_close($curl);
+              $decode = json_decode($result);
+              $kapa = $decode->routes[0]->overview_polyline->points;
+
+              $result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=640x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
+              $imagen = $this->token(6).".png";
+
+              $date = date("Y-m-d H:i:s");
+              $year = substr($date,0,4);
+              $mes = substr($date,0,7);
+              $dia = substr($date,0,7);
+
+              $name = "../archivo/".$year."/".$mes."/".$dia."/".$viaje."/".$imagen;
+              $fp = fopen($name, 'w');
+              fputs($fp, $result);
+              fclose($fp);
+              return $name;
+    }
     function setClaveOk($id_viaje,$clave,ShareModel $share){
            $viaje = self::idensViaje($id_viaje);
            $tds = self::tipoServicio($viaje['id_operador_unidad']);
@@ -211,7 +480,7 @@ class OperacionModel{
            $share->setStatOper($setStat);
 
            switch($clave){
-                  case 'C9':
+                  case 'C9':/*Servicio concluido*/
                      $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '172' WHERE id_viaje = ".$id_viaje);
 
                      $setStat['id_operador'] = $viaje['id_operador'];
@@ -227,8 +496,9 @@ class OperacionModel{
                      $setStat['motivo'] = 'Viaje Concluido';
 
                      $share->setStatOper($setStat);
+                     self::procesarViajeFinalizado($viaje,$tds);
                   break;
-                  case 'A14':
+                  case 'A14':/*Abandono de servicio*/
                      $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '188' WHERE id_viaje = ".$id_viaje);
 
                      $setStat['id_operador'] = $viaje['id_operador'];
@@ -288,12 +558,24 @@ class OperacionModel{
                   	vi.id_episodio,
                   	vi.id_viaje,
                   	opu.id_operador,
-                  	num.num
+                  	num.num,
+                  	clo.id_cliente,
+                  	cli.parent AS empresa,
+                  	diro.geocoordenadas AS georigen,
+                  	dird.geocoordenadas AS geodestino
                   FROM
                   	vi_viaje AS vi
                   INNER JOIN cr_operador_unidad AS opu ON vi.id_operador_unidad = opu.id_operador_unidad
                   INNER JOIN cr_operador_numeq AS opnum ON opu.id_operador = opnum.id_operador
                   INNER JOIN cr_numeq AS num ON opnum.id_numeq = num.id_numeq
+                  INNER JOIN it_cliente_origen AS clo ON clo.id_cliente_origen = vi.id_cliente_origen
+                  INNER JOIN cl_clientes AS cli ON clo.id_cliente = cli.id_cliente
+                  INNER JOIN it_origenes AS ito ON clo.id_origen = ito.id_origen
+                  INNER JOIN it_viaje_destino AS itvd ON itvd.id_viaje = vi.id_viaje
+                  INNER JOIN it_cliente_destino AS itcd ON itvd.id_cliente_destino = itcd.id_cliente_destino
+                  INNER JOIN it_destinos AS itd ON itcd.id_destino = itd.id_destino
+                  INNER JOIN it_direcciones AS diro ON ito.id_direccion = diro.id_direccion
+                  INNER JOIN it_direcciones AS dird ON itd.id_direccion = dird.id_direccion
                   WHERE
                   	vi.id_viaje = $id_viaje
            ";
@@ -308,6 +590,10 @@ class OperacionModel{
                          $viaje['id_viaje'] 	= $row->id_viaje;
                          $viaje['id_operador']= $row->id_operador;
                          $viaje['num']= $row->num;
+                         $viaje['id_cliente']= $row->id_cliente;
+                         $viaje['empresa']= $row->empresa;
+                         $viaje['georigen']= $row->georigen;
+                         $viaje['geodestino']= $row->geodestino;
                   }
            }
            return $viaje;
@@ -386,12 +672,15 @@ class OperacionModel{
 				:user_mod,
 				:fecha_alta
 			)";
+              $costo = str_replace(',','',$this->costo);
+              $sign = substr($costo, 0,1);
+              $input = ($sign == '$')?substr($costo, 2):(substr($costo, 3)*-1);
 		$query = $this->db->prepare($sql);
 		$query_resp = $query->execute(
 			array(
 				':id_viaje' =>  $this->id_viaje ,
 				':cat_concepto' =>  $this->cat_concepto ,
-				':costo' =>  substr($this->costo, 2) ,
+				':costo' =>  $input ,
 				':fecha' =>  date("Y-m-d H:i:s") ,
 				':user_alta' =>  $_SESSION['id_usuario'] ,
 				':user_mod' => $_SESSION['id_usuario'] ,
