@@ -11,7 +11,8 @@
 		($this->tiene_permiso('Usuarios|logueados')) OR
 		($this->tiene_permiso('Operacion|listado_completados')) OR
 		($this->tiene_permiso('Operacion|listado_cancelados')) OR
-		($this->tiene_permiso('Clientes|showtarifas'))
+		($this->tiene_permiso('Clientes|showtarifas')) OR
+		($this->tiene_permiso('Egresosoperador|index'))
 
 	)
 	{
@@ -117,6 +118,39 @@
 				<li class="divider"></li>
 			</ul>
 		</li>
+
+		<?php
+	}
+		if(
+			($this->tiene_permiso('Egresosoperador|index'))
+		)
+		{
+		?>
+		<li>
+			<a class="dropdown-toggle" href="javascript:void(0)">
+				<i class="menu-icon fa fa-money" style="color:#3f8b00;"></i>
+				<span class="menu-text">
+					Finanzas Operador
+				</span>
+
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+			<ul class="submenu">
+				<?php
+				if($this->tiene_permiso('Egresosoperador|index')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador');">
+						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-up fa-sup" aria-hidden="true"></i></i>
+						<span class="menu-text"> Conceptos de cobro </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+			</ul>
+		</li>
+
 	<?php
 	}
 	?>

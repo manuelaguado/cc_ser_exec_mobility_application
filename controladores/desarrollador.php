@@ -4,6 +4,70 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
+	public function initstate(){
+		$db = Controlador::direct_connectivity();
+		$sql="
+		SELECT
+		op.id_operador,
+		opu.id_operador_unidad,
+		num.num,
+		op.cat_statusoperador
+		FROM
+		cr_operador AS op
+		INNER JOIN cr_operador_unidad AS opu ON opu.id_operador = op.id_operador
+		INNER JOIN cr_operador_celular AS opcel ON opcel.id_operador = op.id_operador
+		INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = op.id_operador
+		INNER JOIN cr_numeq AS num ON cr_operador_numeq.id_numeq = num.id_numeq
+		GROUP BY
+		opu.id_operador
+		ORDER BY
+		op.id_operador ASC
+
+		";
+		$stmt = $db->prepare($sql);
+		$stmt->execute();
+		$data = $stmt->fetchAll();
+
+		foreach ($data as $row) {
+			if($row->cat_statusoperador == 10){
+				$db->exec("UPDATE cr_operador SET cat_statusoperador = '10' WHERE id_operador = ".$row->id_operador);
+		              $db->exec("UPDATE cr_operador_unidad SET status_operador_unidad = '199' WHERE id_operador = ".$row->id_operador);
+				$clave = 'F6';
+			}else{
+				$clave = 'c2';
+			}
+			$sql = "
+				INSERT INTO `cr_state` (
+					`id_operador`,
+					`id_operador_unidad`,
+					`numeq`,
+					`state`,
+					`flag1`,
+					`activo`
+				)
+				VALUES
+					(
+						'".$row->id_operador."',
+						'".$row->id_operador_unidad."',
+						'".$row->num."',
+						'".$clave."',
+						'".$clave."',
+						'1'
+					);
+			";
+			$populate = $db->prepare($sql);
+			$populate->execute();
+		}
+		chdir('../archivo');
+		self::delTree('2017');
+	}
+	function delTree($dir) {
+	   $files = array_diff(scandir($dir), array('.','..'));
+	    foreach ($files as $file) {
+	      (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+	    }
+	    return rmdir($dir);
+	}
 	public function km($km){
 		if($km <= 4){
                      $costo = '45';
@@ -123,53 +187,6 @@ class Desarrollador extends Controlador
 		fclose($fp);
 		//echo '<img src="../plugs/timthumb.php?src=tmp/'.$imagen.'&w=150&a=c">';
 		echo '<img src="../tmp/'.$imagen.'">';
-	}
-	public function initstate(){
-		$db = Controlador::direct_connectivity();
-		$sql="
-		SELECT
-		op.id_operador,
-		opu.id_operador_unidad,
-		num.num
-		FROM
-		cr_operador AS op
-		INNER JOIN cr_operador_unidad AS opu ON opu.id_operador = op.id_operador
-		INNER JOIN cr_operador_celular AS opcel ON opcel.id_operador = op.id_operador
-		INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = op.id_operador
-		INNER JOIN cr_numeq AS num ON cr_operador_numeq.id_numeq = num.id_numeq
-		GROUP BY
-		opu.id_operador
-		ORDER BY
-		op.id_operador ASC
-
-		";
-		$stmt = $db->prepare($sql);
-		$stmt->execute();
-		$data = $stmt->fetchAll();
-		foreach ($data as $row) {
-			$sql = "
-				INSERT INTO `cr_state` (
-					`id_operador`,
-					`id_operador_unidad`,
-					`numeq`,
-					`state`,
-					`flag1`,
-					`activo`
-				)
-				VALUES
-					(
-						'".$row->id_operador."',
-						'".$row->id_operador_unidad."',
-						'".$row->num."',
-						'C2',
-						'C2',
-						'1'
-					);
-			";
-			D::bug($sql);
-			$populate = $db->prepare($sql);
-			$populate->execute();
-		}
 	}
 	public function image(){
 		$pointsToEncoded = self::PolylineToEncoded();

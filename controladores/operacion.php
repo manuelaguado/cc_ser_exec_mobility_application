@@ -283,6 +283,35 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		require URL_VISTA.'modales/operacion/activar_abandono.php';
 	}
+
+
+
+
+       public function nueva_incidencia($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$cat_incidencias = $this->selectCatalog('incidencias',null);
+		require URL_VISTA.'modales/operacion/nueva_incidencia.php';
+	}
+       public function nueva_incidencia_do(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$modelo = $this->loadModel('Operacion');
+		print json_encode($modelo->addIncidencia($_POST));
+	}
+	public function nueva_incidencia_get($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		print $operacion->queryIncidencias($_POST,$id_viaje);
+	}
+	public function eliminar_incidencia($id_nueva_incidencia){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$ok = $operacion->eliminar_incidencia($id_nueva_incidencia);
+		print json_encode($ok);
+	}
+
+
+
+
 	public function costos_adicionales($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$cat_concepto = $this->selectCatalog('costos_adicionales',null);
@@ -461,8 +490,7 @@ class Operacion extends Controlador
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
 		$share = $this->loadModel('Share');
-		$operadores = $this->loadModel('Operadores');
-		print $modelo->setear_status_viaje($_POST, $share, $operadores);
+		print $modelo->setear_status_viaje($_POST, $share);
 	}
 	public function cancel_apartado($id_viaje,$origen){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

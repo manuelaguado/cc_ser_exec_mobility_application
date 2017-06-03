@@ -679,3 +679,10 @@ table#tb_act_oper tbody > tr > td{
        top: -2px;
        color: #000;
 }
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}

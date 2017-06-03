@@ -29,7 +29,9 @@ class OperacionModel{
                       INNER JOIN cm_catalogo AS cm2 ON cm1.etiqueta = cm2.etiqueta
                       INNER JOIN fw_usuarios AS fwu2 ON fwu2.id_usuario = stt.user_alta
            WHERE
-           stt.id_viaje = $id_viaje
+           stt.id_viaje = $id_viaje AND
+              cm1.catalogo = 'clavesitio' AND
+              cm2.catalogo = 'clavesitio'
            ORDER BY
                       	stt.id_state ASC
            LIMIT 0,
@@ -343,7 +345,7 @@ class OperacionModel{
            return $this->db->lastInsertId();
     }
     public function routesalternatives($origen,$destino,$id_statics,$id_viaje){
-            $url='https://maps.googleapis.com/maps/api/directions/json?origin=19.375358,%20-99.061929&destination=19.430293,%20-99.218078&alternatives=true&key='.GOOGLE_DIRECTIONS;
+            $url='https://maps.googleapis.com/maps/api/directions/json?origin='.$origen.'&destination='.$destino.'&alternatives=true&key='.GOOGLE_DIRECTIONS;
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -500,35 +502,6 @@ class OperacionModel{
                          return $row->fecha_alta;
                   }
            }
-    }
-    function mapa($origen,$destino,$viaje){
-
-              $url='https://maps.googleapis.com/maps/api/directions/json?origin='.$origen.'&destination='.$destino.'&key='.GOOGLE_DIRECTIONS;
-
-              $curl = curl_init();
-              curl_setopt($curl, CURLOPT_URL, $url);
-              curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-              curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-              curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-              $result = curl_exec($curl);
-              curl_close($curl);
-              $decode = json_decode($result);
-              $kapa = $decode->routes[0]->overview_polyline->points;
-
-              $result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=640x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
-              $imagen = Controller::token(6).".png";
-
-              $date = date("Y-m-d H:i:s");
-              $year = substr($date,0,4);
-              $mes = substr($date,0,7);
-              $dia = substr($date,0,7);
-
-              $name = "../archivo/".$year."/".$mes."/".$dia."/".$viaje."/".$imagen;
-              $fp = fopen($name, 'w');
-              fputs($fp, $result);
-              fclose($fp);
-              return $name;
     }
     function setClaveOk($id_viaje,$clave,ShareModel $share){
            $viaje = self::idensViaje($id_viaje);
@@ -762,6 +735,55 @@ class OperacionModel{
 			$respuesta = array('resp' => false);
 		}
 		return $respuesta;
+	}
+       function addIncidencia($arreglo){
+              foreach ($arreglo as $key => $value) {
+			$this->$key = strip_tags($value);
+		}
+		$sql = "
+			INSERT INTO vi_viaje_incidencia (
+				id_viaje,
+				cat_incidencias,
+				user_alta,
+				fecha_alta
+			) VALUES (
+				:id_viaje,
+				:cat_incidencias,
+				:user_alta,
+				:fecha_alta
+			)";
+		$query = $this->db->prepare($sql);
+		$query_resp = $query->execute(
+			array(
+				':id_viaje' =>  $this->id_viaje ,
+				':cat_incidencias' =>  $this->cat_incidencias ,
+				':user_alta' =>  $_SESSION['id_usuario'] ,
+				':fecha_alta' => date("Y-m-d H:i:s")
+			)
+		);
+		if($query_resp){
+			$respuesta = array('resp' => true);
+		}else{
+			$respuesta = array('resp' => false);
+		}
+		return $respuesta;
+       }
+       function eliminar_incidencia($id_viaje_incidencia){
+		$qry = "
+			DELETE
+			FROM
+			vi_viaje_incidencia
+			WHERE
+			id_viaje_incidencia = '".$id_viaje_incidencia."'
+		";
+		$query = $this->db->prepare($qry);
+		$ok = $query->execute();
+		if($ok){
+			$array = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
+		}else{
+			$array = array('false' => true , 'mensaje' => 'Registro guardado correctamente.' );
+		}
+		return $array;
 	}
 	function eliminar_costoAdicional($id_costos_adicionales){
 		$qry = "
@@ -1333,7 +1355,7 @@ class OperacionModel{
 		}
 		if($alAire == 0){return false;}else{return true;}
 	}
-	function setear_status_viaje($post, ShareModel $share=NULL, OperadoresModel $operadores = NULL){
+	function setear_status_viaje($post, ShareModel $share=NULL){
 
 		$stat_process = true;
 		$qrymissing = array();
@@ -1387,10 +1409,7 @@ class OperacionModel{
 					switch($post['status_operador']){
 						case 'suspender':
 							/*Setear en suspendido*/
-							$operador['cat_statusoperador'] = 10;
-                                                 $operador['id_operador']=$id_operador;
-							$operadores->setearstatusoperador($operador);
-							/*desloguear si existiera la version mobil*/
+							self::setF6($id_operador);
                                                  $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'F6','F6','NULL','NULL','NULL','VIAJE EN PROCESO',$post['id_viaje']);
 						break;
 						case 'omitir':
@@ -3801,6 +3820,91 @@ class OperacionModel{
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
 	}
+       function queryIncidencias($array,$id_viaje){
+              ini_set('memory_limit', '256M');
+              $table = 'vi_viaje_incidencia AS vin';
+              $primaryKey = 'id_viaje_incidencia';
+              $columns = array(
+                     array(
+                            'db' => 'cat.etiqueta as etiqueta',
+                            'dbj' => 'cat.etiqueta',
+                            'real' => 'cat.etiqueta',
+                            'alias' => 'etiqueta',
+                            'typ' => 'txt',
+                            'dt' => 0
+                     ),
+                     array(
+                            'db' => 'usr.usuario as usuario',
+                            'dbj' => 'usr.usuario',
+                            'real' => 'usr.usuario',
+                            'alias' => 'usuario',
+                            'typ' => 'txt',
+                            'dt' => 1
+                     ),
+                     array(
+                            'db' => 'vin.fecha_alta as fecha',
+                            'dbj' => 'vin.fecha_alta',
+                            'real' => 'vin.fecha_alta',
+                            'alias' => 'fecha',
+                            'typ' => 'int',
+                            'dt' => 2
+                     ),
+                     array(
+                            'db' => 'vin.id_viaje_incidencia as id_viaje_incidencia',
+                            'dbj' => 'vin.id_viaje_incidencia',
+                            'real' => 'vin.id_viaje_incidencia',
+                            'alias' => 'id_viaje_incidencia',
+                            'typ' => 'int',
+                            'acciones' => true,
+                            'id_viaje' => $id_viaje,
+                            'dt' => 3
+                     )
+              );
+              $inner = '
+                     INNER JOIN cm_catalogo AS cat ON vin.cat_incidencias = cat.id_cat
+                     INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vin.user_alta
+              ';
+              $where = '
+                     vin.id_viaje = '.$id_viaje.'
+              ';
+              $orden = '
+                     GROUP BY
+                            vin.id_viaje_incidencia ASC
+              ';
+              $render_table = new acciones_incidencias;
+              return json_encode(
+                     $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+              );
+       }
+}
+class acciones_incidencias extends SSP{
+       static function data_output ( $columns, $data, $db )
+       {
+              $out = array();
+              for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+                     $row = array();
+
+                     for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+                            $column = $columns[$j];
+                            $name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+
+                            if ( isset( $column['acciones'] ) ) {
+                                   $id_viaje = ($data[$i][ $column['alias'] ]);
+                                   $id_viaje_incidencia = ($data[$i][ $column['alias'] ]);
+
+                                   $salida = '';
+                                   $salida .= '<a onclick="eliminar_incidencia('.$id_viaje_incidencia.')" data-rel="tooltip" data-original-title="Eliminar incidencia"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+
+                                   $row[ $column['dt'] ] = $salida;
+                            }else{
+                                   $row[ $column['dt'] ] = $data[$i][$name_column];
+                            }
+
+                     }
+                     $out[] = $row;
+              }
+              return $out;
+       }
 }
 class acciones_costosAdicionales extends SSP{
 	static function data_output ( $columns, $data, $db )
@@ -3892,6 +3996,8 @@ class acciones_asignados extends SSP{
                                    $salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
 					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+
+                                   $salida .= '<a href="javascript:;" onclick="nueva_incidencia('.$id_viaje.')" data-rel="tooltip" data-original-title="Incidencia"><i class="fa fa-exclamation-triangle" style="font-size:1.4em; color:#c39800;"></i></a>&nbsp;&nbsp;';
 
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 
@@ -4001,7 +4107,6 @@ class acciones_completados extends SSP{
 			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
-#ffc700
 				if ( isset( $column['acciones'] ) ) {
 					$id_viaje = $data[$i][ 'id_viaje' ];
 
