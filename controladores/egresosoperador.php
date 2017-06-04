@@ -6,6 +6,47 @@ class Egresosoperador extends Controlador
 	$this->se_requiere_logueo(true,'Egresosoperador|index');
        require URL_VISTA.'egresosoperador/index.php';
     }
+    public function cron(){
+           //exit();
+           session_destroy();
+           setlocale(LC_TIME,"es_MX.UTF-8");
+           $egresos = $this->loadModel('Egresosoperador');
+
+           $datef = new DateTime();
+           $datef->modify('first day of this month');
+           $datel = new DateTime();
+           $datel->modify('last day of this month');
+
+           $firstDay = $datef->format('Y-m-d');
+           $lastDay = $datel->format('Y-m-d');
+           $actualDay = date("Y-m-d");//2017-02-15
+           $dia1 = strftime("%A"); //domingo
+           $dia2 = date("d"); // 04
+           $dia3 = date("N"); // 1-7
+
+           $trabajos = $egresos->obtener_trabajos();
+
+           foreach($trabajos as $num=>$work){
+                  $lastEjecucion = $egresos->lastEjecucion($work['id_concepto']);
+
+                  $execute[0] = ($work['valor'] == $dia3)?true:false;
+                  $execute[1] = (($work['valor'] == 'first day of this month')AND($actualDay == $firstDay))?true:false;
+                  $execute[2] = (($work['valor'] == 'last day of this month')AND($actualDay == $lastDay))?true:false;
+                  $execute[3] = ((($work['valor'] == '15')AND($dia2 == '15'))OR(($work['valor'] == '15')AND($actualDay == $lastDay)))?true:false;
+
+                  if($lastEjecucion != $actualDay){
+                         if(in_array(true, $execute)){
+                                $deficitarios = $egresos->deficitarios($work['id_concepto']);
+                                foreach($deficitarios as $operador){
+                                          $egresos->insertDeuda($operador['id_operador_concepto'],$operador['monto'],$actualDay);
+                                }
+                                $adeudosGenerados = count($deficitarios);
+                                $monto = $adeudosGenerados * $work['monto'];
+                                $egresos->setAplicacionEjecucion($work['id_concepto'],$actualDay,$adeudosGenerados,$monto);
+                         }
+                  }
+           }
+    }
     public function obtener_conceptos(){
            $this->se_requiere_logueo(true,'Egresosoperador|index');
            $egresos = $this->loadModel('Egresosoperador');

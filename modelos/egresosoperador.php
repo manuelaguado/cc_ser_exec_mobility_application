@@ -10,17 +10,153 @@ class EgresosoperadorModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function setAplicacionEjecucion($id_concepto,$actualDay,$adeudosGenerados,$monto){
+           $qry = "
+           INSERT INTO `fo_conceptos_aplicaciones` (
+           	`id_concepto`,
+           	`fecha_aplicacion`,
+           	`adeudos_generados`,
+              `monto_generado`,
+           	`user_alta`,
+           	`fecha_alta`
+           )
+           VALUES
+           	(
+           		".$id_concepto.",
+           		'".$actualDay."',
+           		'".$adeudosGenerados."',
+                     '".$monto."',
+                     '1',
+                     '".date("Y-m-d H:i:s")."'
+           	)
+          ";
+          $query = $this->db->prepare($qry);
+          $query->execute();
+          return $this->db->lastInsertId();
+    }
+    function insertDeuda($id_operador_concepto,$monto,$actualDay){
+           $qry = "
+           INSERT INTO `fo_concepto_adeudo` (
+           	`id_operador_conecepto`,
+           	`monto`,
+           	`fecha_emision`,
+           	`user_alta`,
+           	`fecha_alta`
+           )
+           VALUES
+           	(
+           		".$id_operador_concepto.",
+           		'".$monto."',
+           		'".$actualDay."',
+                     '1',
+                     '".date("Y-m-d H:i:s")."'
+           	)
+          ";
+          $query = $this->db->prepare($qry);
+          $query->execute();
+          return $this->db->lastInsertId();
+    }
+    function lastEjecucion($id_concepto){
+           $sql="
+           SELECT
+              fo_conceptos_aplicaciones.fecha_aplicacion
+           FROM
+           fo_conceptos
+           INNER JOIN fo_conceptos_aplicaciones ON fo_conceptos_aplicaciones.id_concepto = fo_conceptos.id_concepto
+           WHERE
+           fo_conceptos.id_concepto = $id_concepto
+           ORDER BY
+           fo_conceptos_aplicaciones.id_concepto_aplicacion DESC
+           LIMIT 0,
+           1
+           ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $data = $query->fetchAll();
+           $array = array();
+           if($query->rowCount()>=1){
+                  foreach ($data as $row) {
+                         return $row->fecha_aplicacion;
+                  }
+           }
+    }
+    function deficitarios($id_concepto){
+           $sql="
+           SELECT
+                  fo_operador_conceptos.id_operador,
+                  fo_operador_conceptos.inicio_cobranza,
+                  fo_operador_conceptos.id_operador_concepto,
+                  fo_conceptos.id_concepto,
+                  fo_conceptos.monto
+           FROM
+           fo_operador_conceptos
+           INNER JOIN fo_conceptos ON fo_operador_conceptos.id_concepto = fo_conceptos.id_concepto
+           WHERE
+           fo_conceptos.id_concepto = $id_concepto
+
+           ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $data = $query->fetchAll();
+           $array = array();
+           if($query->rowCount()>=1){
+                  $num=0;
+                  foreach ($data as $row) {
+                         $array[$num]['id_operador'] = $row->id_operador;
+                         $array[$num]['inicio_cobranza'] = $row->inicio_cobranza;
+                         $array[$num]['id_operador_concepto'] = $row->id_operador_concepto;
+                         $array[$num]['id_concepto'] = $row->id_concepto;
+                         $array[$num]['monto'] = $row->monto;
+                         $num++;
+                  }
+           }
+           return $array ;
+    }
+    function obtener_trabajos(){
+           $sql="
+                  SELECT
+                  fo_conceptos.id_concepto,
+                  cm1.valor,
+                  cm1.etiqueta AS ejecucion,
+                  fo_conceptos.concepto,
+                  fo_conceptos.monto
+                  FROM
+                  fo_conceptos
+                  INNER JOIN cm_catalogo AS cm1 ON fo_conceptos.cat_periodicidad = cm1.id_cat
+                  WHERE
+                  cm1.catalogo = 'periodicidad'
+                  AND fo_conceptos.cat_status_concepto = 240
+           ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $data = $query->fetchAll();
+           $array = array();
+           if($query->rowCount()>=1){
+                  $num=0;
+                  foreach ($data as $row) {
+                         $array[$num]['id_concepto'] = $row->id_concepto;
+                         $array[$num]['valor'] = $row->valor;
+                         $array[$num]['ejecucion'] = $row->ejecucion;
+                         $array[$num]['concepto'] = $row->concepto;
+                         $array[$num]['monto'] = $row->monto;
+                         $num++;
+                  }
+           }
+           return $array ;
+    }
     function fijar_cobro($id_concepto,$id_operador,$estado){
            if($estado == 'true'){
                   $sql = "
                          INSERT INTO fo_operador_conceptos (
                                 id_operador,
                                 id_concepto,
+                                inicio_cobranza,
                                 user_alta,
                                 fecha_alta
                          ) VALUES (
                                 :id_operador,
                                 :id_concepto,
+                                :inicio_cobranza,
                                 :user_alta,
                                 :fecha_alta
                          )";
@@ -29,6 +165,7 @@ class EgresosoperadorModel
                          array(
                                 ':id_operador' => $id_operador,
                                 ':id_concepto' => $id_concepto,
+                                ':inicio_cobranza' => date("Y-m-d H:i:s"),
                                 ':user_alta' => $_SESSION['id_usuario'],
                                 ':fecha_alta' => date("Y-m-d H:i:s")
                          )
