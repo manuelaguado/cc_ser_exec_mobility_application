@@ -236,6 +236,43 @@ class OperacionModel{
                      $adicional = self::getCostosAdicionales($this->id_viaje);
                      self::updateStaticsCosts($costoData['costo'],$adicional,$id_statics,$costoData['id_tarifa_cliente']);
 
+           //ingresar costo en monedero de operador
+                     $total = $costoData['costo'] + $adicional;
+                     self::insertMonedero($viaje,$total);
+    }
+    public function insertMonedero($viaje,$total){
+           foreach ($viaje as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $comision = '25';
+           $neto = $total - (($comision * $total)/100);
+           $qry = "
+                  INSERT INTO `fo_ingresos` (
+                     `id_operador`,
+                     `id_viaje`,
+                     `cat_status_pago`,
+                     `monto`,
+                     `comision`,
+                     `neto`,
+
+                     `user_alta`,
+                     `fecha_alta`
+                  )
+                  VALUES
+                         (
+                                   '".$this->id_operador."',
+                                   '".$this->id_viaje."',
+                                   '244',
+                                   '".$total."',
+                                   '".$comision."',
+                                   '".$neto."',
+                                   '".$_SESSION['id_usuario']."',
+                                   '".date("Y-m-d H:i:s")."'
+                         );
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           return $this->db->lastInsertId();
     }
     public function updateStaticsCosts($costo,$adicional,$id_statics,$id_tarifa_cliente){
            $total = $costo + $adicional;

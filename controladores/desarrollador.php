@@ -72,6 +72,7 @@ class Desarrollador extends Controlador
 	}
 	public function initstate(){
 		$db = Controlador::direct_connectivity();
+		self::truncate_init();
 		$sql="
 		SELECT
 		op.id_operador,
@@ -128,11 +129,50 @@ class Desarrollador extends Controlador
 		self::delTree('2017');
 	}
 	function delTree($dir) {
-	   $files = array_diff(scandir($dir), array('.','..'));
-	    foreach ($files as $file) {
-	      (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
-	    }
-	    return rmdir($dir);
+		if(file_exists($dir)){
+			$files = array_diff(scandir($dir), array('.','..'));
+			foreach ($files as $file) {
+			(is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+			}
+			return rmdir($dir);
+		}
+	}
+	public function truncate_init(){
+		$db = Controlador::direct_connectivity();
+		$sql="
+		SET FOREIGN_KEY_CHECKS=0;
+		TRUNCATE vi_viaje;
+		TRUNCATE vi_costos_adicionales;
+		TRUNCATE vi_viaje_clientes;
+		TRUNCATE vi_viaje_detalle;
+		TRUNCATE vi_viaje_formapago;
+		TRUNCATE vi_viaje_incidencia;
+		TRUNCATE cr_episodios;
+		TRUNCATE cr_cordon;
+		TRUNCATE cr_state;
+		TRUNCATE cr_apartados;
+		TRUNCATE it_direcciones;
+		TRUNCATE it_origenes;
+		TRUNCATE it_destinos;
+		TRUNCATE it_cliente_destino;
+		TRUNCATE it_cliente_origen;
+		TRUNCATE it_viaje_destino;
+		TRUNCATE vi_viaje_alternativas;
+		TRUNCATE vi_viaje_statics;
+		TRUNCATE fo_conceptos;
+		TRUNCATE fo_operador_conceptos;
+		TRUNCATE fo_concepto_adeudo;
+		TRUNCATE fo_conceptos_aplicaciones;
+		TRUNCATE fo_pagos_conceptos;
+		TRUNCATE fo_movimientos;
+		TRUNCATE fo_ingresos;
+		TRUNCATE fo_cobros_ingresos;
+		TRUNCATE fo_comisiones;
+		TRUNCATE fo_regla_comision;
+		SET FOREIGN_KEY_CHECKS=1;
+		";
+		$stmt = $db->prepare($sql);
+		$stmt->execute();
 	}
 	public function km($km){
 		if($km <= 4){

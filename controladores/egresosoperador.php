@@ -99,5 +99,15 @@ class Egresosoperador extends Controlador
            $doSet = $egresos->fijar_cobro($id_concepto,$id_operador,$estado);
            print json_encode($doSet);
     }
+    public function ejecucionesCobro($id_concepto){
+            $this->se_requiere_logueo(true,'Egresosoperador|add_concepto');
+            require URL_VISTA.'egresosoperador/ejecucionesCobro.php';
+    }
+    public function obtener_ejecucionesCobro($id_concepto){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           $egresos = $this->loadModel('Egresosoperador');
+           $lista_ejecuciones = $egresos->obtener_ejecucionesCobro($_POST,$id_concepto);
+           print $lista_ejecuciones;
+    }
 }
 ?>

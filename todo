@@ -1,3 +1,5 @@
 TODO: costos por tiempo calcularlos con base en tipo de tarifa y calcularlos cada 30 min Y/o 30 km crear flujo y validarlo
 TODO: crear flujo de pagos de viajes y emision de papeletas crear historial de pagos
 TODO: mostrar viajes por cobrar y viajes pagados
+TODO: crear trabajo cron para generacion de cuotas
+TODO: recualcular el costo adicional cuando se modifique, afecta el statics asi como las finanzas del operador, eliminar la modificacion cuando este procesado el viaje

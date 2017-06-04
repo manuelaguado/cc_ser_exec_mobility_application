@@ -38,6 +38,7 @@ class EgresosoperadorModel
            $qry = "
            INSERT INTO `fo_concepto_adeudo` (
            	`id_operador_conecepto`,
+              `cat_status_pago`,
            	`monto`,
            	`fecha_emision`,
            	`user_alta`,
@@ -46,6 +47,7 @@ class EgresosoperadorModel
            VALUES
            	(
            		".$id_operador_concepto.",
+                     '244',
            		'".$monto."',
            		'".$actualDay."',
                      '1',
@@ -410,11 +412,131 @@ class EgresosoperadorModel
                   $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
            );
     }
+    function obtener_ejecucionesCobro($array,$id_concepto){
+           ini_set('memory_limit', '256M');
+           $table = 'fo_conceptos_aplicaciones AS ca';
+           $primaryKey = 'id_concepto_aplicacion';
+           $columns = array(
+                  array(
+                         'db' => 'con.concepto as concepto',
+                         'dbj' => 'con.concepto',
+                         'real' => 'con.concepto',
+                         'alias' => 'concepto',
+                         'typ' => 'txt',
+                         'dt' => 0
+                  ),
+                  array(
+                         'db' => 'con.monto as monto',
+                         'dbj' => 'con.monto',
+                         'real' => 'con.monto',
+                         'alias' => 'monto',
+                         'moneda' => true,
+                         'typ' => 'int',
+                         'dt' => 1
+                  ),
+                  array(
+                         'db' => 'cat.etiqueta AS periodicidad',
+                         'dbj' => 'cat.etiqueta',
+                         'real' => 'cat.etiqueta',
+                         'alias' => 'periodicidad',
+                         'typ' => 'txt',
+                         'dt' => 2
+                  ),
+                  array(
+                         'db' => 'ca.fecha_aplicacion AS fecha_aplicacion',
+                         'dbj' => 'ca.fecha_aplicacion',
+                         'real' => 'ca.fecha_aplicacion',
+                         'alias' => 'fecha_aplicacion',
+                         'typ' => 'int',
+                         'dt' => 3
+                  ),
+                  array(
+                         'db' => 'ca.adeudos_generados AS adeudos_generados',
+                         'dbj' => 'ca.adeudos_generados',
+                         'real' => 'ca.adeudos_generados',
+                         'alias' => 'adeudos_generados',
+                         'typ' => 'int',
+                         'dt' => 4
+                  ),
+                  array(
+                         'db' => 'ca.monto_generado AS monto_generado',
+                         'dbj' => 'ca.monto_generado',
+                         'real' => 'ca.monto_generado',
+                         'alias' => 'monto_generado',
+                         'moneda' => true,
+                         'typ' => 'int',
+                         'dt' => 5
+                  ),
+                  array(
+                         'db' => 'ca.id_concepto_aplicacion as id_concepto_aplicacion',
+                         'dbj' => 'ca.id_concepto_aplicacion',
+                         'real' => 'ca.id_concepto_aplicacion',
+                         'alias' => 'id_concepto_aplicacion',
+                         'acciones' => true,
+                         'typ' => 'int',
+                         'dt' => 6
+                  )
+           );
+           $inner = '
+                  INNER JOIN fo_conceptos AS con ON ca.id_concepto = con.id_concepto
+                  INNER JOIN cm_catalogo AS cat ON con.cat_periodicidad = cat.id_cat
+           ';
+           $where = "
+              ca.id_concepto = $id_concepto
+           ";
+           $orden = '
+           ';
+           $render_table = new accionesejecucionesCobro;
+           return json_encode(
+                  $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+           );
+    }
 }
 
 
 
+class accionesejecucionesCobro extends SSP{
+	static function data_output ( $columns, $data, $db )
+	{
+		$out = array();
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
 
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+
+				if ( isset( $column['acciones'] ) ) {
+					$id_concepto_aplicacion = $data[$i][ 'id_concepto_aplicacion' ];
+
+					$salida = '';
+                                   //eliminar un cobro
+                                          $salida .= '<a onclick="eliminar_cobro('.$id_concepto_aplicacion.')" data-rel="tooltip" data-original-title="Eliminar cobro"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+                                   //editar un cobro
+                                          $salida .= '<a onclick="editar_cobro('.$id_concepto_aplicacion.')" data-rel="tooltip" data-original-title="Editar cobro"><i class="fa fa-pencil" style="font-size:1.4em; color:#008301;"></i></a>&nbsp;&nbsp;';
+                                   //relacionar un cobro
+                                          $salida .= '<a onclick="carga_archivo(\'contenedor_principal\',\'egresosoperador/relacionar_cobro/'.$id_concepto_aplicacion.'\')" data-rel="tooltip" data-original-title="Relacionar cobro"><i class="fa fa-users" aria-hidden="true"></i></a>&nbsp;&nbsp;';
+                                   //ver aplicaciones de un cobro
+                                          $salida .= '<a onclick="carga_archivo(\'contenedor_principal\',\'egresosoperador/ejecucionesCobro/'.$id_concepto_aplicacion.'\')" data-rel="tooltip" data-original-title="Ver aplicaciones del cobro"><i class="fa fa-history" style="font-size:1.4em; color:#000;"></i></a>&nbsp;&nbsp;';
+
+                                   $row[ $column['dt'] ] = $salida;
+				}else if ( isset( $column['moneda'] ) ){
+
+					$cantidad = ($data[$i][ $column['alias'] ]);
+					$cantidad = money_format('%i',$cantidad);
+					$salida = $cantidad;
+
+					$row[ $column['dt'] ] = $salida;
+				}else{
+					$row[ $column['dt'] ] = $data[$i][$name_column];
+				}
+
+			}
+			$out[] = $row;
+		}
+		return $out;
+	}
+}
 class accionesConceptos extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{
@@ -437,7 +559,7 @@ class accionesConceptos extends SSP{
                                    //relacionar un cobro
                                           $salida .= '<a onclick="carga_archivo(\'contenedor_principal\',\'egresosoperador/relacionar_cobro/'.$id_concepto.'\')" data-rel="tooltip" data-original-title="Relacionar cobro"><i class="fa fa-users" aria-hidden="true"></i></a>&nbsp;&nbsp;';
                                    //ver aplicaciones de un cobro
-                                          $salida .= '<a onclick="aplicaciones_cobro('.$id_concepto.')" data-rel="tooltip" data-original-title="Ver aplicaciones del cobro"><i class="fa fa-history" style="font-size:1.4em; color:#000;"></i></a>&nbsp;&nbsp;';
+                                          $salida .= '<a onclick="carga_archivo(\'contenedor_principal\',\'egresosoperador/ejecucionesCobro/'.$id_concepto.'\')" data-rel="tooltip" data-original-title="Ver aplicaciones del cobro"><i class="fa fa-history" style="font-size:1.4em; color:#000;"></i></a>&nbsp;&nbsp;';
 
                                    $row[ $column['dt'] ] = $salida;
 				}else if ( isset( $column['moneda'] ) ){

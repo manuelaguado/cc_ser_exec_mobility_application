@@ -122,6 +122,3 @@ function establecer_cobro(id_operador) {
 		});
 	} );
 }
-function aplicaciones_cobro(id_concepto){
-       alert('buuu!');
-}
