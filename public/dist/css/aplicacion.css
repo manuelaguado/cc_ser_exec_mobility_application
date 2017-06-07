@@ -686,3 +686,45 @@ table#tb_act_oper tbody > tr > td{
 @keyframes blinker {
   50% { opacity: 0; }
 }
+.infobox-content{
+    width: 120px;
+}
+.infobox-small {
+    height: 73px;
+}
+.infobox .infobox-content:first-child {
+    font-weight: normal;
+}
+.infobox .infobox-content:last-child {
+    font-weight: bold;
+}
+.infobox-300{
+       width: 300px;
+       height: 73px;
+       text-align: left;
+       padding-bottom: 5px;
+}
+.infobox-float-left{
+       width: 120px;
+       max-width: 140px;
+       color: #FFF;
+       display:inline-flex;
+       font-weight: normal;
+       position:relative;
+       float:left;
+}
+.infobox-float-left:last-child {
+       font-weight: bold;
+}
+.infobox-float-right{
+       width: 120px;
+       max-width: 140px;
+       color: #FFF;
+       display:inline-flex;
+       font-weight: normal;
+       position:relative;
+       float:right;
+}
+.infobox-float-right:last-child {
+       font-weight: bold;
+}

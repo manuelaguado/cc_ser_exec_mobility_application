@@ -1675,3 +1675,110 @@ function eliminar_incidencia(id_incidencia){
 		});
 	} );
 }
+
+
+
+function costos_adicionales_post(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/costos_adicionales_post/' + id_viaje,
+			dataType: 'html',
+			success: function(resp_success){
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+
+					$( "#add" ).click(function() {
+						$("#add_field").css({ display: "" });
+						$("#footer_main").css({ display: "none" });
+					});
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-108');}
+		});
+	} );
+}
+function costos_adicionales_do_post(){
+	var msj_error="";
+	if( $('#cat_concepto').get(0).value == "" )	msj_error+='Seleccione el concepto del costo adicional.<br />';
+	if( $('#costo').get(0).value == "" )		msj_error+='Ingrese el costo adicional.<br />';
+	if( $('#id_viaje').get(0).value == "" )	msj_error+='Falta id_viaje, no deberia ocurrir esto.<br />';
+
+	if( !msj_error == "" ){
+		alerta('Alerta!',msj_error);
+		return false;
+	}
+
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/costos_adicionales_do_post',
+			type: 'POST',
+			data: $("#costos_adicionales").serialize(),
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#costosAdicionales').DataTable().ajax.reload();
+					$('#cat_concepto').val('');
+					$('#costo').val('');
+					$('#viajes_operador').DataTable().ajax.reload();
+				}else{
+					 alerta('Alerta!','Error de conectividad de red OPRN-109');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-110');}
+		});
+	} );
+}
+function eliminar_costoAdicionalPost(id_costos_adicionales,id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/eliminar_costoAdicionalPost/' + id_costos_adicionales + '/' + id_viaje,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#costosAdicionales').DataTable().ajax.reload();
+					$('#viajes_operador').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-111');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-112');}
+		});
+	} );
+}
+function cambiar_tarifa_post(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/cambiar_tarifa_post/' + id_viaje,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-113');}
+		});
+	} );
+}
+function cambiar_tarifa_do_post(id_tarifa_cliente,id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/cambiar_tarifa_do_post/' + id_tarifa_cliente + '/' + id_viaje,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('a[id ^= fare_]').html('<i class="fa fa-square-o bigger-150"  aria-hidden="true"></i>');
+					$('#fare_'+id_tarifa_cliente).html('<i class="fa fa-check-square-o bigger-150 green" aria-hidden="true"></i>');
+					$('#viajes_operador').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-114');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-115');}
+		});
+	} );
+}

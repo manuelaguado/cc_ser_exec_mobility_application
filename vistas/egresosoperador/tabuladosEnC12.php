@@ -1,5 +1,5 @@
 <style>
-div.table-responsive div#cordon_wrapper.dataTables_wrapper.form-inline.dt-bootstrap.no-footer div.row div.col-sm-12{
+div.table-responsive div#c12_wrapper.dataTables_wrapper.form-inline.dt-bootstrap.no-footer div.row div.col-sm-12{
 	padding: 0px !important;
 }
 .container {
@@ -20,22 +20,23 @@ div.table-responsive div#cordon_wrapper.dataTables_wrapper.form-inline.dt-bootst
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Cordon KPMG
+					Tabulados con cambios de ruta
 				</h1>
 			</div><!-- /.page-header -->
 		</div>
 		<div class="col-md-12 column">
 			<div class="table-responsive">
-				<table id="cordon" class="display table table-striped" cellspacing="0" width="100%">
+				<table id="c12" class="display table table-striped" cellspacing="0" width="100%">
 					<thead>
 						<tr>
-							<th>Turno</th>
-							<th>NUM EQ</th>
-							<th>Nombre</th>
-							<th>Marca</th>
-							<th>Modelo</th>
-							<th>Color</th>
-							<th>Llegada/Espera</th>
+							<th>ID</th>
+							<th>[STATUS]</th>
+							<th>Hora</th>
+							<th>Usuario</th>
+							<th>Empresa</th>
+							<th>Servicio</th>
+							<th>NUM</th>
+							<th>Apartado</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -44,40 +45,27 @@ div.table-responsive div#cordon_wrapper.dataTables_wrapper.form-inline.dt-bootst
 		</div>
 	</div>
 </div>
+<input type="hidden" id="refmod_aux" name="refmod_aux" value="" />
 <script type="text/javascript" language="javascript" class="init">
 $(document).ready(function() {
-    $('#cordon').dataTable( {
+	$('#c12').dataTable( {
 		"fnDrawCallback": function( oSettings ) {
 		  $('[data-rel=tooltip]').tooltip();
 		},
-        "processing": true,
-        "serverSide": true,
-	"ajax": {
-            "url": "operacion/cordon_kpmg_get",
-            "type": "POST"
-        },
+		"processing": true,
+		"serverSide": true,
+		"pageLength": 30,
+		"ajax": {
+			"url": "egresosoperador/tabuladosEnC12Get",
+			"type": "POST"
+		},
 		"columnDefs": [
 			{
-				"targets": 8,
+				"targets": 1,
 				"visible": false,
 				"searchable":false
 			}
 		]
-    } );
+	} );
 } );
-
-
-var pusher = new Pusher('<?=PUSHER_KEY?>', {
-	encrypted: true
-});
-
-var updChannel = pusher.subscribe('updcrd1');
-
-pusher.connection.bind('connected', function() {
-	console.log('✓ Servicio de actualización de cordón activo');
-})
-updChannel.bind('evento', function(data) {
-	$('#cordon').DataTable().ajax.reload();
-});
-
 </script>

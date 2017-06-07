@@ -311,6 +311,49 @@ class Operacion extends Controlador
 
 
 
+       public function costos_adicionales_post($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$cat_concepto = $this->selectCatalog('costos_adicionales',null);
+		require URL_VISTA.'modales/operacion/costos_adicionales_post.php';
+	}
+       public function costos_adicionales_get_post($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		print $operacion->queryCostosAdicionales_post($_POST,$id_viaje);
+	}
+       public function costos_adicionales_do_post(){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+              $vars = $operacion->dataUpdateCosts($_POST['id_viaje']);
+		print json_encode($operacion->addCostoAdicionalPost($_POST,$vars));
+	}
+       public function eliminar_costoAdicionalPost($id_costos_adicionales,$id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+              $vars = $operacion->dataUpdateCosts($id_viaje);
+		$ok = $operacion->eliminar_costoAdicionalPost($id_costos_adicionales,$vars);
+		print json_encode($ok);
+	}
+
+
+       public function cambiar_tarifa_post($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$id_cliente = $operacion->getIdCliente($id_viaje);
+		$current_tarifa = $operacion->currentTarifa($id_viaje);
+		$id_company = $operacion->id_company($id_cliente);
+		$tarifas = $operacion->queryTarifas($id_company);
+
+		require URL_VISTA.'modales/operacion/cambiar_tarifa_post.php';
+	}
+       public function cambiar_tarifa_do_post($id_tarifa_cliente,$id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+              $vars = $operacion->dataUpdateCosts($id_viaje);
+		$operacion->cambiar_tarifa_do_post($id_tarifa_cliente,$id_viaje,$vars);
+	}
+
+
 
 	public function costos_adicionales($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

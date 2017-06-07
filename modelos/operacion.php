@@ -33,7 +33,7 @@ class OperacionModel{
               cm1.catalogo = 'clavesitio' AND
               cm2.catalogo = 'clavesitio'
            ORDER BY
-                      	stt.id_state ASC
+              stt.id_state ASC
            LIMIT 0,
                        100
 
@@ -164,7 +164,7 @@ class OperacionModel{
               ),
               array(
                      'clave' => 'C8',
-                     'descripcion' => 'Servidio a bordo'
+                     'descripcion' => 'Servicio a bordo'
               ),
               array(
                      'clave' => 'A2',
@@ -339,14 +339,54 @@ class OperacionModel{
                          $array['id_tarifa_cliente'] = $row->id_tarifa_cliente;
                   }
            }
-           if($km <= 4){
-                  $costo = $array['costo_base'];
-                  $array['costo'] = $costo;
-          }elseif($km > 4 ){
-                  $excedente = ceil($km - 4);
-                  $array['costo'] =  $excedente * $array['km_adicional'];
+
+          if($array['tabulado'] == 1){
+              $existe_c12 = self::existeEnViaje('C12',$id_viaje);
+              $existe_t3 = self::existeEnViaje('T3',$id_viaje);
+              if(($existe_c12 >= 1)OR($existe_t3 >= 1)){
+                     $array['costo'] = $array['costo_base'];
+                     //se setea el viaje para revision manual
+                     $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '247' WHERE id_viaje = ".$id_viaje);
+              }else{
+                     $array['costo'] = $array['costo_base'];
+              }
+          }else{
+                 if($km <= 4){
+                        $array['costo'] = $array['costo_base'];
+                }elseif($km > 4 ){
+                        $excedente = ceil($km - 4);
+                        $array['costo'] =  $array['costo_base'] + ($excedente * $array['km_adicional']);
+                }
           }
           return $array;
+    }
+    function existeEnViaje($clave,$id_viaje){
+           $sql="
+                  SELECT
+                  Count( cm1.etiqueta ) AS total
+                  FROM
+                  cr_state AS stt
+                  INNER JOIN cm_catalogo AS cm1 ON cm1.etiqueta = stt.state
+                  INNER JOIN cm_catalogo AS cm2 ON cm1.etiqueta = cm2.etiqueta
+                  WHERE
+                  stt.id_viaje = 1
+                  AND cm1.catalogo = 'clavesitio'
+                  AND cm2.catalogo = 'clavesitio'
+                  AND cm1.etiqueta = '".$clave."'
+                  ORDER BY
+                  stt.id_state ASC
+                  LIMIT 0,
+                  100
+                  ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $historia = $query->fetchAll();
+           $array = array();
+           if($query->rowCount()>=1){
+                  foreach ($historia as $row) {
+                        return $row->total;
+                  }
+           }
     }
     public function insertStatic($viaje,$t1,$t2,$t3){
            foreach ($viaje as $key => $value) {
@@ -424,12 +464,12 @@ class OperacionModel{
                   fclose($fp);
                   foreach($val->legs as $elm){
                          $alt['km'] = ($elm->distance->value)/1000;
-                         $alt['min'] = ($elm->duration->value)/60;
+                         $alt['sec'] = ($elm->duration->value);
                   }
                   $alt['sumario'] = $val->summary;
                   self::insertAlternativa($alt,$id_statics);
                   $kms[$num] = $alt['km'];
-                  $time[$num]= $alt['min'];
+                  $time[$num]= $alt['sec'];
            }
            $upsSttcs['kmss_max'] = max($kms);
            $upsSttcs['kmss_min'] = min($kms);
@@ -453,9 +493,9 @@ class OperacionModel{
                   UPDATE `vi_viaje_statics`
                   SET
                      `mapa` = '".$image_main."',
-                     `time_or_des_max` = '".$this->time_max."',
-                     `time_or_des_min` = '".$this->time_min."',
-                     `time_or_des_pro` = '".$this->time_pro."',
+                     `time_or_des_max` = SEC_TO_TIME(".$this->time_max."),
+                     `time_or_des_min` = SEC_TO_TIME(".$this->time_min."),
+                     `time_or_des_pro` = SEC_TO_TIME(".$this->time_pro."),
                      `km_max_maps` = '".$this->kmss_max."',
                      `km_min_maps` = '".$this->kmss_min."',
                      `km_pro_maps` = '".$this->kmss_pro."'
@@ -484,7 +524,7 @@ class OperacionModel{
                                 '".$id_statics."',
                                 '".$this->ruta_file."',
                                 '".$this->km."',
-                                '".$this->min."',
+                                SEC_TO_TIME(".$this->sec."),
                                 '".$this->sumario."',
                                 '".$_SESSION['id_usuario']."',
                                 '".date("Y-m-d H:i:s")."'
@@ -630,6 +670,38 @@ class OperacionModel{
     		}
     		return $output;
     }
+    function dataUpdateCosts($id_viaje){
+           $qry = "
+                  SELECT
+                  	v.id_viaje,
+                  	vs.id_viaje_statics,
+                  	vs.km_max_maps,
+                  	o.id_operador,
+                  	i.id_ingreso
+                  FROM
+                  	vi_viaje AS v
+                  INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = v.id_viaje
+                  INNER JOIN cr_operador_unidad AS ou ON v.id_operador_unidad = ou.id_operador_unidad
+                  INNER JOIN cr_operador AS o ON ou.id_operador = o.id_operador
+                  INNER JOIN fo_ingresos AS i ON i.id_viaje = v.id_viaje
+                  WHERE
+                  	v.id_viaje = $id_viaje
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $viaje = array();
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  foreach ($data as $row){
+                         $viaje['id_viaje'] 	= $row->id_viaje;
+                         $viaje['id_viaje_statics'] = $row->id_viaje_statics;
+                         $viaje['kms'] 	= $row->km_max_maps;
+                         $viaje['id_operador']= $row->id_operador;
+                         $viaje['id_ingreso']= $row->id_ingreso;
+                  }
+           }
+           return $viaje;
+    }
     function idensViaje($id_viaje){
            $qry = "
                   SELECT
@@ -773,6 +845,51 @@ class OperacionModel{
 		}
 		return $respuesta;
 	}
+       function addCostoAdicionalPost($arreglo,$vars){
+		foreach ($arreglo as $key => $value) {
+			$this->$key = strip_tags($value);
+		}
+		$sql = "
+			INSERT INTO vi_costos_adicionales (
+				id_viaje,
+				cat_concepto,
+				costo,
+				fecha,
+				user_alta,
+				user_mod,
+				fecha_alta
+			) VALUES (
+				:id_viaje,
+				:cat_concepto,
+				:costo,
+				:fecha,
+				:user_alta,
+				:user_mod,
+				:fecha_alta
+			)";
+              $costo = str_replace(',','',$this->costo);
+              $sign = substr($costo, 0,1);
+              $input = ($sign == '$')?substr($costo, 2):(substr($costo, 3)*-1);
+		$query = $this->db->prepare($sql);
+		$query_resp = $query->execute(
+			array(
+				':id_viaje' =>  $this->id_viaje ,
+				':cat_concepto' =>  $this->cat_concepto ,
+				':costo' =>  $input ,
+				':fecha' =>  date("Y-m-d H:i:s") ,
+				':user_alta' =>  $_SESSION['id_usuario'] ,
+				':user_mod' => $_SESSION['id_usuario'] ,
+				':fecha_alta' => date("Y-m-d H:i:s")
+			)
+		);
+		if($query_resp){
+                     self::updateCostosAdicionales($vars);
+			$respuesta = array('resp' => true);
+		}else{
+			$respuesta = array('resp' => false);
+		}
+		return $respuesta;
+	}
        function addIncidencia($arreglo){
               foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
@@ -839,6 +956,50 @@ class OperacionModel{
 		}
 		return $array;
 	}
+       function eliminar_costoAdicionalPost($id_costos_adicionales,$vars){
+		$qry = "
+			DELETE
+			FROM
+			vi_costos_adicionales
+			WHERE
+			id_costos_adicionales = '".$id_costos_adicionales."'
+		";
+		$query = $this->db->prepare($qry);
+		$ok = $query->execute();
+		if($ok){
+                     self::updateCostosAdicionales($vars);
+			$array = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
+		}else{
+			$array = array('false' => true , 'mensaje' => 'Registro guardado correctamente.' );
+		}
+		return $array;
+	}
+       function updateCostosAdicionales($vars){
+              foreach ($vars as $key => $value) {
+                     $this->$key = strip_tags($value);
+              }
+              $costoData = self::getCostViaje($this->id_viaje,$this->kms);
+              $adicional = self::getCostosAdicionales($this->id_viaje);
+              self::updateStaticsCosts($costoData['costo'],$adicional,$this->id_viaje_statics,$costoData['id_tarifa_cliente']);
+              $total = $costoData['costo'] + $adicional;
+              self::updateMonedero($this->id_ingreso,$total);
+       }
+       function updateMonedero($id_ingreso,$total){
+              $comision = '25';
+              $neto = $total - (($comision * $total)/100);
+		$qry = "
+			UPDATE `fo_ingresos`
+			SET
+			 `monto` = '".$total."',
+                      `comision` = '".$comision."',
+                      `neto` = '".$neto."'
+
+			WHERE
+				(`id_ingreso` = ".$id_ingreso.");
+		";
+		$query = $this->db->prepare($qry);
+		$query_resp = $query->execute();
+	}
 	function countApart($id_operador,$hit,$id_operador_turno){
 		if(!$hit){
 			self::setNoHit($id_operador_turno);
@@ -867,6 +1028,24 @@ class OperacionModel{
 		$query = $this->db->prepare($qry);
 		$query_resp = $query->execute();
 		if($query_resp){
+			$respuesta = array('resp' =>  true , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
+		}else{
+			$respuesta = array('resp' => false , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
+		}
+		print json_encode($respuesta);
+	}
+       function cambiar_tarifa_do_post($id_tarifa_cliente,$id_viaje,$vars){
+		$qry = "
+			UPDATE `vi_viaje`
+			SET
+			 `id_tarifa_cliente` = ".$id_tarifa_cliente."
+			WHERE
+				(`id_viaje` = ".$id_viaje.");
+		";
+		$query = $this->db->prepare($qry);
+		$query_resp = $query->execute();
+		if($query_resp){
+                     self::updateCostosAdicionales($vars);
 			$respuesta = array('resp' =>  true , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
 		}else{
 			$respuesta = array('resp' => false , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
@@ -3913,6 +4092,107 @@ class OperacionModel{
                      $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
               );
        }
+       function queryCostosAdicionales_post($array,$id_viaje){
+		ini_set('memory_limit', '256M');
+		$table = 'vi_costos_adicionales AS vca';
+		$primaryKey = 'id_costos_adicionales';
+		$columns = array(
+			array(
+				'db' => 'cat.etiqueta as etiqueta',
+				'dbj' => 'cat.etiqueta',
+				'real' => 'cat.etiqueta',
+				'alias' => 'etiqueta',
+				'typ' => 'txt',
+				'dt' => 0
+			),
+			array(
+				'db' => 'vca.costo as costo',
+				'dbj' => 'vca.costo',
+				'real' => 'vca.costo',
+				'alias' => 'costo',
+				'typ' => 'int',
+				'moneda' => true,
+				'dt' => 1
+			),
+			array(
+				'db' => 'usr.usuario as usuario',
+				'dbj' => 'usr.usuario',
+				'real' => 'usr.usuario',
+				'alias' => 'usuario',
+				'typ' => 'txt',
+				'dt' => 2
+			),
+			array(
+				'db' => 'vca.fecha as fecha',
+				'dbj' => 'vca.fecha',
+				'real' => 'vca.fecha',
+				'alias' => 'fecha',
+				'typ' => 'int',
+				'dt' => 3
+			),
+			array(
+				'db' => 'vca.id_costos_adicionales as id_costos_adicionales',
+				'dbj' => 'vca.id_costos_adicionales',
+				'real' => 'vca.id_costos_adicionales',
+				'alias' => 'id_costos_adicionales',
+				'typ' => 'int',
+				'acciones' => true,
+				'viaje' => $id_viaje,
+				'dt' => 4
+			)
+		);
+		$inner = '
+			INNER JOIN cm_catalogo AS cat ON vca.cat_concepto = cat.id_cat
+			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_mod
+		';
+		$where = '
+			vca.id_viaje = '.$id_viaje.'
+		';
+		$orden = '
+			GROUP BY
+				vca.id_costos_adicionales ASC
+		';
+		$render_table = new acciones_costosAdicionalesPost;
+		return json_encode(
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+		);
+	}
+}
+class acciones_costosAdicionalesPost extends SSP{
+	static function data_output ( $columns, $data, $db )
+	{
+		$out = array();
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
+
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+
+				if ( isset( $column['acciones'] ) ) {
+					$id_viaje = $column['viaje'];
+					$id_costos_adicionales = ($data[$i][ $column['alias'] ]);
+
+					$salida = '';
+					$salida .= '<a onclick="eliminar_costoAdicionalPost('.$id_costos_adicionales.','.$id_viaje.')" data-rel="tooltip" data-original-title="Eliminar costo"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+
+					$row[ $column['dt'] ] = $salida;
+				}else if ( isset( $column['moneda'] ) ){
+
+					$cantidad = ($data[$i][ $column['alias'] ]);
+					$cantidad = money_format('%i',$cantidad);
+					$salida = $cantidad;
+
+					$row[ $column['dt'] ] = $salida;
+				}else{
+					$row[ $column['dt'] ] = $data[$i][$name_column];
+				}
+
+			}
+			$out[] = $row;
+		}
+		return $out;
+	}
 }
 class acciones_incidencias extends SSP{
        static function data_output ( $columns, $data, $db )
@@ -3926,7 +4206,6 @@ class acciones_incidencias extends SSP{
                             $name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 
                             if ( isset( $column['acciones'] ) ) {
-                                   $id_viaje = ($data[$i][ $column['alias'] ]);
                                    $id_viaje_incidencia = ($data[$i][ $column['alias'] ]);
 
                                    $salida = '';
@@ -3955,7 +4234,6 @@ class acciones_costosAdicionales extends SSP{
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 
 				if ( isset( $column['acciones'] ) ) {
-					$id_viaje = ($data[$i][ $column['alias'] ]);
 					$id_costos_adicionales = ($data[$i][ $column['alias'] ]);
 
 					$salida = '';
@@ -4149,9 +4427,9 @@ class acciones_completados extends SSP{
 
 					$salida = '';
 
-					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a href="javascript:;" onclick="costos_adicionales_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 
-					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 
@@ -4161,11 +4439,6 @@ class acciones_completados extends SSP{
                                           </a>
                                    ";
 
-                                   $salida .= "
-                                          <a onclick='modificar_destino(".$id_viaje.")' data-rel='tooltip' data-original-title='Modificar destino'>
-                                                 <i class='fa fa-map-o' style='font-size:1.4em; color:green; position:relative; top:-5px;'><i class='fa-location-arrow fa_asub red'></i></i>
-                                          </a>
-                                   ";
 
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){

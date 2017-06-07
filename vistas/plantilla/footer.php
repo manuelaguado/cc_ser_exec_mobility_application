@@ -161,6 +161,7 @@
 		<script src="<?=URL_PUBLIC?>js/pdf.js"></script>
 		<script src="<?=URL_PUBLIC?>js/operacion.js"></script>
 		<script src="<?=URL_PUBLIC?>js/egresosoperador.js"></script>
+		<script src="<?=URL_PUBLIC?>js/ingresosoperador.js"></script>
 		<script src="<?=URL_PUBLIC?>js/catalogo.js"></script>
 
 		<script src="<?=URL_PUBLIC?>components/buzz/buzz.min.js"></script>

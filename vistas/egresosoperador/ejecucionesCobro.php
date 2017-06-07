@@ -10,19 +10,10 @@ div.table-responsive div#ejecuciones_wrapper.dataTables_wrapper.form-inline.dt-b
 <div class="container">
 	<div class="row clearfix">
 		<div class="page-header">
-			<h1>
-				Ejecuciones del concepto de cobro
-			</h1>
-		</div>
-		<?php
-		if($this->tiene_permiso('Egresosoperador|add_concepto')){
-		?>
-		<div class="col-md-12 column menu_header_content">
-			<button class="btn btn-ar btn-primary" type="button" onclick="modal_nuevo_cobro();">Nuevo cobro</button>
-		</div>
-		<?php
-		}
-		?>
+		<h1>
+			Ejecuciones del concepto de cobro
+		</h1>
+		<br><br>
 		<div class="col-md-12 column">
 			<div class="table-responsive">
 				<table id="ejecuciones" class="display table table-striped" cellspacing="0" width="100%">

@@ -6,6 +6,15 @@ class Egresosoperador extends Controlador
 	$this->se_requiere_logueo(true,'Egresosoperador|index');
        require URL_VISTA.'egresosoperador/index.php';
     }
+    public function tabuladosEnC12(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           require URL_VISTA.'egresosoperador/tabuladosEnC12.php';
+    }
+    public function tabuladosEnC12Get(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           $modelo = $this->loadModel('Egresosoperador');
+           print $modelo->tabuladosEnC12Get($_POST);           
+    }
     public function cron(){
            //exit();
            session_destroy();

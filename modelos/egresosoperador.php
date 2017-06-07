@@ -491,10 +491,158 @@ class EgresosoperadorModel
                   $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
            );
     }
+    function tabuladosEnC12Get($array){
+           ini_set('memory_limit', '256M');
+           $table = 'vi_viaje AS viv';
+           $primaryKey = 'id_viaje';
+           $columns = array(
+                  array(
+                         'db' => 'viv.id_viaje as id_viaje',
+                         'dbj' => 'viv.id_viaje',
+                         'real' => 'viv.id_viaje',
+                         'alias' => 'id_viaje',
+                         'typ' => 'int',
+                         'dt' => 0
+                  ),
+                  array(
+                         'db' => 'viv.cat_status_viaje as status_viaje',
+                         'dbj' => 'viv.cat_status_viaje',
+                         'real' => 'viv.cat_status_viaje',
+                         'alias' => 'status_viaje',
+                         'typ' => 'int',
+                         'dt' => 1
+                  ),
+                  array(
+                         'db' => 'vcd.fecha_solicitud as solicitud',
+                         'dbj' => 'vcd.fecha_solicitud',
+                         'real' => 'vcd.fecha_solicitud',
+                         'alias' => 'solicitud',
+                         'typ' => 'int',
+                         'dt' => 2
+                  ),
+                  array(
+                         'db' => 'clc.nombre AS cliente',
+                         'dbj' => 'clc.nombre',
+                         'real' => 'clc.nombre',
+                         'alias' => 'cliente',
+                         'typ' => 'txt',
+                         'dt' => 3
+                  ),
+                  array(
+                         'db' => 'clp.nombre AS empresa',
+                         'dbj' => 'clp.nombre',
+                         'real' => 'clp.nombre',
+                         'alias' => 'empresa',
+                         'typ' => 'txt',
+                         'dt' => 4
+                  ),
+                  array(
+                         'db' => 'service.etiqueta AS servicio',
+                         'dbj' => 'service.etiqueta',
+                         'real' => 'service.etiqueta',
+                         'alias' => 'servicio',
+                         'typ' => 'txt',
+                         'dt' => 5
+                  ),
+                  array(
+                         'db' => 'num_eq.num AS numq',
+                         'dbj' => 'num_eq.num',
+                         'real' => 'num_eq.num',
+                         'alias' => 'numq',
+                         'typ' => 'int',
+                         'dt' => 6
+                  ),
+                  array(
+                         'db' => 'vcd.apartado AS apartado',
+                         'dbj' => 'vcd.apartado',
+                         'real' => 'vcd.apartado',
+                         'alias' => 'apartado',
+                         'typ' => 'int',
+                         'bin' => true,
+                         'dt' => 7
+                  ),
+                  array(
+                         'db' => 'vcl.id_cliente AS id_cliente',
+                         'dbj' => 'vcl.id_cliente',
+                         'real' => 'vcl.id_cliente',
+                         'alias' => 'id_cliente',
+                         'typ' => 'int',
+                         'acciones' => true,
+                         'dt' => 8
+                  )
+           );
+           $inner = '
+                  INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
+                  INNER JOIN vi_viaje_clientes AS vcl ON vcl.id_viaje = viv.id_viaje
+                  INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
+                  INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
+                  INNER JOIN cm_catalogo AS service ON viv.cat_tiposervicio = service.id_cat
+                  INNER JOIN cm_catalogo AS tempo ON viv.cat_tipotemporicidad = tempo.id_cat
+                  INNER JOIN cr_operador_unidad as crou ON viv.id_operador_unidad = crou.id_operador_unidad
+                  INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
+                  INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
+                  INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
+           ';
+           $where = '
+                  viv.cat_status_viaje = 247
+           ';
+           $orden = '
+                  GROUP BY
+                         viv.id_viaje
+           ';
+           $render_table = new acciones_tabuladosEnC12;
+           return json_encode(
+                  $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+           );
+    }
 }
 
 
+class acciones_tabuladosEnC12 extends SSP{
+	static function data_output ( $columns, $data, $db )
+	{
+		$out = array();
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
 
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+				if ( isset( $column['acciones'] ) ) {
+					$id_viaje = $data[$i][ 'id_viaje' ];
+
+					$salida = '';
+
+					$salida .= '<a href="javascript:;" onclick="costos_adicionales_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+
+					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+
+					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+
+                                   $salida .= "
+                                          <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
+                                                 <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                          </a>
+                                   ";
+
+
+					$row[ $column['dt'] ] = $salida;
+				}else if(isset( $column['bin'])){
+
+					$a = ($data[$i][ 'apartado' ] == 1)? '<a data-rel="tooltip" data-original-title="Salida programada" href="javascript:;"><i class="icofont icofont-delivery-time bigger-200 brown darken-1"></i></a>':'<a data-rel="tooltip" data-original-title="Salida inmediata" href="javascript:;"><i class="icofont icofont-fast-delivery bigger-200 blue"></i></a>';
+
+					$salida = $a;
+					$row[ $column['dt'] ] = $salida;
+				}else{
+					$row[ $column['dt'] ] = $data[$i][$name_column];
+				}
+
+			}
+			$out[] = $row;
+		}
+		return $out;
+	}
+}
 class accionesejecucionesCobro extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{

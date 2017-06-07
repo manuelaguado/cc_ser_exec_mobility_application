@@ -43,31 +43,6 @@
 				?>
 
 				<?php
-				if($this->tiene_permiso('Operacion|listado_completados')){
-				?>
-				<li>
-					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/listado_completados');">
-						<i class="menu-icon fa fa-taxi"></i>
-						<span class="menu-text"> Completados </span>
-					</a>
-				</li>
-				<?php
-				}
-				?>
-				<?php
-				if($this->tiene_permiso('Operacion|listado_cancelados')){
-				?>
-				<li>
-					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/listado_cancelados');">
-						<i class="menu-icon fa fa-taxi"></i>
-						<span class="menu-text"> Cancelados </span>
-					</a>
-				</li>
-				<?php
-				}
-				?>
-
-				<?php
 				if($this->tiene_permiso('Operacion|programados')){
 				?>
 				<li>
@@ -122,10 +97,74 @@
 		<?php
 	}
 		if(
-			($this->tiene_permiso('Egresosoperador|index'))
+			($this->tiene_permiso('Operacion|listado_completados')) OR
+			($this->tiene_permiso('Operacion|listado_cancelados')) OR
+			($this->tiene_permiso('Egresosoperador|index')) OR
+			($this->tiene_permiso('Ingresosoperador|index'))
 		)
 		{
 		?>
+		<li>
+			<a class="dropdown-toggle" href="javascript:void(0)">
+				<i class="menu-icon fa fa-car" style="color:#3f8b00;"></i>
+				<span class="menu-text">
+					Viajes
+				</span>
+
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+			<ul class="submenu">
+				<?php
+				if($this->tiene_permiso('Ingresosoperador|index')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador');">
+						<i class="menu-icon fa fa-taxi"></i>
+						<span class="menu-text"> Por Operador </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Operacion|listado_completados')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/listado_completados');">
+						<i class="menu-icon fa fa-taxi"></i>
+						<span class="menu-text"> Completados </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Operacion|listado_cancelados')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/listado_cancelados');">
+						<i class="menu-icon fa fa-taxi"></i>
+						<span class="menu-text"> Cancelados </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Egresosoperador|index')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/tabuladosEnC12');">
+						<i class="menu-icon fa fa-map-signs"></i>
+						<span class="menu-text"> Tabulados C12 y T3 </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+			</ul>
+		</li>
+
 		<li>
 			<a class="dropdown-toggle" href="javascript:void(0)">
 				<i class="menu-icon fa fa-money" style="color:#3f8b00;"></i>
@@ -141,7 +180,7 @@
 				?>
 				<li>
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador');">
-						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-up fa-sup" aria-hidden="true"></i></i>
+						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-up fa_sup" aria-hidden="true"></i></i>
 						<span class="menu-text"> Conceptos de cobro </span>
 					</a>
 				</li>
