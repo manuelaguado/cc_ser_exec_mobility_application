@@ -4,6 +4,20 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
+	function selectone(){
+		$db = Controlador::direct_connectivity();
+		$sql = "
+		SELECT
+		vi_viaje.fecha_mod
+		FROM
+		vi_viaje
+		WHERE
+		vi_viaje.id_viaje = 1
+		";
+		$query = $db->prepare($sql);
+		$query->execute();
+		echo $query->fetchAll()[0]->fecha_mod;
+	}
 	public function generaradeudos(){
               //exit();
               session_destroy();

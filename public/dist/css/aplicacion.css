@@ -728,3 +728,36 @@ table#tb_act_oper tbody > tr > td{
 .infobox-float-right:last-child {
        font-weight: bold;
 }
+.infobox-actions {
+    width: 195px;
+    height: 73px;
+    text-align: left;
+    padding-bottom: 5px;
+}
+.infobox-alter {
+    width: 73px;
+    height: 73px;
+    text-align: left;
+    padding-bottom: 5px;
+}
+.infobox-dark > .infobox-icon > a > .ace-icon, .infobox-dark > .infobox-icon > a >.ace-icon:before {
+    background-color: transparent;
+    box-shadow: none !important;
+    text-shadow: none;
+    border-radius: 0;
+    font-size: 30px;
+    color: #fff;
+}
+.infobox > .infobox-icon > a >.ace-icon {
+    display: inline-block;
+    height: 42px;
+    margin: 0;
+    padding: 1px 1px 0 2px;
+    background-color: transparent;
+    border-width: 0;
+    text-align: center;
+    position: relative;
+    border-radius: 100%;
+    -webkit-box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}

@@ -10,6 +10,59 @@ class IngresosoperadorModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function coordenadas($id_viaje){
+           $query = $this->db->prepare('SELECT concat(vs.geo_origen,"/",vs.geo_destino) AS coordenadas FROM vi_viaje AS v INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = v.id_viaje WHERE v.id_viaje = '.$id_viaje.'');
+           $query->execute();
+           return $query->fetchAll()[0]->coordenadas;
+    }
+    function variantes($id_viaje){
+           $qry = "
+           SELECT
+           	va.ruta_file,
+           	va.km,
+           	va.minutos,
+           	va.sumario
+           FROM
+           	vi_viaje_alternativas AS va
+           INNER JOIN vi_viaje_statics AS vs ON va.id_viaje_statics = vs.id_viaje_statics
+           WHERE
+           	vs.id_viaje = $id_viaje
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $num =0;
+           $array = array();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         $array[$num]['file'] = self::duplicateMap($row->ruta_file);
+                         $array[$num]['km'] = $row->km;
+                         $array[$num]['minutos'] = $row->minutos;
+                         $array[$num]['sumario'] = $row->sumario;
+                         $num++;
+                  }
+           }
+           return $array;
+    }
+    function duplicateMap($imagen){
+           $token = Controller::token();
+
+           $destino = $token.'.png';
+           $tmp = '../public/tmp/';
+
+           copy('../archivo/'.$imagen, $tmp.$destino);
+           return '<a href="tmp/'.$destino.'" title="Ruta alternativa" data-rel="colorbox"><img src="plugs/timthumb.php?src=tmp/'.$destino.'&w=300"></a>';
+    }
+    function pausar_viaje_do($id_viaje){
+           $query = $this->db->prepare('SELECT v.cat_status_viaje FROM vi_viaje AS v WHERE v.id_viaje = '.$id_viaje);
+           $query->execute();
+           $status = $query->fetchAll()[0]->cat_status_viaje;
+           $newstat = ($status != 251)?251:172;
+
+           $qry = "UPDATE `vi_viaje` SET `cat_status_viaje` = $newstat WHERE (`id_viaje` = $id_viaje);";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           return json_encode(array('resp' => true));
+    }
     function operadorGroup($array){
            ini_set('memory_limit', '256M');
            $table = 'vi_viaje AS v';
@@ -120,7 +173,7 @@ class IngresosoperadorModel
            INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = v.id_viaje
            ';
            $where = '
-              (v.cat_status_viaje = 172 or v.cat_status_viaje = 247)
+              (v.cat_status_viaje = 172)
            ';
            $orden = '
            GROUP BY
@@ -169,7 +222,7 @@ class IngresosoperadorModel
                          'db' => 'vs.costos_adicionales AS adicional',
                          'dbj' => 'vs.costos_adicionales',
                          'real' => 'vs.costos_adicionales',
-                         'alias' => 'adicional',
+                         'format' => 'mapsroutes',
                          'moneda' => true,
                          'typ' => 'int',
                          'dt' => 3
@@ -233,7 +286,7 @@ class IngresosoperadorModel
                          'dbj' => 'vs.time_espera',
                          'real' => 'vs.time_espera',
                          'alias' => 'espera',
-                         'unit' => 'H:M:S',
+                         'format' => 'alternativas',
                          'typ' => 'int',
                          'dt' => 10
                   ),
@@ -245,6 +298,30 @@ class IngresosoperadorModel
                          'format' => 'acciones',
                          'typ' => 'int',
                          'dt' => 11
+                  ),
+                  array(
+                         'db' => 'v.cat_status_viaje AS cat_status_viaje',
+                         'dbj' => 'v.cat_status_viaje',
+                         'real' => 'v.cat_status_viaje',
+                         'alias' => 'cat_status_viaje',
+                         'typ' => 'int',
+                         'dt' => 12
+                  ),
+                  array(
+                         'db' => 'vs.geo_origen AS geo_origen',
+                         'dbj' => 'vs.geo_origen',
+                         'real' => 'vs.geo_origen',
+                         'alias' => 'geo_origen',
+                         'typ' => 'int',
+                         'dt' => 13
+                  ),
+                  array(
+                         'db' => 'vs.geo_destino AS geo_destino',
+                         'dbj' => 'vs.geo_destino',
+                         'real' => 'vs.geo_destino',
+                         'alias' => 'geo_destino',
+                         'typ' => 'int',
+                         'dt' => 14
                   )
            );
            $inner = '
@@ -254,10 +331,6 @@ class IngresosoperadorModel
            ';
            $where = "
                   o.id_operador = $id_operador
-           AND (
-           	v.cat_status_viaje = 172
-           	OR v.cat_status_viaje = 247
-           )
            AND vs.cat_status_statics = 222
            AND (
            	v.cat_status_viaje = 172
@@ -287,6 +360,7 @@ class accionesviajes_operador extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
                             $id_viaje = $data[$i][ 'id' ];
+                            $status_viaje = $data[$i][ 'cat_status_viaje' ];
 
                             if ( isset( $column['img'] ) ){
 
@@ -336,9 +410,43 @@ class accionesviajes_operador extends SSP{
 							</div>
 						</div>';
                                           break;
-                                          case 'acciones':
+                                          case 'mapsroutes':
                                           $salida = '
-                                          <div class="infobox infobox-green infobox-small infobox-dark" >
+                                          <div class="infobox infobox-red infobox-alter infobox-dark" >
+							<div class="infobox-icon center" style="width: 60px;" data-rel="tooltip" data-original-title="Costos adicionales">
+                                                        <a href="https://www.google.com.mx/maps/dir/'.$id_viaje = $data[$i][ 'geo_origen' ].'/'.$id_viaje = $data[$i][ 'geo_destino' ].'/" target="_blank">
+                                                               <i class="ace-icon fa fa-map-marker"></i>
+                                                        </a>
+							</div>
+                                                 <div style="text-align:center;">
+                                                        GMAPS
+                                                 </div>
+						</div>';
+                                          break;
+                                          case 'alternativas':
+                                          $salida = '
+                                          <div class="infobox infobox-pink infobox-alter infobox-dark" >
+							<div class="infobox-icon center" style="width: 60px;" onclick="variantes_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales">
+                                                        <i class="ace-icon fa fa-arrows-alt"></i>
+							</div>
+                                                 <div style="text-align:center;">
+                                                        VARIANTES
+                                                 </div>
+						</div>';
+                                          break;
+                                          case 'acciones':
+                                          if($status_viaje == 172){
+                                                 $icon = "fa fa-pause";
+                                                 $t = 'Activo y listo para procesarse';
+                                          }elseif($status_viaje == 247){
+                                                 $icon = "fa fa-play-circle-o";
+                                                 $t = 'Tabulado en pausa para revision con el operador';
+                                          }elseif($status_viaje == 251){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Viaje pausado, no se procesará para pago';
+                                          }
+                                          $salida = '
+                                          <div class="infobox infobox-green infobox-actions infobox-dark" >
 							<div class="infobox-icon" onclick="costos_adicionales_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales">
 								<i class="ace-icon icofont icofont-money-bag"></i>
 							</div>
@@ -347,6 +455,9 @@ class accionesviajes_operador extends SSP{
                                                  </div>
                                                  <div class="infobox-icon" onclick="historia_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="Historia">
                                                         <i class="ace-icon fa fa-clock-o"></i>
+                                                 </div>
+                                                 <div class="infobox-icon" onclick="pausar_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="'.$t.'">
+                                                        <i class="ace-icon '.$icon.'"></i>
                                                  </div>
                                                  <div style="text-align:center;">
                                                         ACCIONES
@@ -410,7 +521,7 @@ class accionesoperadorGroup extends SSP{
                                           $programado = self::programado($id_operador,$db);
                                           $deuda = self::deuda($id_operador,$db);
                                           $costo = $data[$i][ 'viaje_mas_adicional' ];
-                                          $salida = $costo - $deuda - $programado;
+                                          $salida = money_format('%i',$costo - $deuda - $programado);
                                           break;
 
                                           default:

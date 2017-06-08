@@ -21,15 +21,18 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
 						<tr>
 							<th></th>
 							<th></th>
-                                                 <th>Costos</th>
-							<th>Adicional (hide)</th>
+                                                 <th></th><!--Costos-->
+							<th></th><!--Adicional (hide)-->
 							<th>Neto (hide)</th>
-							<th>Distancias de google</th>
+							<th></th><!--Distancias de google-->
 							<th>Km MIN (hide)</th>
 							<th>Time MAX (hide)</th>
 							<th>Time MIN (hide)</th>
-							<th>Datos de operador</th>
-							<th>Espera (hide)</th>
+							<th></th><!--Datos de operador-->
+							<th></th><!--Espera-->
+							<th></th>
+							<th></th><!--status de viaje-->
+							<th></th>
 							<th></th>
 						</tr>
 					</thead>
@@ -81,6 +84,8 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
 			},
 	        "processing": true,
 	        "serverSide": true,
+		 "ordering": false,
+		 "searching": false,
 		 "pageLength": 100,
 		"ajax": {
 	            "url": "ingresosoperador/viajes_operador_get/<?=$id_operador?>",
@@ -89,11 +94,6 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
 		"columnDefs": [
   			 {
   				 "targets": 1,
-  				 "visible": false,
-  				 "searchable":false
-  			 },
-			 {
-  				 "targets": 3,
   				 "visible": false,
   				 "searchable":false
   			 },
@@ -118,7 +118,17 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
   				 "searchable":false
   			 },
 			 {
-  				 "targets": 10,
+  				 "targets": 12,
+  				 "visible": false,
+  				 "searchable":false
+  			 },
+			 {
+  				 "targets": 13,
+  				 "visible": false,
+  				 "searchable":false
+  			 },
+			 {
+  				 "targets": 14,
   				 "visible": false,
   				 "searchable":false
   			 }
