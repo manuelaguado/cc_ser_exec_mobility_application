@@ -6,6 +6,15 @@ class Egresosoperador extends Controlador
 	$this->se_requiere_logueo(true,'Egresosoperador|index');
        require URL_VISTA.'egresosoperador/index.php';
     }
+    public function activarc12t3($id_viaje){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           require URL_VISTA.'modales/egresosoperador/activarc12t3.php';
+    }
+    public function activarc12t3_do($id_viaje){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           $egresos = $this->loadModel('Egresosoperador');
+           print $egresos->activarc12t3_do($id_viaje);
+    }
     public function tabuladosEnC12(){
            $this->se_requiere_logueo(true,'Egresosoperador|index');
            require URL_VISTA.'egresosoperador/tabuladosEnC12.php';
@@ -13,7 +22,7 @@ class Egresosoperador extends Controlador
     public function tabuladosEnC12Get(){
            $this->se_requiere_logueo(true,'Egresosoperador|index');
            $modelo = $this->loadModel('Egresosoperador');
-           print $modelo->tabuladosEnC12Get($_POST);           
+           print $modelo->tabuladosEnC12Get($_POST);
     }
     public function cron(){
            //exit();

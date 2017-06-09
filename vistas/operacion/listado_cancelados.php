@@ -53,6 +53,7 @@ $(document).ready(function() {
 		"processing": true,
 		"serverSide": true,
 		"pageLength": 30,
+		"ordering": false,
 		"ajax": {
 			"url": "operacion/cancelados",
 			"type": "POST"

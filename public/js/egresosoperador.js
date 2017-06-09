@@ -122,3 +122,33 @@ function establecer_cobro(id_operador) {
 		});
 	} );
 }
+function activarc12t3(id_viaje){
+	$.ajax({
+		url: 'egresosoperador/activarc12t3/' + id_viaje,
+		dataType: 'html',
+			success: function(resp_success){
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+					//console.log(modal);
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red EGOP-11');}
+	});
+}
+function activarc12t3_do(id_viaje){
+	$.ajax({
+		url: 'egresosoperador/activarc12t3_do/' + id_viaje,
+		dataType: 'json',
+		success: function(resp_success){
+			if (resp_success['resp'] == true) {
+				$('#myModal').modal('hide');
+				$('#c12').DataTable().ajax.reload();
+			}else{
+				alerta('Alerta!','Error de conectividad de red EGOP-12');
+			}
+		},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red EGOP-13');}
+	});
+}

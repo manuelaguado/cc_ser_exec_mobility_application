@@ -10,6 +10,12 @@ class EgresosoperadorModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function activarc12t3_do($id_viaje){
+              $qry = "UPDATE `vi_viaje` SET `cat_status_viaje` = 172 WHERE (`id_viaje` = $id_viaje);";
+              $query = $this->db->prepare($qry);
+              $query->execute();
+              return json_encode(array('resp' => true));
+    }
     function setAplicacionEjecucion($id_concepto,$actualDay,$adeudosGenerados,$monto){
            $qry = "
            INSERT INTO `fo_conceptos_aplicaciones` (
@@ -622,6 +628,11 @@ class acciones_tabuladosEnC12 extends SSP{
                                    $salida .= "
                                           <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
                                                  <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                                          </a>
+                                   ";
+                                   $salida .= "
+                                          <a onclick='activarc12t3(".$id_viaje.")' data-rel='tooltip' data-original-title='Activar'>
+                                                 <i class='fa fa-play-circle-o' style='font-size:1.8em; color:green;'></i>
                                           </a>
                                    ";
 

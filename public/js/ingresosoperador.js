@@ -52,9 +52,9 @@ function variantes_viaje(id_viaje){
 		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red INOP-04');}
 	});
 }
-function mapsroutes(id_viaje){
+function proceso249(){
 	$.ajax({
-		url: 'ingresosoperador/mapsroutes/' + id_viaje,
+		url: 'ingresosoperador/proceso249',
 		dataType: 'html',
 			success: function(resp_success){
 				var modal =  resp_success;
@@ -66,4 +66,55 @@ function mapsroutes(id_viaje){
 			},
 		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red INOP-05');}
 	});
+}
+function proceso249_do(){
+	$.ajax({
+		url: 'ingresosoperador/proceso249_do',
+		dataType: 'json',
+		success: function(resp_success){
+			if (resp_success['resp'] == true) {
+				$('#myModal').modal('hide');
+				$('#conceptos').DataTable().ajax.reload();
+			}else{
+				alerta('Alerta!','Error de conectividad de red INOP-06');
+			}
+		},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red INOP-07');}
+	});
+}
+function accion_procesadosGroup(id_operador){
+	carga_archivo('contenedor_principal', url_app + 'ingresosoperador/viajes_procesados/' + id_operador);
+}
+function marcar_como_pagado(id_operador){
+	$.ajax({
+		url: 'ingresosoperador/marcar_como_pagado/' + id_operador,
+		dataType: 'html',
+			success: function(resp_success){
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+					//console.log(modal);
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red INOP-08');}
+	});
+}
+function marcar_como_pagado_do(id_operador){
+	$.ajax({
+		url: 'ingresosoperador/marcar_como_pagado_do/' + id_operador,
+		dataType: 'json',
+		success: function(resp_success){
+			if (resp_success['resp'] == true) {
+				$('#myModal').modal('hide');
+				$('#conceptos').DataTable().ajax.reload();
+			}else{
+				alerta('Alerta!','Error de conectividad de red INOP-09');
+			}
+		},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red INOP-10');}
+	});
+}
+function ver_viajes_archivados(id_operador){
+	carga_archivo('contenedor_principal', url_app + 'ingresosoperador/ver_viajes_archivados/' + id_operador);
 }

@@ -11,9 +11,9 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
 	<div class="row clearfix">
 		<div class="page-header">
 			<h1>
-				Viajes por operador
+				Viajes procesados del operador <?=$id_operador?>
 			</h1>
-		</div>		
+		</div>
 		<div class="col-md-12 column">
 			<div class="table-responsive">
 				<table id="viajes_operador" class="display table table-striped" cellspacing="0" width="100%">
@@ -88,7 +88,7 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
 		 "searching": false,
 		 "pageLength": 100,
 		"ajax": {
-	            "url": "ingresosoperador/viajes_operador_get/<?=$id_operador?>",
+	            "url": "ingresosoperador/ver_viajes_archivados_get/<?=$id_operador?>",
 	            "type": "POST"
 	     	},
 		"columnDefs": [

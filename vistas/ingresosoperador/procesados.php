@@ -11,26 +11,15 @@ div.table-responsive div#conceptos_wrapper.dataTables_wrapper.form-inline.dt-boo
 	<div class="row clearfix">
 		<div class="page-header">
 			<h1>
-				Viajes por operador
+				Viajes procesados
 			</h1>
 		</div>
-		<?php
-		if($this->tiene_permiso('Ingresosoperador|index')){
-			setlocale(LC_TIME,"es_MX.UTF-8");
-			$dt_Ayer = date('m/d/Y', strtotime('-1 day')) ;
-			$fecha = strftime("%A %e de %B", strtotime($dt_Ayer))
-		?>
-		<div class="col-md-12 column menu_header_content">
-			<button class="btn btn-ar btn-primary" type="button" onclick="proceso249();">Procesar hasta el <?=ucwords($fecha)?></button>
-		</div>
-		<?php
-		}
-		?>
 		<div class="col-md-12 column">
 			<div class="table-responsive">
 				<table id="conceptos" class="display table table-striped" cellspacing="0" width="100%">
 					<thead>
 						<tr>
+                                                 <th>ID</th>
 							<th>NUM</th>
 							<th>Nombre</th>
 							<th>Viajes</th>
@@ -38,10 +27,10 @@ div.table-responsive div#conceptos_wrapper.dataTables_wrapper.form-inline.dt-boo
 							<th>Costo de Viajes</th>
 							<th>Costos adicionales</th>
 							<th>Kilometros</th>
-							<th>Programado</th>
+
 							<th>Deuda</th>
-							<th>Pago tentativo</th>
-							<th>ID</th>
+							<th>Pago Neto</th>
+                                                 <th></th><!--acciones-->
 						</tr>
 					</thead>
 					<tfoot>
@@ -53,10 +42,11 @@ div.table-responsive div#conceptos_wrapper.dataTables_wrapper.form-inline.dt-boo
 						 <th></th>
 						 <th></th>
 						 <th></th>
+
 						 <th></th>
 						 <th></th>
 						 <th></th>
-						 <th></th>
+                                           <th></th>
 			                  </tr>
 			              </tfoot>
 				</table>
@@ -73,12 +63,11 @@ $(document).ready(function() {
 	              var intVal = function ( i ) {
 	                  return typeof i === 'string' ? i.replace(/[\MXN,]/g, '')*1 : typeof i === 'number' ? i : 0;
 	              };
-			$( api.column(2).footer() ).html('V: '+api.column(2).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(0));
-			$( api.column(3).footer() ).html('$ '+api.column(3).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
+			$( api.column(3).footer() ).html('V: '+api.column(3).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(0));
 			$( api.column(4).footer() ).html('$ '+api.column(4).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			$( api.column(5).footer() ).html('$ '+api.column(5).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
-			$( api.column(6).footer() ).html(api.column(6).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2)+' km');
-	              $( api.column(7).footer() ).html('$ '+api.column(7).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
+			$( api.column(6).footer() ).html('$ '+api.column(6).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
+			$( api.column(7).footer() ).html(api.column(7).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2)+' km');
 			$( api.column(8).footer() ).html('$ '+api.column(8).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			$( api.column(9).footer() ).html('$ '+api.column(9).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 		},
@@ -87,7 +76,7 @@ $(document).ready(function() {
 	 "pageLength": 100,
 	 "ordering": false,
 	"ajax": {
-            "url": "ingresosoperador/operadorGroup",
+            "url": "ingresosoperador/procesadosGroup",
             "type": "POST"
      }/*
 		,
@@ -101,5 +90,4 @@ $(document).ready(function() {
 	*/
     } );
 } );
-accion_operatorGroup('conceptos');
 </script>

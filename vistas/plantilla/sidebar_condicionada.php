@@ -120,7 +120,19 @@
 				<li>
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador');">
 						<i class="menu-icon fa fa-taxi"></i>
-						<span class="menu-text"> Por Operador </span>
+						<span class="menu-text"> No procesados </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Ingresosoperador|index')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/procesados');">
+						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-left fa_sup" aria-hidden="true"></i></i>
+						<span class="menu-text"> Procesados </span>
 					</a>
 				</li>
 				<?php
@@ -132,32 +144,56 @@
 				<li>
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/listado_completados');">
 						<i class="menu-icon fa fa-taxi"></i>
-						<span class="menu-text"> Completados </span>
+						<span class="menu-text"> Viajes del ciclo </span>
 					</a>
 				</li>
 				<?php
 				}
 				?>
-				<?php
-				if($this->tiene_permiso('Operacion|listado_cancelados')){
-				?>
-				<li>
-					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/listado_cancelados');">
-						<i class="menu-icon fa fa-taxi"></i>
-						<span class="menu-text"> Cancelados </span>
-					</a>
-				</li>
-				<?php
-				}
-				?>
+
 				<?php
 				if($this->tiene_permiso('Egresosoperador|index')){
 				?>
 				<li>
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/tabuladosEnC12');">
 						<i class="menu-icon fa fa-map-signs"></i>
-						<span class="menu-text"> Tabulados C12 y T3 </span>
+						<span class="menu-text"> Por revisar C12 y T3 </span>
 					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Ingresosoperador|index')){
+				?>
+				<li class="">
+					<a href="#" class="dropdown-toggle">
+						<i class="menu-icon fa fa-caret-right"></i>
+
+						Archivo
+						<b class="arrow fa fa-angle-down"></b>
+					</a>
+
+					<b class="arrow"></b>
+
+					<ul class="submenu nav-show" style="display: none;">
+						<li class="">
+							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/archivo');">
+								<i class="menu-icon fa fa-archive"></i>
+								<span class="menu-text"> Archivo </span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+						<li class="">
+							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>operacion/listado_cancelados');">
+								<i class="menu-icon fa fa-taxi"></i>
+								<span class="menu-text"> Cancelados </span>
+							</a>
+
+							<b class="arrow"></b>
+						</li>
+					</ul>
 				</li>
 				<?php
 				}
