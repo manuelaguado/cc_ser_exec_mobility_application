@@ -35,6 +35,7 @@ class Email{
 		$headers = $mime->headers($headers);
 
 		$smtp = Mail::factory('smtp', array ('host' => $this->host,
+							 'port' => '465',
 		                                    'auth' => true,
 		                                    'username' => $this->username,
 		                                    'password' => $this->password));
