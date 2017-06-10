@@ -74,7 +74,7 @@ class Ingresosoperador extends Controlador
     }
     function sendMailReport(){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
-           /*$datamail = array();
+           $datamail = array();
            $datamail['destinatarios'] = array(
                   'manuelaguado@gmail.com'
            );
@@ -86,17 +86,8 @@ class Ingresosoperador extends Controlador
                                           'firma'	=>	'Ing Pocoyó',
                                           'hospital'	=>	'Belisario Domíguez'
                                    );
-           $this->sendMail($datamail);*/
+           $this->sendMail($datamail);
            echo 'ok';
-
-           // El mensaje
-           $mensaje = "Línea 1\r\nLínea 2\r\nLínea 3";
-
-           // Si cualquier línea es más larga de 70 caracteres, se debería usar wordwrap()
-           $mensaje = wordwrap($mensaje, 70, "\r\n");
-
-           // Enviarlo
-           mail('manuelaguado@gmail.com', 'Mi título', $mensaje);
 
     }
     function marcar_como_pagado($id_operador){
