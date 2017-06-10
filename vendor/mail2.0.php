@@ -26,7 +26,7 @@ class Email{
 		$mimeparams['text_charset']="UTF-8";
 		$mimeparams['html_charset']="UTF-8";
 		$mimeparams['head_charset']="UTF-8";
-		$headers = array('From' => 'premet', 'To' => $destinatarios,
+		$headers = array('From' => $this->from, 'To' => $destinatarios,
 					'Subject' => $subject, 'Content-Type' => 'text/html; charset=UTF-8', 'Content-Transfer-Encoding' => "8bit");
 
 		$mime = new Mail_mime;
@@ -35,7 +35,7 @@ class Email{
 		$headers = $mime->headers($headers);
 
 		$smtp = Mail::factory('smtp', array ('host' => $this->host,
-							 'port' => '465',
+							 'port' => '587',
 		                                    'auth' => true,
 		                                    'username' => $this->username,
 		                                    'password' => $this->password));

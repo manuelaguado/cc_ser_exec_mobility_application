@@ -69,7 +69,7 @@ class Ingresosoperador extends Controlador
     function proceso249_do(){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            $ingresos = $this->loadModel('Ingresosoperador');
-           self::sendMailReport();
+           //self::sendMailReport();
            print $ingresos->proceso249_do();
     }
     function sendMailReport(){
@@ -81,14 +81,13 @@ class Ingresosoperador extends Controlador
            $datamail['plantilla'] 	= 'contrast';
            $datamail['subject'] 	= 'Informe';
            $datamail['body'] = array(
-                                          'fecha'	=>	'México D.F. a 16 de Noviembre de 2015',
+                                          'fecha'	=>	'México D.F. a 17 de Noviembre de 2015',
                                           'asunto'	=>	'Se le informa la finalización del plan',
                                           'firma'	=>	'Ing Pocoyó',
                                           'hospital'	=>	'Belisario Domíguez'
                                    );
            $this->sendMail($datamail);
            echo 'ok';
-
     }
     function marcar_como_pagado($id_operador){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
