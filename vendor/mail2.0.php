@@ -7,6 +7,7 @@ class Email{
 	private $username = MAIL_USERNAME;
 	private $password = MAIL_PASSWORD;
 	private $from = MAIL_FROM;
+	private $port = MAIL_PORT;
 
 	private function body($array,$plantilla){
 		foreach ($array as $key => $value) {
@@ -35,10 +36,10 @@ class Email{
 		$headers = $mime->headers($headers);
 
 		$smtp = Mail::factory('smtp', array ('host' => $this->host,
-							 'port' => '465',
-		                                    'auth' => true,
-		                                    'username' => $this->username,
-		                                    'password' => $this->password));
+							 'port' => $this->port,
+							 'auth' => true,
+							 'username' => $this->username,
+							 'password' => $this->password));
 
 	    $destinatarios_lista = explode(",", $destinatarios);
 	    if (count($destinatarios_lista) >= 10){
