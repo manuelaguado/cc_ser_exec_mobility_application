@@ -13,6 +13,12 @@ define('URL_APP','https://'.DOMAIN.'/',true);
 define('SITE_NAME','D E V E L O P M E N T',true);
 define('SLOGAN_NAME','Activemedia & DCID Software',true);
 
+/*Configuracion para envio de correo via perl mail*/
+define('MAIL_HOST','smtp.gmail.com');
+define('MAIL_USERNAME','XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+define('MAIL_PASSWORD','XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+define('MAIL_FROM','XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+
 
 
 /*API DE GOOGLE MAPS*/

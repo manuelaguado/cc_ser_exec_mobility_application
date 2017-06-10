@@ -100,10 +100,13 @@
 	  Ace Newsletter
 	 </a>
    </td>
- 
+
    <td class="table-row-td" style="height: 50px; font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; text-align: right; vertical-align: middle;" align="right" valign="middle">
      <a href="#" style="color: #93cbf9; text-decoration: none; background-color: transparent;">
-	   View inside browser
+	   <?=$this->fecha?>
+          <?=$this->asunto?>
+          <?=$this->firma?>
+          <?=$this->hospital?>
 	 </a>
    </td>
 </tr></tbody></table>
@@ -112,7 +115,7 @@
 <table class="table-space" height="16" style="height: 16px; font-size: 0px; line-height: 0; width: 580px; background-color: #ffffff;" width="580" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="16" style="height: 16px; width: 580px; background-color: #ffffff;" width="580" bgcolor="#FFFFFF" align="left">&nbsp;</td></tr></tbody></table>
 
 <table class="table-row" width="580" bgcolor="#FFFFFF" style="table-layout: fixed; background-color: #ffffff;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-row-td" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 24px; padding-right: 24px;" valign="top" align="left">
- <table class="table-col" align="left" width="532" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="table-col-td" width="532" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal;" valign="top" align="left">	
+ <table class="table-col" align="left" width="532" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="table-col-td" width="532" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal;" valign="top" align="left">
 	<div style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; text-align: center;">
 		<img src="http://placehold.it/530x270" style="border: 0px none #444444; vertical-align: middle; display: block; padding-bottom: 9px;" hspace="0" vspace="0" border="0">
 	</div>

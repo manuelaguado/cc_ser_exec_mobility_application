@@ -65,7 +65,14 @@ class IngresosoperadorModel
     }
     function proceso249_do(){
            $date = date('Y-m-d');
-           $qry = "UPDATE vi_viaje as v INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje SET v.cat_status_viaje = '249' WHERE v.cat_status_viaje = '172' AND vd.fecha_requerimiento < '".$date."'";
+           $qry = "
+           UPDATE vi_viaje AS v
+           INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
+           SET v.cat_status_viaje = '249'
+           WHERE
+           	v.cat_status_viaje = '172'
+           AND vd.fecha_requerimiento < '".$date."'
+           ";
            $query = $this->db->prepare($qry);
            $query->execute();
            return json_encode(array('resp' => true));

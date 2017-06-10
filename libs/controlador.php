@@ -12,13 +12,13 @@ class Controlador extends Controller
     {
 		#$options1 = array( \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION );
         #$options2 = array(\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ, \PDO::ATTR_ERRMODE => \PDO::ERRMODE_WARNING);
-		
+
 		$options1 = array( PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES  \'UTF8\'');
         $options2 = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES  \'UTF8\'');
-		
+
         $this->db = new \PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $options2);
 		$this->dbt = new \PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $options1);
-	
+
     }
 	static function direct_connectivity()
     {
@@ -48,9 +48,9 @@ class Controlador extends Controller
 			foreach ($areas as $row) {
 				$array[$cont]['value']=$row->id_cat;
 				$array[$cont]['valor']=$row->etiqueta;
-				$cont++;			
+				$cont++;
 			}
-		}		
+		}
 		return Controller::setOption($array,$id_cat);
 	}
 	static function updateLogin(){
@@ -88,7 +88,7 @@ class Controlador extends Controller
 			foreach ($data as $row) {
 				$array['valor']=$row->valor;
 				$array['temporal']=$row->temporal;
-				$array['datos']=$row->datos;				
+				$array['datos']=$row->datos;
 			}
 		}
 		return $array;
@@ -121,14 +121,14 @@ class Controlador extends Controller
 		}else{
 			$qry = "
 				UPDATE `fw_config`
-				SET 
+				SET
 				 `valor` = '".$data['valor']."',
 				 `tmp_val` = '".$data['tmp_val']."',
 				 `data` = '".$data['data']."',
 				 `user_mod` = '".$_SESSION['id_usuario']."',
 				 `fecha_mod` = NOW()
 				WHERE
-					`id_site` = '".$data['id_site']."' AND 
+					`id_site` = '".$data['id_site']."' AND
 					`descripcion` = '".$data['descripcion']."'
 			";
 		}
@@ -183,7 +183,7 @@ class Controlador extends Controller
 						exit();
 					}else{
 						$_SESSION['hora_acceso']=time();
-						self::updateLogin();					
+						self::updateLogin();
 					}
 				}else{
 					require URL_TEMPLATE.'tyc.php';
@@ -200,7 +200,7 @@ class Controlador extends Controller
 	protected function duplicatePublic($imagen){
 		$token = $this->token();
 		$destino = $token.$imagen;
-		
+
 		$tmp = '../public/tmp/';
 		$files = scandir($tmp);
 		foreach($files as $file){
@@ -208,7 +208,7 @@ class Controlador extends Controller
 				unlink($tmp.$file);
 			}
 		}
-		
+
 		$cache = '../public/plugs/cache/';
 		$filesc = scandir($cache);
 		foreach($filesc as $filec){
@@ -218,7 +218,7 @@ class Controlador extends Controller
 		}
 		copy('../uploads/perfiles/'.$imagen, $tmp.$destino);
 		return $destino;
-	}	
+	}
 }
 class Controller extends D{
 	static function setOption($arreglo,$id){
@@ -235,11 +235,6 @@ class Controller extends D{
 			}
 		}
 		return $opciones;
-	}
-	public function enviar_correos($destinatarios,$maildata,$metodo){
-		include_once("../vendor/mail.php");
-		$correo = new Email();
-		$correo->{$metodo}($destinatarios, $maildata );
 	}
 	public function sendMail($datamail){
 		include_once("../vendor/mail2.0.php");
@@ -260,7 +255,7 @@ class Controller extends D{
     }
 	static function token($long=25){
 		$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		mt_srand((double)microtime()*1000000); 
+		mt_srand((double)microtime()*1000000);
 		$i=0;
 		$pass = '';
 		while ($i != $long) {
@@ -302,8 +297,8 @@ class Controller extends D{
 	}
 	static function diferenciaSegundos($init,$end){
 		$segundos = strtotime($end) - strtotime($init);
-		return $segundos;		
-	}	
+		return $segundos;
+	}
 	static function ipv4to6($ip = NULL) {
 		$ip =($ip === NULL)?$_SERVER['REMOTE_ADDR']:$ip;
 		$ipAddressBlocks = explode('.', $ip);
@@ -321,7 +316,7 @@ class Controller extends D{
 			$ipv6Pieces = strlen(str_replace('::', '', $ipv6));
 		}
 		return $ipv6.'::/48';
-	}	
+	}
 }
 class D
 {

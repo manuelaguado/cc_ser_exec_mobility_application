@@ -11,7 +11,7 @@ class RESGUARDO extends FPDI
 	var $accesorios;
 	var $domicilio;
 	var $opciones;
-		
+
     function setConfig($var,$val)
     {
         $this->{$var} = $val;
@@ -23,7 +23,7 @@ class RESGUARDO extends FPDI
         else
             $s='[] 0 d';
         $this->_out($s);
-    }	
+    }
 	function insertFolio(){
 		$this->SetFont('Helvetica','',10);
 		$this->SetTextColor(255, 0, 0);
@@ -37,34 +37,34 @@ class RESGUARDO extends FPDI
 		$this->SetTextColor(0, 0, 0);
 		$this->SetXY(120, 28.5);
 		setlocale(LC_TIME, 'es_MX.UTF-8');
-		$this->Write(0, strftime('%A %d de %B de %Y', time()));
+		$this->Write(0, utf8_decode(strftime('%A %d de %B de %Y', time())));
 		$this->SetXY(120, 28.5+136);
-		$this->Write(0, strftime('%A %d de %B de %Y', time()));
+		$this->Write(0, utf8_decode(strftime('%A %d de %B de %Y', time())));
 	}
 	function insertNombre(){
 		$this->SetFont('Helvetica','',10);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetXY(40, 40);
-		$this->Write(0, $this->resguardo['nombre']);
+		$this->Write(0, utf8_decode($this->resguardo['nombre']));
 		$this->SetXY(40, 40+136);
-		$this->Write(0, $this->resguardo['nombre']);
+		$this->Write(0, utf8_decode($this->resguardo['nombre']));
 	}
 	function insertDomicilio(){
 		$this->SetFont('Helvetica','',10);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetXY(40, 46);
-		$this->Write(0, $this->domicilio);
+		$this->Write(0, utf8_decode($this->domicilio));
 		$this->SetXY(40, 46+137);
-		$this->Write(0, $this->domicilio);
+		$this->Write(0, utf8_decode($this->domicilio));
 	}
 	function insertnameSign(){
 		$this->SetFont('Helvetica','',10);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetDrawColor(255,0,0);
 		$this->SetXY(18, 113);
-		$this->Cell(91,4,strtoupper($this->resguardo['nombre']),0,0,'C');
+		$this->Cell(91,4,utf8_decode(strtoupper($this->resguardo['nombre'])),0,0,'C');
 		$this->SetXY(18, 115+135.5);
-		$this->Cell(91,4,strtoupper($this->resguardo['nombre']),0,0,'C');
+		$this->Cell(91,4,utf8_decode(strtoupper($this->resguardo['nombre'])),0,0,'C');
 	}
 	function insertDigitalSign(){
 		$this->SetFont('Helvetica','',7);
@@ -86,7 +86,7 @@ class RESGUARDO extends FPDI
 		$this->Cell(22,4,$this->resguardo['marcacion_corta'],0,0,'C');
 		$this->Cell(36,4,$this->resguardo['sim'],0,0,'C');
 		$this->Cell(36,4,'$ '.$this->resguardo['valor'],0,0,'C');
-		
+
 		$this->SetXY(18, 58+136.5);
 		$this->Cell(18,4,$this->resguardo['marca'],0,0,'C');
 		$this->Cell(26,4,$this->resguardo['modelo'],0,0,'C');
@@ -100,7 +100,7 @@ class RESGUARDO extends FPDI
 		$this->SetDrawColor(0,0,0);
 		$this->SetLineWidth(0.1);
 		$this->SetDash(2,2);
-		$this->Line(2,140,215,140);		
+		$this->Line(2,140,215,140);
 	}
 	function insertAutoriza(){
 		$this->SetFont('Helvetica','',10);
@@ -130,7 +130,7 @@ class RESGUARDO extends FPDI
         return $accesorios;
     }
     function insertarAccesorios($accesorios)
-    {  
+    {
 		$this->SetXY(20, 78.5);
 		$legend = 0;
         foreach($accesorios as $accesorio)
@@ -142,7 +142,7 @@ class RESGUARDO extends FPDI
 			}
 			$this->Write(5, $accesorio . ' - ');
         }
-		
+
 		$this->SetXY(20, 216);
 		$legend = 0;
         foreach($accesorios as $accesorio)
@@ -154,7 +154,7 @@ class RESGUARDO extends FPDI
 			}
 			$this->Write(5, $accesorio . ' - ');
         }
-		
+
     }
 	function cargarOpciones($array)
     {
@@ -166,7 +166,7 @@ class RESGUARDO extends FPDI
         return $opciones;
     }
 	function insertarOpciones($opciones)
-    {  
+    {
 		$this->SetFont('Helvetica','',8);
 		$this->SetXY(110, 97.5);
         foreach($opciones as $opcion)
@@ -179,7 +179,7 @@ class RESGUARDO extends FPDI
 			$this->Cell(87,4,strtoupper($opcion),0,0,'C');
         }
     }
-	
+
 }
 
 $pdf = new RESGUARDO($orientation='P', $unit='mm', $size='LETTER');

@@ -478,7 +478,6 @@ class EgresosoperadorModel
                          'dbj' => 'ca.id_concepto_aplicacion',
                          'real' => 'ca.id_concepto_aplicacion',
                          'alias' => 'id_concepto_aplicacion',
-                         'acciones' => true,
                          'typ' => 'int',
                          'dt' => 6
                   )
@@ -665,21 +664,7 @@ class accionesejecucionesCobro extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 
-				if ( isset( $column['acciones'] ) ) {
-					$id_concepto_aplicacion = $data[$i][ 'id_concepto_aplicacion' ];
-
-					$salida = '';
-                                   //eliminar un cobro
-                                          $salida .= '<a onclick="eliminar_cobro('.$id_concepto_aplicacion.')" data-rel="tooltip" data-original-title="Eliminar cobro"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
-                                   //editar un cobro
-                                          $salida .= '<a onclick="editar_cobro('.$id_concepto_aplicacion.')" data-rel="tooltip" data-original-title="Editar cobro"><i class="fa fa-pencil" style="font-size:1.4em; color:#008301;"></i></a>&nbsp;&nbsp;';
-                                   //relacionar un cobro
-                                          $salida .= '<a onclick="carga_archivo(\'contenedor_principal\',\'egresosoperador/relacionar_cobro/'.$id_concepto_aplicacion.'\')" data-rel="tooltip" data-original-title="Relacionar cobro"><i class="fa fa-users" aria-hidden="true"></i></a>&nbsp;&nbsp;';
-                                   //ver aplicaciones de un cobro
-                                          $salida .= '<a onclick="carga_archivo(\'contenedor_principal\',\'egresosoperador/ejecucionesCobro/'.$id_concepto_aplicacion.'\')" data-rel="tooltip" data-original-title="Ver aplicaciones del cobro"><i class="fa fa-history" style="font-size:1.4em; color:#000;"></i></a>&nbsp;&nbsp;';
-
-                                   $row[ $column['dt'] ] = $salida;
-				}else if ( isset( $column['moneda'] ) ){
+				if ( isset( $column['moneda'] ) ){
 
 					$cantidad = ($data[$i][ $column['alias'] ]);
 					$cantidad = money_format('%i',$cantidad);
