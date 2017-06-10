@@ -81,8 +81,8 @@ class Ingresosoperador extends Controlador
            $datamail['plantilla'] 	= 'contrast';
            $datamail['subject'] 	= 'Informe';
            $datamail['body'] = array(
-                                          'fecha'	=>	'México D.F. a 17 de Noviembre de 2015',
-                                          'asunto'	=>	'Se le informa la finalización del plan',
+                                          'fecha'	=>	date('Y-m-d h:i:s'),
+                                          'asunto'	=>	'465',
                                           'firma'	=>	'Ing Pocoyó',
                                           'hospital'	=>	'Belisario Domíguez'
                                    );
