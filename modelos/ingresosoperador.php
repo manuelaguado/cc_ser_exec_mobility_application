@@ -65,6 +65,38 @@ class IngresosoperadorModel
     }
     function proceso249_do(){
            $date = date('Y-m-d');
+
+           $qry = "
+           SELECT
+           o.id_operador,
+           u.correo,
+           n.num
+           FROM
+           	vi_viaje AS v
+           INNER JOIN cr_operador_unidad AS ou ON ou.id_operador_unidad = v.id_operador_unidad
+           INNER JOIN cr_operador AS o ON ou.id_operador = o.id_operador
+           INNER JOIN fw_usuarios AS u ON o.id_usuario = u.id_usuario
+           INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
+           INNER JOIN cr_operador_numeq AS `on` ON `on`.id_operador = o.id_operador
+           INNER JOIN cr_numeq AS n ON `on`.id_numeq = n.id_numeq
+           WHERE
+           	v.cat_status_viaje = '172'
+           AND vd.fecha_requerimiento < '".$date."'
+           GROUP BY
+           	o.id_operador
+           ";
+           $query1 = $this->db->prepare($qry);
+           $query1->execute();
+           $num =0;
+           $array = array();
+           if($query1->rowCount()>=1){
+                  foreach ($query1->fetchAll() as $row) {
+                         $array[$num]['id_operador'] = $row->id_operador;
+                         $array[$num]['correo'] = $row->correo;
+                         $array[$num]['num'] = $row->num;
+                         $num++;
+                  }
+           }
            $qry = "
            UPDATE vi_viaje AS v
            INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
@@ -75,7 +107,39 @@ class IngresosoperadorModel
            ";
            $query = $this->db->prepare($qry);
            $query->execute();
-           return json_encode(array('resp' => true));
+           return $array;
+    }
+    function head_papeleta($id_operador){
+           $qry = "
+           SELECT
+           	concat(
+           		fw_usuarios.nombres,
+           		' ',
+           		fw_usuarios.apellido_paterno,
+           		' ',
+           		fw_usuarios.apellido_materno
+           	) AS nombre,
+           	NOW() AS fecha,
+           	cr_numeq.num
+           FROM
+           	cr_operador
+           INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cr_operador.id_operador
+           INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+           INNER JOIN fw_usuarios ON cr_operador.id_usuario = fw_usuarios.id_usuario
+           WHERE
+           	cr_operador.id_operador = $id_operador
+           ";
+           $query1 = $this->db->prepare($qry);
+           $query1->execute();
+           $array = array();
+           if($query1->rowCount()>=1){
+                  foreach ($query1->fetchAll() as $row) {
+                         $array['nombre'] = $row->nombre;
+                         $array['fecha'] = $row->fecha;
+                         $array['num'] = $row->num;
+                  }
+           }
+           return $array;
     }
     function marcar_como_pagado_do($id_operador){
            $ingresos = self::ingresosData($id_operador);

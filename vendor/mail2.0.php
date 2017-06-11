@@ -32,6 +32,8 @@ class Email{
 
 		$mime = new Mail_mime;
 		$mime->setHTMLBody($body);
+		$mime->addAttachment($datamail['attachment'], $datamail['attachment_type'], "", true);
+
 		$body = $mime->get($mimeparams);
 		$headers = $mime->headers($headers);
 

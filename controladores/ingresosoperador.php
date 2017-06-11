@@ -69,25 +69,44 @@ class Ingresosoperador extends Controlador
     function proceso249_do(){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            $ingresos = $this->loadModel('Ingresosoperador');
-           //self::sendMailReport();
-           print $ingresos->proceso249_do();
+           $opProcess = $ingresos->proceso249_do();
+           //$pdfURLProcess = self::generatePapeletas($opProcess);
+           //self::sendMailReport($pdfURLProcess);
+           return json_encode(array('resp' => true));
     }
-    function sendMailReport(){
+    function generarPapeleta($id_operador){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
-           $datamail = array();
-           $datamail['destinatarios'] = array(
-                  'manuelaguado@gmail.com'
-           );
-           $datamail['plantilla'] 	= 'contrast';
-           $datamail['subject'] 	= 'Informe';
-           $datamail['body'] = array(
-                                          'fecha'	=>	date('Y-m-d h:i:s'),
-                                          'asunto'	=>	'465',
-                                          'firma'	=>	'Ing Pocoyó',
-                                          'hospital'	=>	'Belisario Domíguez'
-                                   );
-           $this->sendMail($datamail);
-           echo 'ok';
+           $ingresos = $this->loadModel('Ingresosoperador');
+
+           $head = $ingresos->head_papeleta($id_operador);
+           $token = $this->token(4);
+           require '../reportes/papeleta.php';
+    }
+    function generatePapeletas($opProcess){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           $num =0;
+           $array = array();
+           foreach($opProcess as $num=>$cuenta){
+                  $array[$num]['url'] = self::generarPapeleta($cuenta['id_operador']);
+                  $array[$num]['correo'] = $cuenta['correo'];
+                  $array[$num]['num'] = $cuenta['num'];
+                  $array[$num]['id_operador'] = $cuenta['id_operador'];
+                  $num++;
+           }
+           return $array;
+    }
+    function sendMailReport($pdfURLProcess){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           foreach($pdfURLProcess as $num=>$destino){
+                 $datamail = array();
+                 $datamail['destinatarios'] = array($destino['correo']);
+                 $datamail['plantilla'] 	= 'papeleta';
+                 $datamail['subject'] 	= 'Estado de cuenta';
+                 $datamail['attachment']  = $destino['url'];
+                 $datamail['attachment_type'] = 'application/pdf';
+                 $datamail['body'] = array('fecha'=>date('Y-m-d h:i:s'),'asunto'=>'Estado de cuenta');
+                 $this->sendMail($datamail);
+           }
     }
     function marcar_como_pagado($id_operador){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');

@@ -324,6 +324,10 @@ class D
 		require_once('../vendor/php-console-master/src/PhpConsole/__autoload.php');
 		PhpConsole\Connector::getInstance()->getDebugDispatcher()->dispatchDebug($var,'PHP>>');
 	}
+       static function dt($var){
+		require_once('../vendor/php-console-master/src/PhpConsole/__autoload.php');
+		PhpConsole\Connector::getInstance()->getDebugDispatcher()->dispatchDebug($var,'DATATABLE>>');
+	}
 }
 if(DEVELOPMENT){
 	require_once('../vendor/php-console-master/src/PhpConsole/__autoload.php');
