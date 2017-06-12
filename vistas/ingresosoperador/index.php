@@ -18,7 +18,7 @@ div.table-responsive div#conceptos_wrapper.dataTables_wrapper.form-inline.dt-boo
 		if($this->tiene_permiso('Ingresosoperador|index')){
 			setlocale(LC_TIME,"es_MX.UTF-8");
 			$dt_Ayer = date('m/d/Y', strtotime('-1 day')) ;
-			$fecha = strftime("%A %e de %B", strtotime($dt_Ayer))
+			$fecha = strftime("%A %e de %B", strtotime($dt_Ayer));
 		?>
 		<div class="col-md-12 column menu_header_content">
 			<button class="btn btn-ar btn-primary" type="button" onclick="proceso249();">Procesar hasta el <?=ucwords($fecha)?></button>

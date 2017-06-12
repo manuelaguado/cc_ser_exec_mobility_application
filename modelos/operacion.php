@@ -458,7 +458,8 @@ class OperacionModel{
                   if(!file_exists($id_viaje)){mkdir($id_viaje, 0777);}
                   chdir('../../../');
 
-                  if($num == 0){$image_main = $alt['ruta_file'];}
+                  //if($num == 0){$image_main = $alt['ruta_file'];}
+                  $image_main[$num] = $alt['ruta_file'];
                   $fp = fopen($alt['ruta_file'], 'w');
                   fputs($fp, $result);
                   fclose($fp);
@@ -470,14 +471,16 @@ class OperacionModel{
                   self::insertAlternativa($alt,$id_statics);
                   $kms[$num] = $alt['km'];
                   $time[$num]= $alt['sec'];
+                  if($num > 0){$img_main = ($kms[$num] > $kms[$num-1])?$image_main[$num]:$image_main[$num-1];}
            }
+           if($num == 0){$img_main = $image_main[$num];}
            $upsSttcs['kmss_max'] = max($kms);
            $upsSttcs['kmss_min'] = min($kms);
            $upsSttcs['kmss_pro'] = self::avg($kms);
            $upsSttcs['time_max'] = max($time);
            $upsSttcs['time_min'] = min($time);
            $upsSttcs['time_pro'] = self::avg($time);
-           self::updateStaticsVals($upsSttcs,$image_main,$id_statics);
+           self::updateStaticsVals($upsSttcs,$img_main,$id_statics);
            return $upsSttcs;
     }
     function avg($arrayData){

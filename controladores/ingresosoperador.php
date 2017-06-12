@@ -79,8 +79,12 @@ class Ingresosoperador extends Controlador
            $ingresos = $this->loadModel('Ingresosoperador');
 
            $head = $ingresos->head_papeleta($id_operador);
-           $token = $this->token(4);
+           $viajes = $ingresos->desglosePapeleta($id_operador);
+           $periodo = $ingresos->periodo($id_operador);
+
+           $token = $this->token(16);
            require '../reportes/papeleta.php';
+           return '../archivo/papeletas/'.$token.'.pdf';
     }
     function generatePapeletas($opProcess){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');

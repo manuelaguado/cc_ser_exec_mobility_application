@@ -4,3 +4,4 @@ TODO: mostrar viajes por cobrar y viajes pagados
 TODO: crear trabajo cron para generacion de cuotas
 TODO: recualcular el costo adicional cuando se modifique, afecta el statics asi como las finanzas del operador, eliminar la modificacion cuando este procesado el viaje
 TODO: cuando una tabla no muestra elementos deshabilitar la accion de la fila
+TODO: websockets sobre tablas especificas para evitar edicion al finalizar procesos

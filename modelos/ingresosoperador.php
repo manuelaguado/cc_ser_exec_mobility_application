@@ -109,6 +109,105 @@ class IngresosoperadorModel
            $query->execute();
            return $array;
     }
+    function desglosePapeleta($id_operador) {
+           $qry = "
+           SELECT
+           	vs.mapa AS url_map,
+           	v.id_viaje AS idviaje,
+           	vs.costo_viaje AS costo,
+           	vs.costos_adicionales AS adicional,
+           	vs.costo_total AS neto,
+           	vs.km_max_maps AS km_max,
+           	vs.km_min_maps AS km_min,
+           	vs.time_or_des_max AS time_max,
+           	vs.time_or_des_min AS time_min,
+           	vs.time_viaje AS time_operador,
+           	vs.time_espera AS espera,
+           	vs.time_arribo AS arribo,
+           	v.cat_status_viaje AS cat_status_viaje,
+           	vs.geo_origen AS geo_origen,
+           	vs.geo_destino AS geo_destino,
+           	vd.fecha_requerimiento,
+           	vd.redondo,
+           	cli1.nombre AS cliente,
+           	cli2.nombre AS empresa,
+              cat.etiqueta AS tipo
+           FROM
+           	vi_viaje AS v
+           INNER JOIN cr_operador_unidad AS ou ON v.id_operador_unidad = ou.id_operador_unidad
+           INNER JOIN cr_operador AS o ON ou.id_operador = o.id_operador
+           INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = v.id_viaje
+           INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
+           INNER JOIN it_cliente_origen ON v.id_cliente_origen = it_cliente_origen.id_cliente_origen
+           INNER JOIN cl_clientes AS cli1 ON it_cliente_origen.id_cliente = cli1.id_cliente
+           LEFT OUTER JOIN cl_clientes AS cli2 ON cli1.parent = cli2.id_cliente
+           INNER JOIN cm_catalogo AS cat ON v.cat_tiposervicio = cat.id_cat
+           WHERE
+           	o.id_operador = $id_operador
+           AND vs.cat_status_statics = 222
+           AND v.cat_status_viaje = 172
+           ORDER BY
+           	idviaje ASC
+           ";
+           $query1 = $this->db->prepare($qry);
+           $query1->execute();
+           $array = array();
+           $num = 0;
+           if($query1->rowCount()>=1){
+                  foreach ($query1->fetchAll() as $row) {
+                         $array[$num]['url_map'] = $row->url_map;
+                         $array[$num]['id_viaje'] = $row->idviaje;
+                         $array[$num]['costo'] = $row->costo;
+                         $array[$num]['tipo'] = $row->tipo;
+                         $array[$num]['neto'] = $row->neto;
+                         $array[$num]['adicional'] = $row->adicional;
+                         $array[$num]['km_max'] = $row->km_max;
+                         $array[$num]['km_min'] = $row->km_min;
+                         $array[$num]['time_max'] = $row->time_max;
+                         $array[$num]['time_min'] = $row->time_min;
+                         $array[$num]['time_operador'] = $row->time_operador;
+                         $array[$num]['espera'] = $row->espera;
+                         $array[$num]['arribo'] = $row->arribo;
+                         $array[$num]['cat_status_viaje'] = $row->cat_status_viaje;
+                         $array[$num]['geo_origen'] = $row->geo_origen;
+                         $array[$num]['geo_destino'] = $row->geo_destino;
+                         $array[$num]['fecha_requerimiento'] = $row->fecha_requerimiento;
+                         $array[$num]['redondo'] = $row->redondo;
+                         $array[$num]['cliente'] = $row->cliente;
+                         $array[$num]['empresa'] = $row->empresa;
+                         $num++;
+                  }
+           }
+           return $array;
+    }
+    function periodo($id_operador){
+           $qry = "
+           SELECT
+           v.fecha_alta
+           FROM
+           vi_viaje AS v
+           INNER JOIN cr_operador_unidad AS ou ON v.id_operador_unidad = ou.id_operador_unidad
+           INNER JOIN cr_operador AS o ON ou.id_operador = o.id_operador
+           WHERE
+           o.id_operador = $id_operador AND
+           v.cat_status_viaje = 172
+           ORDER BY
+           	v.id_viaje ASC
+           LIMIT 0, 1
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         $fecha = $row->fecha_alta;
+                  }
+           }
+           setlocale(LC_TIME,"es_MX.UTF-8");
+           $dt_Ayer = date('m/d/Y', strtotime('-1 day'));
+           $hasta = strftime("%A %e de %B", strtotime($dt_Ayer));
+           $desde = strftime("%A %e de %B", strtotime($fecha));
+           return 'desde el '.$desde.' hasta el '.$hasta;
+    }
     function head_papeleta($id_operador){
            $qry = "
            SELECT
