@@ -4,6 +4,14 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
+	function diff(){
+
+		$segundos = strtotime('00:16:06') - strtotime('00:15:00');
+		if($segundos > 0){
+			$minutos = ($segundos/60);
+		       echo ceil($minutos);
+		}
+	}
 	function selectone(){
 		$db = Controlador::direct_connectivity();
 		$sql = "

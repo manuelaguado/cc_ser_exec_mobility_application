@@ -80,6 +80,7 @@
 
 
 						<input type="hidden" id="id_viaje" name="id_viaje" value="<?=$id_viaje?>" />
+						<input type="hidden" id="descripcion" name="descripcion" value="" />
 						<div class="modal-footer">
 							<div class="ca_flt_modal" id="total2"></div>
 							<button  class="btn btn-ar btn-success" type="button" onclick="costos_adicionales_do();">Capturar</button>

@@ -232,6 +232,10 @@ class OperacionModel{
            //obtener el costo del viaje
                      $costoData = self::getCostViaje($this->id_viaje,$upsSttcs['kmss_max']);
 
+           //Insertar costos adicionales automáticos, como tiempo de espera y escalas
+                     self::addCostTiempoEspera($this->id_viaje,$tiempo_espera);
+                     self::addCostTiempoEscala($this->id_viaje);
+
            //obtener costos adicionales
                      $adicional = self::getCostosAdicionales($this->id_viaje);
                      self::updateStaticsCosts($costoData['costo'],$adicional,$id_statics,$costoData['id_tarifa_cliente']);
@@ -239,6 +243,80 @@ class OperacionModel{
            //ingresar costo en monedero de operador
                      $total = $costoData['costo'] + $adicional;
                      self::insertMonedero($viaje,$total);
+    }
+    function addCostTiempoEscala($id_viaje){
+              $time_c10 = self::getDateMultipleClave($id_viaje,'C10');
+              $time_c11 = self::getDateMultipleClave($id_viaje,'C11');
+
+              if($time_c10['status'] AND $time_c11['status']){
+                     if(count($time_c10) == count($time_c11)){
+                            for($i = 0; $i < (count($time_c10))-1; $i++) {
+                                   $segundos = Controller::diferenciaSegundos($time_c10[$i]['fecha_alta'],$time_c11[$i]['fecha_alta']);
+
+                                   $array = array();
+                                   $array['id_viaje'] = $id_viaje;
+                                   $array['cat_concepto'] = 253;
+
+                                   //TODO: estos valores son variables
+                                   $costo_minuto = (130/60);
+
+
+                                   $minutos = ceil($segundos/60);
+                                   $array['descripcion'] = $minutos.' minutos';
+                                   $input = round($costo_minuto*$minutos, 2);
+                                   $array['costo'] = '$ '.$input;
+
+                                   self::addCostoAdicional($array);
+                            }
+                     }
+              }
+
+    }
+    function getDateMultipleClave($viaje,$clave){
+           $qry = "
+                  SELECT
+                  	stt.fecha_alta
+                  FROM
+                  	cr_state AS stt
+                  INNER JOIN cm_catalogo AS cm1 ON cm1.etiqueta = stt.state
+                  WHERE
+                  	stt.id_viaje = $viaje
+                  AND cm1.etiqueta = '".$clave."'
+                  ORDER BY
+                  	stt.id_state ASC
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $array = array();
+           $num = 0;
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  $array['status'] = true;
+                  foreach ($data as $row) {
+                         $array[$num]['fecha_alta'] = $row->fecha_alta;
+                         $num++;
+                  }
+           }else{
+                  $array['status'] = false;
+           }
+           return $array;
+    }
+    function addCostTiempoEspera($id_viaje,$tiempo_espera){
+           $array = array();
+           $array['id_viaje'] = $id_viaje;
+           $array['descripcion'] = $tiempo_espera;
+           $array['cat_concepto'] = 252;
+
+           //TODO: estos valores son variables
+           $cortesia = '00:15:00';
+           $costo_minuto = (130/60);
+
+           $segundos = strtotime($tiempo_espera) - strtotime($cortesia);
+           if($segundos > 0){
+                  $minutos = ceil($segundos/60);
+                  $array['costo'] = '$ '.$costo_minuto*$minutos;
+                  self::addCostoAdicional($array);
+           }
     }
     public function insertMonedero($viaje,$total){
            foreach ($viaje as $key => $value) {
@@ -558,7 +636,9 @@ class OperacionModel{
                   foreach ($data as $row) {
                          return $row->fecha_alta;
                   }
-           }
+           }else{
+                  return false;
+          }
     }
 
     function init_tds($viaje){
@@ -814,33 +894,32 @@ class OperacionModel{
 				cat_concepto,
 				costo,
 				fecha,
+                            descripcion,
 				user_alta,
-				user_mod,
 				fecha_alta
 			) VALUES (
 				:id_viaje,
 				:cat_concepto,
 				:costo,
 				:fecha,
+                            :descripcion,
 				:user_alta,
-				:user_mod,
 				:fecha_alta
 			)";
               $costo = str_replace(',','',$this->costo);
               $sign = substr($costo, 0,1);
               $input = ($sign == '$')?substr($costo, 2):(substr($costo, 3)*-1);
 		$query = $this->db->prepare($sql);
-		$query_resp = $query->execute(
-			array(
-				':id_viaje' =>  $this->id_viaje ,
-				':cat_concepto' =>  $this->cat_concepto ,
-				':costo' =>  $input ,
-				':fecha' =>  date("Y-m-d H:i:s") ,
-				':user_alta' =>  $_SESSION['id_usuario'] ,
-				':user_mod' => $_SESSION['id_usuario'] ,
-				':fecha_alta' => date("Y-m-d H:i:s")
-			)
+              $vals = array(
+			':id_viaje' =>  $this->id_viaje ,
+			':cat_concepto' =>  $this->cat_concepto ,
+			':costo' =>  $input ,
+			':fecha' =>  date("Y-m-d H:i:s") ,
+                     ':descripcion' => $this->descripcion,
+			':user_alta' =>  $_SESSION['id_usuario'] ,
+			':fecha_alta' => date("Y-m-d H:i:s")
 		);
+              $query_resp = $query->execute($vals);
 		if($query_resp){
 			$respuesta = array('resp' => true);
 		}else{
@@ -988,6 +1067,7 @@ class OperacionModel{
               self::updateMonedero($this->id_ingreso,$total);
        }
        function updateMonedero($id_ingreso,$total){
+              //TODO:la comision es variable
               $comision = '25';
               $neto = $total - (($comision * $total)/100);
 		$qry = "
@@ -4146,7 +4226,7 @@ class OperacionModel{
 		);
 		$inner = '
 			INNER JOIN cm_catalogo AS cat ON vca.cat_concepto = cat.id_cat
-			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_mod
+			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_alta
 		';
 		$where = '
 			vca.id_viaje = '.$id_viaje.'
