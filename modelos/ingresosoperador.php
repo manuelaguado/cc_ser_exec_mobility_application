@@ -10,6 +10,46 @@ class IngresosoperadorModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function savePapeleta($viajes,$id_operador,$token){
+           $qry = "
+           INSERT INTO `centralcar`.`fo_papeletas` (
+           	`id_operador`,
+           	`url`,
+           	`user_alta`,
+           	`fecha_alta`
+           )
+           VALUES
+           	(
+           		$id_operador,
+           		'../archivo/papeletas/".$token.".pdf',
+                     '".$_SESSION['id_usuario']."',
+                     '".date("Y-m-d H:i:s")."'
+           	);
+          ";
+          $query = $this->db->prepare($qry);
+          $query->execute();
+          $id_papeletas = $this->db->lastInsertId();
+
+          foreach($viajes as $viaje){
+                 $qry = "
+                 INSERT INTO `centralcar`.`fo_papeletas_viajes` (
+                 	`id_papeletas`,
+                 	`id_viaje`,
+                 	`user_alta`,
+                 	`fecha_alta`
+                 )
+                 VALUES
+                 	(
+                 		$id_papeletas,
+                 		'".$viaje['id_viaje']."',
+                            '".$_SESSION['id_usuario']."',
+                            '".date("Y-m-d H:i:s")."'
+                 	);
+                ";
+                $query = $this->db->prepare($qry);
+                $query->execute();
+          }
+    }
     function coordenadas($id_viaje){
            $query = $this->db->prepare('SELECT concat(vs.geo_origen,"/",vs.geo_destino) AS coordenadas FROM vi_viaje AS v INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = v.id_viaje WHERE v.id_viaje = '.$id_viaje.'');
            $query->execute();
@@ -63,9 +103,8 @@ class IngresosoperadorModel
            $query->execute();
            return json_encode(array('resp' => true));
     }
-    function proceso249_do(){
+    function opProcess(){
            $date = date('Y-m-d');
-
            $qry = "
            SELECT
            o.id_operador,
@@ -97,6 +136,10 @@ class IngresosoperadorModel
                          $num++;
                   }
            }
+           return $array;
+    }
+    function proceso249_do(){
+           $date = date('Y-m-d');
            $qry = "
            UPDATE vi_viaje AS v
            INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
@@ -107,7 +150,6 @@ class IngresosoperadorModel
            ";
            $query = $this->db->prepare($qry);
            $query->execute();
-           return $array;
     }
     function desglosePapeleta($id_operador) {
            $qry = "
@@ -181,6 +223,7 @@ class IngresosoperadorModel
            return $array;
     }
     function periodo($id_operador){
+           $date = date('Y-m-d');
            $qry = "
            SELECT
            v.fecha_alta
@@ -188,9 +231,11 @@ class IngresosoperadorModel
            vi_viaje AS v
            INNER JOIN cr_operador_unidad AS ou ON v.id_operador_unidad = ou.id_operador_unidad
            INNER JOIN cr_operador AS o ON ou.id_operador = o.id_operador
+           INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
            WHERE
            o.id_operador = $id_operador AND
            v.cat_status_viaje = 172
+           AND vd.fecha_requerimiento < '".$date."'
            ORDER BY
            	v.id_viaje ASC
            LIMIT 0, 1

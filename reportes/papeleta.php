@@ -40,7 +40,7 @@ class PAPELETA extends FPDI
            $data = array();
            foreach($array as $viaje){
                $viajes[] = $viaje;
-                 }
+           }
            return $viajes;
        }
        function insertarViaje($viajes)
@@ -119,19 +119,3 @@ class PAPELETA extends FPDI
 
        }
 }
-
-$pdf = new PAPELETA($orientation='L', $unit='mm', $size='LETTER');
-$pdf->AliasNbPages();
-$pdf->AddPage();
-$pdf->setSourceFile("../resources/plantillas_pdf/papeleta.pdf");
-$tplIdx = $pdf->importPage(1);
-$pdf->useTemplate($tplIdx, 0, 0, 280, 215);
-
-$pdf->setConfig('head',$head);
-$pdf->setConfig('periodo',$periodo);
-$pdf->setConfig('viajes',$viajes);
-
-$pdf->Header();
-$pdf->insertarViaje($pdf->cargarViajes($viajes));
-
-$pdf->Output('../archivo/papeletas/'.$token.'.pdf','F');

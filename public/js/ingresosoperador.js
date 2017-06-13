@@ -71,15 +71,24 @@ function proceso249_do(){
 	$.ajax({
 		url: 'ingresosoperador/proceso249_do',
 		dataType: 'json',
+		beforeSend: function( xhr ) {
+			$('#myModal').modal('hide');
+			$('#initpreloader').fadeIn('slow');
+		},
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {
-				$('#myModal').modal('hide');
 				$('#conceptos').DataTable().ajax.reload();
+				$('#initpreloader').fadeOut('slow');
 			}else{
 				alerta('Alerta!','Error de conectividad de red INOP-06');
+				$('#conceptos').DataTable().ajax.reload();
+				$('#initpreloader').fadeOut('slow');
 			}
 		},
-		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red INOP-07');}
+		error: function(respuesta){
+			$('#initpreloader').fadeOut('slow');
+			alerta('Alerta!','Error de conectividad de red INOP-07');
+		}
 	});
 }
 function accion_procesadosGroup(id_operador){

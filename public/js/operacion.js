@@ -1566,6 +1566,7 @@ function setClaveOk(id_viaje,clave){
 					$('#tabla_asignados').DataTable().ajax.reload();
 				}else{
 					alerta('Alerta!','Error de conectividad de red OPRN-100');
+					$('#initpreloader').fadeOut('slow');
 				}
 			},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-100');}
