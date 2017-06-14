@@ -5,4 +5,5 @@ public/plugs/cache/
 public/tmp/
 uploads/perfiles/
 archivo/*
+archivo/papeletas/*
 !archivo/.gitkeep
