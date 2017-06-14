@@ -45,10 +45,9 @@ span.input-icon > textarea {
 								<i class="ace-icon fa fa-gear bigger-110"></i>
 								Procesar
 							</a>
-							<span id="input_pasajeros"></span>
 							</h1>
 						</div>
-
+                                          <span id="input_pasajeros"></span>
                                           <input type="hidden" id="origen_calle" name="origen_calle" value="" />
                                           <input type="hidden" id="origen_num_ext" name="origen_num_ext" value="" />
                                           <input type="hidden" id="origen_num_int" name="origen_num_int" value="" />
@@ -427,11 +426,32 @@ span.input-icon > textarea {
 </div>
 
 <script>
+var pasajeros = [];
+function removeClient(id){
+	$('#client'+id).remove();
+	$('#usuario_'+id).remove();
+
+       var i = pasajeros.indexOf( id );
+       pasajeros.splice( i, 1 );
+
+	var destinos = $('#pasajeros_list > div').length;
+	if(destinos == 0){
+		$('#user_list').addClass('hide');
+		$('#spinDestinos').addClass('hide');
+		$('#dta_name').html('Usuario');
+		$("#id_cliente_origen").val('');
+		$("#id_cliente_destino").val('');
+		$("#id_cliente_origen").html('<option value="" disabled selected>Origenes guardados</option>');
+		$("#id_cliente_destino").html('<option value="" disabled selected>Destinos guardados</option>');
+		globalTypeUser = 'init';
+		pasajeros = [];
+	}
+}
+
 var solicitudInit = function () {
        return {
               init: function () {
                      var globalTypeUser = 'init';
-                     var pasajeros = [];
                      $('#user').autocomplete({
                             serviceUrl: 'operacion/busqueda_usuario',
                             minChars: 3,
@@ -443,7 +463,7 @@ var solicitudInit = function () {
                                           if(jQuery.inArray(suggestion.id, pasajeros) === -1){
 
                                                  pasajeros.push(suggestion.id);
-
+                                                 console.log(pasajeros);
                                                  $('#input_pasajeros').append('<input type="hidden" id="usuario_'+suggestion.id+'" name="usuario_'+suggestion.id+'" value="'+suggestion.id+'" />');
                                                  $('#pasajeros_list').append('<div class="tipo_cliente" id="client'+suggestion.id+'"><a onclick="removeClient('+suggestion.id+');" href="javascript:void(0);"><i class="fa fa-times-circle orange" aria-hidden="true"></i></a>&nbsp;&nbsp;'+suggestion.nombre+'</div>');
 
@@ -468,13 +488,25 @@ var solicitudInit = function () {
                                                  }
 
                                                  if(destinos == 1){
+                                                        if($('#cat_tiposervicio').val() == ''){
+                                                               var urltar='getTarifa';
+                                                               $('#cat_tiposervicio').val('165');
+                                                        }else{
+                                                               if($('#cat_tiposervicio').val() == 254){
+                                                                      var urltar='getTarifaC';
+                                                                      var mssgNoTarifa = 'Falta incluir una tarifa de cortesía para el cliente <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span>';
+                                                               }else{
+                                                                      var urltar='getTarifa';
+                                                                      var mssgNoTarifa = 'No existen tarifas relacionadas al cliente <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span>';
+                                                               }
+                                                        }
                                                         $.ajax({
-                                                               url: 'operacion/getTarifa/'+suggestion.id,
+                                                               url: 'operacion/' + urltar + '/' + suggestion.id,
                                                                dataType: 'json',
                                                                       success: function(resp_success){
                                                                              if (resp_success['resp'] == true) {
-                                                                                    if(resp_success['tarifa'] == ''){
-                                                                                           alerta('Cuenta sin tarifa','No existen tarifas relacionadas al cliente <span class="tipo_cliente" style="font-size:1em; top:0px;">'+suggestion.nombre+'</span>');
+                                                                                    if(resp_success['tarifa'] == false){
+                                                                                           alerta('Cuenta sin tarifa',mssgNoTarifa);
                                                                                     }else{
                                                                                            $("#exist_tarifa").val('1');
                                                                                     }

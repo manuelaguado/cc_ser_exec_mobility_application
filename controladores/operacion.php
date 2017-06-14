@@ -951,10 +951,16 @@ class Operacion extends Controlador
 		$modelo = $this->loadModel('Operacion');
 		print $modelo->tiempo_base_get($_POST);
 	}
-	public function getTarifa($id_cliente){
+       public function getTarifa($id_cliente){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$operacion = $this->loadModel('Operacion');
 		$tarifa = $operacion->id_tarifa_cliente($id_cliente);
+		print json_encode(array('resp' => true, 'tarifa' => $tarifa ));
+	}
+       public function getTarifaC($id_cliente){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$tarifa = $operacion->getTarifaCortesia($id_cliente);
 		print json_encode(array('resp' => true, 'tarifa' => $tarifa ));
 	}
 	public function procesar_servicio(){

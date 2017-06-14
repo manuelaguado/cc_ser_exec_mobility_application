@@ -480,7 +480,7 @@ function modal_extra_destino(){
 		});
 	} );
 }
-function removeClient(id){
+function removeClientx(id){
 
 	$('#client'+id).remove();
 	$('#usuario_'+id).remove();
@@ -488,7 +488,6 @@ function removeClient(id){
 	pasajeros = $.grep(pasajeros, function(value) {
 		return value != id;
 	});
-
 
 	var destinos = $('#pasajeros_list > div').length;
 	if(destinos == 0){
@@ -814,8 +813,12 @@ function verifyServicio(){
 	}else if(type == 166){/*recepcion*/
 		pop_apartado();
 		Apartar();
-	}else if(type == 255){/*Cortesía*/
-		alerta('Atención!','Rcuerde que si la Empresa no tiene viajes de cortesía en sus tarifas se cobrará la tarifa predeterminada con el perimetro de cortesía');
+	}else if(type == 254){/*Cortesía*/
+		habilitar();
+		$("#cat_tipo_salida option[value='180']").prop('selected', false);
+		$("#cat_tipo_salida option[value='181']").prop('selected', false);
+		$("#cat_tipo_salida option[value='182']").prop('selected', false);
+		desApartar();
 	}else{
 		habilitar();
 		$("#cat_tipo_salida option[value='180']").prop('selected', false);

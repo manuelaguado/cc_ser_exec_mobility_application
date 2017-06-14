@@ -2142,7 +2142,9 @@ class OperacionModel{
 			foreach ($result as $row) {
 				$output =  $row->id_tarifa_cliente;
 			}
-		}
+		}else{
+                     $output = false;
+              }
 		return $output;
 	}
        function getTarifaCortesia($id_cliente){
