@@ -965,6 +965,23 @@ function costos_adicionales(id_viaje){
 		});
 	} );
 }
+function costos_adicionales_show(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/costos_adicionales_show/' + id_viaje,
+			dataType: 'html',
+			success: function(resp_success){
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+						/**/
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-59');}
+		});
+	} );
+}
 function cambiar_tarifa(id_viaje){
 	$(document).ready(function() {
 		$.ajax({

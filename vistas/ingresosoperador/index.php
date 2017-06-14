@@ -81,7 +81,7 @@ $(document).ready(function() {
 	              $( api.column(7).footer() ).html('$ '+api.column(7).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			$( api.column(8).footer() ).html('$ '+api.column(8).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			$( api.column(9).footer() ).html('$ '+api.column(9).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
-			if(api.rows().count() == '0'){$('#boton_accion').css( "visibility", "hidden" );}
+			if(api.rows().count() == '0'){$('#boton_accion').css( "visibility", "hidden" );}else{accion_operatorGroup('conceptos');}
 		},
         "processing": true,
         "serverSide": true,
@@ -102,5 +102,4 @@ $(document).ready(function() {
 	*/
     } );
 } );
-accion_operatorGroup('conceptos');
 </script>

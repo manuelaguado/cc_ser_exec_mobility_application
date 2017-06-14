@@ -118,11 +118,6 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
   				 "searchable":false
   			 },
 			 {
-  				 "targets": 13,
-  				 "visible": false,
-  				 "searchable":false
-  			 },
-			 {
   				 "targets": 14,
   				 "visible": false,
   				 "searchable":false

@@ -310,6 +310,17 @@ class Operacion extends Controlador
 	}
 
 
+       public function costos_adicionales_show($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$cat_concepto = $this->selectCatalog('costos_adicionales',null);
+		require URL_VISTA.'modales/operacion/costos_adicionales_show.php';
+	}
+       public function costos_adicionales_show_get($id_viaje){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		print $operacion->queryCostosAdicionalesShow($_POST,$id_viaje);
+	}
+
 
        public function costos_adicionales_post($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');

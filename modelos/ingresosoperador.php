@@ -1091,6 +1091,7 @@ class IngresosoperadorModel
                          'dbj' => 'vs.geo_origen',
                          'real' => 'vs.geo_origen',
                          'alias' => 'geo_origen',
+                         'format' => 'adicionales',
                          'typ' => 'int',
                          'dt' => 13
                   ),
@@ -1374,6 +1375,7 @@ class IngresosoperadorModel
                          'real' => 'vs.geo_origen',
                          'alias' => 'geo_origen',
                          'typ' => 'int',
+                         'format' => 'adicionales',
                          'dt' => 13
                   ),
                   array(
@@ -1475,6 +1477,17 @@ class accionesviajes_archivados extends SSP{
                                                  </div>
                                           </div>';
                                           break;
+                                          case 'adicionales':
+                                          $salida = '
+                                          <div class="infobox infobox-wood infobox-alter infobox-dark" >
+                                                 <div class="infobox-icon center" style="width: 60px;" onclick="costos_adicionales_show('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos Adicionales">
+                                                        <i class="ace-icon icofont icofont-money-bag"></i>
+                                                 </div>
+                                                 <div style="text-align:center;">
+                                                        ADICION...
+                                                 </div>
+                                          </div>';
+                                          break;
                                           case 'mapsroutes':
                                           $salida = '
                                           <div class="infobox infobox-red infobox-alter infobox-dark" >
@@ -1562,7 +1575,6 @@ class accionesarchivo_get extends SSP{
                                           $costo = $data[$i][ 'viaje_mas_adicional' ];
                                           $salida = $costo - $deuda;
                                           break;
-
                                           case 'acciones':
                                           $salida = '
                                           <div style="width:100px !important;">
@@ -1702,6 +1714,17 @@ class accionesviajes_procesados extends SSP{
 							</div>
                                                  <div style="text-align:center;">
                                                         VARIANTES
+                                                 </div>
+						</div>';
+                                          break;
+                                          case 'adicionales':
+                                          $salida = '
+                                          <div class="infobox infobox-wood infobox-alter infobox-dark" >
+                                                 <div class="infobox-icon center" style="width: 60px;" onclick="costos_adicionales_show('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos Adicionales">
+                                                        <i class="ace-icon icofont icofont-money-bag"></i>
+                                                 </div>
+                                                 <div style="text-align:center;">
+                                                        ADICION...
                                                  </div>
 						</div>';
                                           break;

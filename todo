@@ -1,10 +1,11 @@
 TODO: costos por tiempo calcularlos con base en tipo de tarifa y calcularlos cada 30 min Y/o 30 km crear flujo y validarlo
-TODO: crear trabajo cron para generacion de cuotas
-TODO: cuando una tabla no muestra elementos deshabilitar la accion de la fila
+
+cuando una tabla no muestra elementos deshabilitar la accion de la fila
+if(api.rows().count() > '0'){accion_de_fila('tabla');}
+
+
 TODO: websockets sobre tablas especificas para evitar edicion al finalizar procesos
 TODO: vistas con papeletas de los operadores
 TODO: transicion en C9 y en procesar rollback
 TODO: evitar procesar cuando hay pagos pendientes
-TODO: los viajes procesados deberian tener un visor de adicionales
-TODO: los viajes archivados deberian tener un visor de adicionales
 TODO: incluir vista para setear variables del sistema

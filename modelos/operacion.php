@@ -4285,7 +4285,72 @@ class OperacionModel{
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
 	}
+       function queryCostosAdicionalesShow($array,$id_viaje){
+		ini_set('memory_limit', '256M');
+		$table = 'vi_costos_adicionales AS vca';
+		$primaryKey = 'id_costos_adicionales';
+		$columns = array(
+			array(
+				'db' => 'cat.etiqueta as etiqueta',
+				'dbj' => 'cat.etiqueta',
+				'real' => 'cat.etiqueta',
+				'alias' => 'etiqueta',
+				'typ' => 'txt',
+				'dt' => 0
+			),
+			array(
+				'db' => 'vca.costo as costo',
+				'dbj' => 'vca.costo',
+				'real' => 'vca.costo',
+				'alias' => 'costo',
+				'typ' => 'int',
+				'moneda' => true,
+				'dt' => 1
+			),
+			array(
+				'db' => 'usr.usuario as usuario',
+				'dbj' => 'usr.usuario',
+				'real' => 'usr.usuario',
+				'alias' => 'usuario',
+				'typ' => 'txt',
+				'dt' => 2
+			),
+			array(
+				'db' => 'vca.fecha as fecha',
+				'dbj' => 'vca.fecha',
+				'real' => 'vca.fecha',
+				'alias' => 'fecha',
+				'typ' => 'int',
+				'dt' => 3
+			),
+			array(
+				'db' => 'vca.id_costos_adicionales as id_costos_adicionales',
+				'dbj' => 'vca.id_costos_adicionales',
+				'real' => 'vca.id_costos_adicionales',
+				'alias' => 'id_costos_adicionales',
+				'typ' => 'int',
+				'viaje' => $id_viaje,
+				'dt' => 4
+			)
+		);
+		$inner = '
+			INNER JOIN cm_catalogo AS cat ON vca.cat_concepto = cat.id_cat
+			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_alta
+		';
+		$where = '
+			vca.id_viaje = '.$id_viaje.'
+		';
+		$orden = '
+			GROUP BY
+				vca.id_costos_adicionales ASC
+		';
+		$render_table = new SSP;
+		return json_encode(
+			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+		);
+	}
 }
+
 class acciones_costosAdicionalesPost extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{
