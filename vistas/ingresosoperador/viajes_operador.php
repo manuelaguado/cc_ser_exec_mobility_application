@@ -13,7 +13,7 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
 			<h1>
 				Viajes por operador
 			</h1>
-		</div>		
+		</div>
 		<div class="col-md-12 column">
 			<div class="table-responsive">
 				<table id="viajes_operador" class="display table table-striped" cellspacing="0" width="100%">
@@ -114,11 +114,6 @@ div.table-responsive div#viajes_operador_wrapper.dataTables_wrapper.form-inline.
   			 },
 			 {
   				 "targets": 8,
-  				 "visible": false,
-  				 "searchable":false
-  			 },
-			 {
-  				 "targets": 12,
   				 "visible": false,
   				 "searchable":false
   			 },

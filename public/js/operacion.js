@@ -814,6 +814,8 @@ function verifyServicio(){
 	}else if(type == 166){/*recepcion*/
 		pop_apartado();
 		Apartar();
+	}else if(type == 255){/*Cortesía*/
+		alerta('Atención!','Rcuerde que si la Empresa no tiene viajes de cortesía en sus tarifas se cobrará la tarifa predeterminada con el perimetro de cortesía');
 	}else{
 		habilitar();
 		$("#cat_tipo_salida option[value='180']").prop('selected', false);

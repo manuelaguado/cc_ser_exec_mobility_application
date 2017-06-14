@@ -7,6 +7,19 @@ class Ingresosoperador extends Controlador
 	$this->se_requiere_logueo(true,'Ingresosoperador|index');
        require URL_VISTA.'ingresosoperador/index.php';
     }
+    public function ver_papeleta($id_operador){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           $ingresos = $this->loadModel('Ingresosoperador');
+           $url = $ingresos->pdfData($id_operador);
+
+           $token = $this->token();
+           $destino = $token.'.pdf';
+           $tmp = '../public/tmp/';
+           copy($url, $tmp.$destino);
+           $pdf = $destino;
+
+           require URL_VISTA.'ingresosoperador/pdfview.php';
+    }
     public function archivo(){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            require URL_VISTA.'ingresosoperador/archivo.php';

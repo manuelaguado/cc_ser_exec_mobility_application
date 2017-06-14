@@ -127,3 +127,6 @@ function marcar_como_pagado_do(id_operador){
 function ver_viajes_archivados(id_operador){
 	carga_archivo('contenedor_principal', url_app + 'ingresosoperador/ver_viajes_archivados/' + id_operador);
 }
+function ver_papeleta(id_operador){
+	carga_archivo('contenedor_principal', url_app + 'ingresosoperador/ver_papeleta/' + id_operador);
+}

@@ -66,10 +66,16 @@ class PAPELETA extends FPDI
                      $fecha = date_format($date,('Y-m-d'));
                      $this->Cell(22, 5, $fecha, 0,0, 'C', $fill);
                      $this->Cell(70, 5, utf8_decode($viaje['empresa']), 0,0, 'L', $fill);
-                     $this->Cell(20, 5, base_convert($viaje['id_viaje'], 10, 36), 0,0, 'C', $fill);
+                     $this->Cell(20, 5, $viaje['id_viaje'], 0,0, 'C', $fill);
                      $this->Cell(15, 5, utf8_decode($viaje['tipo']), 0,0, 'C', $fill);
                      $this->Cell(15, 5, $viaje['km_max'], 0,0, 'C', $fill);
-                     $perimetro = ($viaje['km_max'] < 4)?'SI':'NO';
+
+                     //TODO: este valor deberia de ser una variable
+                     //$kmsc = km iniciales que los cubre el perimetro
+                     //255 corresponde a un viaje de cortesía
+                     $kmsc = ($viaje['cat_tipo_tarifa'] == 255)?5:4;
+                     $perimetro = ($viaje['km_max'] < $kmsc)?'SI':'NO';
+
                      $this->Cell(10, 5, $perimetro, 0,0, 'C', $fill);
                      $redondo = ($viaje['redondo'] == 1)?'SI':'NO';
                      $this->Cell(10, 5, $redondo, 0,0, 'C', $fill);
@@ -79,6 +85,42 @@ class PAPELETA extends FPDI
                      $fill = !$fill;
                      $this->Ln();
                      $this->SetX(10);
+
+                     if($viaje['adicional_desglose']['empty'] == false ){
+                            $this->SetFillColor(244,255,241);
+                            $this->SetFont('Courier','I',8);
+                            for($i=0;$i < count($viaje['adicional_desglose'])-1;$i++){
+                                   $this->Cell(65, 5, '', 0,0, 'C', $fill);
+                                   $this->Cell(70, 5, $viaje['adicional_desglose'][$i]['etiqueta'], 0,0, 'R', $fill);
+
+                                   $this->Cell(20, 5, '', 0,0, 'R', $fill);
+
+                                   if($viaje['adicional_desglose'][$i]['descripcion'] == 0){
+                                          $this->Cell(50, 5, '', 0,0, 'L', $fill);
+                                   }else{
+                                          $this->Cell(50, 5, $viaje['adicional_desglose'][$i]['descripcion'], 0,0, 'L', $fill);
+                                   }
+
+                                   $this->Cell(20, 5, $viaje['adicional_desglose'][$i]['costo'], 0,0, 'R', $fill);
+                                   $this->Cell(40, 5, '', 0,0, 'C', $fill);
+
+                                   $fill = !$fill;
+                                   $this->Ln();
+                                   $this->SetX(10);
+                                   $num++;
+                                   if($num == 30){
+                                          $num = 0;
+                                          $this->AddPage();
+                                          $this->setSourceFile("../resources/plantillas_pdf/papeleta.pdf");
+                                          $tplIdx = $this->importPage(1);
+                                          $this->useTemplate($tplIdx, 0, 0, 280, 215);
+                                          $this->SetX(10);
+                                   }
+                            }
+                            $this->SetFillColor(248,244,224);
+                            $this->SetFont('Courier','',8);
+                     }
+
 
                      $this->SetDrawColor(192,177,107);
                      $this->SetLineWidth(.2);
@@ -90,7 +132,7 @@ class PAPELETA extends FPDI
 
                      $con++;
                      $num++;
-                     if($num == 31){
+                     if($num == 30){
                             $num = 0;
                             $this->AddPage();
                             $this->setSourceFile("../resources/plantillas_pdf/papeleta.pdf");

@@ -988,7 +988,13 @@ class Operacion extends Controlador
 		$operacion->insert_detallesViaje($service);
 		$operacion->insert_formaPago($service);
 		$operacion->insert_viajeDestino($service);
-
+              ////////////////////////////////////////////////////////////////////si el viaje es una Cortesía
+              if($service->id_cliente_destino == 254){
+                     $id_tarifa_cliente = $operacion->getTarifaCortesia($service->id_cliente);
+                     if($id_tarifa_cliente != false){
+                            $operacion->setCortesia($id_tarifa_cliente,$id_viaje);
+                     }
+		}
 		////////////////////////////////////////////////////////////////////inserta clientes
 		foreach($clientes as $key => $id_cliente){
 			$operacion->insert_viajeClientes($service->id_viaje,$id_cliente);

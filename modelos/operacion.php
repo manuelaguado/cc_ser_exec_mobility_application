@@ -396,7 +396,8 @@ class OperacionModel{
                   	tc.km_adicional,
                   	tc.tabulado,
                   	c2.etiqueta AS tipo,
-                     vi.id_tarifa_cliente
+                     vi.id_tarifa_cliente,
+	              tc.cat_tipo_tarifa
                   FROM
                   	vi_viaje AS vi
                   INNER JOIN cl_tarifas_clientes AS tc ON vi.id_tarifa_cliente = tc.id_tarifa_cliente
@@ -414,6 +415,7 @@ class OperacionModel{
                          $array['km_adicional'] = $row->km_adicional;
                          $array['tabulado'] = $row->tabulado;
                          $array['tipo'] = $row->tipo;
+                         $array['cat_tipo_tarifa']=$row->cat_tipo_tarifa;
                          $array['id_tarifa_cliente'] = $row->id_tarifa_cliente;
                   }
            }
@@ -429,10 +431,14 @@ class OperacionModel{
                      $array['costo'] = $array['costo_base'];
               }
           }else{
-                 if($km <= 4){
+                 //TODO: estos valores deberian ser variables
+                 //$kmsc = km iniciales que los cubre el perimetro
+                 //255 corresponde a un viaje de cortesía
+                 $kmsc = ($array['cat_tipo_tarifa'] == 255)?5:4;
+                 if($km <= $kmsc){
                         $array['costo'] = $array['costo_base'];
-                }elseif($km > 4 ){
-                        $excedente = ceil($km - 4);
+                }elseif($km > $kmsc ){
+                        $excedente = ceil($km - $kmsc);
                         $array['costo'] =  $array['costo_base'] + ($excedente * $array['km_adicional']);
                 }
           }
@@ -1908,11 +1914,22 @@ class OperacionModel{
 		}
 		return $output;
 	}
-	function set_fecha_asignacion($id_viaje){
+       function set_fecha_asignacion($id_viaje){
 		$sql = "
 			UPDATE vi_viaje_detalle
 			SET
 			 fecha_asignacion = '".date("Y-m-d H:i:s")."'
+			WHERE
+				id_viaje = ".$id_viaje."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}
+       function setCortesia($id_tarifa_cliente,$id_viaje){
+		$sql = "
+			UPDATE vi_viaje
+			SET
+			 id_tarifa_cliente = '".$id_tarifa_cliente."'
 			WHERE
 				id_viaje = ".$id_viaje."
 		";
@@ -2126,6 +2143,32 @@ class OperacionModel{
 				$output =  $row->id_tarifa_cliente;
 			}
 		}
+		return $output;
+	}
+       function getTarifaCortesia($id_cliente){
+		$query = "
+                     SELECT
+                            tfcl.id_tarifa_cliente
+                     FROM
+                            cl_tarifas_clientes AS tfcl
+                     INNER JOIN cl_clientes AS clc ON tfcl.id_cliente = clc.parent
+                     WHERE
+                            clc.id_cliente = $id_cliente
+                     AND tfcl.cat_statustarifa = 168
+                     AND tfcl.cat_tipo_tarifa = 255
+                     AND tfcl.tabulado = 0
+		";
+		$query = $this->db->prepare($query);
+		$query->execute();
+		$result = $query->fetchAll();
+		$output = '';
+		if($query->rowCount()>=1){
+			foreach ($result as $row) {
+				$output =  $row->id_tarifa_cliente;
+			}
+		}else{
+                     $output = false;
+              }
 		return $output;
 	}
        function idClienteViaje($id_viaje){

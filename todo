@@ -5,3 +5,11 @@ TODO: crear trabajo cron para generacion de cuotas
 TODO: recualcular el costo adicional cuando se modifique, afecta el statics asi como las finanzas del operador, eliminar la modificacion cuando este procesado el viaje
 TODO: cuando una tabla no muestra elementos deshabilitar la accion de la fila
 TODO: websockets sobre tablas especificas para evitar edicion al finalizar procesos
+TODO: el pdf que se envio a los operadores tiene que estar disponible para su revision al pagar
+TODO: vistas con papeletas de los operadores
+TODO: transicion en C9 y en procesar rollback
+TODO: evitar procesar cuando hay pagos pendientes
+TODO: los viajes procesados deberian tener un visor de adicionales
+TODO: La lista de viajes deberia tener el numero de viaje
+TODO: Los viajes por operador deberian tener el id de viaje
+TODO: incluir cortesias y verificar su logica

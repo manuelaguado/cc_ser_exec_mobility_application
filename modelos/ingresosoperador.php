@@ -10,9 +10,30 @@ class IngresosoperadorModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function pdfData($id_operador){
+           $qry = "
+           SELECT
+           	fo_papeletas.url
+           FROM
+           	fo_papeletas
+           WHERE
+           	fo_papeletas.id_operador = $id_operador
+           ORDER BY
+           	fo_papeletas.id_papeletas DESC
+           LIMIT 0,
+            1
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         return $row->url;
+                  }
+           }
+    }
     function savePapeleta($viajes,$id_operador,$token){
            $qry = "
-           INSERT INTO `centralcar`.`fo_papeletas` (
+           INSERT INTO `fo_papeletas` (
            	`id_operador`,
            	`url`,
            	`user_alta`,
@@ -32,7 +53,7 @@ class IngresosoperadorModel
 
           foreach($viajes as $viaje){
                  $qry = "
-                 INSERT INTO `centralcar`.`fo_papeletas_viajes` (
+                 INSERT INTO `fo_papeletas_viajes` (
                  	`id_papeletas`,
                  	`id_viaje`,
                  	`user_alta`,
@@ -173,17 +194,19 @@ class IngresosoperadorModel
            	vd.redondo,
            	cli1.nombre AS cliente,
            	cli2.nombre AS empresa,
-              cat.etiqueta AS tipo
+              cat.etiqueta AS tipo,
+              tc.cat_tipo_tarifa
            FROM
            	vi_viaje AS v
            INNER JOIN cr_operador_unidad AS ou ON v.id_operador_unidad = ou.id_operador_unidad
            INNER JOIN cr_operador AS o ON ou.id_operador = o.id_operador
            INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = v.id_viaje
            INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
-           INNER JOIN it_cliente_origen ON v.id_cliente_origen = it_cliente_origen.id_cliente_origen
-           INNER JOIN cl_clientes AS cli1 ON it_cliente_origen.id_cliente = cli1.id_cliente
+           INNER JOIN it_cliente_origen AS co ON v.id_cliente_origen = co.id_cliente_origen
+           INNER JOIN cl_clientes AS cli1 ON co.id_cliente = cli1.id_cliente
            LEFT OUTER JOIN cl_clientes AS cli2 ON cli1.parent = cli2.id_cliente
            INNER JOIN cm_catalogo AS cat ON v.cat_tiposervicio = cat.id_cat
+           INNER JOIN cl_tarifas_clientes AS tc ON v.id_tarifa_cliente = cl_tarifas_clientes.id_tarifa_cliente
            WHERE
            	o.id_operador = $id_operador
            AND vs.cat_status_statics = 222
@@ -203,6 +226,7 @@ class IngresosoperadorModel
                          $array[$num]['tipo'] = $row->tipo;
                          $array[$num]['neto'] = $row->neto;
                          $array[$num]['adicional'] = $row->adicional;
+                         $array[$num]['adicional_desglose'] = self::adicional_desglose($row->idviaje);
                          $array[$num]['km_max'] = $row->km_max;
                          $array[$num]['km_min'] = $row->km_min;
                          $array[$num]['time_max'] = $row->time_max;
@@ -217,8 +241,37 @@ class IngresosoperadorModel
                          $array[$num]['redondo'] = $row->redondo;
                          $array[$num]['cliente'] = $row->cliente;
                          $array[$num]['empresa'] = $row->empresa;
+                         $array[$num]['cat_tipo_tarifa'] = $row->cat_tipo_tarifa;
                          $num++;
                   }
+           }
+           return $array;
+    }
+    function adicional_desglose($id_viaje){
+           $qry = "
+           SELECT
+           	cat.etiqueta,
+           	ca.costo,
+           	ca.descripcion
+           FROM
+           	vi_costos_adicionales AS ca
+           INNER JOIN cm_catalogo AS cat ON ca.cat_concepto = cat.id_cat
+           WHERE
+           	ca.id_viaje = $id_viaje
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $array = array();
+           $array['empty'] = true;
+           $num = 0;
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         $array[$num]['etiqueta'] = $row->etiqueta;
+                         $array[$num]['costo'] = $row->costo;
+                         $array[$num]['descripcion'] = $row->descripcion;
+                         $num++;
+                  }
+              $array['empty'] = false;
            }
            return $array;
     }
@@ -743,6 +796,7 @@ class IngresosoperadorModel
                          'dbj' => 'v.cat_status_viaje',
                          'real' => 'v.cat_status_viaje',
                          'alias' => 'cat_status_viaje',
+                         'format' => 'identificador',
                          'typ' => 'int',
                          'dt' => 12
                   ),
@@ -1028,6 +1082,7 @@ class IngresosoperadorModel
                          'dbj' => 'v.cat_status_viaje',
                          'real' => 'v.cat_status_viaje',
                          'alias' => 'cat_status_viaje',
+                         'format' => 'identificador',
                          'typ' => 'int',
                          'dt' => 12
                   ),
@@ -1309,6 +1364,7 @@ class IngresosoperadorModel
                          'dbj' => 'v.cat_status_viaje',
                          'real' => 'v.cat_status_viaje',
                          'alias' => 'cat_status_viaje',
+                         'format' => 'identificador',
                          'typ' => 'int',
                          'dt' => 12
                   ),
@@ -1410,6 +1466,14 @@ class accionesviajes_archivados extends SSP{
                                                         <div class="infobox-content">Arribo: '.$data[$i][ 'arribo' ].'</div>
 							</div>
 						</div>';
+                                          break;
+                                          case 'identificador':
+                                          $salida = '
+                                          <div class="infobox infobox-brown infobox-alter infobox-dark" style="width: 100px;" >
+                                                 <div style="text-align:center; font-size:2em; height:65px; vertical-align:middle;">
+                                                        '.$id_viaje.'
+                                                 </div>
+                                          </div>';
                                           break;
                                           case 'mapsroutes':
                                           $salida = '
@@ -1622,6 +1686,14 @@ class accionesviajes_procesados extends SSP{
                                                  </div>
 						</div>';
                                           break;
+                                          case 'identificador':
+                                          $salida = '
+                                          <div class="infobox infobox-brown infobox-alter infobox-dark" style="width: 100px;" >
+                                                 <div style="text-align:center; font-size:2em; height:65px; vertical-align:middle;">
+                                                        '.$id_viaje.'
+                                                 </div>
+                                          </div>';
+                                          break;
                                           case 'alternativas':
                                           $salida = '
                                           <div class="infobox infobox-pink infobox-alter infobox-dark" >
@@ -1702,6 +1774,7 @@ class accionesprocesadosGroup extends SSP{
                                           <div style="width:100px !important;">
                                                  <i onclick="accion_procesadosGroup('.$data[$i][ 'id_operador' ].')" data-rel="tooltip" data-original-title="Ver viajes" class="ace-icon fa fa-tachometer blue" style="font-size:2em;"></i>
                                                  <i onclick="marcar_como_pagado('.$data[$i][ 'id_operador' ].')" data-rel="tooltip" data-original-title="Marcar como pagado" class="ace-icon fa fa-credit-card-alt green" style="font-size:2em;"></i>
+                                                 <i onclick="ver_papeleta('.$data[$i][ 'id_operador' ].')" data-rel="tooltip" data-original-title="Papeleta" class="ace-icon fa fa-file-pdf-o red" style="font-size:2em;"></i>
                                           </div>
                                           ';
                                           break;
@@ -1818,6 +1891,14 @@ class accionesviajes_operador extends SSP{
 							</div>
                                                  <div style="text-align:center;">
                                                         GMAPS
+                                                 </div>
+						</div>';
+                                          break;
+                                          case 'identificador':
+                                          $salida = '
+                                          <div class="infobox infobox-brown infobox-alter infobox-dark" style="width: 100px;" >
+                                                 <div style="text-align:center; font-size:2em; height:65px; vertical-align:middle;">
+                                                        '.$id_viaje.'
                                                  </div>
 						</div>';
                                           break;
