@@ -463,7 +463,6 @@ var solicitudInit = function () {
                                           if(jQuery.inArray(suggestion.id, pasajeros) === -1){
 
                                                  pasajeros.push(suggestion.id);
-                                                 console.log(pasajeros);
                                                  $('#input_pasajeros').append('<input type="hidden" id="usuario_'+suggestion.id+'" name="usuario_'+suggestion.id+'" value="'+suggestion.id+'" />');
                                                  $('#pasajeros_list').append('<div class="tipo_cliente" id="client'+suggestion.id+'"><a onclick="removeClient('+suggestion.id+');" href="javascript:void(0);"><i class="fa fa-times-circle orange" aria-hidden="true"></i></a>&nbsp;&nbsp;'+suggestion.nombre+'</div>');
 
