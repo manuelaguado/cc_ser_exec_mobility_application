@@ -9,6 +9,52 @@ class RolesModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    function selectCostosByTipo($id_rol,$select = NULL){
+           $accesos = self::selectCostosByAccess($id_rol);
+           $qry = "SELECT id_cat,etiqueta FROM cm_catalogo AS cat where (cat.id_cat IN ($accesos))";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $array = array();
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  $cont = 0;
+                  foreach ($data as $row) {
+                         $array[$cont]['value']=$row->id_cat;
+                         $array[$cont]['valor']=$row->etiqueta;
+                         $cont++;
+                  }
+           }
+           return Controller::setOption($array,$select);
+    }
+    function selectCostosByAccess($id_rol){
+           $array = array();
+           $qry = "
+           SELECT
+           	ra.access,
+           	cat.etiqueta
+           FROM
+           	fw_roles_alta AS ra
+           INNER JOIN cm_catalogo AS cat ON ra.access = cat.id_cat
+           WHERE
+           	ra.id_rol = $id_rol
+           AND cat.catalogo = 'costos_adicionales'
+           ORDER BY
+           	ra.access ASC
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           $return = '';
+           if($query->rowCount()>=1){
+                  $data = $query->fetchAll();
+                  foreach ($data as $row) {
+                         $return .= "'".$row->access."',";
+                  }
+           }
+           $return = rtrim($return, ",");
+           return $return;
+    }
+
+
 	function selectRolesByTipo($cat_tiporol,$id_rol,$select = NULL){
 		$accesos = self::selectRolesByAccess($id_rol);
 		$qry = "SELECT * FROM fw_roles where (cat_tiporol IN ($cat_tiporol)) AND (id_rol IN ($accesos))";
@@ -21,10 +67,10 @@ class RolesModel
 			foreach ($data as $row) {
 				$array[$cont]['value']=$row->id_rol;
 				$array[$cont]['valor']=$row->descripcion;
-				$cont++;			
+				$cont++;
 			}
 		}
-		return Controller::setOption($array,$select);		
+		return Controller::setOption($array,$select);
 	}
 	function selectRolesByAccess($id_rol){
 		$array = array();
@@ -52,7 +98,7 @@ class RolesModel
 		$return = rtrim($return, ",");
 		return $return;
 	}
-	
+
 	function selectUsersByRoles($ids_roles,$id_usuario){
 		$array = array();
 		$qry = "
@@ -63,7 +109,7 @@ class RolesModel
 				fw_usuarios
 			INNER JOIN fw_roles ON fw_roles.id_rol = fw_usuarios.id_rol
 			WHERE
-				fw_usuarios.id_rol IN ($ids_roles)		
+				fw_usuarios.id_rol IN ($ids_roles)
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -73,10 +119,10 @@ class RolesModel
 			foreach ($data as $row) {
 				$array[$cont]['value']=$row->nombre;
 				$array[$cont]['valor']=$row->nombre;
-				$cont++;			
+				$cont++;
 			}
 		}
-		return Controller::setOption($array,$id_usuario);		
+		return Controller::setOption($array,$id_usuario);
 	}
 	function clonar_permisos($id_rol,$transfer){
 		$qry = "
@@ -96,7 +142,7 @@ class RolesModel
 		if($query->rowCount()>=1){
 			$dlt_qry = "DELETE from fw_permisos WHERE id_rol = ".$transfer."";
 			$del_query = $this->db->prepare($dlt_qry);
-			$del_query->execute();			
+			$del_query->execute();
 			foreach ($result as $row) {
 				$sql = "
 					INSERT INTO fw_permisos (
@@ -119,14 +165,14 @@ class RolesModel
 						':fecha_alta' => date("Y-m-d H:i:s")
 					)
 				);
-				
+
 				$qry2 = "
 					SELECT
 						fw_roles.descripcion
 					FROM
 						fw_roles
 					WHERE
-						fw_roles.id_rol = ".$transfer."			
+						fw_roles.id_rol = ".$transfer."
 				";
 				$query2 = $this->db->prepare($qry2);
 				$query2->execute();
@@ -136,7 +182,7 @@ class RolesModel
 						$new_permission = $new->descripcion;
 					}
 				}
-				
+
 				$ubic_qry = "
 					SELECT
 						fw_metodos.metodo,
@@ -147,7 +193,7 @@ class RolesModel
 					INNER JOIN fw_roles ON fw_permisos.id_rol = fw_roles.id_rol
 					INNER JOIN fw_metodos ON fw_permisos.id_metodo = fw_metodos.id_metodo
 					WHERE
-						fw_permisos.id_permiso = ".$row->id_permiso."			
+						fw_permisos.id_permiso = ".$row->id_permiso."
 				";
 				$query = $this->db->prepare($ubic_qry);
 				$query->execute();
@@ -158,7 +204,7 @@ class RolesModel
 					}
 				}
 			}
-		}	
+		}
 	}
 	function queryRoles(){
 		$sql_usr="
@@ -168,7 +214,7 @@ class RolesModel
 				fw_roles.descripcion
 			FROM
 				cm_catalogo
-			INNER JOIN fw_roles ON fw_roles.cat_tiporol = cm_catalogo.id_cat		
+			INNER JOIN fw_roles ON fw_roles.cat_tiporol = cm_catalogo.id_cat
 		";
 		$query = $this->db->prepare($sql_usr);
 		$query->execute();
@@ -195,9 +241,9 @@ class RolesModel
 			foreach ($areas as $row) {
 				$array[$cont]['value']=$row->id_rol;
 				$array[$cont]['valor']=strtoupper($row->descripcion);
-				$cont++;			
+				$cont++;
 			}
-		}		
+		}
 		return Controller::setOption($array,$id);
 	}
 
@@ -206,7 +252,7 @@ class RolesModel
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
-			
+
 			$sql = "
 				INSERT INTO fw_roles (
 					descripcion,
@@ -247,7 +293,7 @@ class RolesModel
 			foreach ($descripcion as $row) {
 					return $row->descripcion;
 			}
-		}	
+		}
 	}
 	function getMetodos(){
 		$sql="SELECT * FROM fw_metodos order by controlador asc";
@@ -357,7 +403,7 @@ class RolesModel
 			return $metodos;
 		}
 	}
-	function check_roles(){
+       function check_roles(){
 		$sql="
 			SELECT
 				rol.id_rol,
@@ -365,7 +411,7 @@ class RolesModel
 				cat.etiqueta
 			FROM
 				fw_roles AS rol
-			INNER JOIN cm_catalogo AS cat ON rol.cat_tiporol = cat.id_cat		
+			INNER JOIN cm_catalogo AS cat ON rol.cat_tiporol = cat.id_cat
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -376,7 +422,7 @@ class RolesModel
 				$array[$cont]['value']=$row->id_rol;
 				$array[$cont]['valor']=strtoupper($row->descripcion);
 				$array[$cont]['etiqueta']=strtoupper($row->etiqueta);
-				$cont++;			
+				$cont++;
 			}
 			return $array;
 		}
@@ -385,12 +431,34 @@ class RolesModel
 		$array = self::check_roles();
 		return $this->setOption_U($array);
 	}
-	
 	function setOption_U($arreglo){
 	$opciones = "<option value='' disabled selected>Seleccione</option>";
 		for($i=0;$i<count($arreglo);$i++){
 			$opciones .= "<option value='".$arreglo[$i]['value']."'>".ucwords($arreglo[$i]['valor'])."</option>";
 		}
 	return $opciones;
-	}	
+	}
+       function costos_adicionales(){
+		$sql="
+                     SELECT
+                     cat.id_cat,
+                     cat.etiqueta
+                     FROM
+                     cm_catalogo AS cat
+                     WHERE
+                     cat.catalogo = 'costos_adicionales'
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$roles =  $query->fetchAll();
+		if($query->rowCount()>=1){
+			$cont = 0;
+			foreach ($roles as $row) {
+				$array[$cont]['value']=$row->id_cat;
+				$array[$cont]['valor']=strtoupper($row->etiqueta);
+				$cont++;
+			}
+			return $array;
+		}
+	}
 }

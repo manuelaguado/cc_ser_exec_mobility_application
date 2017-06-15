@@ -8,7 +8,7 @@ function clonar_rol(){
 			success: function(resp_success){
 				carga_archivo('contenedor_principal','roles/permisos/' + transfer);
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-01');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-01');}
 		});
 	} );
 }
@@ -27,12 +27,12 @@ function modal_roles(){
 					$( "#add" ).click(function() {
 						$("#add_field").css({ display: "" });
 						$("#add").css({ display: "none" });
-					});	
+					});
 				}).on('hidden.bs.modal',function(){
 					$(this).remove();
-				});	
+				});
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-02');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-02');}
 		});
 	} );
 }
@@ -43,13 +43,13 @@ function graba_rol(){
 			type: 'POST',
 			data: $("#nuevo_rol").serialize(),
 			dataType: 'json',
-			success: function(resp_success){			
+			success: function(resp_success){
 				if (resp_success['resp'] == true) {
 					$("#add_field").addClass("hidden");
 					$('#myModal').modal('hide');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-03');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-03');}
 		});
 	} );
 }
@@ -61,12 +61,12 @@ function setPermission(id_metodo) {
 		$.ajax({
 			url: url_app + 'roles/establecer_permiso/' + role + '/' + metodo + '/' + estado ,
 			dataType: 'json',
-			success: function(resp_success){			
+			success: function(resp_success){
 				if (resp_success['resp'] == true) {
 					//alerta('Alerta!','ok');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-04');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-04');}
 		});
 	} );
 }
@@ -79,40 +79,29 @@ function vincular_rol(rol) {
 		$.ajax({
 			url: url_app + 'roles/establecer_acceso/' + id_rol + '/' + access + '/' + estado ,
 			dataType: 'json',
-			success: function(resp_success){			
+			success: function(resp_success){
 				if (resp_success['resp'] == true) {
 					//alerta('Alerta!','ok');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-05');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-05');}
 		});
 	} );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function vincular_costo(costo) {
+	$(document).ready(function() {
+		var access = escape(costo);
+		var estado = document.getElementById("accessCost" + access).checked;
+		var id_rol = document.getElementById("role").value;
+		$.ajax({
+			url: url_app + 'roles/establecer_acceso/' + id_rol + '/' + access + '/' + estado ,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					//alerta('Alerta!','ok');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red RLS-05');}
+		});
+	} );
+}

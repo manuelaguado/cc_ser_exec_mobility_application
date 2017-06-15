@@ -28,11 +28,12 @@ class Roles extends Controlador
 	public function permisos($rol){
 		$this->se_requiere_logueo(true,'Roles|permisos');
 		$roles_data = $this->loadModel('Roles');
-              
+
 		$descripcion = $roles_data->get_rol($rol);
               $metodos = $roles_data->getMetodos();
 		$roles = $roles_data->select_roles();
 		$roles_ck = $roles_data->check_roles();
+              $costos_adicionales = $roles_data->costos_adicionales();
 
               require URL_VISTA.'permisos/index.php';
 	}

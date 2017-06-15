@@ -169,14 +169,6 @@ class ShareModel
                   $this->db->rollBack();
            }
     }
-    public function transmitir($emision,$proceso){
-       require_once('../vendor/pusher/Pusher.php');
-       $options = array('encrypted' => true);
-       $pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
-       $emision = json_decode($emision,true);
-       $data['message'] = $emision;
-       $pusher->trigger($proceso, 'evento', $data);
-    }
     function cordonCompletado($id_usuario,$id_operador_unidad,$id_base){
            if(self::turno($id_operador_unidad,$id_base) != 'No formado'){
                      $sql = "

@@ -70,10 +70,15 @@ class PAPELETA extends FPDI
                      $this->Cell(15, 5, utf8_decode($viaje['tipo']), 0,0, 'C', $fill);
                      $this->Cell(15, 5, $viaje['km_max'], 0,0, 'C', $fill);
 
-                     //TODO: este valor deberia de ser una variable
+                     //Variables del sistema
+                     $km_cortesia = Controlador::getConfig(1,'km_cortesia');
+                     $km_perimetro = Controlador::getConfig(1,'km_perimetro');
+
                      //$kmsc = km iniciales que los cubre el perimetro
                      //255 corresponde a un viaje de cortesía
-                     $kmsc = ($viaje['cat_tipo_tarifa'] == 255)?5:4;
+
+                     $kmsc = ($viaje['cat_tipo_tarifa'] == 255)?$km_cortesia:$km_perimetro;
+
                      $perimetro = ($viaje['km_max'] < $kmsc)?'SI':'NO';
 
                      $this->Cell(10, 5, $perimetro, 0,0, 'C', $fill);

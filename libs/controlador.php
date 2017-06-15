@@ -252,7 +252,7 @@ class Controller extends D{
 		}else{
 			$permiso = false;
 		}
-    }
+       }
 	static function token($long=25){
 		$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		mt_srand((double)microtime()*1000000);
@@ -317,6 +317,14 @@ class Controller extends D{
 		}
 		return $ipv6.'::/48';
 	}
+       static function transmitir($emision,$proceso){
+          require_once('../vendor/pusher/Pusher.php');
+          $options = array('encrypted' => true);
+          $pusher = new Pusher(PUSHER_KEY,PUSHER_SECRET,PUSHER_APP_ID,$options);
+          $emision = json_decode($emision,true);
+          $data['message'] = $emision;
+          $pusher->trigger($proceso, 'evento', $data);
+       }
 }
 class D
 {

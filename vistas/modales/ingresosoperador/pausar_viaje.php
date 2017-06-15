@@ -12,7 +12,7 @@
 					<br><br>¿Está seguro de continuar con esta acción?
 			</div>
 			<div class="modal-footer">
-				<button onclick="pausar_viaje_do(<?=$id_viaje?>);" class="btn btn-ar btn-success" type="button" id="add">Pausar viaje</button>
+				<button onclick="pausar_viaje_do(<?=$id_viaje?>);" class="btn btn-ar btn-success" type="button" id="add">Cambiar estado del viaje</button>
 				<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cerrar</button>
 			</div>
 		</div>

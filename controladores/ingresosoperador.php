@@ -7,6 +7,11 @@ class Ingresosoperador extends Controlador
 	$this->se_requiere_logueo(true,'Ingresosoperador|index');
        require URL_VISTA.'ingresosoperador/index.php';
     }
+    public function pausados()
+    {
+	$this->se_requiere_logueo(true,'Ingresosoperador|index');
+       require URL_VISTA.'ingresosoperador/pausados.php';
+    }
     public function ver_papeleta($id_operador){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            $ingresos = $this->loadModel('Ingresosoperador');
@@ -28,6 +33,11 @@ class Ingresosoperador extends Controlador
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            $ingresos = $this->loadModel('Ingresosoperador');
            print $ingresos->archivo_get($_POST);
+    }
+    public function pausadosGroup(){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           $ingresos = $this->loadModel('Ingresosoperador');
+           print $ingresos->pausadosGroup($_POST);
     }
     public function operadorGroup(){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
@@ -52,6 +62,20 @@ class Ingresosoperador extends Controlador
            $ingresos = $this->loadModel('Ingresosoperador');
            print $ingresos->viajes_operador($_POST,$id_operador);
     }
+
+
+    function viajes_pausados($id_operador){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           require URL_VISTA.'ingresosoperador/viajes_pausados.php';
+    }
+    function viajes_pausados_get($id_operador){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           $ingresos = $this->loadModel('Ingresosoperador');
+           print $ingresos->viajes_pausados($_POST,$id_operador);
+    }
+
+
+
     function viajes_procesados($id_operador){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            require URL_VISTA.'ingresosoperador/viajes_procesados.php';
@@ -95,6 +119,7 @@ class Ingresosoperador extends Controlador
               $pdfURLProcess = self::generatePapeletas($opProcess);
               $ingresos->proceso249_do();
               self::sendMailReport($pdfURLProcess);
+              $this->transmitir('doit','remoteUpdate');
               print json_encode(array('resp' => true));
     }
     function generarPapeleta($id_operador){

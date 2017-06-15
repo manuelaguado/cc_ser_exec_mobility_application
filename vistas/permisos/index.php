@@ -16,7 +16,7 @@
 				  </select>
 				</div>
 				<div class="col-xs-2">
-					<button onclick="clonar_rol();" class="btn btn-sm btn-primary">Clonar</button>			
+					<button onclick="clonar_rol();" class="btn btn-sm btn-primary">Clonar</button>
 				</div><br>
 			</div>
 		<?php
@@ -39,7 +39,7 @@
 				$permiso = $roles_data->getPermisos($rol,$metodo->id_metodo);
 				if($permiso == 1){$checked = 'checked';}else{$checked = '';}
 			?>
-					
+
 				<div class="text-icon wow fadeInUp animated">
 					<span style="float: left; position:relative;">
 						<input onchange='setPermission(<?php echo $metodo->id_metodo; ?>)' id="permission_<?php echo $metodo->id_metodo; ?>" name="permission_<?php echo $metodo->id_metodo; ?>" class="ace ace-switch ace-switch-5" type="checkbox" <?php echo $checked; ?>/>
@@ -50,9 +50,9 @@
 							<?php echo $metodo->nombre;?>
 							<span style="font-size:.6em;">
 								(<?php echo $metodo->metodo; ?>)
-							</span>									
+							</span>
 						</h4>
-						
+
 						<div class="profile-activity clearfix" style="height:50px !important;">
 							<div>
 								<div class="time">
@@ -62,7 +62,7 @@
 						</div>
 						<?php
 						if($metodo->metodo == 'agregar_usuario'){
-						?>	
+						?>
 							<div class="well">
 								<h4 class="green smaller lighter">Roles que a los que tiene acceso este rol</h4>
 								Seleccione los roles que podrán asignar los usuarios vinculados a este rol, cuando esté activa la opción de insertar un usuario y/o la opción de actualizar los datos de un usuario. Tenga en cuenta que si el usuario tiene acceso a este módulo entonces podría modificar estos permisos.<br><br>
@@ -70,22 +70,54 @@
 								<?php
 									$j=0;
 									for($i=0;$i < count($roles_ck); $i++){
-										
+
 										$acceso = $roles_data->getAccesos($rol,$roles_ck[$i]['value']);
 										if($acceso == 1){$checked_ac = 'checked';}else{$checked_ac = '';}
-										
+
 										echo ($j == 0)?'<tr>':'';
 										echo '<td>';
 										?>
-										
+
 											<input onchange='vincular_rol(<?=$roles_ck[$i]['value']?>)' id="accessrol<?=$roles_ck[$i]['value']?>" name="accessrol<?=$roles_ck[$i]['value']?>" class="ace ace-switch ace-switch-6" type="checkbox" <?php echo $checked_ac; ?>/>
 											<span class="lbl">&nbsp;&nbsp;<?=$roles_ck[$i]['valor']?>&nbsp;&nbsp;(<?=$roles_ck[$i]['etiqueta']?>)</span>
-										
+
 										<?php
 										echo '</td>';
 										echo ($j == 2)?'</tr>':'';
 										if($j >= 2){$j = 0;}else{$j++;}
-									}								
+									}
+								?>
+								</table>
+							</div>
+						<?php
+						}
+						?>
+						<?php
+						if($metodo->metodo == 'costos_adicionales'){
+						?>
+							<div class="well">
+								<h4 class="green smaller lighter">Costos adicionales a los que tiene acceso este rol</h4>
+								Seleccione los costos adicionales a los que tiene acceso este rol para dar de alta.<br><br>
+								<table class="table_width">
+								<?php
+									$j=0;
+									for($i=0;$i < count($costos_adicionales); $i++){
+
+										$acceso = $roles_data->getAccesos($rol,$costos_adicionales[$i]['value']);
+										if($acceso == 1){$checked_ca = 'checked';}else{$checked_ca = '';}
+
+										echo ($j == 0)?'<tr>':'';
+										echo '<td>';
+										?>
+
+											<input onchange='vincular_costo(<?=$costos_adicionales[$i]['value']?>)' id="accessCost<?=$costos_adicionales[$i]['value']?>" name="accessCost<?=$costos_adicionales[$i]['value']?>" class="ace ace-switch ace-switch-6" type="checkbox" <?php echo $checked_ca; ?>/>
+											<span class="lbl">&nbsp;&nbsp;<?=$costos_adicionales[$i]['valor']?></span>
+
+										<?php
+										echo '</td>';
+										echo ($j == 2)?'</tr>':'';
+										if($j >= 2){$j = 0;}else{$j++;}
+									}
 								?>
 								</table>
 							</div>
@@ -94,7 +126,7 @@
 						?>
 					</div>
 				</div>
-					
+
 			<?php
 		}
 		?>

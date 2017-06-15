@@ -163,6 +163,7 @@
 		<script src="<?=URL_PUBLIC?>js/egresosoperador.js"></script>
 		<script src="<?=URL_PUBLIC?>js/ingresosoperador.js"></script>
 		<script src="<?=URL_PUBLIC?>js/catalogo.js"></script>
+		<script src="<?=URL_PUBLIC?>js/sistema.js"></script>
 
 		<script src="<?=URL_PUBLIC?>components/buzz/buzz.min.js"></script>
 
@@ -209,5 +210,20 @@
 			var updChannel5 = pusher.subscribe('updasignados');
 			updChannel5.bind('evento', function(data) {
 				$('#tabla_asignados').DataTable().ajax.reload();
+			});
+
+			var remoteUpdate = pusher.subscribe('remoteUpdate');
+			remoteUpdate.bind('evento', function(data) {
+				$('#conceptos').DataTable().ajax.reload();
+				$('#completados').DataTable().ajax.reload();
+				$('#cancelados').DataTable().ajax.reload();
+				$('#c12').DataTable().ajax.reload();
+			});
+
+			var updateStatus = pusher.subscribe('updateStatus');
+			updateStatus.bind('evento', function(data) {
+				$('#activos').DataTable().ajax.reload();
+				$('#inactivos').DataTable().ajax.reload();
+				$('#suspendidas').DataTable().ajax.reload();
 			});
 		</script>

@@ -257,8 +257,9 @@ class OperacionModel{
                                    $array['id_viaje'] = $id_viaje;
                                    $array['cat_concepto'] = 253;
 
-                                   //TODO: estos valores son variables
-                                   $costo_minuto = (130/60);
+                                   //Variables del sistema
+                                   $costo_hora = Controlador::getConfig(1,'costo_hora');
+                                   $costo_minuto = ($costo_hora['valor']/60);
 
 
                                    $minutos = ceil($segundos/60);
@@ -307,11 +308,12 @@ class OperacionModel{
            $array['descripcion'] = $tiempo_espera;
            $array['cat_concepto'] = 252;
 
-           //TODO: estos valores son variables
-           $cortesia = '00:15:00';
-           $costo_minuto = (130/60);
+           //Variables del sistema
+           $cortesia = Controlador::getConfig(1,'tiempo_cortesia');
+           $costo_hora = Controlador::getConfig(1,'costo_hora');
+           $costo_minuto = ($costo_hora['valor']/60);
 
-           $segundos = strtotime($tiempo_espera) - strtotime($cortesia);
+           $segundos = strtotime($tiempo_espera) - strtotime($cortesia['valor']);
            if($segundos > 0){
                   $minutos = ceil($segundos/60);
                   $array['costo'] = '$ '.$costo_minuto*$minutos;
@@ -431,10 +433,14 @@ class OperacionModel{
                      $array['costo'] = $array['costo_base'];
               }
           }else{
-                 //TODO: estos valores deberian ser variables
+                 //Variables del sistema
+                 $km_cortesia = Controlador::getConfig(1,'km_cortesia');
+                 $km_perimetro = Controlador::getConfig(1,'km_perimetro');
+
                  //$kmsc = km iniciales que los cubre el perimetro
                  //255 corresponde a un viaje de cortesía
-                 $kmsc = ($array['cat_tipo_tarifa'] == 255)?5:4;
+
+                 $kmsc = ($array['cat_tipo_tarifa'] == 255)?$km_cortesia:$km_perimetro;
                  if($km <= $kmsc){
                         $array['costo'] = $array['costo_base'];
                 }elseif($km > $kmsc ){
@@ -1073,9 +1079,11 @@ class OperacionModel{
               self::updateMonedero($this->id_ingreso,$total);
        }
        function updateMonedero($id_ingreso,$total){
-              //TODO:la comision es variable
-              $comision = '25';
-              $neto = $total - (($comision * $total)/100);
+
+              //Variables del sistema
+              $comision = Controlador::getConfig(1,'comision_operadores');
+
+              $neto = $total - (($comision['valor'] * $total)/100);
 		$qry = "
 			UPDATE `fo_ingresos`
 			SET
@@ -4150,7 +4158,7 @@ class OperacionModel{
 		);
 		$inner = '
 			INNER JOIN cm_catalogo AS cat ON vca.cat_concepto = cat.id_cat
-			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_mod
+			INNER JOIN fw_usuarios AS usr ON usr.id_usuario = vca.user_alta
 		';
 		$where = '
 			vca.id_viaje = '.$id_viaje.'
@@ -4503,8 +4511,9 @@ class acciones_asignados extends SSP{
 
                                    $salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
-					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-
+                                   if(Controlador::tiene_permiso('Operacion|costos_adicionales')){
+					       $salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+                                   }
                                    $salida .= '<a href="javascript:;" onclick="nueva_incidencia('.$id_viaje.')" data-rel="tooltip" data-original-title="Incidencia"><i class="fa fa-exclamation-triangle" style="font-size:1.4em; color:#c39800;"></i></a>&nbsp;&nbsp;';
 
 					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';

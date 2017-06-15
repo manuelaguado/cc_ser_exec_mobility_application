@@ -130,6 +130,18 @@
 				if($this->tiene_permiso('Ingresosoperador|index')){
 				?>
 				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/pausados');">
+						<i class="menu-icon fa fa-taxi"></i>
+						<span class="menu-text"> Pausados </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Ingresosoperador|index')){
+				?>
+				<li>
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/procesados');">
 						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-left fa_sup" aria-hidden="true"></i></i>
 						<span class="menu-text"> Procesados </span>
@@ -218,6 +230,18 @@
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador');">
 						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-up fa_sup" aria-hidden="true"></i></i>
 						<span class="menu-text"> Conceptos de cobro </span>
+					</a>
+				</li>
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Ingresosoperador|index')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/papeletas');">
+						<i class="menu-icon fa fa-file-pdf-o"></i>
+						<span class="menu-text"> Papeletas </span>
 					</a>
 				</li>
 				<?php
@@ -435,6 +459,19 @@
 					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>catalogo');">
 						<i class="menu-icon fa fa-book"></i>
 						<span class="menu-text">Catálogo</span>
+					</a>
+				</li>
+
+				<?php
+				}
+				?>
+				<?php
+				if($this->tiene_permiso('Sistema|index')){
+				?>
+				<li>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>sistema');">
+						<i class="menu-icon fa fa-cogs"></i>
+						<span class="menu-text">Sistema</span>
 					</a>
 				</li>
 

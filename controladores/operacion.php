@@ -13,20 +13,19 @@ class Operacion extends Controlador
 		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 
-		if($operacion->cordon_hash(1)){$share->transmitir('doit','updcrd1');}
-		if($operacion->serv_cve_hash(179)){$share->transmitir('doit','updasignados');}
-		if($operacion->servicio_hash(170)){$share->transmitir('doit','updpendientes');}
-		if($operacion->servicio_hash(188)){$share->transmitir('doit','updpendientes');}
+		if($operacion->cordon_hash(1)){$this->transmitir('doit','updcrd1');}
+		if($operacion->serv_cve_hash(179)){$this->transmitir('doit','updasignados');}
+		if($operacion->servicio_hash(170)){$this->transmitir('doit','updpendientes');}
+		if($operacion->servicio_hash(188)){$this->transmitir('doit','updpendientes');}
 
               $operacion->asignar_viajes(1,$share);
 
 	}
 	public function cron10(){
 		session_destroy();
-		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 		$notificaciones = $operacion->notificacionesApartados();
-		$share->transmitir(json_encode($notificaciones),'notificarApartados');
+		$this->transmitir(json_encode($notificaciones),'notificarApartados');
 	}
        public function modal_activar_c1($id_operador, $num){
 		$this->se_requiere_logueo(true,'Operacion|activar_c1');
@@ -312,8 +311,11 @@ class Operacion extends Controlador
 
        public function costos_adicionales_show($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$cat_concepto = $this->selectCatalog('costos_adicionales',null);
-		require URL_VISTA.'modales/operacion/costos_adicionales_show.php';
+
+              $roles = $this->loadModel('Roles');
+              $cat_concepto = $roles->selectCostosByTipo($_SESSION['id_rol']);
+
+              require URL_VISTA.'modales/operacion/costos_adicionales_show.php';
 	}
        public function costos_adicionales_show_get($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -324,8 +326,11 @@ class Operacion extends Controlador
 
        public function costos_adicionales_post($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$cat_concepto = $this->selectCatalog('costos_adicionales',null);
-		require URL_VISTA.'modales/operacion/costos_adicionales_post.php';
+
+              $roles = $this->loadModel('Roles');
+              $cat_concepto = $roles->selectCostosByTipo($_SESSION['id_rol']);
+
+              require URL_VISTA.'modales/operacion/costos_adicionales_post.php';
 	}
        public function costos_adicionales_get_post($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -368,8 +373,11 @@ class Operacion extends Controlador
 
 	public function costos_adicionales($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$cat_concepto = $this->selectCatalog('costos_adicionales',null);
-		require URL_VISTA.'modales/operacion/costos_adicionales.php';
+
+              $roles = $this->loadModel('Roles');
+		$cat_concepto = $roles->selectCostosByTipo($_SESSION['id_rol']);
+
+              require URL_VISTA.'modales/operacion/costos_adicionales.php';
 	}
 	public function costos_adicionales_get($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -713,12 +721,10 @@ class Operacion extends Controlador
 	}
 	public function enviar_emision(){
 		$this->se_requiere_logueo(true,'Operacion|broadcast_all');
-		$share = $this->loadModel('Share');
-
 		$mensaje = array(
 			'mensaje' => $_POST['mensaje']
 		);
-		$share->transmitir(json_encode($mensaje),'broadcast');
+		$this->transmitir(json_encode($mensaje),'broadcast');
 		print json_encode(array('resp'=>true));
 	}
 	public function delivery_stat($id_mensaje){
@@ -767,6 +773,7 @@ class Operacion extends Controlador
               $setStat['motivo'] = 'NULL';
 
 		$share->setStatOper($setStat);
+              $this->transmitir('doit','updateStatus');
 		print json_encode(array('resp' => true , 'mensaje' => 'El operador inició operaciones correctamente.' ));
 	}
 
@@ -831,7 +838,7 @@ class Operacion extends Controlador
 			}
 
 			if($send = 1){
-				$share->transmitir(json_encode($state),'verify_a10_'.$id_operador_unidad.'');
+				$this->transmitir(json_encode($state),'verify_a10_'.$id_operador_unidad.'');
 				exit();
 			}
 
