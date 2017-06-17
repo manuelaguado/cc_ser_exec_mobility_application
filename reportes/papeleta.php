@@ -50,7 +50,7 @@ class PAPELETA extends FPDI
            $con = 1;
            $km = 0;
            $adicional = 0;
-           $costo = 0;
+           $monto = 0;
            $neto = 0;
 
            $this->SetFillColor(248,244,224);
@@ -60,7 +60,7 @@ class PAPELETA extends FPDI
            {
    			$this->SetFont('Courier','',8);
 
-                     $this->Cell(32, 5, hash( 'adler32', $viaje['id_viaje'].$viaje['costo'].$viaje['geo_origen'].$viaje['geo_destino'].$viaje['cliente'] ), 0,0, 'C', $fill);
+                     $this->Cell(32, 5, hash( 'adler32', $viaje['id_viaje'].$viaje['monto'].$viaje['geo_origen'].$viaje['geo_destino'].$viaje['cliente'] ), 0,0, 'C', $fill);
                      $this->Cell(11, 5, $con, 0,0, 'C', $fill);
                      $date = date_create($viaje['fecha_requerimiento']);
                      $fecha = date_format($date,('Y-m-d'));
@@ -84,8 +84,11 @@ class PAPELETA extends FPDI
                      $this->Cell(10, 5, $perimetro, 0,0, 'C', $fill);
                      $redondo = ($viaje['redondo'] == 1)?'SI':'NO';
                      $this->Cell(10, 5, $redondo, 0,0, 'C', $fill);
-                     $this->Cell(20, 5, $viaje['adicional'], 0,0, 'R', $fill);
-                     $this->Cell(20, 5, $viaje['costo'], 0,0, 'R', $fill);
+
+                     $ad_cost = $viaje['ad_cgravamen'] + $viaje['ad_sgravamen'];
+
+                     $this->Cell(20, 5, $ad_cost, 0,0, 'R', $fill);
+                     $this->Cell(20, 5, $viaje['monto'], 0,0, 'R', $fill);
                      $this->Cell(20, 5, $viaje['neto'], 0,0, 'R', $fill);
                      $fill = !$fill;
                      $this->Ln();
@@ -131,8 +134,8 @@ class PAPELETA extends FPDI
                      $this->SetLineWidth(.2);
                      $this->Line(41, 31, 41, 195);
                      $km += $viaje['km_max'];
-                     $adicional += $viaje['adicional'];
-                     $costo += $viaje['costo'];
+                     $adicional += $ad_cost;
+                     $monto += $viaje['monto'];
                      $neto += $viaje['neto'];
 
                      $con++;
@@ -158,7 +161,7 @@ class PAPELETA extends FPDI
            $this->Cell(10, 5, '', 0,0, 'C', $fill);
            $this->Cell(10, 5, '', 0,0, 'C', $fill);
            $this->Cell(20, 5, '$ '.$adicional, 0,0, 'R', $fill);
-           $this->Cell(20, 5, '$ '.$costo, 0,0, 'R', $fill);
+           $this->Cell(20, 5, '$ '.$monto, 0,0, 'R', $fill);
            $this->Cell(20, 5, '$ '.$neto, 0,0, 'R', $fill);
            $fill = !$fill;
            $this->Ln();

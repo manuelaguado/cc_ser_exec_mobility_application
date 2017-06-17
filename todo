@@ -9,11 +9,6 @@ TODO: transicion en C9 y en procesar rollback
 TODO: evitar procesar cuando hay pagos pendientes
 
 
-TODO: incluir en papeleta el porcentaje de deduccion
-TODO: lo que paga el chofer se reembolsa
-TODO: el costo adicional de servicios como km_adicionales, o tiempo tiene un porcentaje que es el mismo de la comision
-TODO: la papeleta debe reflejar costos netos con deduccion incluida de comision
 TODO: nueva clave para los cancelados que generen costo por que se incluyen en papeleta
-TODO: al poner o quitar cobros a operadores egresos operador 184 error
 TODO: comisiones individuakles
-TODO: papeleta 59 foreach error al procesar
+TODO: los costos no reflejan comision en las vistas

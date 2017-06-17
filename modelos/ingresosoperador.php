@@ -177,16 +177,12 @@ class IngresosoperadorModel
            SELECT
            	vs.mapa AS url_map,
            	v.id_viaje AS idviaje,
-           	vs.costo_viaje AS costo,
-           	vs.costos_adicionales AS adicional,
-           	vs.costo_total AS neto,
            	vs.km_max_maps AS km_max,
            	vs.km_min_maps AS km_min,
            	vs.time_or_des_max AS time_max,
            	vs.time_or_des_min AS time_min,
            	vs.time_viaje AS time_operador,
            	vs.time_espera AS espera,
-           	vs.time_arribo AS arribo,
            	v.cat_status_viaje AS cat_status_viaje,
            	vs.geo_origen AS geo_origen,
            	vs.geo_destino AS geo_destino,
@@ -194,8 +190,14 @@ class IngresosoperadorModel
            	vd.redondo,
            	cli1.nombre AS cliente,
            	cli2.nombre AS empresa,
-              cat.etiqueta AS tipo,
-              tc.cat_tipo_tarifa
+           	cat.etiqueta AS tipo,
+           	tc.cat_tipo_tarifa,
+           	vs.time_arribo,
+           	fi.monto,
+           	fi.ad_cgravamen,
+           	fi.ad_sgravamen,
+           	fi.comision,
+           	fi.neto
            FROM
            	vi_viaje AS v
            INNER JOIN cr_operador_unidad AS ou ON v.id_operador_unidad = ou.id_operador_unidad
@@ -206,7 +208,8 @@ class IngresosoperadorModel
            INNER JOIN cl_clientes AS cli1 ON co.id_cliente = cli1.id_cliente
            LEFT OUTER JOIN cl_clientes AS cli2 ON cli1.parent = cli2.id_cliente
            INNER JOIN cm_catalogo AS cat ON v.cat_tiposervicio = cat.id_cat
-           INNER JOIN cl_tarifas_clientes AS tc ON v.id_tarifa_cliente = cl_tarifas_clientes.id_tarifa_cliente
+           INNER JOIN cl_tarifas_clientes AS tc ON v.id_tarifa_cliente = tc.id_tarifa_cliente
+           INNER JOIN fo_ingresos AS fi ON fi.id_viaje = v.id_viaje
            WHERE
            	o.id_operador = $id_operador
            AND vs.cat_status_statics = 222
@@ -222,10 +225,7 @@ class IngresosoperadorModel
                   foreach ($query1->fetchAll() as $row) {
                          $array[$num]['url_map'] = $row->url_map;
                          $array[$num]['id_viaje'] = $row->idviaje;
-                         $array[$num]['costo'] = $row->costo;
                          $array[$num]['tipo'] = $row->tipo;
-                         $array[$num]['neto'] = $row->neto;
-                         $array[$num]['adicional'] = $row->adicional;
                          $array[$num]['adicional_desglose'] = self::adicional_desglose($row->idviaje);
                          $array[$num]['km_max'] = $row->km_max;
                          $array[$num]['km_min'] = $row->km_min;
@@ -233,7 +233,7 @@ class IngresosoperadorModel
                          $array[$num]['time_min'] = $row->time_min;
                          $array[$num]['time_operador'] = $row->time_operador;
                          $array[$num]['espera'] = $row->espera;
-                         $array[$num]['arribo'] = $row->arribo;
+                         $array[$num]['arribo'] = $row->time_arribo;
                          $array[$num]['cat_status_viaje'] = $row->cat_status_viaje;
                          $array[$num]['geo_origen'] = $row->geo_origen;
                          $array[$num]['geo_destino'] = $row->geo_destino;
@@ -242,6 +242,11 @@ class IngresosoperadorModel
                          $array[$num]['cliente'] = $row->cliente;
                          $array[$num]['empresa'] = $row->empresa;
                          $array[$num]['cat_tipo_tarifa'] = $row->cat_tipo_tarifa;
+                         $array[$num]['monto'] = $row->monto;
+                         $array[$num]['ad_cgravamen'] = $row->ad_cgravamen;
+                         $array[$num]['ad_sgravamen'] = $row->ad_sgravamen;
+                         $array[$num]['comision'] = $row->comision;
+                         $array[$num]['neto'] = $row->neto;
                          $num++;
                   }
            }
@@ -511,7 +516,7 @@ class IngresosoperadorModel
            INNER JOIN fo_concepto_adeudo AS ca ON ca.id_operador_conecepto = oc.id_operador_concepto
            WHERE
            	v.cat_status_viaje = 249
-           AND o.id_operador = 1
+           AND o.id_operador = $id_operador
            GROUP BY
            	ca.id_concepto_adeudo
            ";
@@ -1894,8 +1899,8 @@ class accionespausadosGroup extends SSP{
               SELECT
               	IFNULL(Sum(ca.monto), 0) AS total
               FROM
-              	fo_operador_conceptos AS oc
-              INNER JOIN fo_concepto_adeudo AS ca ON ca.id_operador_conecepto = oc.id_operador_concepto
+              	fo_concepto_adeudo AS ca
+              INNER JOIN fo_operador_conceptos AS oc ON ca.id_operador_conecepto = oc.id_operador_concepto
               WHERE
               	oc.id_operador = $id_operador
               AND ca.cat_status_pago = 244
@@ -1911,12 +1916,13 @@ class accionespausadosGroup extends SSP{
        static function programado($id_operador,$db){
 		$qry = "
               SELECT
-              	IFNULL(Sum(c.monto), 0) as total
+              	IFNULL(Sum(c.monto), 0) AS total
               FROM
               	fo_operador_conceptos AS oc
               INNER JOIN fo_conceptos AS c ON oc.id_concepto = c.id_concepto
               WHERE
               	oc.id_operador = $id_operador
+              AND oc.cat_status_concepto = 240
 		";
 		$query = $db->prepare($qry);
 		$query->execute();
@@ -2128,11 +2134,11 @@ class accionesarchivo_get extends SSP{
               SELECT
               	IFNULL(Sum(ca.monto), 0) AS total
               FROM
-              	fo_operador_conceptos AS oc
-              INNER JOIN fo_concepto_adeudo AS ca ON ca.id_operador_conecepto = oc.id_operador_concepto
+              	fo_concepto_adeudo AS ca
+              INNER JOIN fo_operador_conceptos AS oc ON ca.id_operador_conecepto = oc.id_operador_concepto
               WHERE
-              	oc.id_operador = $id_operador
-              AND ca.cat_status_pago = 244
+              	ca.cat_status_pago = 244
+              AND oc.id_operador = $id_operador
 		";
 		$query = $db->prepare($qry);
 		$query->execute();
@@ -2345,12 +2351,12 @@ class accionesprocesadosGroup extends SSP{
        static function deuda($id_operador,$db){
 		$qry = "
               SELECT
-              	IFNULL(Sum(ca.monto), 0) AS total
+                     IFNULL(Sum(ca.monto), 0) AS total
               FROM
-              	fo_operador_conceptos AS oc
-              INNER JOIN fo_concepto_adeudo AS ca ON ca.id_operador_conecepto = oc.id_operador_concepto
+                     fo_concepto_adeudo AS ca
+              INNER JOIN fo_operador_conceptos AS oc ON ca.id_operador_conecepto = oc.id_operador_concepto
               WHERE
-              	oc.id_operador = $id_operador
+                     oc.id_operador = $id_operador
               AND ca.cat_status_pago = 244
 		";
 		$query = $db->prepare($qry);
@@ -2569,8 +2575,8 @@ class accionesoperadorGroup extends SSP{
               SELECT
               	IFNULL(Sum(ca.monto), 0) AS total
               FROM
-              	fo_operador_conceptos AS oc
-              INNER JOIN fo_concepto_adeudo AS ca ON ca.id_operador_conecepto = oc.id_operador_concepto
+              	fo_concepto_adeudo AS ca
+              INNER JOIN fo_operador_conceptos AS oc ON ca.id_operador_conecepto = oc.id_operador_concepto
               WHERE
               	oc.id_operador = $id_operador
               AND ca.cat_status_pago = 244
@@ -2586,12 +2592,13 @@ class accionesoperadorGroup extends SSP{
        static function programado($id_operador,$db){
 		$qry = "
               SELECT
-              	IFNULL(Sum(c.monto), 0) as total
+              	IFNULL(Sum(c.monto), 0) AS total
               FROM
               	fo_operador_conceptos AS oc
               INNER JOIN fo_conceptos AS c ON oc.id_concepto = c.id_concepto
               WHERE
               	oc.id_operador = $id_operador
+              AND oc.cat_status_concepto = 240
 		";
 		$query = $db->prepare($qry);
 		$query->execute();

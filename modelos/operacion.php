@@ -241,8 +241,130 @@ class OperacionModel{
                      self::updateStaticsCosts($costoData['costo'],$adicional,$id_statics,$costoData['id_tarifa_cliente']);
 
            //ingresar costo en monedero de operador
-                     $total = $costoData['costo'] + $adicional;
-                     self::insertMonedero($viaje,$total);
+                     self::insertMonedero($viaje,$costoData['costo']);
+    }
+    function arrayCostosAdicionales($id_viaje){
+           $sql ="
+                  SELECT
+                  	ca.costo,
+                  	cat.etiqueta,
+                  	cat.valor
+                  FROM
+                  	vi_costos_adicionales AS ca
+                  INNER JOIN cm_catalogo AS cat ON ca.cat_concepto = cat.id_cat
+                  WHERE
+                  	ca.id_viaje = $id_viaje
+           ";
+
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $array = array();
+           $num = 0;
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         $array[$num]['costo'] =  $row->costo;
+                         $array[$num]['etiqueta'] =  $row->etiqueta;
+                         $array[$num]['valor'] =  $row->valor;
+                         $num++;
+                  }
+           }
+           return $array;
+    }
+    function updateMonedero($id_ingreso,$costo,$id_viaje){
+
+           //Variables del sistema
+           $comision = Controlador::getConfig(1,'comision_operadores');
+           $adicionales = self::arrayCostosAdicionales($id_viaje);
+
+           $ad_cgravamen = 0;
+           $ad_sgravamen = 0;
+
+           foreach($adicionales as $num => $adicional){
+                  if($adicional['valor'] == 257){
+                         $ad_cgravamen += $adicional['costo'];
+                  }elseif($adicional['valor'] == 256){
+                         $ad_sgravamen += $adicional['costo'];
+                  }
+           }
+
+           $gravado = $costo + $ad_cgravamen;
+
+           $neto = $gravado - (($comision['valor'] * $gravado)/100);
+           $qry = "
+                  UPDATE `fo_ingresos`
+                  SET
+                   `monto` = '".$costo."',
+                   `ad_cgravamen` = '".$ad_cgravamen."',
+                   `ad_sgravamen` = '".$ad_sgravamen."',
+                   `comision` = '".$comision['valor']."',
+                   `neto` = '".$neto."'
+
+                  WHERE
+                         (`id_ingreso` = ".$id_ingreso.");
+           ";
+           $query = $this->db->prepare($qry);
+           $query_resp = $query->execute();
+    }
+    public function insertMonedero($viaje,$costo){
+           foreach ($viaje as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           //Variables del sistema
+           $comision = Controlador::getConfig(1,'comision_operadores');
+           $adicionales = self::arrayCostosAdicionales($this->id_viaje);
+
+           $ad_cgravamen = 0;
+           $ad_sgravamen = 0;
+           foreach($adicionales as $num => $adicional){
+                  if($adicional['valor'] == 256){
+                         $ad_cgravamen += $adicional['costo'];
+                  }elseif($adicional['valor'] == 257){
+                         $ad_sgravamen += $adicional['costo'];
+                  }
+           }
+
+           $gravado = $costo + $ad_cgravamen;
+
+           $neto = ($gravado - (($comision['valor'] * $gravado)/100))+$ad_sgravamen;
+           $qry = "
+                  INSERT INTO `fo_ingresos` (
+                     `id_operador`,
+                     `id_viaje`,
+                     `cat_status_pago`,
+                     `monto`,
+                     `ad_cgravamen`,
+                     `ad_sgravamen`,
+                     `comision`,
+                     `neto`,
+                     `user_alta`,
+                     `fecha_alta`
+                  )
+                  VALUES
+                         (
+                                   '".$this->id_operador."',
+                                   '".$this->id_viaje."',
+                                   '244',
+                                   '".$costo."',
+                                   '".$ad_cgravamen."',
+                                   '".$ad_sgravamen."',
+                                   '".$comision['valor']."',
+                                   '".$neto."',
+                                   '".$_SESSION['id_usuario']."',
+                                   '".date("Y-m-d H:i:s")."'
+                         );
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           return $this->db->lastInsertId();
+    }
+    function updateCostosAdicionales($vars){
+           foreach ($vars as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $costoData = self::getCostViaje($this->id_viaje,$this->kms);
+           $adicional = self::getCostosAdicionales($this->id_viaje);
+           self::updateStaticsCosts($costoData['costo'],$adicional,$this->id_viaje_statics,$costoData['id_tarifa_cliente']);
+           self::updateMonedero($this->id_ingreso,$costoData['costo'],$this->id_viaje);
     }
     function addCostTiempoEscala($id_viaje){
               $time_c10 = self::getDateMultipleClave($id_viaje,'C10');
@@ -319,40 +441,6 @@ class OperacionModel{
                   $array['costo'] = '$ '.$costo_minuto*$minutos;
                   self::addCostoAdicional($array);
            }
-    }
-    public function insertMonedero($viaje,$total){
-           foreach ($viaje as $key => $value) {
-                  $this->$key = strip_tags($value);
-           }
-           $comision = '25';
-           $neto = $total - (($comision * $total)/100);
-           $qry = "
-                  INSERT INTO `fo_ingresos` (
-                     `id_operador`,
-                     `id_viaje`,
-                     `cat_status_pago`,
-                     `monto`,
-                     `comision`,
-                     `neto`,
-
-                     `user_alta`,
-                     `fecha_alta`
-                  )
-                  VALUES
-                         (
-                                   '".$this->id_operador."',
-                                   '".$this->id_viaje."',
-                                   '244',
-                                   '".$total."',
-                                   '".$comision."',
-                                   '".$neto."',
-                                   '".$_SESSION['id_usuario']."',
-                                   '".date("Y-m-d H:i:s")."'
-                         );
-           ";
-           $query = $this->db->prepare($qry);
-           $query->execute();
-           return $this->db->lastInsertId();
     }
     public function updateStaticsCosts($costo,$adicional,$id_statics,$id_tarifa_cliente){
            $total = $costo + $adicional;
@@ -1067,35 +1155,6 @@ class OperacionModel{
 			$array = array('false' => true , 'mensaje' => 'Registro guardado correctamente.' );
 		}
 		return $array;
-	}
-       function updateCostosAdicionales($vars){
-              foreach ($vars as $key => $value) {
-                     $this->$key = strip_tags($value);
-              }
-              $costoData = self::getCostViaje($this->id_viaje,$this->kms);
-              $adicional = self::getCostosAdicionales($this->id_viaje);
-              self::updateStaticsCosts($costoData['costo'],$adicional,$this->id_viaje_statics,$costoData['id_tarifa_cliente']);
-              $total = $costoData['costo'] + $adicional;
-              self::updateMonedero($this->id_ingreso,$total);
-       }
-       function updateMonedero($id_ingreso,$total){
-
-              //Variables del sistema
-              $comision = Controlador::getConfig(1,'comision_operadores');
-
-              $neto = $total - (($comision['valor'] * $total)/100);
-		$qry = "
-			UPDATE `fo_ingresos`
-			SET
-			 `monto` = '".$total."',
-                      `comision` = '".$comision."',
-                      `neto` = '".$neto."'
-
-			WHERE
-				(`id_ingreso` = ".$id_ingreso.");
-		";
-		$query = $this->db->prepare($qry);
-		$query_resp = $query->execute();
 	}
 	function countApart($id_operador,$hit,$id_operador_turno){
 		if(!$hit){

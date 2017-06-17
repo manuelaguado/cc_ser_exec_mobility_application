@@ -88,20 +88,21 @@ class EgresosoperadorModel
                   }
            }
     }
+
     function deficitarios($id_concepto){
            $sql="
            SELECT
-                  fo_operador_conceptos.id_operador,
-                  fo_operador_conceptos.inicio_cobranza,
-                  fo_operador_conceptos.id_operador_concepto,
-                  fo_conceptos.id_concepto,
-                  fo_conceptos.monto
+                  oc.id_operador,
+                  oc.inicio_cobranza,
+                  oc.id_operador_concepto,
+                  c.id_concepto,
+                  c.monto
            FROM
-           fo_operador_conceptos
-           INNER JOIN fo_conceptos ON fo_operador_conceptos.id_concepto = fo_conceptos.id_concepto
+           fo_operador_conceptos AS oc
+           INNER JOIN fo_conceptos AS c ON oc.id_concepto = c.id_concepto
            WHERE
-           fo_conceptos.id_concepto = $id_concepto
-
+           c.id_concepto = $id_concepto
+           AND oc.cat_status_concepto = 240
            ";
            $query = $this->db->prepare($sql);
            $query->execute();
@@ -158,12 +159,14 @@ class EgresosoperadorModel
                          INSERT INTO fo_operador_conceptos (
                                 id_operador,
                                 id_concepto,
+                                cat_status_concepto,
                                 inicio_cobranza,
                                 user_alta,
                                 fecha_alta
                          ) VALUES (
                                 :id_operador,
                                 :id_concepto,
+                                :cat_status_concepto,
                                 :inicio_cobranza,
                                 :user_alta,
                                 :fecha_alta
@@ -173,16 +176,15 @@ class EgresosoperadorModel
                          array(
                                 ':id_operador' => $id_operador,
                                 ':id_concepto' => $id_concepto,
+                                ':cat_status_concepto' => 240,
                                 ':inicio_cobranza' => date("Y-m-d H:i:s"),
                                 ':user_alta' => $_SESSION['id_usuario'],
                                 ':fecha_alta' => date("Y-m-d H:i:s")
                          )
                   );
            }else if ($estado == 'false'){
-                  $clean = "DELETE FROM fo_operador_conceptos WHERE id_operador = :id_operador and id_concepto = :id_concepto";
-                  $query = $this->db->prepare($clean);
-                  $query_resp = $query->execute(array(':id_operador' => $id_operador, ':id_concepto' => $id_concepto));
-                  return $query_resp;
+                  $this->db->exec(" UPDATE fo_operador_conceptos SET cat_status_concepto = '241' WHERE id_concepto = $id_concepto AND id_operador = $id_operador ");
+                  $query_resp = true;
            }
            if($query_resp){
                   $respuesta = array('resp' => true , 'mensaje' => 'Se fijo el concepto de cobro.' );
@@ -194,7 +196,7 @@ class EgresosoperadorModel
     function getStatus($id_concepto,$id_operador){
            $id_concepto = intval($id_concepto);
            $id_operador = intval($id_operador);
-           $sql="SELECT count(*) as status FROM fo_operador_conceptos where id_operador = '".$id_operador."' and id_concepto = ".$id_concepto."";
+           $sql="SELECT count(*) as status FROM fo_operador_conceptos where id_operador = '".$id_operador."' and id_concepto = ".$id_concepto." and cat_status_concepto = 240";
            $query = $this->db->prepare($sql);
            $query->execute();
            $status =  $query->fetchAll();
@@ -294,17 +296,9 @@ class EgresosoperadorModel
            return $array ;
     }
     function eliminar_cobro_do($id_concepto){
-           $qry = "
-                  UPDATE `fo_conceptos`
-                  SET
-                     `cat_status_concepto` = '241'
-
-                  WHERE
-                         (`id_concepto` = $id_concepto);
-           ";
-           $query = $this->db->prepare($qry);
-           $ok = $query->execute();
-           if($ok){
+           $di1 = $this->db->exec(" UPDATE fo_conceptos SET cat_status_concepto = '241' WHERE id_concepto = $id_concepto");
+           $di2 = $this->db->exec(" UPDATE fo_operador_conceptos SET cat_status_concepto = '241' WHERE id_concepto = $id_concepto");
+           if($di1 > 0){/*representa el numero de filas afectadas en este caso se limita a 1 mientras $di2 se limita a tantos como operadores afectados*/
                   $respuesta = array('resp' => true  );
            }else{
                   $respuesta = array('resp' => false  );
