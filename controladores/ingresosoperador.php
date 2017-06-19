@@ -5,6 +5,8 @@ class Ingresosoperador extends Controlador
     public function index()
     {
 	$this->se_requiere_logueo(true,'Ingresosoperador|index');
+       $ingresos = $this->loadModel('Ingresosoperador');
+       $vsp = $ingresos->viajeSinPagar();
        require URL_VISTA.'ingresosoperador/index.php';
     }
     public function pausados()

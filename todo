@@ -6,7 +6,6 @@ if(api.rows().count() > '0'){accion_de_fila('tabla');}
 
 TODO: vistas con papeletas de los operadores
 TODO: transicion en C9 y en procesar rollback
-TODO: evitar procesar cuando hay pagos pendientes
 
 
 TODO: nueva clave para los cancelados que generen costo por que se incluyen en papeleta

@@ -76,6 +76,11 @@ class IngresosoperadorModel
            $query->execute();
            return $query->fetchAll()[0]->coordenadas;
     }
+    function viajeSinPagar(){
+           $query = $this->db->prepare('SELECT Count(v.id_viaje) AS total FROM vi_viaje AS v WHERE v.cat_status_viaje = 249');
+           $query->execute();
+           return $query->fetchAll()[0]->total;
+    }
     function variantes($id_viaje){
            $qry = "
            SELECT

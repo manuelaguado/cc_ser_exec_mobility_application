@@ -82,6 +82,13 @@ $(document).ready(function() {
 			$( api.column(8).footer() ).html('$ '+api.column(8).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			$( api.column(9).footer() ).html('$ '+api.column(9).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			if(api.rows().count() == '0'){$('#boton_accion').css( "visibility", "hidden" );}else{accion_operatorGroup('conceptos');}
+			<?php
+				if($vsp > 0){
+			?>
+				$('#boton_accion').html('<div class="alert alert-warning"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><strong>¡Atención!  </strong>Existen viajes sin pagar que requieren su atención&nbsp;&nbsp;<br></div>');
+			<?php
+				}
+			?>
 		},
         "processing": true,
         "serverSide": true,
