@@ -462,12 +462,12 @@ class OperacionModel{
            $sql ="
                   SELECT
                   	Sum(
-                  		vi_costos_adicionales.costo
+                  		ca.costo
                   	) AS total
                   FROM
-                  	vi_costos_adicionales
+                  	vi_costos_adicionales as ca
                   WHERE
-                  	vi_costos_adicionales.id_viaje = $id_viaje
+                  	ca.id_viaje = $id_viaje
            ";
 
            $query = $this->db->prepare($sql);
@@ -513,13 +513,17 @@ class OperacionModel{
           if($array['tabulado'] == 1){
               $existe_c12 = self::existeEnViaje('C12',$id_viaje);
               $existe_t3 = self::existeEnViaje('T3',$id_viaje);
+
               if(($existe_c12 >= 1)OR($existe_t3 >= 1)){
                      $array['costo'] = $array['costo_base'];
                      //se setea el viaje para revision manual
                      $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '247' WHERE id_viaje = ".$id_viaje);
+
               }else{
                      $array['costo'] = $array['costo_base'];
+
               }
+
           }else{
                  //Variables del sistema
                  $km_cortesia = Controlador::getConfig(1,'km_cortesia');
@@ -528,13 +532,20 @@ class OperacionModel{
                  //$kmsc = km iniciales que los cubre el perimetro
                  //255 corresponde a un viaje de cortesía
 
-                 $kmsc = ($array['cat_tipo_tarifa'] == 255)?$km_cortesia:$km_perimetro;
+                 $kmsc = ($array['cat_tipo_tarifa'] == 255)?$km_cortesia['valor']:$km_perimetro['valor'];
+
                  if($km <= $kmsc){
                         $array['costo'] = $array['costo_base'];
-                }elseif($km > $kmsc ){
+
+                 }elseif($km > $kmsc ){
                         $excedente = ceil($km - $kmsc);
-                        $array['costo'] =  $array['costo_base'] + ($excedente * $array['km_adicional']);
-                }
+                        $updca['id_viaje']= $id_viaje;
+                        $updca['costo']= '$ '.$excedente * $array['km_adicional'];
+                        $updca['cat_concepto']= 248;
+                        $updca['descripcion']= $excedente . ' km adicionales';
+                        self::addCostoAdicional($updca);
+                        $array['costo'] =  $array['costo_base'];
+                 }
           }
           return $array;
     }

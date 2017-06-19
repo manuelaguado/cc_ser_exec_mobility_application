@@ -77,7 +77,7 @@ class PAPELETA extends FPDI
                      //$kmsc = km iniciales que los cubre el perimetro
                      //255 corresponde a un viaje de cortesía
 
-                     $kmsc = ($viaje['cat_tipo_tarifa'] == 255)?$km_cortesia:$km_perimetro;
+                     $kmsc = ($viaje['cat_tipo_tarifa'] == 255)?$km_cortesia['valor']:$km_perimetro['valor'];
 
                      $perimetro = ($viaje['km_max'] < $kmsc)?'SI':'NO';
 

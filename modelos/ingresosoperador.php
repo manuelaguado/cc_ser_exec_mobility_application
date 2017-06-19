@@ -173,6 +173,7 @@ class IngresosoperadorModel
            $query->execute();
     }
     function desglosePapeleta($id_operador) {
+           $date = date('Y-m-d');
            $qry = "
            SELECT
            	vs.mapa AS url_map,
@@ -214,9 +215,11 @@ class IngresosoperadorModel
            	o.id_operador = $id_operador
            AND vs.cat_status_statics = 222
            AND v.cat_status_viaje = 172
+           AND vd.fecha_requerimiento < '".$date."'
            ORDER BY
            	idviaje ASC
            ";
+
            $query1 = $this->db->prepare($qry);
            $query1->execute();
            $array = array();
@@ -826,11 +829,16 @@ class IngresosoperadorModel
            INNER JOIN cr_operador_unidad AS ou ON v.id_operador_unidad = ou.id_operador_unidad
            INNER JOIN cr_operador AS o ON ou.id_operador = o.id_operador
            INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = v.id_viaje
+           INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = v.id_viaje
            ';
+
+           $date = date('Y-m-d');
+
            $where = "
                   o.id_operador = $id_operador
            AND vs.cat_status_statics = 222
            AND v.cat_status_viaje = 172
+           AND vd.fecha_requerimiento < '".$date."'
            ";
            $orden = '
            ORDER BY
