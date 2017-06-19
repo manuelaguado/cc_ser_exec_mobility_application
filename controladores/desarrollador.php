@@ -149,6 +149,7 @@ class Desarrollador extends Controlador
 		}
 		chdir('../archivo');
 		self::delTree('2017');
+		self::delContent('papeletas');
 	}
 	function delTree($dir) {
 		if(file_exists($dir)){
@@ -157,6 +158,17 @@ class Desarrollador extends Controlador
 			(is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
 			}
 			return rmdir($dir);
+		}
+	}
+	function delContent($dir) {
+		if(file_exists($dir)){
+			$files = array_diff(scandir($dir), array('.','..'));
+			foreach ($files as $file) {
+				(is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+			}
+			$fp = fopen($dir.'/.gitkeep', 'w');
+			fwrite($fp, '');
+			fclose($fp);
 		}
 	}
 	public function truncate_init(){

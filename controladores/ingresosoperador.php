@@ -132,7 +132,6 @@ class Ingresosoperador extends Controlador
            $viajes = $ingresos->desglosePapeleta($id_operador);
            $periodo = $ingresos->periodo($id_operador);
            $ingresos->savePapeleta($viajes,$id_operador,$token);
-           D::bug($viajes);
 
            $pdf = new PAPELETA($orientation='L', $unit='mm', $size='LETTER');
            $pdf->AliasNbPages();
