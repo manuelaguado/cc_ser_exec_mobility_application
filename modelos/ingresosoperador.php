@@ -10,7 +10,23 @@ class IngresosoperadorModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-    function pdfData($id_operador){
+    function pdfDataID($id_papeletas){
+           $qry = "
+           SELECT
+           	p.url
+           FROM
+           	fo_papeletas as p
+           WHERE
+           	p.id_papeletas = $id_papeletas
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         return $row->url;
+                  }
+           }
+    }function pdfData($id_operador){
            $qry = "
            SELECT
            	fo_papeletas.url
@@ -1702,9 +1718,182 @@ class IngresosoperadorModel
                   $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
            );
     }
+    function papeletasGet($array){
+           ini_set('memory_limit', '256M');
+           $table = 'fo_papeletas AS p';
+           $primaryKey = 'id_papeletas';
+           $columns = array(
+                  array(
+                         'db' => 'p.id_operador AS id_operador',
+                         'dbj' => 'p.id_operador',
+                         'real' => 'p.id_operador',
+                         'alias' => 'id_operador',
+                         'typ' => 'int',
+                         'dt' => 0
+                  ),
+                  array(
+                         'db' => 'n.num as num',
+                         'dbj' => 'n.num',
+                         'real' => 'n.num',
+                         'alias' => 'num',
+                         'typ' => 'int',
+                         'dt' => 1
+                  ),
+                  array(
+                         'db' => 'Count(p.id_operador) AS papeletas',
+                         'dbj' => 'Count(p.id_operador)',
+                         'real' => 'Count(p.id_operador)',
+                         'alias' => 'papeletas',
+                         'typ' => 'int',
+                         'dt' => 2
+                  ),
+                  array(
+                         'db' => 'CONCAT(u.nombres, " " ,	u.apellido_paterno, " " ,	u.apellido_materno) AS nombre',
+                         'dbj' => 'CONCAT(u.nombres, " " ,	u.apellido_paterno, " " ,	u.apellido_materno)',
+                         'real' => 'CONCAT(u.nombres, " " ,	u.apellido_paterno, " " ,	u.apellido_materno)',
+                         'alias' => 'nombre',
+                         'typ' => 'txt',
+                         'dt' => 3
+                  )
+           );
+           $inner = '
+           INNER JOIN cr_operador AS o ON p.id_operador = o.id_operador
+           INNER JOIN cr_operador_numeq AS `on` ON `on`.id_operador = o.id_operador
+           INNER JOIN cr_numeq AS n ON `on`.id_numeq = n.id_numeq
+           INNER JOIN fw_usuarios AS u ON o.id_usuario = u.id_usuario
+           ';
+           $where = "
+              p.id_operador > 0
+           ";
+
+           $orden = '
+           GROUP BY
+           	p.id_operador
+           ORDER BY
+           	p.id_operador ASC
+           ';
+           $render_table = new SSP;
+           return json_encode(
+                  $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+           );
+    }
+    function papeletas_operadorGet($array,$id_operador){
+           ini_set('memory_limit', '256M');
+           $table = 'fo_papeletas AS p';
+           $primaryKey = 'id_papeletas';
+           $columns = array(
+                  array(
+                         'db' => 'p.id_papeletas AS id_papeletas',
+                         'dbj' => 'p.id_papeletas',
+                         'real' => 'p.id_papeletas',
+                         'alias' => 'id_papeletas',
+                         'typ' => 'int',
+                         'dt' => 0
+                  ),
+                  array(
+                         'db' => 'p.url as url',
+                         'dbj' => 'p.url',
+                         'real' => 'p.url',
+                         'alias' => 'url',
+                         'typ' => 'int',
+                         'dt' => 1
+                  ),
+                  array(
+                         'db' => 'p.user_alta AS user_alta',
+                         'dbj' => 'p.user_alta',
+                         'real' => 'p.user_alta',
+                         'alias' => 'user_alta',
+                         'typ' => 'int',
+                         'dt' => 2
+                  ),
+                  array(
+                         'db' => 'p.user_mod AS user_mod',
+                         'dbj' => 'p.user_mod',
+                         'real' => 'p.user_mod',
+                         'alias' => 'user_mod',
+                         'typ' => 'int',
+                         'dt' => 3
+                  ),
+                  array(
+                         'db' => 'p.fecha_alta AS fecha_alta',
+                         'dbj' => 'p.fecha_alta',
+                         'real' => 'p.fecha_alta',
+                         'alias' => 'fecha_alta',
+                         'typ' => 'int',
+                         'dt' => 4
+                  ),
+                  array(
+                         'db' => 'p.fecha_mod AS fecha_mod',
+                         'dbj' => 'p.fecha_mod',
+                         'real' => 'p.fecha_mod',
+                         'alias' => 'fecha_mod',
+                         'typ' => 'int',
+                         'dt' => 5
+                  ),
+                  array(
+                         'db' => 'p.id_operador AS id_operador',
+                         'dbj' => 'p.id_operador',
+                         'real' => 'p.id_operador',
+                         'alias' => 'id_operador',
+                         'format' => 'pdf',
+                         'typ' => 'int',
+                         'dt' => 6
+                  )
+           );
+           $inner = '
+           ';
+           $where = "
+              p.id_operador = $id_operador
+           ";
+
+           $orden = '
+           ORDER BY
+           p.id_papeletas ASC
+           ';
+           $render_table = new accionesPapeletas;
+           return json_encode(
+                  $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
+           );
+    }
 }
 
 
+
+class accionesPapeletas extends SSP{
+	static function data_output ( $columns, $data, $db )
+	{
+		$out = array();
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
+
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
+                            $url = $data[$i][ 'url' ];
+
+                            if ( isset( $column['format'] ) ){
+                                   switch($column['format']){
+                                          case 'pdf';
+                                          $salida = '
+                                          <div style="width:100px !important;">
+                                                 <i onclick="ver_papeleta_id('.$data[$i][ 'id_papeletas' ].')" data-rel="tooltip" data-original-title="Papeleta" class="ace-icon fa fa-file-pdf-o red" style="font-size:2em;"></i>
+                                          </div>
+                                          ';
+                                          break;
+                                          default:
+                                          break;
+                                   }
+
+					$row[ $column['dt'] ] = $salida;
+				}else{
+					$row[ $column['dt'] ] = $data[$i][$name_column];
+				}
+			}
+			$out[] = $row;
+		}
+		return $out;
+	}
+}
 class accionesviajes_pausados extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{

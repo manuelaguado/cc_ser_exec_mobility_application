@@ -14,7 +14,19 @@ class Ingresosoperador extends Controlador
 	$this->se_requiere_logueo(true,'Ingresosoperador|index');
        require URL_VISTA.'ingresosoperador/pausados.php';
     }
-    public function ver_papeleta($id_operador){
+    public function ver_papeleta_id($id_papeletas){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           $ingresos = $this->loadModel('Ingresosoperador');
+           $url = $ingresos->pdfDataID($id_papeletas);
+
+           $token = $this->token();
+           $destino = $token.'.pdf';
+           $tmp = '../public/tmp/';
+           copy($url, $tmp.$destino);
+           $pdf = $destino;
+
+           require URL_VISTA.'ingresosoperador/pdfview.php';
+    }public function ver_papeleta($id_operador){
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            $ingresos = $this->loadModel('Ingresosoperador');
            $url = $ingresos->pdfData($id_operador);
@@ -194,6 +206,24 @@ class Ingresosoperador extends Controlador
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            $ingresos = $this->loadModel('Ingresosoperador');
            print $ingresos->ver_viajes_archivados($_POST,$id_operador);
+    }
+    public function papeletas(){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           require URL_VISTA.'ingresosoperador/papeletas.php';
+    }
+    public function papeletasGet(){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           $ingresos = $this->loadModel('Ingresosoperador');
+           print $ingresos->papeletasGet($_POST);
+    }
+    public function papeletas_operador($id_operador){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           require URL_VISTA.'ingresosoperador/papeletas_operador.php';
+    }
+    public function papeletas_operadorGet($id_operador){
+           $this->se_requiere_logueo(true,'Ingresosoperador|index');
+           $ingresos = $this->loadModel('Ingresosoperador');
+           print $ingresos->papeletas_operadorGet($_POST,$id_operador);
     }
 }
 ?>

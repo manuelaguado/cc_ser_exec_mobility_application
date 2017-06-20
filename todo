@@ -4,9 +4,5 @@ cuando una tabla no muestra elementos deshabilitar la accion de la fila
 if(api.rows().count() > '0'){accion_de_fila('tabla');}
 
 
-TODO: vistas con papeletas de los operadores
-TODO: transicion en C9 y en procesar rollback
-
-
 TODO: nueva clave para los cancelados que generen costo por que se incluyen en papeleta
 TODO: comisiones individuakles

@@ -203,6 +203,8 @@ class Desarrollador extends Controlador
 		TRUNCATE fo_cobros_ingresos;
 		TRUNCATE fo_comisiones;
 		TRUNCATE fo_regla_comision;
+		TRUNCATE fo_papeletas;
+		TRUNCATE fo_papeletas_viajes;
 		SET FOREIGN_KEY_CHECKS=1;
 		";
 		$stmt = $db->prepare($sql);

@@ -1,3 +1,12 @@
+function accion_papeletas(id_tabla){
+	$(document).ready(function() {
+		$('#'+ id_tabla).dataTable();
+		$('#'+ id_tabla +' tbody').on('click', 'tr', function () {
+			var id = $('td', this).eq(0).text();
+			carga_archivo('contenedor_principal', url_app + 'ingresosoperador/papeletas_operador/' + id);
+		} );
+	} );
+}
 function accion_operatorGroup(id_tabla){
 	$(document).ready(function() {
 		$('#'+ id_tabla).dataTable();
@@ -138,4 +147,7 @@ function ver_viajes_archivados(id_operador){
 }
 function ver_papeleta(id_operador){
 	carga_archivo('contenedor_principal', url_app + 'ingresosoperador/ver_papeleta/' + id_operador);
+}
+function ver_papeleta_id(id_papeleta){
+	carga_archivo('contenedor_principal', url_app + 'ingresosoperador/ver_papeleta_id/' + id_papeleta);
 }
