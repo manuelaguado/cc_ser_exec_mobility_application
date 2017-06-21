@@ -247,9 +247,11 @@ class OperacionModel{
                      if($costoData['a2']){
 
                             $metros = ($upsSttcs['kmss_max']*1000);
-                            $minutos = ceil($upsSttcs['time_max']/60);
+                            $tiempo_viaje_s = Controller::diferenciaSegundos($time_c8,$time_c9);
+                            // $minutos = ceil($upsSttcs['time_max']/60);  //tiempo de google maps
+                            $minutos = ceil($tiempo_viaje_s/60); // tiempo de operador entre c8 y c9
                             $costo_final = self::costoFinal($metros,$minutos);
-
+                            
                      }else{
                             $costo_final = $costoData['costo'];
                      }
@@ -4156,13 +4158,53 @@ class OperacionModel{
 				'dt' => 7
 			),
 			array(
+				'db' => 'vs.costo_viaje AS costo_viaje',
+				'dbj' => 'vs.costo_viaje',
+				'real' => 'vs.costo_viaje',
+				'alias' => 'costo_viaje',
+				'typ' => 'int',
+				'dt' => 8
+			),
+			array(
+				'db' => 'vs.costos_adicionales AS costos_adicionales',
+				'dbj' => 'vs.costos_adicionales',
+				'real' => 'vs.costos_adicionales',
+				'alias' => 'costos_adicionales',
+				'typ' => 'int',
+				'dt' => 9
+			),
+			array(
+				'db' => 'vs.costo_total AS costo_total',
+				'dbj' => 'vs.costo_total',
+				'real' => 'vs.costo_total',
+				'alias' => 'costo_total',
+				'typ' => 'int',
+				'dt' => 10
+			),
+			array(
+				'db' => 'vs.km_max_maps AS km_max_maps',
+				'dbj' => 'vs.km_max_maps',
+				'real' => 'vs.km_max_maps',
+				'alias' => 'km_max_maps',
+				'typ' => 'int',
+				'dt' => 11
+			),
+			array(
+				'db' => 'vs.time_or_des_max AS time_or_des_max',
+				'dbj' => 'vs.time_or_des_max',
+				'real' => 'vs.time_or_des_max',
+				'alias' => 'time_or_des_max',
+				'typ' => 'int',
+				'dt' => 12
+			),
+			array(
 				'db' => 'vcl.id_cliente AS id_cliente',
 				'dbj' => 'vcl.id_cliente',
 				'real' => 'vcl.id_cliente',
 				'alias' => 'id_cliente',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 8
+				'dt' => 13
 			)
 		);
 		$inner = '
@@ -4176,6 +4218,7 @@ class OperacionModel{
 			INNER JOIN cr_operador ON crou.id_operador = cr_operador.id_operador
 			INNER JOIN cr_operador_numeq ON cr_operador.id_operador = cr_operador_numeq.id_operador
 			INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
+                     INNER JOIN vi_viaje_statics AS vs ON vs.id_viaje = viv.id_viaje
 		';
 		$where = '
 			viv.cat_status_viaje = 172

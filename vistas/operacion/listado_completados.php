@@ -37,6 +37,11 @@ div.table-responsive div#completados_wrapper.dataTables_wrapper.form-inline.dt-b
 							<th>Servicio</th>
 							<th>NUM</th>
 							<th>Apartado</th>
+							<th>Costo</th>
+							<th>Adicional</th>
+							<th>Total</th>
+							<th>Km</th>
+							<th>Tiempo</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -54,7 +59,7 @@ $(document).ready(function() {
 		},
 		"processing": true,
 		"serverSide": true,
-		"pageLength": 30,
+		"pageLength": 100,
 		"ordering": false,
 		"ajax": {
 			"url": "operacion/completados",
