@@ -1,3 +1,3 @@
 TODO: se calculan apartir de dos hrs o 260 pesos que es el tiempo por hora posteriro a ello cada 3o min 0 65 pesos en los dos casos lo que suceda primero.
-
-TODO: tarifas costos de compra y venta
+ln 251 updateStaticsCosts
+ln 254 insertMonedero

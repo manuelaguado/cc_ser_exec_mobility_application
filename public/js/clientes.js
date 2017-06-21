@@ -3,7 +3,7 @@ function modal_nuevo_cliente(){
 		$.ajax({
 			url: 'clientes/modal_add_cliente',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -11,7 +11,7 @@ function modal_nuevo_cliente(){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-01');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-01');}
 		});
 	} );
 }
@@ -41,17 +41,17 @@ function add_client(){
 					 alerta('Alerta!','Error de conectividad de red CLI-02');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-03');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-03');}
 		});
 	} );
 }
 function chk_client_root(){
-	if($("#raiz").is(':checked')) {  
+	if($("#raiz").is(':checked')) {
 		$("#parent").attr('disabled','disabled');
 		$("#parent").val("");
-	} else {  
+	} else {
 		$("#parent").removeAttr('disabled');
-	} 
+	}
 }
 function agregar_cliente_tree(){
 	var msj_error="";
@@ -76,7 +76,7 @@ function agregar_cliente_tree(){
 			$('#cat_statuscliente').get(0).value = "";
 			$('#nombre').get(0).value = "";
 		},
-		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-04');}	
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-04');}
 	});
 }
 function getFormClientEdit(id_client,parent){
@@ -86,7 +86,7 @@ function getFormClientEdit(id_client,parent){
 		success: function(resp_success){
 			$('#cliente_nuevo').html(resp_success);
 		},
-		error: function(respuesta){alerta('Alerta!','Error de conectividad de red CLI-05');}	
+		error: function(respuesta){alerta('Alerta!','Error de conectividad de red CLI-05');}
 	});
 }
 function return_form_add(parent){
@@ -96,7 +96,7 @@ function return_form_add(parent){
 		success: function(resp_success){
 			$('#cliente_nuevo').html(resp_success);
 		},
-		error: function(respuesta){alerta('Alerta!','Error de conectividad de red CLI-06');}	
+		error: function(respuesta){alerta('Alerta!','Error de conectividad de red CLI-06');}
 	});
 }
 function editar_cliente_tree(id_cliente,parent){
@@ -117,7 +117,7 @@ function editar_cliente_tree(id_cliente,parent){
 	$.ajax({
 		beforeSend: function(xhr){
 			$( "#spinner_edit" ).removeClass("hidden");
-		},			
+		},
 		url: 'clientes/edit_client_children',
 		type: 'POST',
 		data: $("#cliente_nuevo").serialize(),
@@ -126,14 +126,14 @@ function editar_cliente_tree(id_cliente,parent){
 			$('#nombre_nestable_' + id_cliente).html(resp_success);
 			$( "#spinner_edit" ).addClass("hidden");
 		},
-		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-07');}	
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-07');}
 	});
 }
 function guardar_disposicion(){
 	$.ajax({
 		beforeSend: function(xhr){
 			$( "#spinner_change" ).removeClass("hidden");
-		},		
+		},
 		url: 'clientes/store_order',
 		type: 'POST',
 		data: $("#new_order").serialize(),
@@ -141,14 +141,14 @@ function guardar_disposicion(){
 		success: function(resp_success){
 			$( "#spinner_change" ).addClass("hidden");
 		},
-		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-08');}	
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-08');}
 	});
 }
 function deleteClient(id_cliente,padre){
 	$.ajax({
 		beforeSend: function(xhr){
 			$( "#spinnerClient_" + id_cliente ).removeClass("hidden");
-		},		
+		},
 		url: 'clientes/deleteClient/' + id_cliente + '/' + padre,
 		type: 'POST',
 		dataType: 'json',
@@ -159,14 +159,14 @@ function deleteClient(id_cliente,padre){
 					alerta('Dependientes','Verifique que el usuario que desea eliminar no tenga dependientes');
 				}else{
 					$('#dataClientNestable_' + id_cliente).remove();
-					
+
 					if (resp_success['hermanos'] == 0) {
 						$('#dataClientNestable_' + padre).children('button').css("display","none");
 					}
 					$('#cat_tipocliente').get(0).value = "";
 					$('#id_rol').get(0).value = "";
 					$('#cat_statuscliente').get(0).value = "";
-					$('#nombre').get(0).value = "";					
+					$('#nombre').get(0).value = "";
 					alerta('Eliminado','Se ha eliminado al usuario');
 				}
 			}else{
@@ -229,7 +229,7 @@ function guardarUbicacion(id_cliente){
 	if( $('#num_ext').get(0).value == "" )	msj_error+='El campo exterior es indispensable para guardar.<br />';
 	if( $('#id_asentamiento').get(0).value == "") msj_error+='Complete el formulario para definir el asentamiento antes de guardar.<br />';
 	if(document.getElementById("fiscal").checked == true){
-		if( $('#rfc').get(0).value == "" ) { 
+		if( $('#rfc').get(0).value == "" ) {
 			msj_error+='El campo RFC es indispensable para guardar en una direccion fiscal.<br />';
 		}else{
 			if ($('#rfc').get(0).value.match(/^([A-z&Ññ]{3}|[A-z][AEIOUaeiou][A-z]{2})\d{2}((01|03|05|07|08|10|12)(0[1-9]|[12]\d|3[01])|02(0[1-9]|[12]\d)|(04|06|09|11)(0[1-9]|[12]\d|30))([A-z0-9]{2}[0-9a])?$/)) {
@@ -246,7 +246,7 @@ function guardarUbicacion(id_cliente){
 	if( $('#telefono').get(0).value != "" ){verificarTel();}
 	if( $('#celular').get(0).value != "" ){verificarCel();}
 	if( $('#correo').get(0).value != "" ){verificarMail();}
-	
+
 	$(document).ready(function() {
 		$.ajax({
 			beforeSend: function(xhr){
@@ -264,7 +264,7 @@ function guardarUbicacion(id_cliente){
 					 alerta('Alerta!','Error de conectividad de red CLI-11');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-12');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-12');}
 		});
 	} );
 }
@@ -286,7 +286,7 @@ function predeterminar_box_adr(id_datos_fiscales,id_cliente){
 					 alerta('Alerta!','Error de conectividad de red CLI-13');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-14');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-14');}
 		});
 	} );
 }
@@ -306,7 +306,7 @@ function eliminar_box_adr(id_datos_fiscales){
 					 alerta('Alerta!','Error de conectividad de red CLI-15');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-16');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-16');}
 		});
 	} );
 }
@@ -315,7 +315,7 @@ function modal_editar_cliente(id_cliente){
 		$.ajax({
 			url: 'clientes/modal_editar_cliente/' + id_cliente,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -323,7 +323,7 @@ function modal_editar_cliente(id_cliente){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-17');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-17');}
 		});
 	} );
 }
@@ -353,7 +353,7 @@ function edit_client(){
 					 alerta('Alerta!','Error de conectividad de red CLI-18');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-19');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-19');}
 		});
 	} );
 }
@@ -370,12 +370,12 @@ function modal_establecer_tarifa(id_cliente){
 					$( "#add" ).click(function() {
 						$("#add_field").css({ display: "" });
 						$("#footer_main").css({ display: "none" });
-					});	
+					});
 				}).on('hidden.bs.modal',function(){
 					$(this).remove();
 				});
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-20');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-20');}
 		});
 	} );
 }
@@ -386,13 +386,20 @@ function procesar_tarifa(){
 	if( $('#nombre').get(0).value == "" ) 		msj_error+='Ingrese un nombre para identifcar la tarifa.<br />';
 	if( $('#descripcion').get(0).value == "" )	msj_error+='Describa la tarifa.<br />';
 	if( $('#costo_base').get(0).value == "") 	msj_error+='Ingrese el costo base de la tarifa.<br />';
+	if( $('#costo_base_venta').get(0).value == "") 	msj_error+='Ingrese el costo base a la venta de la tarifa.<br />';
 
 	if( $('#cat_tipo_tarifa').get(0).value == "" )	msj_error+='Seleccione el tipo de tarifa.<br />';
 	if( $('#tabular').get(0).value == "" )	msj_error+='Falta tabular, no deberia ocurrir esto.<br />';
 	if( $('#id_cliente').get(0).value == "" )	msj_error+='Falta id_cliente, no deberia ocurrir esto.<br />';
-	
-	if(( $('#tabular').get(0).value == "0" )&&( $('#km_adicional').get(0).value == "" )) msj_error+='Ingrese el costo por kilómetro adicional de la tarifa.<br />';
-	
+
+	if(( $('#tabular').get(0).value == "0" )&&( $('#km_adicional').get(0).value == "" )){
+		 msj_error+='Ingrese el costo por kilómetro adicional de la tarifa.<br />';
+	}
+
+	if(( $('#tabular').get(0).value == "0" )&&( $('#km_adicional_venta').get(0).value == "" )){
+		 msj_error+='Ingrese el costo por kilómetro adicional a la venta de la tarifa.<br />';
+	}
+
 	if( !msj_error == "" ){
 		alerta('Alerta!',msj_error);
 		return false;
@@ -413,22 +420,24 @@ function procesar_tarifa(){
 					$('#cat_tipo_tarifa').val('');
 					$('#tabular').val('0');
 					$('#km_adicional').val('');
+					$('#costo_base_venta').val('');
+					$('#km_adicional_venta').val('');
 					$("#tabulado").prop("checked", false);
-					//$('#myModal').modal('hide');					
+					//$('#myModal').modal('hide');
 				}else{
 					 alerta('Alerta!','Error de conectividad de red CLI-21');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-22');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-22');}
 		});
 	} );
 }
 function switch_tabular(){
-	if($("#tabulado").is(':checked')) {  
+	if($("#tabulado").is(':checked')) {
 		$('#tabular').get(0).value = "1";
-	} else { 
-		$('#tabular').get(0).value = "0";	
-	} 
+	} else {
+		$('#tabular').get(0).value = "0";
+	}
 }
 function close_tarifa_form(){
 	$("#add_field").css({ display: "none" });
@@ -442,12 +451,12 @@ function caducar_tarifa(id_tarifa_cliente){
 			dataType: 'json',
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
-					$('#tarifas').DataTable().ajax.reload();				
+					$('#tarifas').DataTable().ajax.reload();
 				}else{
 					 alerta('Alerta!','Error de conectividad de red CLI-23');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-24');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red CLI-24');}
 		});
 	} );
 }

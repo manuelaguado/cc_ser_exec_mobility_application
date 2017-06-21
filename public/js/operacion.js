@@ -1601,7 +1601,7 @@ function setClaveOk(id_viaje,clave){
 					$('#initpreloader').fadeOut('slow');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-100');}
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-101');}
 		});
 	} );
 }
@@ -1618,7 +1618,7 @@ function historia_viaje(id_viaje){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPER-101');}
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-102');}
 		});
 	} );
 }
@@ -1635,7 +1635,7 @@ function modificar_destino(id_viaje){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-102');}
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-103');}
 		});
 	} );
 }
@@ -1656,7 +1656,7 @@ function nueva_incidencia(id_viaje){
 					$(this).remove();
 				});
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-103');}
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-104');}
 		});
 	} );
 }
@@ -1681,10 +1681,10 @@ function nueva_incidencia_do(){
 					$('#nuevaIncidencia').DataTable().ajax.reload();
 					$('#cat_incidencias').val('');
 				}else{
-					 alerta('Alerta!','Error de conectividad de red OPRN-104');
+					 alerta('Alerta!','Error de conectividad de red OPRN-105');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-105');}
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-105.1');}
 		});
 	} );
 }

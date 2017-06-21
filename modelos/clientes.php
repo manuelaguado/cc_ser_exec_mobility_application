@@ -9,7 +9,7 @@ class ClientesModel
         } catch (PDOException $e) {
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
-    }		
+    }
 	function insertDireccion($service,$tipo){
 		$calle 		= ($tipo == 'origen')?$service->origen_calle:$service->destino_calle;
 		$num_ext 	= ($tipo == 'origen')?$service->origen_num_ext:$service->destino_num_ext;
@@ -17,10 +17,10 @@ class ClientesModel
 		$telefono 	= ($tipo == 'origen')?$service->origen_telefono:$service->destino_telefono;
 		$celular 	= ($tipo == 'origen')?$service->origen_celular:$service->destino_celular;
 		$referencia = ($tipo == 'origen')?$service->origen_referencia:$service->destino_referencia;
-		
+
 		$geocodificacion_inversa 	= ($tipo == 'origen')?$service->geocodificacion_inversa_origen:$service->geocodificacion_inversa_destino;
 		$geocoordenadas 			= ($tipo == 'origen')?$service->geocoordenadas_origen:$service->geocoordenadas_destino;
-		
+
 		$sql = "
 			INSERT INTO `it_direcciones` (
 				`calle`,
@@ -46,7 +46,7 @@ class ClientesModel
 					'".$geocoordenadas."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -66,7 +66,7 @@ class ClientesModel
 					'Inserción automática',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -86,7 +86,7 @@ class ClientesModel
 					'".$id_origen."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -106,7 +106,7 @@ class ClientesModel
 					'Inserción automática',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);		
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -126,13 +126,13 @@ class ClientesModel
 					'".$id_destino."',
 					'".$_SESSION['id_usuario']."',
 					'".date("Y-m-d H:i:s")."'
-				);			
+				);
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		return $this->db->lastInsertId();
 	}
-	
+
 	function insertOrigen($service){
 		$id_direccion = self::insertDireccion($service,'origen');
 		$id_origen = self::insertOrigenes($id_direccion);
@@ -145,7 +145,7 @@ class ClientesModel
 	}
 	function selectOrigenes($id_cliente){
 		$array = array();
-		
+
 		$qry = "
 			SELECT
 				itd.geocodificacion_inversa,
@@ -157,9 +157,9 @@ class ClientesModel
 			WHERE
 				itco.id_cliente = ".$id_cliente."
 			ORDER BY
-				itco.id_cliente_origen DESC	
+				itco.id_cliente_origen DESC
 		";
-		
+
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		if($query->rowCount()>=1){
@@ -168,14 +168,14 @@ class ClientesModel
 			foreach ($data as $row) {
 				$array[$cont]['valor']=$row->geocodificacion_inversa;
 				$array[$cont]['value']=$row->id_cliente_origen;
-				$cont++;			
+				$cont++;
 			}
 		}
-		return Controller::setOption($array,null);		
+		return Controller::setOption($array,null);
 	}
 	function selectDestinos($id_cliente){
 		$array = array();
-		
+
 		$qry = "
 			SELECT
 				itd.geocodificacion_inversa,
@@ -187,9 +187,9 @@ class ClientesModel
 			WHERE
 				itcd.id_cliente = ".$id_cliente."
 			ORDER BY
-				itcd.id_cliente_destino DESC	
+				itcd.id_cliente_destino DESC
 		";
-		
+
 		$query = $this->db->prepare($qry);
 		$query->execute();
 		if($query->rowCount()>=1){
@@ -198,18 +198,18 @@ class ClientesModel
 			foreach ($data as $row) {
 				$array[$cont]['valor']=$row->geocodificacion_inversa;
 				$array[$cont]['value']=$row->id_cliente_destino;
-				$cont++;			
+				$cont++;
 			}
 		}
-		return Controller::setOption($array,null);			
+		return Controller::setOption($array,null);
 	}
 	function caducarTarifa($id_cliente,$cat_tipo_tarifa){
 		$sql = "
-		UPDATE cl_tarifas_clientes SET 
+		UPDATE cl_tarifas_clientes SET
 			fin_vigencia 		= :fin_vigencia,
 			cat_statustarifa	= :cat_statustarifa,
 			user_mod 			= :user_mod
-		WHERE 
+		WHERE
 			id_cliente = :id_cliente
 			AND
 			cat_statustarifa = :cat_tarifa_old
@@ -229,12 +229,12 @@ class ClientesModel
 	}
 	function caducar_tarifa($id_tarifa_cliente){
 		$sql = "
-		UPDATE cl_tarifas_clientes SET 
+		UPDATE cl_tarifas_clientes SET
 			fin_vigencia 		= :fin_vigencia,
 			cat_statustarifa	= :cat_statustarifa,
 			user_mod 			= :user_mod
-		WHERE 
-			id_tarifa_cliente = :id_tarifa_cliente 
+		WHERE
+			id_tarifa_cliente = :id_tarifa_cliente
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
@@ -255,16 +255,18 @@ class ClientesModel
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
-		
+
 		if($this->tabular == 0){
 			self::caducarTarifa($this->id_cliente,$this->cat_tipo_tarifa);
 		}
-		
+
 		$sql = "
 			INSERT INTO cl_tarifas_clientes (
 				id_cliente,
-				costo_base,
+                            costo_base,
 				km_adicional,
+                            costo_base_venta,
+				km_adicional_venta,
 				descripcion,
 				nombre,
 				inicio_vigencia,
@@ -275,8 +277,10 @@ class ClientesModel
 				fecha_alta
 			) VALUES (
 				:id_cliente,
-				:costo_base, 
-				:km_adicional, 
+                            :costo_base,
+				:km_adicional,
+                            :costo_base_venta,
+				:km_adicional_venta,
 				:descripcion,
 				:nombre,
 				:inicio_vigencia,
@@ -290,8 +294,10 @@ class ClientesModel
 		$query_resp = $query->execute(
 			array(
 				':id_cliente' => $this->id_cliente,
-				':costo_base' => substr($this->costo_base, 2),
+                            ':costo_base' => substr($this->costo_base, 2),
 				':km_adicional' => substr($this->km_adicional, 2),
+                            ':costo_base_venta' => substr($this->costo_base_venta, 2),
+				':km_adicional_venta' => substr($this->km_adicional_venta, 2),
 				':descripcion' => $this->descripcion,
 				':nombre' => $this->nombre,
 				':inicio_vigencia' => date("Y-m-d H:i:s"),
@@ -311,14 +317,14 @@ class ClientesModel
 	}
 	function edit_client($client){
 		$sql = "
-		UPDATE cl_clientes SET 
+		UPDATE cl_clientes SET
 			cat_statuscliente 	= :cat_statuscliente,
 			cat_tipocliente		= :cat_tipocliente,
 			id_rol				= :id_rol,
 			nombre				= :nombre,
 			user_mod 			= :user_mod
-		WHERE 
-			id_cliente = :id_cliente 
+		WHERE
+			id_cliente = :id_cliente
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
@@ -336,12 +342,12 @@ class ClientesModel
 			$respuesta = array('resp' => false);
 		}
 		return $respuesta;
-	}	
+	}
 	function predeterminarUbicacion($id_datos_fiscales,$id_cliente){
 		self::setZeroPredUbic($id_cliente);
 		$sql = "
 			UPDATE cl_datos_fiscales
-			SET 
+			SET
 			 predeterminar = :predeterminar,
 			 user_mod = :user_mod
 			WHERE
@@ -349,7 +355,7 @@ class ClientesModel
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':predeterminar' => 1, 
+			':predeterminar' => 1,
 			':user_mod' => $_SESSION['id_usuario'],
 			':id_datos_fiscales' => $id_datos_fiscales
 		);
@@ -364,7 +370,7 @@ class ClientesModel
 	function setZeroPredUbic($id_cliente){
 		$sql = "
 			UPDATE cl_datos_fiscales
-			SET 
+			SET
 			 predeterminar = :predeterminar,
 			 user_mod = :user_mod
 			WHERE
@@ -372,7 +378,7 @@ class ClientesModel
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':predeterminar' => 0, 
+			':predeterminar' => 0,
 			':user_mod' => $_SESSION['id_usuario'],
 			':id_cliente' => $id_cliente
 		);
@@ -381,7 +387,7 @@ class ClientesModel
 	function eliminarUbicacion($id_datos_fiscales){
 		$sql = "
 			UPDATE cl_datos_fiscales
-			SET 
+			SET
 			 eliminado = :eliminado,
 			 user_mod = :user_mod
 			WHERE
@@ -389,7 +395,7 @@ class ClientesModel
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':eliminado' => 1, 
+			':eliminado' => 1,
 			':user_mod' => $_SESSION['id_usuario'],
 			':id_datos_fiscales' => $id_datos_fiscales
 		);
@@ -435,7 +441,7 @@ class ClientesModel
 				AND
 				cdf.eliminado = 0
 			ORDER BY
-				cdf.id_asentamiento ASC	
+				cdf.id_asentamiento ASC
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -474,8 +480,8 @@ class ClientesModel
 		$sql = "
 			INSERT INTO cl_datos_fiscales (
 				id_cliente,
-				id_asentamiento, 
-				predeterminar, 
+				id_asentamiento,
+				predeterminar,
 				eliminado,
 				rfc,
 				calle,
@@ -488,8 +494,8 @@ class ClientesModel
 				fecha_alta
 			) VALUES (
 				:id_cliente,
-				:id_asentamiento, 
-				:predeterminar, 
+				:id_asentamiento,
+				:predeterminar,
 				:eliminado,
 				:rfc,
 				:calle,
@@ -527,7 +533,7 @@ class ClientesModel
 		return $respuesta;
 	}
 	function getChildrensClient($id_cliente,$level,$id_origen=null){
-		
+
 		$origen='';
 		if($id_origen){$n = $level - 1; $origen = 'AND fwn.n'.$n.' = '.$id_origen.'';}
 		$sql="
@@ -547,7 +553,7 @@ class ClientesModel
 			AND fwn.nivel = ".$level."
 			".$origen."
 			ORDER BY
-				fwn.nivel ASC		
+				fwn.nivel ASC
 		";
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -596,7 +602,7 @@ class ClientesModel
 		}
 		$clientes =  json_decode($this->newjson);
 		self::recursive_record($this->parent, $clientes);
-		
+
 	}
 	function recursive_record($padre, $clientes){
 		foreach($clientes as $cliente){
@@ -666,16 +672,16 @@ class ClientesModel
 			$sql = "
 				INSERT INTO fw_nivel (
 					id_origen,
-					origen, 
-					nivel, 
+					origen,
+					nivel,
 					n0,
 					n1,
 					user_alta,
 					fecha_alta
 				) VALUES (
 					:id_origen,
-					:origen, 
-					:nivel, 
+					:origen,
+					:nivel,
 					:n0,
 					:n1,
 					:user_alta,
@@ -685,8 +691,8 @@ class ClientesModel
 			$query_resp = $query->execute(
 				array(
 					':id_origen' => $id_cliente,
-					':origen' => 'cl_clientes', 
-					':nivel' => '1', 
+					':origen' => 'cl_clientes',
+					':nivel' => '1',
 					':n0' => $padre,
 					':n1' => $id_cliente,
 					':user_alta' => $_SESSION['id_usuario'],
@@ -696,7 +702,7 @@ class ClientesModel
 	}
 	function deleteClient($id_cliente, $padre){
 		$dependientes = self::existenDependientes($id_cliente);
-		
+
 		if($dependientes == 0){
 			self::deleteClientDo($id_cliente);
 			self::rootClientNivel($id_cliente);
@@ -719,7 +725,7 @@ class ClientesModel
 	function rootClientNivel($id_cliente){
 		$sql = "
 			UPDATE fw_nivel
-			SET 
+			SET
 			 nivel = :nivel,
 			 n1 = :n1,
 			 n2 = :n2,
@@ -737,29 +743,29 @@ class ClientesModel
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':nivel' => 1, 
-			':n1' => $id_cliente, 
-			':n2' => 0, 
-			':n3' => 0, 
-			':n4' => 0, 
-			':n5' => 0, 
-			':n6' => 0, 
-			':n7' => 0, 
-			':n8' => 0, 
-			':n9' => 0, 
-			':origen' => 'cl_clientes', 
+			':nivel' => 1,
+			':n1' => $id_cliente,
+			':n2' => 0,
+			':n3' => 0,
+			':n4' => 0,
+			':n5' => 0,
+			':n6' => 0,
+			':n7' => 0,
+			':n8' => 0,
+			':n9' => 0,
+			':origen' => 'cl_clientes',
 			':id_origen' => $id_cliente,
-			':user_mod' => $_SESSION['id_usuario'] 
+			':user_mod' => $_SESSION['id_usuario']
 		);
 		$query->execute($data);
 	}
 	function deleteClientDo($id_cliente){
 		$sql = "
-		UPDATE cl_clientes SET 
+		UPDATE cl_clientes SET
 			cat_statuscliente 	= :cat_statuscliente,
 			user_mod = :user_mod
-		WHERE 
-			id_cliente = :id_cliente 
+		WHERE
+			id_cliente = :id_cliente
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
@@ -790,7 +796,7 @@ class ClientesModel
 			foreach ($result as $row) {
 				$dependientes = (($row->total) - 1);
 				return $dependientes;
-			}			
+			}
 		}
 	}
 	function listadoEmpresas($search){
@@ -817,10 +823,10 @@ class ClientesModel
 					'value'	=> 	$row->empresa,
 					'data'		=>	$row->padre
 				);
-			}			
+			}
 		}
 		return json_encode($output);
-	}	
+	}
 	function add_client_children($arreglo){
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
@@ -828,17 +834,17 @@ class ClientesModel
 			$sql = "
 				INSERT INTO cl_clientes (
 					parent,
-					id_rol, 
-					cat_tipocliente, 
-					cat_statuscliente, 
+					id_rol,
+					cat_tipocliente,
+					cat_statuscliente,
 					nombre,
 					user_alta,
 					fecha_alta
 				) VALUES (
 					:parent,
-					:id_rol, 
-					:cat_tipocliente, 
-					:cat_statuscliente, 
+					:id_rol,
+					:cat_tipocliente,
+					:cat_statuscliente,
 					:nombre,
 					:user_alta,
 					:fecha_alta
@@ -847,8 +853,8 @@ class ClientesModel
 			$query_resp = $query->execute(
 				array(
 					':parent' => $this->padre,
-					':id_rol' => $this->id_rol, 
-					':cat_tipocliente' => $this->cat_tipocliente, 
+					':id_rol' => $this->id_rol,
+					':cat_tipocliente' => $this->cat_tipocliente,
 					':cat_statuscliente' => $this->cat_statuscliente,
 					':nombre' => $this->nombre,
 					':user_alta' => $_SESSION['id_usuario'],
@@ -871,7 +877,7 @@ class ClientesModel
 							<i class="ace-icon fa fa-trash-o bigger-130"></i>
 						</a>
 					</div>
-				</li>			
+				</li>
 			';
 			return $html;
 	}
@@ -880,14 +886,14 @@ class ClientesModel
 			$this->$key = strip_tags($value);
 		}
 		$sql = "
-		UPDATE cl_clientes SET 
-			id_rol 				= :id_rol, 
-			cat_tipocliente 	= :cat_tipocliente, 
-			cat_statuscliente 	= :cat_statuscliente, 
+		UPDATE cl_clientes SET
+			id_rol 				= :id_rol,
+			cat_tipocliente 	= :cat_tipocliente,
+			cat_statuscliente 	= :cat_statuscliente,
 			nombre 				= :nombre,
 			user_mod 			= :user_mod
-		WHERE 
-			id_cliente = :id_cliente 
+		WHERE
+			id_cliente = :id_cliente
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
@@ -908,17 +914,17 @@ class ClientesModel
 			$sql = "
 				INSERT INTO cl_clientes (
 					parent,
-					id_rol, 
-					cat_tipocliente, 
-					cat_statuscliente, 
+					id_rol,
+					cat_tipocliente,
+					cat_statuscliente,
 					nombre,
 					user_alta,
 					fecha_alta
 				) VALUES (
 					:parent,
-					:id_rol, 
-					:cat_tipocliente, 
-					:cat_statuscliente, 
+					:id_rol,
+					:cat_tipocliente,
+					:cat_statuscliente,
 					:nombre,
 					:user_alta,
 					:fecha_alta
@@ -927,8 +933,8 @@ class ClientesModel
 			$query_resp = $query->execute(
 				array(
 					':parent' => 0,
-					':id_rol' => $this->id_rol, 
-					':cat_tipocliente' => $this->cat_tipocliente, 
+					':id_rol' => $this->id_rol,
+					':cat_tipocliente' => $this->cat_tipocliente,
 					':cat_statuscliente' => $this->cat_statuscliente,
 					':nombre' => $this->nombre,
 					':user_alta' => $_SESSION['id_usuario'],
@@ -948,15 +954,15 @@ class ClientesModel
 			$sql = "
 				INSERT INTO fw_nivel (
 					id_origen,
-					origen, 
-					nivel, 
+					origen,
+					nivel,
 					n0,
 					user_alta,
 					fecha_alta
 				) VALUES (
 					:id_origen,
-					:origen, 
-					:nivel, 
+					:origen,
+					:nivel,
 					:n0,
 					:user_alta,
 					:fecha_alta
@@ -965,15 +971,15 @@ class ClientesModel
 			$query_resp = $query->execute(
 				array(
 					':id_origen' => $id_cliente,
-					':origen' => 'cl_clientes', 
-					':nivel' => '0', 
+					':origen' => 'cl_clientes',
+					':nivel' => '0',
 					':n0' => $id_cliente,
 					':user_alta' => $_SESSION['id_usuario'],
 					':fecha_alta' => date("Y-m-d H:i:s")
 				)
 			);
 	}
-	function buscar_padre($search){	
+	function buscar_padre($search){
 		$query = "
 			SELECT
 				cl_clientes.id_cliente,
@@ -991,18 +997,18 @@ class ClientesModel
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
 				$output['suggestions'][] = array('value'=> '['.$row->parent.'] - ['.$row->id_cliente.'] '.$row->nombre,'data'=>$row->id_cliente);
-			}			
-		}		
+			}
+		}
 
-		
+
 		return json_encode($output);
-	}	
+	}
 	function obtenerClientes($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cl_clientes AS cli';
 		$primaryKey = 'id_cliente';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'id_cliente',
 				'dbj' => 'id_cliente',
 				'real' => 'id_cliente',
@@ -1010,46 +1016,46 @@ class ClientesModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'nombre',
-				'dbj' => 'nombre',				
+				'dbj' => 'nombre',
 				'real' => 'nombre',
 				'alias' => 'nombre',
 				'typ' => 'txt',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'cat.etiqueta AS etiqueta',
 				'dbj' => 'cat.etiqueta',
 				'real' => 'cat.etiqueta',
 				'alias' => 'etiqueta',
 				'typ' => 'txt',
-				'dt' => 2				
+				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'cat2.etiqueta AS etiqueta2',
 				'dbj' => 'cat2.etiqueta',
 				'real' => 'cat2.etiqueta',
 				'alias' => 'etiqueta2',
 				'typ' => 'txt',
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'rol.descripcion AS rol',
 				'dbj' => 'rol.descripcion',
 				'real' => 'rol.descripcion',
 				'alias' => 'rol',
 				'typ' => 'txt',
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'id_cliente',
-				'dbj' => 'id_cliente',	
+				'dbj' => 'id_cliente',
 				'alias' => 'id_cliente',
 				'real' => 'id_cliente',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 5			
+				'dt' => 5
 			)
 		);
 		$render_table = new acciones_cliente;
@@ -1068,97 +1074,97 @@ class ClientesModel
 	function insertNivelClient($dataPadre, $id_cliente){
 			switch ($dataPadre['nivel']) {
 				case 0:
-					$nivel = 1; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $id_cliente; $n2 = 0; $n3 = 0; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0; 
+					$nivel = 1;
+					$n0 = $dataPadre['n0'];
+					$n1 = $id_cliente; $n2 = 0; $n3 = 0; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 1:
-					$nivel = 2; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
+					$nivel = 2;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
 					$n2 = $id_cliente; $n3 = 0; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 2:
-					$nivel = 3; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
+					$nivel = 3;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
 					$n3 = $id_cliente; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 3:
-					$nivel = 4; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
+					$nivel = 4;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
 					$n4 = $id_cliente; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 4:
-					$nivel = 5; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
+					$nivel = 5;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
 					$n5 = $id_cliente; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 5:
-					$nivel = 6; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
+					$nivel = 6;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
 					$n6 = $id_cliente; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 6:
-					$nivel = 7; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
+					$nivel = 7;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
 					$n7 = $id_cliente; $n8 = 0; $n9 = 0;
 					break;
 				case 7:
-					$nivel = 8; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
-					$n7 = $dataPadre['n7']; 
+					$nivel = 8;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
+					$n7 = $dataPadre['n7'];
 					$n8 = $id_cliente; $n9 = 0;
 					break;
 				case 8:
-					$nivel = 9; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
-					$n7 = $dataPadre['n7']; 
-					$n8 = $dataPadre['n8']; 
+					$nivel = 9;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
+					$n7 = $dataPadre['n7'];
+					$n8 = $dataPadre['n8'];
 					$n9 = $id_cliente;
 					break;
 				case 9:
 					$nivel = 10;
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
-					$n7 = $dataPadre['n7']; 
-					$n8 = $dataPadre['n8']; 
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
+					$n7 = $dataPadre['n7'];
+					$n8 = $dataPadre['n8'];
 					$n9 = $dataPadre['n9'];
 					break;
 			}
@@ -1223,103 +1229,103 @@ class ClientesModel
 	function updateNivelClient($dataPadre, $id_cliente){
 			switch ($dataPadre['nivel']) {
 				case 0:
-					$nivel = 1; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $id_cliente; $n2 = 0; $n3 = 0; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0; 
+					$nivel = 1;
+					$n0 = $dataPadre['n0'];
+					$n1 = $id_cliente; $n2 = 0; $n3 = 0; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 1:
-					$nivel = 2; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
+					$nivel = 2;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
 					$n2 = $id_cliente; $n3 = 0; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 2:
-					$nivel = 3; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
+					$nivel = 3;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
 					$n3 = $id_cliente; $n4 = 0; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 3:
-					$nivel = 4; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
+					$nivel = 4;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
 					$n4 = $id_cliente; $n5 = 0; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 4:
-					$nivel = 5; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
+					$nivel = 5;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
 					$n5 = $id_cliente; $n6 = 0; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 5:
-					$nivel = 6; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
+					$nivel = 6;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
 					$n6 = $id_cliente; $n7 = 0; $n8 = 0; $n9 = 0;
 					break;
 				case 6:
-					$nivel = 7; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
+					$nivel = 7;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
 					$n7 = $id_cliente; $n8 = 0; $n9 = 0;
 					break;
 				case 7:
-					$nivel = 8; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
-					$n7 = $dataPadre['n7']; 
+					$nivel = 8;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
+					$n7 = $dataPadre['n7'];
 					$n8 = $id_cliente; $n9 = 0;
 					break;
 				case 8:
-					$nivel = 9; 
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
-					$n7 = $dataPadre['n7']; 
-					$n8 = $dataPadre['n8']; 
+					$nivel = 9;
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
+					$n7 = $dataPadre['n7'];
+					$n8 = $dataPadre['n8'];
 					$n9 = $id_cliente;
 					break;
 				case 9:
 					$nivel = 10;
-					$n0 = $dataPadre['n0']; 
-					$n1 = $dataPadre['n1']; 
-					$n2 = $dataPadre['n2']; 
-					$n3 = $dataPadre['n3']; 
-					$n4 = $dataPadre['n4']; 
-					$n5 = $dataPadre['n5']; 
-					$n6 = $dataPadre['n6']; 
-					$n7 = $dataPadre['n7']; 
-					$n8 = $dataPadre['n8']; 
+					$n0 = $dataPadre['n0'];
+					$n1 = $dataPadre['n1'];
+					$n2 = $dataPadre['n2'];
+					$n3 = $dataPadre['n3'];
+					$n4 = $dataPadre['n4'];
+					$n5 = $dataPadre['n5'];
+					$n6 = $dataPadre['n6'];
+					$n7 = $dataPadre['n7'];
+					$n8 = $dataPadre['n8'];
 					$n9 = $dataPadre['n9'];
 					break;
 			}
 		$sql = "
 			UPDATE fw_nivel
-			SET 
+			SET
 			 nivel = :nivel,
 			 n0 = :n0,
 			 n1 = :n1,
@@ -1338,29 +1344,29 @@ class ClientesModel
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':nivel' => $nivel, 
-			':n0' => $n0, 
-			':n1' => $n1, 
-			':n2' => $n2, 
-			':n3' => $n3, 
-			':n4' => $n4, 
-			':n5' => $n5, 
-			':n6' => $n6, 
-			':n7' => $n7, 
-			':n8' => $n8, 
-			':n9' => $n9, 
-			':origen' => 'cl_clientes', 
+			':nivel' => $nivel,
+			':n0' => $n0,
+			':n1' => $n1,
+			':n2' => $n2,
+			':n3' => $n3,
+			':n4' => $n4,
+			':n5' => $n5,
+			':n6' => $n6,
+			':n7' => $n7,
+			':n8' => $n8,
+			':n9' => $n9,
+			':origen' => 'cl_clientes',
 			':id_origen' => $id_cliente,
-			':user_mod' => $_SESSION['id_usuario'] 
+			':user_mod' => $_SESSION['id_usuario']
 		);
 		$query->execute($data);
 	}
 	function listado($array,$id_cliente){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cl_clientes AS cli';
 		$primaryKey = 'id_cliente';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'id_cliente',
 				'dbj' => 'id_cliente',
 				'real' => 'id_cliente',
@@ -1368,46 +1374,46 @@ class ClientesModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'nombre',
-				'dbj' => 'nombre',				
+				'dbj' => 'nombre',
 				'real' => 'nombre',
 				'alias' => 'nombre',
 				'typ' => 'txt',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'cat.etiqueta AS etiqueta',
 				'dbj' => 'cat.etiqueta',
 				'real' => 'cat.etiqueta',
 				'alias' => 'etiqueta',
 				'typ' => 'txt',
-				'dt' => 2				
+				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'cat2.etiqueta AS etiqueta2',
 				'dbj' => 'cat2.etiqueta',
 				'real' => 'cat2.etiqueta',
 				'alias' => 'etiqueta2',
 				'typ' => 'txt',
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'rol.descripcion AS rol',
 				'dbj' => 'rol.descripcion',
 				'real' => 'rol.descripcion',
 				'alias' => 'rol',
 				'typ' => 'txt',
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'id_cliente',
-				'dbj' => 'id_cliente',	
+				'dbj' => 'id_cliente',
 				'alias' => 'id_cliente',
 				'real' => 'id_cliente',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 5			
+				'dt' => 5
 			)
 		);
 		$render_table = new acciones_usuario;
@@ -1424,11 +1430,11 @@ class ClientesModel
 		);
 	}
 	function allthem($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cl_clientes AS cli';
 		$primaryKey = 'id_cliente';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cli.id_cliente',
 				'dbj' => 'cli.id_cliente',
 				'real' => 'cli.id_cliente',
@@ -1436,54 +1442,54 @@ class ClientesModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'emp.nombre as empresa',
-				'dbj' => 'emp.nombre',				
+				'dbj' => 'emp.nombre',
 				'real' => 'emp.nombre',
 				'alias' => 'empresa',
 				'typ' => 'txt',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'cli.nombre',
-				'dbj' => 'cli.nombre',				
+				'dbj' => 'cli.nombre',
 				'real' => 'cli.nombre',
 				'alias' => 'nombre',
 				'typ' => 'txt',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'cat.etiqueta AS etiqueta',
 				'dbj' => 'cat.etiqueta',
 				'real' => 'cat.etiqueta',
 				'alias' => 'etiqueta',
 				'typ' => 'txt',
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'cat2.etiqueta AS etiqueta2',
 				'dbj' => 'cat2.etiqueta',
 				'real' => 'cat2.etiqueta',
 				'alias' => 'etiqueta2',
 				'typ' => 'txt',
-				'dt' => 4				
+				'dt' => 4
 			),
-			array( 
+			array(
 				'db' => 'rol.descripcion AS rol',
 				'dbj' => 'rol.descripcion',
 				'real' => 'rol.descripcion',
 				'alias' => 'rol',
 				'typ' => 'txt',
-				'dt' => 5				
+				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'cli.id_cliente',
-				'dbj' => 'cli.id_cliente',	
+				'dbj' => 'cli.id_cliente',
 				'alias' => 'cli.id_cliente',
 				'real' => 'id_cliente',
 				'typ' => 'int',
 				'acciones' => true,
-				'dt' => 6			
+				'dt' => 6
 			)
 		);
 		$render_table = new acciones_usuario;
@@ -1501,11 +1507,11 @@ class ClientesModel
 		);
 	}
 	function getTarifas($array){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cl_tarifas_clientes AS cltc';
 		$primaryKey = 'id_tarifa_cliente';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'cltc.id_tarifa_cliente AS id_tarifa_cliente',
 				'dbj' => 'cltc.id_tarifa_cliente',
 				'real' => 'cltc.id_tarifa_cliente',
@@ -1513,7 +1519,7 @@ class ClientesModel
 				'typ' => 'int',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'cln.nombre AS cliente',
 				'dbj' => 'cln.nombre',
 				'real' => 'cln.nombre',
@@ -1521,7 +1527,7 @@ class ClientesModel
 				'typ' => 'txt',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'cltc.costo_base AS costo_base',
 				'dbj' => 'cltc.costo_base',
 				'real' => 'cltc.costo_base',
@@ -1529,7 +1535,7 @@ class ClientesModel
 				'typ' => 'int',
 				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'cltc.km_adicional AS km_adicional',
 				'dbj' => 'cltc.km_adicional',
 				'real' => 'cltc.km_adicional',
@@ -1537,7 +1543,7 @@ class ClientesModel
 				'typ' => 'int',
 				'dt' => 3
 			),
-			array( 
+			array(
 				'db' => 'cltc.descripcion AS descripcion',
 				'dbj' => 'cltc.descripcion',
 				'real' => 'cltc.descripcion',
@@ -1553,7 +1559,7 @@ class ClientesModel
 				'typ' => 'txt',
 				'dt' => 5
 			),
-			array( 
+			array(
 				'db' => 'cltc.inicio_vigencia AS inicio_vigencia',
 				'dbj' => 'cltc.inicio_vigencia',
 				'real' => 'cltc.inicio_vigencia',
@@ -1561,7 +1567,7 @@ class ClientesModel
 				'typ' => 'int',
 				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'cltc.fin_vigencia AS fin_vigencia',
 				'dbj' => 'cltc.fin_vigencia',
 				'real' => 'cltc.fin_vigencia',
@@ -1569,7 +1575,7 @@ class ClientesModel
 				'typ' => 'txt',
 				'dt' => 7
 			),
-			array( 
+			array(
 				'db' => 'cat1.etiqueta AS estado',
 				'dbj' => 'cat1.etiqueta',
 				'real' => 'cat1.etiqueta',
@@ -1577,7 +1583,7 @@ class ClientesModel
 				'typ' => 'txt',
 				'dt' => 8
 			),
-			array( 
+			array(
 				'db' => 'cat2.etiqueta AS tipo',
 				'dbj' => 'cat2.etiqueta',
 				'real' => 'cat2.etiqueta',
@@ -1585,7 +1591,7 @@ class ClientesModel
 				'typ' => 'txt',
 				'dt' => 9
 			),
-			array( 
+			array(
 				'db' => 'cltc.tabulado AS tabulado',
 				'dbj' => 'cltc.tabulado',
 				'real' => 'cltc.tabulado',
@@ -1605,13 +1611,13 @@ class ClientesModel
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
-	}	
+	}
 	function queryTarifas($array,$id_cliente){
-		ini_set('memory_limit', '256M');				
+		ini_set('memory_limit', '256M');
 		$table = 'cl_tarifas_clientes AS tc';
 		$primaryKey = 'id_tarifa_cliente';
 		$columns = array(
-			array( 
+			array(
 				'db' => 'tc.nombre as nombre',
 				'dbj' => 'tc.nombre',
 				'real' => 'tc.nombre',
@@ -1619,80 +1625,98 @@ class ClientesModel
 				'typ' => 'txt',
 				'dt' => 0
 			),
-			array( 
+			array(
 				'db' => 'tc.descripcion as descripcion',
-				'dbj' => 'tc.descripcion',				
+				'dbj' => 'tc.descripcion',
 				'real' => 'tc.descripcion',
 				'alias' => 'descripcion',
 				'typ' => 'txt',
 				'dt' => 1
 			),
-			array( 
+			array(
 				'db' => 'tc.costo_base AS costo_base',
 				'dbj' => 'tc.costo_base',
 				'real' => 'tc.costo_base',
 				'alias' => 'costo_base',
 				'typ' => 'int',
 				'moneda' => true,
-				'dt' => 2				
+				'dt' => 2
 			),
-			array( 
+			array(
 				'db' => 'tc.km_adicional AS km_adicional',
 				'dbj' => 'tc.km_adicional',
 				'real' => 'tc.km_adicional',
 				'alias' => 'km_adicional',
 				'typ' => 'int',
 				'moneda' => true,
-				'dt' => 3				
+				'dt' => 3
 			),
-			array( 
+			array(
+				'db' => 'tc.costo_base_venta AS costo_base_venta',
+				'dbj' => 'tc.costo_base_venta',
+				'real' => 'tc.costo_base_venta',
+				'alias' => 'costo_base_venta',
+				'typ' => 'int',
+				'moneda' => true,
+				'dt' => 4
+			),
+			array(
+				'db' => 'tc.km_adicional_venta AS km_adicional_venta',
+				'dbj' => 'tc.km_adicional_venta',
+				'real' => 'tc.km_adicional_venta',
+				'alias' => 'km_adicional_venta',
+				'typ' => 'int',
+				'moneda' => true,
+				'dt' => 5
+			),
+			array(
 				'db' => 'tc.inicio_vigencia AS inicio_vigencia',
 				'dbj' => 'tc.inicio_vigencia',
 				'real' => 'tc.inicio_vigencia',
 				'alias' => 'inicio_vigencia',
 				'typ' => 'int',
-				'dt' => 4				
+				'dt' => 6
 			),
-			array( 
+			array(
 				'db' => 'tc.fin_vigencia fin_vigencia',
-				'dbj' => 'tc.fin_vigencia',	
+				'dbj' => 'tc.fin_vigencia',
 				'real' => 'tc.fin_vigencia',
 				'alias' => 'fin_vigencia',
 				'typ' => 'int',
-				'dt' => 5			
+				'dt' => 7
 			),
-			array( 
+			array(
 				'db' => 'cat.etiqueta AS etiqueta1',
-				'dbj' => 'cat.etiqueta',	
+				'dbj' => 'cat.etiqueta',
 				'real' => 'cat.etiqueta',
 				'alias' => 'etiqueta1',
 				'typ' => 'txt',
-				'dt' => 6			
+				'dt' => 8
 			),
-			array( 
+			array(
 				'db' => 'cat2.etiqueta AS etiqueta2',
-				'dbj' => 'cat2.etiqueta',	
+				'dbj' => 'cat2.etiqueta',
 				'real' => 'cat2.etiqueta',
 				'alias' => 'etiqueta2',
 				'typ' => 'txt',
-				'dt' => 7			
+				'dt' => 9
 			),
-			array( 
+			array(
 				'db' => 'tc.tabulado as tabulado',
-				'dbj' => 'tc.tabulado',	
+				'dbj' => 'tc.tabulado',
 				'real' => 'tc.tabulado',
 				'alias' => 'tabulado',
 				'typ' => 'int',
 				'bin' => true,
-				'dt' => 8			
+				'dt' => 10
 			),
-			array( 
+			array(
 				'db' => 'tc.id_tarifa_cliente as id_tarifa_cliente',
-				'dbj' => 'tc.id_tarifa_cliente',	
+				'dbj' => 'tc.id_tarifa_cliente',
 				'real' => 'tc.id_tarifa_cliente',
 				'alias' => 'id_tarifa_cliente',
 				'typ' => 'int',
-				'dt' => 9		
+				'dt' => 11
 			)
 		);
 		$render_table = new acciones_tarifas;
@@ -1711,9 +1735,9 @@ class ClientesModel
 		return json_encode(
 			$render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
 		);
-	}	
+	}
 }
-class acciones_tarifas extends SSP{ 
+class acciones_tarifas extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{
 		$out = array();
@@ -1728,24 +1752,24 @@ class acciones_tarifas extends SSP{
 
 					$cantidad = ($data[$i][ $column['alias'] ]);
 					$cantidad = money_format('%i',$cantidad);
-					$salida = $cantidad;	
-					
+					$salida = $cantidad;
+
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){
-					
+
 					$id_tarifa_cliente = $data[$i][ 'id_tarifa_cliente' ];
-					
-					$bin = ($data[$i][ $column['alias'] ]);	
-					
+
+					$bin = ($data[$i][ $column['alias'] ]);
+
 					$delete='<a href="javascript:;" data-rel="tooltip" data-original-title="Caducar tarifa" class="red tooltip-error" onclick="caducar_tarifa('.$id_tarifa_cliente.');"><i class="ace-icon fa fa-trash bigger-130"></i></a>';
-					
+
 					$vigente='<a href="javascript:;" data-rel="tooltip" data-original-title="Tarifa vigente" class="green tooltip-success"><i class="ace-icon fa fa-check bigger-130"></i></a>';
-					
+
 					$salida = ($bin == 1)?$delete:$vigente;
 					$row[ $column['dt'] ] = $salida;
-					
+
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -1766,7 +1790,7 @@ class acciones_usuario extends SSP{ /*Individual*/
 				$salida = "";
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
-					
+
 					if(Controlador::tiene_permiso('Clientes|operador_favorito')){
 						$salida .= '<a data-rel="tooltip" data-original-title="Operador preferido" class="green tooltip-success" onclick="carga_archivo(\'contenedor_principal\',\'' . URL_APP . 'clientes/operador_favorito/'.$id_cliente.'/\');"><i class="ace-icon fa fa-heart bigger-130"></i></a>&nbsp;&nbsp;';
 					}
@@ -1782,10 +1806,10 @@ class acciones_usuario extends SSP{ /*Individual*/
 					if(Controlador::tiene_permiso('Clientes|calendario_historico')){
 						$salida .= '<a data-rel="tooltip" data-original-title="Calendario Histórico" style="color:green" class="tooltip-success" onclick="carga_archivo(\'contenedor_principal\',\'' . URL_APP . 'clientes/calendario_historico/'.$id_cliente.'/\');"><i class="ace-icon fa fa-calendar bigger-130"></i></a>&nbsp;&nbsp;';
 					}
-					
+
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;
@@ -1806,7 +1830,7 @@ class acciones_cliente extends SSP{ /*Corporativo*/
 				$salida = "";
 				if ( isset( $column['acciones'] ) ) {
 					$id_cliente = $data[$i][ 'id_cliente' ];
-					
+
 					if(Controlador::tiene_permiso('Clientes|editar')){
 						$salida .= '<a data-rel="tooltip" data-original-title="Editar Cliente" class="green tooltip-success" onclick="modal_editar_cliente('.$id_cliente.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>&nbsp;&nbsp;';
 					}
@@ -1833,7 +1857,7 @@ class acciones_cliente extends SSP{ /*Corporativo*/
 					}
 					$row[ $column['dt'] ] = $salida;
 				}else{
-					$row[ $column['dt'] ] = $data[$i][$name_column];	
+					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
 			}
 			$out[] = $row;

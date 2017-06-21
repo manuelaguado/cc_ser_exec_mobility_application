@@ -4,13 +4,27 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
+	function costoFinal($metros,$minutos){
+              if(($minutos > 120)OR($metros > 30000)){
+                     $costo = 260;
+                     $costo_final = self::costoexcedente($metros-30000,$minutos-120,$costo);
+              }else{
+                     $costo_final = 260;
+              }
+              echo $costo_final;
+       }
+       function costoexcedente($metros,$minutos,$costo){
+              if(($minutos > 30)OR($metros > 7500)){
+                     $cost = $costo+65;
+                     $costo_final = self::costoexcedente($metros-7500,$minutos-30,$cost);
+              }else{
+                     $costo_final = $costo+65;
+              }
+              return $costo_final;
+       }
 	function diff(){
 
-		$segundos = strtotime('00:16:06') - strtotime('00:15:00');
-		if($segundos > 0){
-			$minutos = ($segundos/60);
-		       echo ceil($minutos);
-		}
+		echo ceil((strtotime('00:39:47') - strtotime('00:00:00'))/60);
 	}
 	function selectone(){
 		$db = Controlador::direct_connectivity();

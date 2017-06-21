@@ -230,10 +230,11 @@ class OperacionModel{
                      $upsSttcs = self::routesalternatives($this->georigen,$this->geodestino,$id_statics,$this->id_viaje);
 
            //obtener el costo del viaje
+
                      $costoData = self::getCostViaje($this->id_viaje,$upsSttcs['kmss_max']);
 
            //ingresar costo adicional por excedente en kilometraje
-                     if($costoData['excedente']){
+                     if(($costoData['excedente'])&&(!$costoData['a2'])){
                             $excedente = $costoData['excedente_adicional'];
                             $updca['id_viaje']= $this->id_viaje;
                             $updca['costo']= '$ '.$excedente * $costoData['km_adicional'];
@@ -242,16 +243,52 @@ class OperacionModel{
                             self::addCostoAdicional($updca);
                      }
 
+           //Si el viaje se estableció en cobro por tiempo se recalcula el costo antes de updateStaticsCosts e insertMonedero
+                     if($costoData['a2']){
+
+                            $metros = ($upsSttcs['kmss_max']*1000);
+                            $minutos = ceil($upsSttcs['time_max']/60);
+                            $costo_final = self::costoFinal($metros,$minutos);
+
+                     }else{
+                            $costo_final = $costoData['costo'];
+                     }
+
            //Insertar costos adicionales automáticos, como tiempo de espera y escalas
                      self::addCostTiempoEspera($this->id_viaje,$tiempo_espera);
                      self::addCostTiempoEscala($this->id_viaje);
 
            //obtener costos adicionales
                      $adicional = self::getCostosAdicionales($this->id_viaje);
-                     self::updateStaticsCosts($costoData['costo'],$adicional,$id_statics,$costoData['id_tarifa_cliente']);
+                     self::updateStaticsCosts($costo_final,$adicional,$id_statics,$costoData['id_tarifa_cliente']);
 
            //ingresar costo en monedero de operador
-                     self::insertMonedero($viaje,$costoData['costo']);
+                     self::insertMonedero($viaje,$costo_final);
+
+    }
+    function costoFinal($metros,$minutos){
+           $horasx2 = ((Controlador::getConfig(1,'costo_hora'))['valor'])*2;
+
+           if(($minutos > 120)OR($metros > 30000)){
+                  $costo = $horasx2;
+                  $costo_final = self::costoexcedente($metros-30000,$minutos-120,$costo);
+           }else{
+                  $costo_final = $horasx2;
+           }
+           return $costo_final;
+
+    }
+    function costoexcedente($metros,$minutos,$costo){
+
+           $mediahora = ((Controlador::getConfig(1,'costo_hora'))['valor'])/2;
+           if(($minutos > 30)OR($metros > 7500)){
+                  $cost = $costo + $mediahora;
+                  $costo_final = self::costoexcedente($metros-7500,$minutos-30,$cost);
+           }else{
+                  $costo_final = $costo + $mediahora;
+           }
+           return $costo_final;
+
     }
     function arrayCostosAdicionales($id_viaje){
            $sql ="
@@ -320,14 +357,14 @@ class OperacionModel{
 
            $gravado = $costo + $ad_cgravamen;
 
-           $neto = $gravado - (($comision['valor'] * $gravado)/100);
+           $neto = $gravado - (($comision * $gravado)/100);
            $qry = "
                   UPDATE `fo_ingresos`
                   SET
                    `monto` = '".$costo."',
                    `ad_cgravamen` = '".$ad_cgravamen."',
                    `ad_sgravamen` = '".$ad_sgravamen."',
-                   `comision` = '".$comision['valor']."',
+                   `comision` = '".$comision."',
                    `neto` = '".$neto."'
 
                   WHERE
@@ -356,7 +393,7 @@ class OperacionModel{
 
            $gravado = $costo + $ad_cgravamen;
 
-           $neto = ($gravado - (($comision['valor'] * $gravado)/100))+$ad_sgravamen;
+           $neto = ($gravado - (($comision * $gravado)/100))+$ad_sgravamen;
            $qry = "
                   INSERT INTO `fo_ingresos` (
                      `id_operador`,
@@ -378,7 +415,7 @@ class OperacionModel{
                                    '".$costo."',
                                    '".$ad_cgravamen."',
                                    '".$ad_sgravamen."',
-                                   '".$comision['valor']."',
+                                   '".$comision."',
                                    '".$neto."',
                                    '".$_SESSION['id_usuario']."',
                                    '".date("Y-m-d H:i:s")."'
@@ -392,10 +429,36 @@ class OperacionModel{
            foreach ($vars as $key => $value) {
                   $this->$key = strip_tags($value);
            }
+           //TODO: los costos se actualizan con el costo original puesto que podria haber un A2 osease el $costoData['costo'] se obtiene de fo_ingresos o bien de statics
            $costoData = self::getCostViaje($this->id_viaje,$this->kms);
            $adicional = self::getCostosAdicionales($this->id_viaje);
-           self::updateStaticsCosts($costoData['costo'],$adicional,$this->id_viaje_statics,$costoData['id_tarifa_cliente']);
-           self::updateMonedero($this->id_ingreso,$costoData['costo'],$this->id_viaje,$this->id_operador);
+              if($costoData['a2']){
+                  $costo_final = self::getCostoFinal($this->id_viaje);
+              }else{
+                  $costo_final = $costoData['costo'];
+              }
+           self::updateStaticsCosts($costo_final,$adicional,$this->id_viaje_statics,$costoData['id_tarifa_cliente']);
+           self::updateMonedero($this->id_ingreso,$costo_final,$this->id_viaje,$this->id_operador);
+    }
+    function getCostoFinal($id_viaje){
+           $sql ="
+           SELECT
+           	vs.costo_viaje
+           FROM
+           	vi_viaje_statics AS vs
+           INNER JOIN vi_viaje AS v ON vs.id_viaje = v.id_viaje
+           WHERE
+           	v.id_viaje = $id_viaje
+           ";
+
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $array = array();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         return  $row->costo_viaje;
+                  }
+           }
     }
     function addCostTiempoEscala($id_viaje){
               $time_c10 = self::getDateMultipleClave($id_viaje,'C10');
@@ -539,6 +602,14 @@ class OperacionModel{
                          $array['cat_tipo_tarifa']=$row->cat_tipo_tarifa;
                          $array['id_tarifa_cliente'] = $row->id_tarifa_cliente;
                   }
+           }
+
+           $existe_a2 = self::existeEnViaje('A2',$id_viaje);
+
+           if($existe_a2 >= 1){
+                  $array['a2'] = true;
+           }else{
+                  $array['a2'] = false;
            }
 
           if($array['tabulado'] == 1){
