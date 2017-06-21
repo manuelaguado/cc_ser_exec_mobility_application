@@ -303,8 +303,8 @@ class OperacionModel{
            return $comision;
     }
     function updateMonedero($id_ingreso,$costo,$id_viaje,$id_operador){
-           
-           $comision = self::getComision($id_operador)
+
+           $comision = self::getComision($id_operador);
            $adicionales = self::arrayCostosAdicionales($id_viaje);
 
            $ad_cgravamen = 0;

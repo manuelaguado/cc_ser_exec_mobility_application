@@ -1,6 +1,3 @@
-TODO: costos por tiempo calcularlos con base en tipo de tarifa y calcularlos cada 30 min Y/o 30 km crear flujo y validarlo
-
-cuando una tabla no muestra elementos deshabilitar la accion de la fila
-if(api.rows().count() > '0'){accion_de_fila('tabla');}
+TODO: se calculan apartir de dos hrs o 260 pesos que es el tiempo por hora posteriro a ello cada 3o min 0 65 pesos en los dos casos lo que suceda primero.
 
 TODO: tarifas costos de compra y venta
