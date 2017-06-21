@@ -25,17 +25,7 @@
 											<ul class="list-unstyled spaced inline bigger-110 margin-15">
 												<li>
 													<i class="ace-icon fa fa-hand-o-right blue"></i>
-													Re-check the url for typos
-												</li>
-
-												<li>
-													<i class="ace-icon fa fa-hand-o-right blue"></i>
-													Read the faq
-												</li>
-
-												<li>
-													<i class="ace-icon fa fa-hand-o-right blue"></i>
-													Tell us about it
+													<a href="<?=URL_APP?>" target="_self">Inicie en la pagina principal</a>
 												</li>
 											</ul>
 										</div>
@@ -49,7 +39,7 @@
 												Regresar
 											</a>
 
-											<a href="#" class="btn btn-primary">
+											<a href="<?=URL_APP?>" target="_self" class="btn btn-primary">
 												<i class="ace-icon fa fa-tachometer"></i>
 												Inicio
 											</a>

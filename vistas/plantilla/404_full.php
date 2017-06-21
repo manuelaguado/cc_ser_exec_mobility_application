@@ -3,14 +3,14 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>404 Error Page - Ace Admin</title>
+		<title>Error 404 - <?=SITE_NAME?></title>
 
 		<meta name="description" content="404 Error Page" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=ACE?>css/bootstrap.css" />
-		<link rel="stylesheet" href="<?=ACE?>css/font-awesome.css" />
+		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/font-awesome/css/font-awesome.css" />
 
 		<!-- page specific plugin styles -->
 
@@ -58,8 +58,8 @@
 					<!-- #section:basics/footer -->
 					<div class="footer-content">
 						<span class="bigger-120">
-							<span class="blue bolder">Ace</span>
-							Application &copy; 2013-2014
+							<span class="blue bolder"><?=SITE_NAME?></span>
+						 &copy; 2013-2017
 						</span>
 
 						&nbsp; &nbsp;
@@ -91,7 +91,7 @@
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">
-			window.jQuery || document.write("<script src='<?=ACE?>js/jquery.js'>"+"<"+"/script>");
+			window.jQuery || document.write("<script src='<?=URL_PUBLIC?>components/jquery/dist/jquery.js'>"+"<"+"/script>");
 		</script>
 
 		<!-- <![endif]-->
@@ -104,32 +104,32 @@
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<?=ACE?>js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
-		<script src="<?=ACE?>js/bootstrap.js"></script>
+		<script src="<?=URL_PUBLIC?>components/bootstrap/dist/js/bootstrap.js"></script>
 
 		<!-- page specific plugin scripts -->
 
 		<!-- ace scripts -->
-		<script src="<?=ACE?>js/ace/elements.scroller.js"></script>
-		<script src="<?=ACE?>js/ace/elements.colorpicker.js"></script>
-		<script src="<?=ACE?>js/ace/elements.fileinput.js"></script>
-		<script src="<?=ACE?>js/ace/elements.typeahead.js"></script>
-		<script src="<?=ACE?>js/ace/elements.wysiwyg.js"></script>
-		<script src="<?=ACE?>js/ace/elements.spinner.js"></script>
-		<script src="<?=ACE?>js/ace/elements.treeview.js"></script>
-		<script src="<?=ACE?>js/ace/elements.wizard.js"></script>
-		<script src="<?=ACE?>js/ace/elements.aside.js"></script>
-		<script src="<?=ACE?>js/ace/ace.js"></script>
-		<script src="<?=ACE?>js/ace/ace.ajax-content.js"></script>
-		<script src="<?=ACE?>js/ace/ace.touch-drag.js"></script>
-		<script src="<?=ACE?>js/ace/ace.sidebar.js"></script>
-		<script src="<?=ACE?>js/ace/ace.sidebar-scroll-1.js"></script>
-		<script src="<?=ACE?>js/ace/ace.submenu-hover.js"></script>
-		<script src="<?=ACE?>js/ace/ace.widget-box.js"></script>
-		<script src="<?=ACE?>js/ace/ace.settings.js"></script>
-		<script src="<?=ACE?>js/ace/ace.settings-rtl.js"></script>
-		<script src="<?=ACE?>js/ace/ace.settings-skin.js"></script>
-		<script src="<?=ACE?>js/ace/ace.widget-on-reload.js"></script>
-		<script src="<?=ACE?>js/ace/ace.searchbox-autocomplete.js"></script>
+		<script src="<?=ACE?>js/src/elements.scroller.js"></script>
+		<script src="<?=ACE?>js/src/elements.colorpicker.js"></script>
+		<script src="<?=ACE?>js/src/elements.fileinput.js"></script>
+		<script src="<?=ACE?>js/src/elements.typeahead.js"></script>
+		<script src="<?=ACE?>js/src/elements.wysiwyg.js"></script>
+		<script src="<?=ACE?>js/src/elements.spinner.js"></script>
+		<script src="<?=ACE?>js/src/elements.treeview.js"></script>
+		<script src="<?=ACE?>js/src/elements.wizard.js"></script>
+		<script src="<?=ACE?>js/src/elements.aside.js"></script>
+		<script src="<?=ACE?>js/src/ace.js"></script>
+		<script src="<?=ACE?>js/src/ace.ajax-content.js"></script>
+		<script src="<?=ACE?>js/src/ace.touch-drag.js"></script>
+		<script src="<?=ACE?>js/src/ace.sidebar.js"></script>
+		<script src="<?=ACE?>js/src/ace.sidebar-scroll-1.js"></script>
+		<script src="<?=ACE?>js/src/ace.submenu-hover.js"></script>
+		<script src="<?=ACE?>js/src/ace.widget-box.js"></script>
+		<script src="<?=ACE?>js/src/ace.settings.js"></script>
+		<script src="<?=ACE?>js/src/ace.settings-rtl.js"></script>
+		<script src="<?=ACE?>js/src/ace.settings-skin.js"></script>
+		<script src="<?=ACE?>js/src/ace.widget-on-reload.js"></script>
+		<script src="<?=ACE?>js/src/ace.searchbox-autocomplete.js"></script>
 
 		<!-- inline scripts related to this page -->
 
