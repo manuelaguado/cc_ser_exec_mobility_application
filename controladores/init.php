@@ -6,7 +6,7 @@ class init extends Controlador
    		exit('CentralCar Authorization required Level Developer');
        }
        public function do($auth){
-              if($auth != 'Z2iRDmp6p93FOXOOEDy6hB9HXJeia6YZNC1MtUNXOaGsmXTGm6uGaHXHGZSOkdUd2x7Y6kWGBXU9sbPHmJUskxyyURgLcCXJUKATjRarsrzLdi8uDcBoAJtuFUxwmpih'){exit('CentralCar Authorization Invalid!');}
+              if($auth != RESTART_KEY){exit('CentralCar Authorization Invalid!');}
               $db = Controlador::direct_connectivity();
               self::truncate_init();
               $sql="
