@@ -3,6 +3,4 @@ TODO: costos por tiempo calcularlos con base en tipo de tarifa y calcularlos cad
 cuando una tabla no muestra elementos deshabilitar la accion de la fila
 if(api.rows().count() > '0'){accion_de_fila('tabla');}
 
-
-TODO: nueva clave para los cancelados que generen costo por que se incluyen en papeleta
-TODO: comisiones individuakles
+TODO: tarifas costos de compra y venta

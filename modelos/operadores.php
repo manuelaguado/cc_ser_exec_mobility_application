@@ -557,7 +557,7 @@ class OperadoresModel
 		self::setStatNumEq($num,6);
 		self::liberarStatOperNumEq($num);
 	}
-	function setNumEq($arreglo){
+       function setNumEq($arreglo){
 		foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
 		}
@@ -575,6 +575,31 @@ class OperadoresModel
 		self::setStatNumEq($this->id_numeq,7);
 
 		return $result? array('resp' => true):array('resp' => false);
+	}
+       function setComisionDeault($id_operador){
+		$sql = "
+			UPDATE cr_operador
+			SET    comision = NULL,
+				user_mod =  '".$_SESSION['id_usuario']."'
+			where
+				id_operador = ".$id_operador."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
+	}
+       function setComision($array){
+              foreach ($array as $key => $value) {
+			$this->$key = strip_tags($value);
+		}
+		$sql = "
+			UPDATE cr_operador
+			SET    comision = '".$this->comision."',
+				user_mod =  '".$_SESSION['id_usuario']."'
+			where
+				id_operador = ".$this->id_operador."
+		";
+		$query = $this->db->prepare($sql);
+		$query->execute();
 	}
 	function obtener_tarifas($array,$id_operador){
 		ini_set('memory_limit', '256M');
@@ -964,6 +989,9 @@ class acciones_operador extends SSP{
 							default:
 								$salida .= '';
 						}
+                                          if(Controlador::tiene_permiso('Operadores|comisiones')){
+                                                 $salida .= '<td><a data-rel="tooltip" data-original-title="Comisión"  tooltip-success" onclick="comision_operador('.$id_operador.')"><i class="ace-icon fa fa-percent bigger-130"></i></a></td>';
+                                          }
 						if(Controlador::tiene_permiso('Operadores|gestion_telefonos')){
 							$salida .= '<td><a data-rel="tooltip" data-original-title="Teléfonos de contacto" class="green tooltip-success" onclick="modal_telefonos('.$id_operador.');"><i class="ace-icon fa fa-phone bigger-130"></i></a></td>';
 						}
@@ -976,7 +1004,7 @@ class acciones_operador extends SSP{
 						if(Controlador::tiene_permiso('Operadores|status_operador')){
 							$salida .= '<td><a data-rel="tooltip" data-original-title="Status del operador" class="green tooltip-success" onclick="status_operador('.$id_operador.')"><i class="ace-icon fa fa-check-square-o bigger-130"></i></a></td>';
 						}
-						if(Controlador::tiene_permiso('Operadores|numero_economico')){
+                                          if(Controlador::tiene_permiso('Operadores|numero_economico')){
 
 							$num_eq = self::numeq($id_operador,$db);
 							if($num_eq == 'NO ASIGNADO'){$nq = '<span style="color:red;">&nbsp;XX</span>';$color="red";}else{$color="green"; $nq = '<span style="color:#375da8;">&nbsp;'.$num_eq.'</span>';}

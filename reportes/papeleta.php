@@ -106,7 +106,7 @@ class PAPELETA extends FPDI
                                    if($viaje['adicional_desglose'][$i]['descripcion'] == 0){
                                           $this->Cell(50, 5, '', 0,0, 'L', $fill);
                                    }else{
-                                          $this->Cell(50, 5, $viaje['adicional_desglose'][$i]['descripcion'], 0,0, 'L', $fill);
+                                          $this->Cell(50, 5, utf8_decode($viaje['adicional_desglose'][$i]['descripcion']), 0,0, 'L', $fill);
                                    }
 
                                    $this->Cell(20, 5, $viaje['adicional_desglose'][$i]['costo'], 0,0, 'R', $fill);

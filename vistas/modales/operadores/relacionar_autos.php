@@ -18,7 +18,7 @@
 			<div class="modal-body" id="modal_content">
 				<input type="hidden" name="id_operador" id="id_operador" value="<?php echo $id_operador; ?>">
 				<div class="panel panel-primary">
-					<div class="panel-body">			
+					<div class="panel-body">
 						<div class="row">
 							<div class="col-md-12">
 								<table class="table table-striped table-bordered table-hover" id="simple-table">
@@ -41,10 +41,10 @@
 
 									<tbody>
 									<?php
-									foreach ($unidades as $num => $auto){
-										$operador_unidad = $model2->getPermisos($id_operador,$auto->id_unidad);
+									foreach ($lista_unidades as $num => $auto){
+										$operador_unidad = $unidades->getPermisos($id_operador,$auto->id_unidad);
 										if($operador_unidad['permiso'] >= 1){$checked = 'checked'; $hidden = ''; $id_operador_unidad = $operador_unidad['id_operador_unidad'];}else{$checked = ''; $hidden = 'hidden';$id_operador_unidad = '';}
-										
+
 									?>
 										<tr>
 											<td><?=$num?></td>
@@ -67,7 +67,7 @@
 									}
 									?>
 									</tbody>
-								</table>								
+								</table>
 							</div>
 						</div>
 					</div>

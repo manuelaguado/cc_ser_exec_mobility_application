@@ -118,57 +118,6 @@ class ShareModel
            }
            return $return;
     }
-    function storeToSyncRide($id_usuario,$token,$clave,$id_operador_unidad,$procesar_precedentes = true, $valor = false, $procesar = false){
-           try {
-                  $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                  $this->db->setAttribute(PDO::ATTR_PERSISTENT,true);
-                  $this->db->beginTransaction();
-                  if($procesar_precedentes){
-                         date_default_timezone_set('America/Mexico_City');
-                         $sqlupd = "
-                                UPDATE `cr_sync_ride`
-                                SET
-                                 `procesado` = 1,
-                                 `user_mod` = NULL
-                                WHERE
-                                       `id_operador_unidad` = ".$id_operador_unidad." AND
-                                       `procesado` = 0
-                         ";
-                         $queryupd = $this->db->prepare($sqlupd);
-                         $ok = $queryupd->execute();
-                  }
-
-                  $set = ($valor)?$valor:'';
-                  $prc = ($procesar)?1:0;
-                  date_default_timezone_set('America/Mexico_City');
-                  $sql = "
-                         INSERT INTO `cr_sync_ride` (
-                                `token`,
-                                `id_operador_unidad`,
-                                `cat_cve_store`,
-                                `valor`,
-                                `procesado`,
-                                `user_alta`,
-                                `fecha_alta`
-                         )
-                         VALUES
-                                (
-                                       '".$token."',
-                                       ".$id_operador_unidad.",
-                                       ".$clave.",
-                                       '".$set."',
-                                       '".$prc."',
-                                       ".$id_usuario.",
-                                       '".date("Y-m-d H:i:s")."'
-                                );
-                  ";
-                  $query = $this->db->prepare($sql);
-                  $ok = $query->execute();
-                  $this->db->commit();
-           } catch (Exception $e) {
-                  $this->db->rollBack();
-           }
-    }
     function cordonCompletado($id_usuario,$id_operador_unidad,$id_base){
            if(self::turno($id_operador_unidad,$id_base) != 'No formado'){
                      $sql = "

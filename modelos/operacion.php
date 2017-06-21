@@ -200,7 +200,7 @@ class OperacionModel{
            $dteDiff = $datetime1->diff($datetime2);
            return $dteDiff->format("%H:%I:%S");
     }
-    function procesarViajeFinalizado($viaje,$tds){
+    function procesarViajeFinalizado($viaje){
            foreach ($viaje as $key => $value) {
                   $this->$key = strip_tags($value);
            }
@@ -231,6 +231,16 @@ class OperacionModel{
 
            //obtener el costo del viaje
                      $costoData = self::getCostViaje($this->id_viaje,$upsSttcs['kmss_max']);
+
+           //ingresar costo adicional por excedente en kilometraje
+                     if($costoData['excedente']){
+                            $excedente = $costoData['excedente_adicional'];
+                            $updca['id_viaje']= $this->id_viaje;
+                            $updca['costo']= '$ '.$excedente * $costoData['km_adicional'];
+                            $updca['cat_concepto']= 248;
+                            $updca['descripcion']= $excedente . ' km adicionales';
+                            self::addCostoAdicional($updca);
+                     }
 
            //Insertar costos adicionales automáticos, como tiempo de espera y escalas
                      self::addCostTiempoEspera($this->id_viaje,$tiempo_espera);
@@ -270,10 +280,31 @@ class OperacionModel{
            }
            return $array;
     }
-    function updateMonedero($id_ingreso,$costo,$id_viaje){
-
-           //Variables del sistema
-           $comision = Controlador::getConfig(1,'comision_operadores');
+    function getComision($id_operador){
+           $sql="
+                  SELECT
+                        o.comision
+                  FROM
+                        cr_operador AS o
+                  WHERE
+                        o.id_operador = $id_operador
+           ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                         $comision = $row->comision;
+                  }
+           }
+           if($comision == NULL){
+                  //Variables del sistema
+                  $comision = (Controlador::getConfig(1,'comision_operadores'))['valor'];
+           }
+           return $comision;
+    }
+    function updateMonedero($id_ingreso,$costo,$id_viaje,$id_operador){
+           
+           $comision = self::getComision($id_operador)
            $adicionales = self::arrayCostosAdicionales($id_viaje);
 
            $ad_cgravamen = 0;
@@ -309,8 +340,8 @@ class OperacionModel{
            foreach ($viaje as $key => $value) {
                   $this->$key = strip_tags($value);
            }
-           //Variables del sistema
-           $comision = Controlador::getConfig(1,'comision_operadores');
+
+           $comision = self::getComision($viaje['id_operador']);
            $adicionales = self::arrayCostosAdicionales($this->id_viaje);
 
            $ad_cgravamen = 0;
@@ -364,7 +395,7 @@ class OperacionModel{
            $costoData = self::getCostViaje($this->id_viaje,$this->kms);
            $adicional = self::getCostosAdicionales($this->id_viaje);
            self::updateStaticsCosts($costoData['costo'],$adicional,$this->id_viaje_statics,$costoData['id_tarifa_cliente']);
-           self::updateMonedero($this->id_ingreso,$costoData['costo'],$this->id_viaje);
+           self::updateMonedero($this->id_ingreso,$costoData['costo'],$this->id_viaje,$this->id_operador);
     }
     function addCostTiempoEscala($id_viaje){
               $time_c10 = self::getDateMultipleClave($id_viaje,'C10');
@@ -538,12 +569,8 @@ class OperacionModel{
                         $array['costo'] = $array['costo_base'];
 
                  }elseif($km > $kmsc ){
-                        $excedente = ceil($km - $kmsc);
-                        $updca['id_viaje']= $id_viaje;
-                        $updca['costo']= '$ '.$excedente * $array['km_adicional'];
-                        $updca['cat_concepto']= 248;
-                        $updca['descripcion']= $excedente . ' km adicionales';
-                        self::addCostoAdicional($updca);
+                        $array['excedente'] = true;
+                        $array['excedente_adicional'] = ceil($km - $kmsc);
                         $array['costo'] =  $array['costo_base'];
                  }
           }
@@ -809,7 +836,7 @@ class OperacionModel{
                      $setStat['motivo'] = 'Viaje Concluido';
 
                      $share->setStatOper($setStat);
-                     self::procesarViajeFinalizado($viaje,$tds);
+                     self::procesarViajeFinalizado($viaje);
                   break;
                   case 'A14':/*Abandono de servicio*/
                      $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '188' WHERE id_viaje = ".$id_viaje);
@@ -1800,6 +1827,12 @@ class OperacionModel{
 						break;
 					}
 				break;
+                            case '172':
+                                   if($post['origen'] == 'cancelados'){
+                                          $viaje = self::idensViaje($post['id_viaje']);
+                                          self::procesarViajeFinalizado($viaje);
+                                   }
+                            break;
 				case '173':
 					if($post['origen'] == 'asignados'){
 						$token = 'SOL:'.Controller::token(60);
@@ -4744,14 +4777,14 @@ class acciones_cancelados extends SSP{
 					$id_viaje = $data[$i][ 'id_viaje' ];
 
 					$salida = '';
-					$salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 
-                                   $salida .= "
-                                          <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
-                                                 <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
-                                          </a>
-                                   ";
+                                   $salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+
+                                   $salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+
+                                   $salida .= "<a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'><i class='fa fa-clock-o' style='font-size:1.4em; color:green;'></i></a>";
+
+                                   $salida .= "&nbsp;&nbsp;<a onclick='set_status_viaje(".$id_viaje.",172,\"cancelados\")' data-rel='tooltip' data-original-title='Activar para cobro'><i class='fa fa-recycle' style='font-size:1.4em; color:green;'></i></a>";
 
 					$row[ $column['dt'] ] = $salida;
 				}else if(isset( $column['bin'])){

@@ -858,12 +858,19 @@ function setear_status_viaje(){
 			type: 'POST',
 			data: $("#setear_status_viaje").serialize(),
 			dataType: 'json',
+			beforeSend: function( xhr ) {
+				$('#myModal').modal('hide');
+				$('#initpreloader').fadeIn('slow');
+			},
 			success: function(resp_success){
 				if (resp_success['resp'] == true) {
 					$('#myModal').modal('hide');
 					$('#tabla_pendientes').DataTable().ajax.reload();
+					$('#cancelados').DataTable().ajax.reload();
+					$('#initpreloader').fadeOut('slow');
 				}else{
-						  if(resp_success['qrymissing'] == 'cat_cancelaciones'){
+					$('#initpreloader').fadeOut('slow');
+					if(resp_success['qrymissing'] == 'cat_cancelaciones'){
 						alerta('Alerta!','Se requiere que seleccione un motivo de cancelación');
 					}else if(resp_success['qrymissing'] == 'status_operador'){
 						alerta('Alerta!','Indique el estado del operador');
@@ -872,7 +879,10 @@ function setear_status_viaje(){
 					}
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-53');}
+			error: function(respuesta){
+				$('#initpreloader').fadeOut('slow');
+				alerta('Alerta!','Error de conectividad de red OPRN-53');
+			}
 		});
 	} );
 }

@@ -400,26 +400,8 @@ class Operacion extends Controlador
 
 		require URL_VISTA.'modales/operacion/cambiar_tarifa.php';
 	}
-	public function activar_cancelacion_do($id_viaje){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$share = $this->loadModel('Share');
-		$operacion = $this->loadModel('Operacion');
-		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,117,$id_operador_unidad);
-		// no existe el broadcast en version noMobile $share->broadcast($id_operador_unidad);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}
-	public function activar_abandono_do($id_viaje){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$share = $this->loadModel('Share');
-		$operacion = $this->loadModel('Operacion');
-		$id_operador_unidad = $operacion->getIdOperadorUnidadViaje($id_viaje);
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,185,$id_operador_unidad);
-		// no existe el broadcast en version noMobile $share->broadcast($id_operador_unidad);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}
+
+
 	public function costos_adicionales_do(){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
 		$modelo = $this->loadModel('Operacion');
@@ -675,18 +657,6 @@ class Operacion extends Controlador
 
 		print $operacion->cancel_apartado_set($_POST, $share);
 	}
-	public function setPageRemotly(){
-		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
-		$share = $this->loadModel('Share');
-		$token = 'OP:'.$this->token(62);
-		$id_operador_unidad = $share->getIdOperadorUnidadEpisode($_POST['id_operador'],'id_operador');
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,153,$id_operador_unidad,true,$_POST['page']);
-		print json_encode(array('resp' => true ));
-	}
-	public function set_page_remotly($id_operador){
-		$this->se_requiere_logueo(true,'Operadores|set_page_remotly');
-		require URL_VISTA.'modales/operacion/set_page_remotly.php';
-	}
 	public function check_standinLine($id_operador){
 		$this->se_requiere_logueo(true,'Operacion|check_standinLine');
 		$model = $this->loadModel('Operacion');
@@ -733,21 +703,7 @@ class Operacion extends Controlador
 		$model->delivery_stat($id_mensaje);
 	}
 
-	public function modal_activar_c06($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		require URL_VISTA.'modales/operacion/activar_c06.php';
-	}
-	public function aut_c06($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$share = $this->loadModel('Share');
-		$share->set2enc6($id_base);
-		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
-		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
-		//$share->formarse_directo($id_episodio,$id_operador_unidad,$id_base,115);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}
+
 
 	public function modal_activar_c02($id_operador, $num, $id_operador_unidad){
               $this->se_requiere_logueo(true,'Operacion|activar_c2');
@@ -775,21 +731,6 @@ class Operacion extends Controlador
 		$share->setStatOper($setStat);
               $this->transmitir('doit','updateStatus');
 		print json_encode(array('resp' => true , 'mensaje' => 'El operador inició operaciones correctamente.' ));
-	}
-
-	public function modal_activar_f14($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		require URL_VISTA.'modales/operacion/activar_f14.php';
-	}
-	public function aut_f14($id_operador_unidad,$id_base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$share = $this->loadModel('Share');
-		$share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,$id_base);
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,122,$id_operador_unidad);
-		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
-		//$share->formarse_directo($id_episodio,$id_operador_unidad,$id_base,113);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
 	}
 
 	public function modal_activar_f06($id_operador_unidad,$id_base){
@@ -846,31 +787,7 @@ class Operacion extends Controlador
 		}
 		print json_encode(array('resp' => true ));
 	}
-	public function modal_activar_a10($id_operador_unidad,$base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		require URL_VISTA.'modales/operacion/activar_a10.php';
-	}
-	public function activar_a10($id_operador_unidad,$base){
-		$this->se_requiere_logueo(true,'Operacion|activar_a10');
-		$share = $this->loadModel('Share');
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,118,$id_operador_unidad);
-		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}
 
-	public function modal_activar_f13($id_operador_unidad){
-		$this->se_requiere_logueo(true,'Operacion|activar_f13');
-		require URL_VISTA.'modales/operacion/activar_f13.php';
-	}
-	public function activar_f13($id_operador_unidad){
-		$this->se_requiere_logueo(true,'Operacion|activar_f13');
-		$share = $this->loadModel('Share');
-		$token = 'OP:'.$this->token(62);
-		$share->storeToSyncRide($_SESSION['id_usuario'],$token,119,$id_operador_unidad);
-		// no disponible en la version noMobile $share->broadcast($id_operador_unidad);
-		print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
-	}
 	public function dataGeocerca($geocerca){
 		$geoarray = explode(' ',$geocerca);
 		$num = 0;
