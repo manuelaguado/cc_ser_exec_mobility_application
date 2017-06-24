@@ -20,7 +20,7 @@ div.table-responsive div#cancelados_wrapper.dataTables_wrapper.form-inline.dt-bo
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Listado de cancelaciones
+					Cancelados
 				</h1>
 			</div><!-- /.page-header -->
 		</div>

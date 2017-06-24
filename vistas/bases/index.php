@@ -9,16 +9,18 @@ div.table-responsive div#bases_wrapper.dataTables_wrapper.form-inline.dt-bootstr
 </style>
 <div class="container">
 
-<div class="page-header">
-	<h1>
-		Listado de Bases
-	</h1>
-</div>
+	<div class="page-content">
+		<div class="page-header">
+			<h1>
+				Listado de bases
+			</h1>
+		</div><!-- /.page-header -->
+	</div>
 		<?php
 		if($this->tiene_permiso('Bases|nueva_base')){
-		?>	
+		?>
 		<div class="col-md-12 column menu_header_content">
-			<button class="btn btn-ar btn-primary" type="button" onclick="modal_add_base();">Nueva Base</button>			
+			<button class="btn btn-ar btn-primary" type="button" onclick="modal_add_base();">Nueva Base</button>
 		</div>
 		<?php
 		}

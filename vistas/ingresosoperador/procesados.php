@@ -9,10 +9,12 @@ div.table-responsive div#conceptos_wrapper.dataTables_wrapper.form-inline.dt-boo
 </style>
 <div class="container">
 	<div class="row clearfix">
-		<div class="page-header">
-			<h1>
-				Viajes procesados
-			</h1>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					Procesados
+				</h1>
+			</div><!-- /.page-header -->
 		</div>
 		<div class="col-md-12 column">
 			<div class="table-responsive">

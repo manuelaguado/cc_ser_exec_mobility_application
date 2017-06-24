@@ -8,30 +8,36 @@ div.table-responsive div#catalogo_wrapper.dataTables_wrapper.form-inline.dt-boot
 }
 </style>
 <div class="container">
-	<div class="row clearfix">
+	<div class="page-content">
+		<div class="page-header">
+			<h1>
+				Catálogo
+			</h1>
+		</div><!-- /.page-header -->
+	</div>
 	<div class='col-md-12 column menu_header_content'>
 		<?php echo $this->tiene_permiso('Catalogo|add_elemento')?"
 			<button class='btn btn-ar btn-primary' type='button' onclick='modal_add_elemento();'>Nuevo elemento</button>
 		":""
 		?>
 	</div>
-			<div class="col-md-12 column">
-				<div class="table-responsive">
-					<table id="catalogo" class="display table table-striped" cellspacing="0" width="100%">
-						<thead>
-							<tr>
-								<th>ID</th>
-								<th>Parent</th>
-								<th>Catalogo</th>
-								<th>Etiqueta</th>
-								<th>Activo</th>
-								<th>Orden</th>
-								<th>Valor</th>
-							</tr>
-						</thead>
-					</table>
-				</div>
-			</div>
+	<div class="col-md-12 column">
+		<div class="table-responsive">
+			<table id="catalogo" class="display table table-striped" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Parent</th>
+						<th>Catalogo</th>
+						<th>Etiqueta</th>
+						<th>Activo</th>
+						<th>Orden</th>
+						<th>Valor</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
 	</div>
 </div>
 <script type="text/javascript" language="javascript" class="init">

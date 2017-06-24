@@ -9,11 +9,13 @@ div.table-responsive div#operadores_wrapper.dataTables_wrapper.form-inline.dt-bo
 </style>
 <div class="container">
 
-<div class="page-header">
-	<h1>
-		Operadores
-	</h1>
-</div>
+	<div class="page-content">
+		<div class="page-header">
+			<h1>
+				Operadores
+			</h1>
+		</div><!-- /.page-header -->
+	</div>
 
 	<div class="row clearfix">
 			<div class="col-md-12 column">
@@ -50,7 +52,7 @@ $(document).ready(function() {
 				"targets": 4,
 				"searchable":false,
 				"render": function (status) {
-					return  status ;				
+					return  status ;
 				}
 			},
 			{

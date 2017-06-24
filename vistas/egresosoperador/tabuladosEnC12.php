@@ -20,7 +20,7 @@ div.table-responsive div#c12_wrapper.dataTables_wrapper.form-inline.dt-bootstrap
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Tabulados con cambios de ruta
+					Por revisar C12 y T3
 				</h1>
 			</div><!-- /.page-header -->
 		</div>

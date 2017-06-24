@@ -9,16 +9,18 @@ div.table-responsive div#telefonia_wrapper.dataTables_wrapper.form-inline.dt-boo
 </style>
 <div class="container">
 
-<div class="page-header">
-	<h1>
-		Telefonía
-	</h1>
-</div>
+	<div class="page-content">
+		<div class="page-header">
+			<h1>
+				Telefonía
+			</h1>
+		</div><!-- /.page-header -->
+	</div>
 		<?php
 		if($this->tiene_permiso('Telefonia|nuevo_cel')){
-		?>	
+		?>
 		<div class="col-md-12 column menu_header_content">
-			<button class="btn btn-ar btn-primary" type="button" onclick="modal_add_celular();">Nuevo celular</button>			
+			<button class="btn btn-ar btn-primary" type="button" onclick="modal_add_celular();">Nuevo celular</button>
 		</div>
 		<?php
 		}
@@ -63,7 +65,7 @@ $(document).ready(function() {
 				"targets": 8,
 				"searchable":false,
 				"render": function (status) {
-					return  status ;				
+					return  status ;
 				}
 			},
 			{

@@ -69,27 +69,26 @@ class Login extends Controlador
 		print $model->signout($id_usuario);
 	}
 	public function verifica_session()
-    {
+       {
 		/*se_requiere_logueo no se llama por que este reconstruye la sesion cuando es verdadero, y cuando es falso redirige al estar la sesion iniciada*/
 		$obtener_modelo = $this->loadModel('Login');
-		$verificar = $obtener_modelo->verificarSession();
-        return $verificar;
-    }
+		$obtener_modelo->verificarSession();
+       }
 	public function salir()
-    {
+       {
 		$this->se_requiere_logueo(true,'Login|salir');
 		$obtener_modelo = $this->loadModel('Login');
 		$salir = $obtener_modelo->salir();
-        return $salir;
-    }
+              return $salir;
+       }
 	public function salirAlternativo()
-    {
+       {
 		$obtener_modelo = $this->loadModel('Login');
 		$salir = $obtener_modelo->salir();
-        return $salir;
-    }
+              return $salir;
+       }
 	public function recuperar_datos()
-    {
+       {
 		$this->se_requiere_logueo(false);
 		$obtener_modelo = $this->loadModel('Login');
 		$token = $this->token(60);
@@ -99,34 +98,34 @@ class Login extends Controlador
 		$send = new Email();
 		$send->recuperar_cuenta($_POST['correo'], $token, $recuperar[0]['usuario']);
 
-        print json_encode($recuperar);
-    }
-	public function salirAndroid()
-    {
+              print json_encode($recuperar);
+       }
+       public function salirAndroid()
+       {
 		header('Access-Control-Allow-Origin: *');
 		$obtener_modelo = $this->loadModel('Login');
 		$salir = $obtener_modelo->salirAndroid($_POST['id_usuario']);
-        return $salir;
-    }
-	public function logear()
-    {
-		header('Access-Control-Allow-Origin: *');
-		$this->se_requiere_logueo(false);
-		$obtener_modelo = $this->loadModel('Login');
-		$share = $this->loadModel('Share');
-		$loguear = $obtener_modelo->logear();
+               return $salir;
+       }
+       public function logear()
+       {
+              header('Access-Control-Allow-Origin: *');
+              $this->se_requiere_logueo(false);
+              $obtener_modelo = $this->loadModel('Login');
+              $share = $this->loadModel('Share');
+              $loguear = $obtener_modelo->logear();
 
-			if(($loguear[1]['dispositivo'] == 'celular')&&($loguear[2]['via'] == 'correcta')&&($_SESSION['id_operador_unidad'])!= 'select'){
-				$operacion = $this->loadModel('Operacion');
-				$bases = $this->loadModel('Bases');
-				$tail = $operacion->formadoAnyBase($bases, $_SESSION['id_operador_unidad']);
-				if($tail){
-					D::bug('Se quitó del cordon '.$tail);
-					$share->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
-				}
-			}
+              	if(($loguear[1]['dispositivo'] == 'celular')&&($loguear[2]['via'] == 'correcta')&&($_SESSION['id_operador_unidad'])!= 'select'){
+              		$operacion = $this->loadModel('Operacion');
+              		$bases = $this->loadModel('Bases');
+              		$tail = $operacion->formadoAnyBase($bases, $_SESSION['id_operador_unidad']);
+              		if($tail){
+              			D::bug('Se quitó del cordon '.$tail);
+              			$share->exitCordonFromLogin($_SESSION['id_usuario'],$_SESSION['id_operador_unidad']);
+              		}
+              	}
 
-        print json_encode($loguear);
-    }
+              print json_encode($loguear);
+       }
 }
 ?>

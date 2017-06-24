@@ -9,10 +9,12 @@ div.table-responsive div#conceptos_wrapper.dataTables_wrapper.form-inline.dt-boo
 </style>
 <div class="container">
 	<div class="row clearfix">
-		<div class="page-header">
-			<h1>
-				Viajes por operador
-			</h1>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					No procesados
+				</h1>
+			</div><!-- /.page-header -->
 		</div>
 		<?php
 		if($this->tiene_permiso('Ingresosoperador|index')){
@@ -81,7 +83,7 @@ $(document).ready(function() {
 	              $( api.column(7).footer() ).html('$ '+api.column(7).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			$( api.column(8).footer() ).html('$ '+api.column(8).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
 			$( api.column(9).footer() ).html('$ '+api.column(9).data().reduce(function(a,b){return intVal(a) + intVal(b);},0).toFixed(2));
-			if(api.rows().count() == '0'){$('#boton_accion').css( "visibility", "hidden" );}else{accion_operatorGroup('conceptos');}
+			if(api.rows().count() == '0'){$('#boton_accion').css( "visibility", "hidden" );$('#boton_accion').css( "display", "none" );}else{accion_operatorGroup('conceptos');}
 			<?php
 				if($vsp > 0){
 			?>

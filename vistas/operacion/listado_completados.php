@@ -20,7 +20,7 @@ div.table-responsive div#completados_wrapper.dataTables_wrapper.form-inline.dt-b
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Listado de completados
+					Viajes del ciclo
 				</h1>
 			</div><!-- /.page-header -->
 		</div>

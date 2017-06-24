@@ -95,3 +95,17 @@
 }
 .heartbeat{ -webkit-animation-name:heartbeat; -moz-animation-name:heartbeat; -o-animation-name:heartbeat; animation-name:heartbeat; }
 .animate-infinite-heartbeat { -webkit-animation: heartbeat 2s infinite; /* Chrome, Safari, Opera */ animation: heartbeat 2s infinite; }
+.blink_me {
+  animation: blinker 1s linear infinite;
+  position:absolute;
+  top:5px;
+  font-size:1.5em;
+  width:100%;
+  color:#fff;
+  z-index:1;
+  text-align:center;
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}

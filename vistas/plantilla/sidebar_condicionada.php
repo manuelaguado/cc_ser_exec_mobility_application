@@ -130,9 +130,9 @@
 				if($this->tiene_permiso('Ingresosoperador|index')){
 				?>
 				<li>
-					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/pausados');">
-						<i class="menu-icon fa fa-taxi"></i>
-						<span class="menu-text"> Pausados </span>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/procesados');">
+						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-left fa_sup" aria-hidden="true"></i></i>
+						<span class="menu-text"> Procesados </span>
 					</a>
 				</li>
 				<?php
@@ -142,9 +142,9 @@
 				if($this->tiene_permiso('Ingresosoperador|index')){
 				?>
 				<li>
-					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/procesados');">
-						<i class="menu-icon fa fa-money"><i class="fa fa-arrow-left fa_sup" aria-hidden="true"></i></i>
-						<span class="menu-text"> Procesados </span>
+					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>ingresosoperador/pausados');">
+						<i class="menu-icon fa fa-taxi"></i>
+						<span class="menu-text"> Pausados </span>
 					</a>
 				</li>
 				<?php

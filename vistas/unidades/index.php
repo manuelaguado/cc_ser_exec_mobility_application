@@ -9,14 +9,16 @@ div.table-responsive div#unidades_wrapper.dataTables_wrapper.form-inline.dt-boot
 </style>
 <div class="container">
 	<div class="row clearfix">
-		<div class="page-header">
-			<h1>
-				Control de vehiculos
-			</h1>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					Control de vehículos
+				</h1>
+			</div><!-- /.page-header -->
 		</div>
 		<?php
 		if($this->tiene_permiso('Unidades|add_unidad')){
-		?>	
+		?>
 		<div class="col-md-12 column menu_header_content">
 			<button class="btn btn-ar btn-primary" type="button" onclick="modal_nueva_unidad();">Nueva Unidad</button>
 		</div>

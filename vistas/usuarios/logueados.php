@@ -12,31 +12,33 @@ body{
 </style>
 <div class="container">
 	<div class="row clearfix">
-		<div class="page-header">
-			<h1>
-				Usuarios logueados
-			</h1>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					Control de logins
+				</h1>
+			</div><!-- /.page-header -->
 		</div>
 		<div class="col-md-12 column menu_header_content">
 			<?php
 			if($this->tiene_permiso('Login|switch_login_op')){
-				
+
 				$acceso = Controlador::getConfig(1,'login_operadores');
 				if($acceso['valor'] == 1){$checked = 'checked';}else{$checked = '';}
-				
-			?>	
-				<span class="label label-info arrowed-right arrowed-in">Permitir logueo</span>	
+
+			?>
+				<span class="label label-info arrowed-right arrowed-in">Permitir logueo</span>
 				<input onchange='switch_login_op()' id="switch_login_op" name="switch_login_op" class="ace ace-switch ace-switch-5" type="checkbox" <?php echo $checked; ?>/>
 				<span class="lbl">&nbsp;&nbsp;</span>
 			<?php
 			}
 			if($this->tiene_permiso('Login|force_all_sign_out')){
-			?>				
+			?>
 				<button class="btn btn-ar btn-primary" type="button" onclick="force_all_sign_out();">Desloguear a todos</button>
 			<?php
 			}
 			?>
-		</div>		
+		</div>
 		<div class="col-md-12 column">
 			<div class="table-responsive">
 				<table id="loginusr" class="display table table-striped" cellspacing="0" width="100%">
@@ -75,7 +77,7 @@ $(document).ready(function() {
 				"searchable":false,
 				"visible":true,
 				"render": function (status) {
-					return  status ;				
+					return  status ;
 				}
 			},
 			{

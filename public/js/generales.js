@@ -7,8 +7,14 @@
 			if(respuesta[0].resp=='timeout'){
 				window.location = url_app +  "login";
 			}
+			if(respuesta[0].resp=='intime'){
+				$('#message-center').html('');
+			}
 		},
-	error: function(){console.log('error de conectividad');}
+		error: function(){
+			console.log('error de conectividad');
+			$('#message-center').html('Verifique la conectividad con internet');
+		}
 	});
 }
 function carga_archivo(div_contenedor,ruta,parametros){

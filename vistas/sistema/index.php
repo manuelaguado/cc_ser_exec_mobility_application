@@ -1,13 +1,16 @@
 <div class="page-content">
-	<div class="page-header">
-		<h1>
-			Configuracion de CentralCar
-			<small>
-				<i class="ace-icon fa fa-angle-double-right"></i>
-				Configuracion de variables del sistema
-			</small>
-		</h1>
+	<div class="page-content">
+		<div class="page-header">
+			<h1>
+				Configuracion de CentralCar
+				<small>
+					<i class="ace-icon fa fa-angle-double-right"></i>
+					Configuracion de variables del sistema
+				</small>
+			</h1>
+		</div><!-- /.page-header -->
 	</div>
+
 
 	<div class="row">
 		<div class="col-xs-12">

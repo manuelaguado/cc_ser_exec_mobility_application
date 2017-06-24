@@ -11,12 +11,19 @@ body{
 }
 </style>
 <div class="container">
+	<div class="page-content">
+		<div class="page-header">
+			<h1>
+				Listado de usuarios
+			</h1>
+		</div><!-- /.page-header -->
+	</div>
 	<div class="row clearfix">
 		<div class="col-md-12 column menu_header_content">
 			<button class="btn btn-ar btn-primary" type="button" onclick="modal_add_usr();">Nuevo Usuario</button>
 			<?php
 			if($this->tiene_permiso('Roles|modal_roles')){
-			?>				
+			?>
 				<button class="btn btn-ar btn-primary" type="button" onclick="modal_roles();">Roles</button>
 			<?php
 			}

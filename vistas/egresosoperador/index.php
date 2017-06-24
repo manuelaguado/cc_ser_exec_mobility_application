@@ -9,10 +9,12 @@ div.table-responsive div#conceptos_wrapper.dataTables_wrapper.form-inline.dt-boo
 </style>
 <div class="container">
 	<div class="row clearfix">
-		<div class="page-header">
-			<h1>
-				Conceptos de cobro
-			</h1>
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					Conceptos de cobro
+				</h1>
+			</div><!-- /.page-header -->
 		</div>
 		<?php
 		if($this->tiene_permiso('Egresosoperador|add_concepto')){

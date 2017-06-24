@@ -9,12 +9,14 @@ div.table-responsive div#listado_vigente_wrapper.dataTables_wrapper.form-inline.
 </style>
 <div class="container">
 
-<div class="page-header">
-	<h1>
-		Listado de operadores vigentes
-	</h1>
-</div>
 
+	<div class="page-content">
+		<div class="page-header">
+			<h1>
+				Listado de operadores vigentes
+			</h1>
+		</div><!-- /.page-header -->
+	</div>
 	<div class="row clearfix">
 			<div class="col-md-12 column">
 				<div class="table-responsive">
@@ -61,7 +63,7 @@ $(document).ready(function() {
 				"targets": 10,
 				"searchable":false,
 				"render": function (status) {
-					return  status ;				
+					return  status ;
 				}
 			}
 		]
