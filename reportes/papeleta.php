@@ -99,7 +99,7 @@ class PAPELETA extends FPDI
                             $this->SetFont('Courier','I',8);
                             for($i=0;$i < count($viaje['adicional_desglose'])-1;$i++){
                                    $this->Cell(65, 5, '', 0,0, 'C', $fill);
-                                   $this->Cell(70, 5, $viaje['adicional_desglose'][$i]['etiqueta'], 0,0, 'R', $fill);
+                                   $this->Cell(70, 5, utf8_decode($viaje['adicional_desglose'][$i]['etiqueta']), 0,0, 'R', $fill);
 
                                    $this->Cell(20, 5, '', 0,0, 'R', $fill);
 

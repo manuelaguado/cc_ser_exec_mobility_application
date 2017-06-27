@@ -175,10 +175,6 @@ class OperacionModel{
                      'descripcion' => 'Servicio concluido'
               ),
               array(
-                     'clave' => 'C14',
-                     'descripcion' => 'Destino parcial'
-              ),
-              array(
                      'clave' => 'C10',
                      'descripcion' => 'Inicio de escala'
               ),
@@ -251,7 +247,7 @@ class OperacionModel{
                             // $minutos = ceil($upsSttcs['time_max']/60);  //tiempo de google maps
                             $minutos = ceil($tiempo_viaje_s/60); // tiempo de operador entre c8 y c9
                             $costo_final = self::costoFinal($metros,$minutos);
-                            
+
                      }else{
                             $costo_final = $costoData['costo'];
                      }
