@@ -226,7 +226,7 @@ class ClientesModel
 			':cat_tipo_tarifa'	=> $cat_tipo_tarifa,
 			':id_cliente'		=> $id_cliente,
 			':user_mod'	       => $_SESSION['id_usuario'],
-                     ':tabulado'	       => 0                     
+                     ':tabulado'	       => 0
 		);
 		$query->execute($data);
 	}
@@ -293,14 +293,15 @@ class ClientesModel
 				:user_alta,
 				:fecha_alta
 			)";
+              D::bug(str_replace(',','',substr($this->costo_base, 2)));
 		$query = $this->db->prepare($sql);
 		$query_resp = $query->execute(
 			array(
 				':id_cliente' => $this->id_cliente,
-                            ':costo_base' => substr($this->costo_base, 2),
-				':km_adicional' => substr($this->km_adicional, 2),
-                            ':costo_base_venta' => substr($this->costo_base_venta, 2),
-				':km_adicional_venta' => substr($this->km_adicional_venta, 2),
+                            ':costo_base' => str_replace(',','',substr($this->costo_base, 2)),
+				':km_adicional' => str_replace(',','',substr($this->km_adicional, 2)),
+                            ':costo_base_venta' => str_replace(',','',substr($this->costo_base_venta, 2)),
+				':km_adicional_venta' => str_replace(',','',substr($this->km_adicional_venta, 2)),
 				':descripcion' => $this->descripcion,
 				':nombre' => $this->nombre,
 				':inicio_vigencia' => date("Y-m-d H:i:s"),

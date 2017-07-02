@@ -418,11 +418,11 @@ function procesar_tarifa(){
 					$('#descripcion').val('');
 					$('#costo_base').val('');
 					$('#cat_tipo_tarifa').val('');
-					$('#tabular').val('0');
 					$('#km_adicional').val('');
 					$('#costo_base_venta').val('');
 					$('#km_adicional_venta').val('');
-					$("#tabulado").prop("checked", false);
+					$("#tabulado").prop("checked", true);
+					$('#tabular').val('1');
 					//$('#myModal').modal('hide');
 				}else{
 					 alerta('Alerta!','Error de conectividad de red CLI-21');
