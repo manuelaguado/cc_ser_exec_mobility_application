@@ -215,15 +215,18 @@ class ClientesModel
 			cat_statustarifa = :cat_tarifa_old
 			AND
 			cat_tipo_tarifa = :cat_tipo_tarifa
+                     AND
+                     tabulado = :tabulado
 		";
 		$query = $this->db->prepare($sql);
 		$data = array(
-			':fin_vigencia'		=> date("Y-m-d H:i:s"),
+			':fin_vigencia'	=> date("Y-m-d H:i:s"),
 			':cat_statustarifa'	=> 169,
 			':cat_tarifa_old'	=> 168,
 			':cat_tipo_tarifa'	=> $cat_tipo_tarifa,
 			':id_cliente'		=> $id_cliente,
-			':user_mod'			=> $_SESSION['id_usuario']
+			':user_mod'	       => $_SESSION['id_usuario'],
+                     ':tabulado'	       => 0                     
 		);
 		$query->execute($data);
 	}

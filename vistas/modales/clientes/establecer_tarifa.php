@@ -97,7 +97,7 @@
 										  <div class="form-group">
 											<label for="tabulado">¿Tabulado?</label>
 											<br>
-											<input onchange="switch_tabular()" id="tabulado" name="tabulado" class="ace ace-switch ace-switch-5" type="checkbox"/>
+											<input checked onchange="switch_tabular()" id="tabulado" name="tabulado" class="ace ace-switch ace-switch-5" type="checkbox"/>
 											<span class="lbl"></span>
 
 										  </div>
@@ -130,7 +130,7 @@
 							</div>
 						</div>
 						<div id="error_alerta" > </div>
-						<input type="hidden" id="tabular" name="tabular" value="0">
+						<input type="hidden" id="tabular" name="tabular" value="1">
 						<input type="hidden" id="id_cliente" name="id_cliente" value="<?=$id_cliente?>">
 						<div class="modal-footer">
 							<button  class="btn btn-ar btn-success" type="button" onclick="procesar_tarifa();">Procesar</button>
