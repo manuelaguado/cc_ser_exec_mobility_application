@@ -26,6 +26,104 @@ class Desarrollador extends Controlador
 
 		echo ceil((strtotime('00:39:47') - strtotime('00:00:00'))/60);
 	}
+	function replicar_tarifa($id_cliente){
+		$db = Controlador::direct_connectivity();
+		$sql = "
+			SELECT *
+			FROM
+				cl_tarifas_clientes AS tc
+			WHERE
+				tc.id_cliente = $id_cliente
+			AND tc.cat_statustarifa = 168
+		";
+		$sql_q = $db->prepare($sql);
+		$sql_q->execute();
+		$sqlr = $sql_q->fetchAll();
+		$tarifa = array();
+		$num = 0;
+		foreach ($sqlr as $row) {
+			$tarifa[$num]['costo_base'] = $row->costo_base;
+			$tarifa[$num]['km_adicional'] = $row->km_adicional;
+			$tarifa[$num]['costo_base_venta'] = $row->costo_base_venta;
+			$tarifa[$num]['km_adicional_venta'] = $row->km_adicional_venta;
+			$tarifa[$num]['descripcion'] = $row->descripcion;
+			$tarifa[$num]['nombre'] = $row->nombre;
+			$tarifa[$num]['inicio_vigencia'] = $row->inicio_vigencia;
+			$tarifa[$num]['cat_statustarifa'] = $row->cat_statustarifa;
+			$tarifa[$num]['cat_tipo_tarifa'] = $row->cat_tipo_tarifa;
+			$tarifa[$num]['tabulado'] = $row->tabulado;
+			$tarifa[$num]['user_alta'] = $row->user_alta;
+			$tarifa[$num]['fecha_alta'] = $row->fecha_alta;
+			$tarifa[$num]['fecha_mod'] = $row->fecha_mod;
+			$num++;
+		}
+
+		$sqld="
+		SET FOREIGN_KEY_CHECKS=0;
+		TRUNCATE cl_tarifas_clientes;
+		SET FOREIGN_KEY_CHECKS=1;
+		";
+		$stmt = $db->prepare($sqld);
+		$stmt->execute();
+		$stmt->closeCursor();
+
+		$sql2 = "
+			SELECT
+				cl_clientes.id_cliente
+			FROM
+				cl_clientes
+			WHERE
+			cl_clientes.parent = 0
+			AND cl_clientes.cat_statuscliente = 21
+			ORDER BY id_cliente ASC
+		";
+		$sql2_q = $db->prepare($sql2);
+		$sql2_q->execute();
+		$sql2_data = $sql2_q->fetchAll();
+		foreach ($sql2_data as $row) {
+			foreach($tarifa as $count=>$tar){
+				$insert = "
+				INSERT INTO `centralcar`.`cl_tarifas_clientes` (
+					`id_cliente`,
+					`costo_base`,
+					`km_adicional`,
+					`costo_base_venta`,
+					`km_adicional_venta`,
+					`descripcion`,
+					`nombre`,
+					`inicio_vigencia`,
+					`cat_statustarifa`,
+					`cat_tipo_tarifa`,
+					`tabulado`,
+					`user_alta`,
+					`fecha_alta`,
+					`fecha_mod`
+				)
+				VALUES
+					(
+						'".$row->id_cliente."',
+						'".$tar['costo_base']."',
+						'".$tar['km_adicional']."',
+						'".$tar['costo_base_venta']."',
+						'".$tar['km_adicional_venta']."',
+						'".$tar['descripcion']."',
+						'".$tar['nombre']."',
+						'".$tar['inicio_vigencia']."',
+						'".$tar['cat_statustarifa']."',
+						'".$tar['cat_tipo_tarifa']."',
+						'".$tar['tabulado']."',
+						'".$tar['user_alta']."',
+						'".$tar['fecha_alta']."',
+						'".$tar['fecha_mod']."'
+					);
+				";
+				$insert_q = $db->prepare($insert);
+				$insert_q->execute();
+				$lastInsertId = $db->lastInsertId();
+				echo "insert ".$row->id_cliente.'->'.$lastInsertId."<br>";
+			}
+		}
+	}
 	function selectone(){
 		$db = Controlador::direct_connectivity();
 		$sql = "
