@@ -185,8 +185,8 @@ class Operadores extends Controlador
 	public function liberarnumero($num){
 		$this->se_requiere_logueo(true,'Operadores|edita_operador');
 		$operadores = $this->loadModel('Operadores');
-		$operadores->liberarNumero($num);
-		echo "ok";
+		$ok = $operadores->liberarNumero($num);
+		print $ok? json_encode(array('resp' => true)):json_encode(array('resp' => false));
 	}
 	public function relacionar_autos($id_operador){
 		$this->se_requiere_logueo(true,'Operadores|relacionar_autos');

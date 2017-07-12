@@ -60,9 +60,9 @@ function liberar_numero(num){
 	$(document).ready(function() {
 		$.ajax({
 			url: url_app + 'operadores/liberarnumero/' + num,
-			dataType: 'html',
+			dataType: 'json',
 			success: function(resp_success){
-				if(resp_success == 'ok'){
+				if(resp_success['resp'] == true){
 					$('#myModal').modal('hide');
 					$('#operadores').DataTable().ajax.reload();
 				}

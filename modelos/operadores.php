@@ -540,7 +540,7 @@ class OperadoresModel
 				id_numeq = ".$id_numeq."
 		";
 		$query = $this->db->prepare($sql);
-		$query->execute();
+		return $query->execute();
 	}
 	function liberarStatOperNumEq($num){
 		$sql = "
@@ -551,11 +551,14 @@ class OperadoresModel
 				id_numeq = ".$num."
 		";
 		$query = $this->db->prepare($sql);
-		$query->execute();
+		return $query->execute();
 	}
 	function liberarNumero($num){
-		self::setStatNumEq($num,6);
-		self::liberarStatOperNumEq($num);
+              $do = false;
+              $ok = false;
+              $do = self::setStatNumEq($num,6);
+              if($do){$ok = self::liberarStatOperNumEq($num);}
+              return $ok;
 	}
        function setNumEq($arreglo){
 		foreach ($arreglo as $key => $value) {
