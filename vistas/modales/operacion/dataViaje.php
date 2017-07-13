@@ -12,15 +12,35 @@
 					<?php
 						foreach($data as $key => $val){
 							if($val){
-								echo '<tr>';
-								echo '<td>'.$key.'</td><td>'.$val."</td>";
-								echo '</tr>';
+								if($key == 'Revision'){
+									switch($val){
+										case '260':
+										$stat = 'Viaje redondo';
+										break;
+										case '261':
+										$stat = 'Multi usuario';
+										break;
+										case '262':
+										$stat = 'Multi destino';
+										break;
+										case '263':
+										$stat = 'Excepción Polanco Sta Fe';
+										break;
+									}
+									echo '<tr>';
+									echo '<td>Revisión</td><td>'.$stat."</td>";
+									echo '</tr>';
+								}else{
+									echo '<tr>';
+									echo '<td>'.$key.'</td><td>'.$val."</td>";
+									echo '</tr>';
+								}
 							}
 						}
 					?>
 					</table>
 			</div>
-			<div class="modal-footer">					
+			<div class="modal-footer">
 				<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cerrar</button>
 			</div>
 		</div>

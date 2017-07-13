@@ -9,6 +9,139 @@ class OperadoresModel
         } catch (PDOException $e) {
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
+}
+    function insertStateByOper($post){
+           foreach ($post as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $s = self::operadorData($this->id_operador);
+           $o = self::statusOperadorUnidad($this->id_operador);
+
+           if(($s[0]->cat_statusoperador == 8) && ($o[0]->exist == true)){
+                  $sql = "
+                         INSERT INTO `cr_state` (
+                                `id_operador`,
+                                `id_operador_unidad`,
+                                `numeq`,
+                                `state`,
+                                `flag1`,
+                                `activo`
+                         )
+                         VALUES
+                                (
+                                       '".$this->id_operador."',
+                                       '".$o[0]->id_operador_unidad."',
+                                       '".$this->id_numeq."',
+                                       'C2',
+                                       'C2',
+                                       '1'
+                                );
+                  ";
+                  $populate = $this->db->prepare($sql);
+                  $populate->execute();
+           }
+    }
+    function insertStateByStat($post){
+           foreach ($post as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+
+           $n = self::numeroAsignado($this->id_operador);
+           $o = self::statusOperadorUnidad($this->id_operador);
+
+           if(
+                  ($this->cat_statusoperador == 8) &&
+                  ($o[0]->exist == true) &&
+                  ($n != false)
+           ){
+                  $sql = "
+                         INSERT INTO `cr_state` (
+                                `id_operador`,
+                                `id_operador_unidad`,
+                                `numeq`,
+                                `state`,
+                                `flag1`,
+                                `activo`
+                         )
+                         VALUES
+                                (
+                                       '".$this->id_operador."',
+                                       '".$o[0]->id_operador_unidad."',
+                                       '".$n."',
+                                       'C2',
+                                       'C2',
+                                       '1'
+                                );
+                  ";
+                  $populate = $this->db->prepare($sql);
+                  $populate->execute();
+           }else if($this->cat_statusoperador != 8){
+                  $this->db->exec("UPDATE cr_state SET activo = '0' WHERE id_operador = ".$this->id_operador);
+           }
+           return $n;
+    }
+    function numeroAsignado($id_operador){
+           $sql="
+                  SELECT
+                  	n.num
+                  FROM
+                  	cr_operador AS o
+                  INNER JOIN cr_operador_numeq AS `on` ON `on`.id_operador = o.id_operador
+                  INNER JOIN cr_numeq AS n ON `on`.id_numeq = n.id_numeq
+                  WHERE
+                  	o.id_operador = $id_operador
+           ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           if($query->rowCount()>=1){
+                  foreach ($query->fetchAll() as $row) {
+                        $out = $row->num;
+                  }
+           }else{
+                  $out = false;
+           }
+           return $out;
+    }
+    function statusOperadorUnidad($id_operador){
+           $sql="
+                  SELECT
+                  	ou.id_operador_unidad,
+	             'true' as exist
+                  FROM
+                  	cr_operador AS o
+                  INNER JOIN cr_operador_unidad AS ou ON ou.id_operador = o.id_operador
+                  WHERE
+                  	o.id_operador = $id_operador
+                  AND ou.status_operador_unidad = 198
+                  LIMIT 0, 1
+           ";
+           $query = $this->db->prepare($sql);
+           $query->execute();
+           $array =  $query->fetchAll();
+           if($query->rowCount()>=1){
+                  return $array;
+           }
+    }
+    function caducarStateByNum($num){
+           $sql="
+           SELECT
+           	ou.id_operador_unidad
+           FROM
+           	cr_operador_numeq AS `on`
+           INNER JOIN cr_operador AS o ON `on`.id_operador = o.id_operador
+           INNER JOIN cr_operador_unidad AS ou ON ou.id_operador = o.id_operador
+           INNER JOIN cr_numeq AS n ON `on`.id_numeq = n.id_numeq
+           WHERE
+           	n.num = $num
+           AND ou.status_operador_unidad = 198
+           ";
+           $stmt = $this->db->prepare($sql);
+           $stmt->execute();
+           $data = $stmt->fetchAll();
+
+           foreach ($data as $row) {
+                 $this->db->exec("UPDATE cr_state SET activo = '0' WHERE id_operador_unidad = ".$row->id_operador_unidad);
+           }
     }
     function historia($id_operador){
            $sql="
@@ -352,7 +485,8 @@ class OperadoresModel
 			SELECT
 				fw_usuarios.nombres,
 				fw_usuarios.apellido_paterno,
-				fw_usuarios.apellido_materno
+				fw_usuarios.apellido_materno,
+                            cr_operador.cat_statusoperador
 			FROM
 				cr_operador
 			INNER JOIN fw_usuarios ON cr_operador.id_usuario = fw_usuarios.id_usuario
@@ -1001,20 +1135,26 @@ class acciones_operador extends SSP{
 						if(Controlador::tiene_permiso('Operadores|gestion_domicilios')){
 							$salida .= '<td><a data-rel="tooltip" data-original-title="Dómicilios del operador" class="green tooltip-success" onclick="modal_domicilios('.$id_operador.');"><i class="ace-icon fa fa-home bigger-130"></i></a></td>';
 						}
-						if(Controlador::tiene_permiso('Operadores|relacionar_autos')){
-							$salida .= '<td><a data-rel="tooltip" data-original-title="Autos asignados" class="green tooltip-success" onclick="relacionar_autos('.$id_operador.');"><i class="ace-icon fa fa-car bigger-130"></i></a></td>';
-						}
-						if(Controlador::tiene_permiso('Operadores|status_operador')){
-							$salida .= '<td><a data-rel="tooltip" data-original-title="Status del operador" class="green tooltip-success" onclick="status_operador('.$id_operador.')"><i class="ace-icon fa fa-check-square-o bigger-130"></i></a></td>';
-						}
-                                          if(Controlador::tiene_permiso('Operadores|numero_economico')){
 
-							$num_eq = self::numeq($id_operador,$db);
-							if($num_eq == 'NO ASIGNADO'){$nq = '<span style="color:red;">&nbsp;XX</span>';$color="red";}else{$color="green"; $nq = '<span style="color:#375da8;">&nbsp;'.$num_eq.'</span>';}
+                                          $num_eq = self::numeq($id_operador,$db);
+                                          if($num_eq == 'NO ASIGNADO'){$nq = '<span style="color:red;">&nbsp;XX</span>';$color="red";}else{$color="green"; $nq = '<span style="color:#375da8;">&nbsp;'.$num_eq.'</span>';}
 
-							$salida .= '<td><a data-rel="tooltip" data-original-title="Número económico" class="'.$color.' tooltip-success" onclick="numero_economico('.$id_operador.')"><i class="ace-icon fa fa-list-ol bigger-130"></i></a></td>';
-							$salida .= '<td>'.$nq.'</td>';
-						}
+
+
+                                          if(self::formado($id_operador,$db)){
+       						if(Controlador::tiene_permiso('Operadores|relacionar_autos')){
+       							$salida .= '<td><a data-rel="tooltip" data-original-title="Autos asignados" class="green tooltip-success" onclick="relacionar_autos('.$id_operador.');"><i class="ace-icon fa fa-car bigger-130"></i></a></td>';
+       						}
+       						if(Controlador::tiene_permiso('Operadores|status_operador')){
+       							$salida .= '<td><a data-rel="tooltip" data-original-title="Status del operador" class="green tooltip-success" onclick="status_operador('.$id_operador.')"><i class="ace-icon fa fa-check-square-o bigger-130"></i></a></td>';
+       						}
+                                                 if(Controlador::tiene_permiso('Operadores|numero_economico')){
+       							$salida .= '<td><a data-rel="tooltip" data-original-title="Número económico" class="'.$color.' tooltip-success" onclick="numero_economico('.$id_operador.')"><i class="ace-icon fa fa-list-ol bigger-130"></i></a></td>';
+       						}
+                                          }else{
+                                                 $salida .= '<td><a href="javascript:;" data-rel="tooltip" data-original-title="Operador en servicio, para realizar cambios el operador debe de estar en C2"  tooltip-success"><i class="fa fa-exclamation-triangle bigger-130" style="color:#dea400;"></i></a></td>';
+                                          }
+                                          $salida .= '<td>'.$nq.'</td>';
 
 						/*if(Controlador::tiene_permiso('Operadores|episodios')){
 							$salida .= '<a data-rel="tooltip" data-original-title="Episodios" class="green tooltip-success" onclick="carga_archivo(\'contenedor_principal\',\'' . URL_APP . 'operadores/episodios/'.$id_operador.'/\');"><i class="ace-icon fa fa-calendar bigger-130"></i></a>&nbsp;&nbsp;';
@@ -1041,6 +1181,28 @@ class acciones_operador extends SSP{
 			$out[] = $row;
 		}
 		return $out;
+	}
+       static function formado($id_operador,$db){
+		$query = "
+                     SELECT
+                     	'true' as c1
+                     FROM
+                     	cr_state AS stt
+                     WHERE
+                     	stt.activo = 1
+                     AND id_operador = $id_operador
+                     AND stt.flag1 = 'C1'
+		";
+
+		$query = $db->prepare($query);
+		$query->execute();
+		$result = $query->fetchAll();
+
+		if($query->rowCount()>=1){
+			return false;
+		}else{
+			return true;
+		}
 	}
 	static function numeq($id_operador,$db){
 		$query = "

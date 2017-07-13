@@ -209,7 +209,7 @@ class IngresosoperadorModel
            	vs.geo_origen AS geo_origen,
            	vs.geo_destino AS geo_destino,
            	vd.fecha_requerimiento,
-           	vd.redondo,
+           	vd.cat_revision,
            	cli1.nombre AS cliente,
            	cli2.nombre AS empresa,
            	cat.etiqueta AS tipo,
@@ -262,7 +262,7 @@ class IngresosoperadorModel
                          $array[$num]['geo_origen'] = $row->geo_origen;
                          $array[$num]['geo_destino'] = $row->geo_destino;
                          $array[$num]['fecha_requerimiento'] = $row->fecha_requerimiento;
-                         $array[$num]['redondo'] = $row->redondo;
+                         $array[$num]['cat_revision'] = $row->cat_revision;
                          $array[$num]['cliente'] = $row->cliente;
                          $array[$num]['empresa'] = $row->empresa;
                          $array[$num]['cat_tipo_tarifa'] = $row->cat_tipo_tarifa;

@@ -180,11 +180,13 @@ class Operadores extends Controlador
 	public function numero_economico_do(){
 		$this->se_requiere_logueo(true,'Operadores|edita_operador');
 		$operadores = $this->loadModel('Operadores');
+		$operadores->insertStateByOper($_POST);
 		print json_encode($operadores->setNumEq($_POST));
 	}
 	public function liberarnumero($num){
 		$this->se_requiere_logueo(true,'Operadores|edita_operador');
 		$operadores = $this->loadModel('Operadores');
+		$operadores->caducarStateByNum($num);
 		$ok = $operadores->liberarNumero($num);
 		print $ok? json_encode(array('resp' => true)):json_encode(array('resp' => false));
 	}
@@ -209,6 +211,27 @@ class Operadores extends Controlador
 	public function status_operador_do(){
 		$this->se_requiere_logueo(true,'Operadores|edita_operador');
 		$operadores = $this->loadModel('Operadores');
+		$num = $operadores->insertStateByStat($_POST);
+		if($num == false){$num = 'NULL';}
+		if($_POST['cat_statusoperador'] == 10){
+			$share = $this->loadModel('Share');
+			$operacion = $this->loadModel('Operacion');
+
+			$setStat['id_operador'] = $_POST['id_operador'];
+			$setStat['id_operador_unidad'] = 'NULL';
+			$setStat['id_episodio'] = 'NULL';
+			$setStat['id_viaje'] = 'NULL';
+			$setStat['num'] = $num;
+			$setStat['state'] = 'F6';
+			$setStat['flag1'] = 'F6';
+			$setStat['flag2'] = 'NULL';
+			$setStat['flag3'] = 'NULL';
+			$setStat['flag4'] = 'NULL';
+			$setStat['motivo'] = 'NULL';
+
+			$operacion->setF6($_POST['id_operador']);
+			$share->setStatOper($setStat);
+		}
 		print json_encode($operadores->setearstatusoperador($_POST));
 	}
 	public function comision_operador($id_operador){

@@ -164,11 +164,7 @@
 				?>
 				<?php
 				if(
-					($this->tiene_permiso('Egresosoperador|index')) OR
-					($this->tiene_permiso('Egresosoperador|multiusuario')) OR
-					($this->tiene_permiso('Egresosoperador|multidestino')) OR
-					($this->tiene_permiso('Egresosoperador|excepcion')) OR
-					($this->tiene_permiso('Egresosoperador|redondo'))
+					($this->tiene_permiso('Egresosoperador|index'))
 				){
 				?>
 				<li class="">

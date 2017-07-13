@@ -84,7 +84,7 @@ class OperacionModel{
                          cm2.etiqueta AS tipo_servicio,
                          cm3.etiqueta AS forma_pago,
                          emp.nombre AS empresa,
-                         vid.redondo AS redondo,
+                         vid.cat_revision AS cat_revision,
                          vid.apartado AS apartado
                   FROM
                          vi_viaje AS viv
@@ -119,7 +119,7 @@ class OperacionModel{
                          $array['Solicitado el'] 			= $row->fecha_solicitud;
                          $array['Asignado el'] 			= $row->fecha_asignacion;
                          $array['Forma de pago'] 			= $row->forma_pago;
-                         $array['Redondo'] 			= $row->redondo;
+                         $array['Revision'] 			= $row->cat_revision;
                          $array['Apartado'] 			= $row->apartado;
                          $array['Empresa'] 			= $row->empresa;
                          $array['Cliente'] =$row->nombre;

@@ -82,8 +82,8 @@ class PAPELETA extends FPDI
                      $perimetro = ($viaje['km_max'] < $kmsc)?'SI':'NO';
 
                      $this->Cell(10, 5, $perimetro, 0,0, 'C', $fill);
-                     $redondo = ($viaje['redondo'] == 1)?'SI':'NO';
-                     $this->Cell(10, 5, $redondo, 0,0, 'C', $fill);
+                     $cat_revision = ($viaje['cat_revision'] == 260)?'SI':'NO';
+                     $this->Cell(10, 5, $cat_revision, 0,0, 'C', $fill);
 
                      $ad_cost = $viaje['ad_cgravamen'] + $viaje['ad_sgravamen'];
 
