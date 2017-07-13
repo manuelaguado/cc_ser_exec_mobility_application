@@ -31,6 +31,7 @@
 							</div>
 						</div>
 					</div>
+					<div id="error_alerta" > </div>
 					<div class="modal-footer">
 						<button  onclick="nuevo_cobro();" class="btn btn-ar btn-success" type="button">Agregar</button>
 						<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cancelar</button>

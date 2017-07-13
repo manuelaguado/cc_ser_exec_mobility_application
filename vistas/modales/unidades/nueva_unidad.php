@@ -8,9 +8,9 @@
 				</h4>
 			</div>
 			<div class="modal-body" id="modal_content">
-				<form role="form" id="nuevo_vehiculo">	
+				<form role="form" id="nuevo_vehiculo">
 					<div class="panel panel-primary">
-						<div class="panel-body">			
+						<div class="panel-body">
 							<div class="row">
 								<div class="col-md-12">
 									  <div class="form-group">
@@ -51,6 +51,7 @@
 							</div>
 						</div>
 					</div>
+					<div id="error_alerta" > </div>
 					<div class="modal-footer">
 						<button  onclick="nuevo_vehiculo();" class="btn btn-ar btn-success" type="button">Agregar</button>
 						<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cancelar</button>

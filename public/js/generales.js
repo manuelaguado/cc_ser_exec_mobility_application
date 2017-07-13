@@ -27,6 +27,14 @@ function carga_archivo(div_contenedor,ruta,parametros){
 function limpia_div(div){
 	$('#'+div).html('');
 }
+function alerta_div(id_div,error_head,error_content){
+	var div_error = '<div class="alert alert-danger" id="error_new_user">';
+	div_error += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>';
+	div_error += '<strong><i class="fa fa-comments-o"></i>'+error_head+'</strong>';
+	div_error += '<br />'+error_content;
+	div_error += '</div>';
+	$('#'+id_div).html(div_error);
+}
 function alerta(header,body){
 
 	var modal =

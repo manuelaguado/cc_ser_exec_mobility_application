@@ -10,7 +10,7 @@
 			<div class="modal-body" id="modal_content">
 				<form role="form" id="edita_modelo">
 					<div class="panel panel-primary">
-						<div class="panel-body">			
+						<div class="panel-body">
 							<div class="row">
 								<div class="col-md-12">
 									  <div class="form-group">
@@ -28,11 +28,12 @@
 									  <div class="form-group">
 										<label for="descripcion">Descripción</label>
 										<textarea id="descripcion" name="descripcion" type="text" class="form-control"  placeholder="Descripción"><?php echo $modelo[0][4]; ?></textarea>
-									  </div>	
+									  </div>
 								</div>
 							</div>
 						</div>
 					</div>
+					<div id="error_alerta" > </div>
 					<div class="modal-footer">
 						<button  onclick="editar_metodo();" class="btn btn-ar btn-success" type="button">Editar</button>
 						<button  onclick="eliminar_par();" class="btn btn-ar btn-danger" type="button">Eliminar Par</button>

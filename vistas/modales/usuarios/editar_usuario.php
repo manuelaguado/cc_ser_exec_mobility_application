@@ -10,7 +10,7 @@
 			<div class="modal-body" id="modal_content">
 				<form role="form" id="edita_usuario">
 					<div class="panel panel-primary">
-						<div class="panel-body">			
+						<div class="panel-body">
 							<div class="row">
 								<div class="col-md-6">
 									  <div class="form-group">
@@ -74,6 +74,7 @@
 							</div>
 						</div>
 					</div>
+					<div id="error_alerta" > </div>
 					<input type="hidden" id="cat_status" name="cat_status" value="<?php echo $cat_status; ?>">
 					<div class="modal-footer">
 						<button  onclick="editar_permisos();" class="btn btn-ar btn-success" data-dismiss="modal" type="button">Permisos</button>

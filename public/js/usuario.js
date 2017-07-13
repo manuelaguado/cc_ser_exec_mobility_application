@@ -3,7 +3,7 @@
 		$.ajax({
 			url: 'usuarios/modal_add_usr',
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -11,7 +11,7 @@
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-01');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-01');}
 		});
 	} );
 }
@@ -21,15 +21,15 @@ function editar_perfil(){
 	if( $('#nombres').get(0).value == "" )	msj_error+='Olvidó ingresar Nombre.<br />';
 	if( $('#apellido_paterno').get(0).value == "")	msj_error+='Olvidó ingresar el apellido paterno.<br />';
 	if( $('#apellido_materno').get(0).value == "")	msj_error+='Olvidó ingresar el apellido materno.<br />';
-	
+
 	if( $('#correo').get(0).value == "" )	msj_error+='Olvidó ingresar Correo.<br />';
     var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-    if (!regex.test($('#correo').val().trim())) msj_error+='El correo tiene un formato inválido.<br />';	
-	
+    if (!regex.test($('#correo').val().trim())) msj_error+='El correo tiene un formato inválido.<br />';
+
 	if( $('#password').get(0).value == "" )	msj_error+='Olvidó ingresar Contraseña.<br />';
 	if( $('#password2').get(0).value == "") msj_error+='Olvidó ingresar Confimación de contraseña.<br />';
 	if( $('#password').get(0).value != $('#password2').get(0).value) msj_error+='Las contraseñas no empatan.<br />';
-	
+
 	if( !msj_error == "" ){
 		alerta('Faltan datos', msj_error);
 		return false;
@@ -48,7 +48,7 @@ function editar_perfil(){
 					alerta('Alerta!', resp_success['mensaje']);
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-02');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-02');}
 		});
 	} );
 }
@@ -65,7 +65,7 @@ function accion_de_fila(id_tabla){
 			$.ajax({
 				url: 'usuarios/datos_usuario/' + user_id,
 				dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -73,7 +73,7 @@ function accion_de_fila(id_tabla){
 						$(this).remove();
 					});
 				},
-				error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-03');}	
+				error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-03');}
 			});
 		} );
 	} );
@@ -113,19 +113,10 @@ function graba_user(){
 					$('#password2').get(0).value = "";
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-04');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-04');}
 		});
 	} );
 
-}
-
-function alerta_div(id_div,error_head,error_content){
-	var div_error = '<div class="alert alert-danger" id="error_new_user">';
-	div_error += '<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>';
-	div_error += '<strong><i class="fa fa-comments-o"></i>'+error_head+'</strong>';
-	div_error += '<br />'+error_content;
-	div_error += '</div>';
-	$('#'+id_div).html(div_error);
 }
 
 function editar_usuario(){
@@ -137,8 +128,8 @@ function editar_usuario(){
 	if( $('#id_rol').get(0).value == "" )	msj_error+='Olvidó seleccionar Rol de usuario.<br />';
 	if( $('#password').get(0).value != $('#password2').get(0).value) msj_error+='Las contraseñas no empatan.<br />';
 	if( $('#id_ubicacion').get(0).value == "" )	msj_error+='Olvidó Seleccionar la Ubicación.<br />';
-	
-	
+
+
 	if( !msj_error == "" ){
 		alerta('Faltan datos', msj_error);
 		return false;
@@ -157,16 +148,16 @@ function editar_usuario(){
 					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-05');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-05');}
 		});
 	} );
 }
 function chk_stat_user(valor){
-	if($("#chk_cat_status").is(':checked')) {  
+	if($("#chk_cat_status").is(':checked')) {
 		$('#cat_status').get(0).value = "3";
-	} else { 
-		$('#cat_status').get(0).value = "4";	
-	} 
+	} else {
+		$('#cat_status').get(0).value = "4";
+	}
 }
 function baja_usuario(){
 	$(document).ready(function() {
@@ -182,7 +173,7 @@ function baja_usuario(){
 					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-06');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-06');}
 		});
 	} );
 }
@@ -204,7 +195,7 @@ function tyc(stat) {
 					window.location ="inicio";
 				}
 			},
-			error: function(respuesta){ console.log('Error en el proceso TYC');}	
+			error: function(respuesta){ console.log('Error en el proceso TYC');}
 		});
 	}else{
 		salirAlternativo();
@@ -215,7 +206,7 @@ function user_actions(id_usuario){
 		$.ajax({
 			url: 'usuarios/datos_usuario/' + id_usuario,
 			dataType: 'html',
-			success: function(resp_success){			
+			success: function(resp_success){
 				var modal =  resp_success;
 				$(modal).modal().on('shown.bs.modal',function(){
 					//console.log(modal);
@@ -223,7 +214,7 @@ function user_actions(id_usuario){
 					$(this).remove();
 				});
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-07');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-07');}
 		});
 	} );
 }
@@ -232,7 +223,7 @@ function tomar_posesion(id_usuario){
 		$.ajax({
 			url: 'usuarios/tomar_posesion/' + id_usuario,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -240,7 +231,7 @@ function tomar_posesion(id_usuario){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-08');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-08');}
 		});
 	} );
 }
@@ -259,7 +250,7 @@ function poseer(){
 					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-09');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-09');}
 		});
 	} );
 }
@@ -268,7 +259,7 @@ function liberar_posesion(id_usuario){
 		$.ajax({
 			url: 'usuarios/liberar_posesion/' + id_usuario,
 			dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -276,7 +267,7 @@ function liberar_posesion(id_usuario){
 						$(this).remove();
 					});
 				},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-10');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-10');}
 		});
 	} );
 }
@@ -294,7 +285,7 @@ function exorcizar(){
 					alerta_div('error_alerta',resp_success['mensaje'],resp_success['error']);
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-11');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red USR-11');}
 		});
 	} );
 }

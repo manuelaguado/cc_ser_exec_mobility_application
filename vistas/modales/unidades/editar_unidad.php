@@ -8,9 +8,9 @@
 				</h4>
 			</div>
 			<div class="modal-body" id="modal_content">
-				<form role="form" id="editar_vehiculo">	
+				<form role="form" id="editar_vehiculo">
 					<div class="panel panel-primary">
-						<div class="panel-body">			
+						<div class="panel-body">
 							<div class="row">
 								<div class="col-md-12">
 									  <div class="form-group">
@@ -51,6 +51,7 @@
 							</div>
 						</div>
 					</div>
+					<div id="error_alerta" > </div>
 					<div class="modal-footer">
 					<input type="hidden" name="id_unidad" id="id_unidad" value="<?=$vehiculo['id_unidad']?>">
 						<button  onclick="editar_vehiculo();" class="btn btn-ar btn-success" type="button">Editar</button>

@@ -33,9 +33,10 @@
 					</div>
 				</div>
 			</div>
-			<div class="modal-footer">					
+                     <div id="error_alerta" > </div>
+			<div class="modal-footer">
 				<button data-dismiss="modal" class="btn btn-ar btn-success" type="button" id="add">Cerrar</button>
-			</div>			
+			</div>
 		</div>
 	</div>
 </div>

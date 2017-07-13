@@ -3,7 +3,7 @@ function modal_nueva_unidad(){
 		$.ajax({
 			url: 'unidades/add_unidad',
 			dataType: 'html',
-			success: function(resp_success){			
+			success: function(resp_success){
 				var modal =  resp_success;
 				$(modal).modal().on('shown.bs.modal',function(){
 					//console.log(modal);
@@ -11,14 +11,16 @@ function modal_nueva_unidad(){
 					$(this).remove();
 				});
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-01');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-01');}
 		});
 	} );
 }
+
 function nuevo_vehiculo(){
 	var msj_error="";
-	if( $('#id_marca').get(0).value == "" ){ msj_error+='Olvidó seleccionar la marca.<br />'; /*$('#usuario').css({background:'#F4CECD'}); */ }
+	if( $('#id_marca').get(0).value == "" ) msj_error+='Olvidó seleccionar la marca.<br />';
 	if( $('#id_modelo').get(0).value == "" )	msj_error+='Olvidó seleccionar el modelo.<br />';
+	if( $('#cat_status_unidad').get(0).value == "" )	msj_error+='Olvidó seleccionar el estado de la unidad.<br />';
 	if( $('#year').get(0).value == "")	msj_error+='Olvidó ingresar el año.<br />';
 	if( $('#placas').get(0).value == "")	msj_error+='Olvidó ingresar las placas.<br />';
 	if( $('#motor').get(0).value == "" )	msj_error+='Olvidó ingresar el número de motor.<br />';
@@ -27,24 +29,21 @@ function nuevo_vehiculo(){
 		alerta_div('error_alerta','Error en la captura de datos.',msj_error);
 		return false;
 	}
-
-	$(document).ready(function() {
-		$.ajax({
-			url: 'unidades/add_unidad_do',
-			type: 'POST',
-			data: $("#nuevo_vehiculo").serialize(),
-			dataType: 'json',
-			success: function(resp_success){
-				if (resp_success['resp'] == true) {
-					$('#myModal').modal('hide');
-					$('#unidades').DataTable().ajax.reload();
-				}else{
-					 alerta('Alerta!','Error de conectividad de red UNIT-02');
-				}
-			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-03');}	
-		});
-	} );
+	$.ajax({
+		url: 'unidades/add_unidad_do',
+		type: 'POST',
+		data: $("#nuevo_vehiculo").serialize(),
+		dataType: 'json',
+		success: function(resp_success){
+			if (resp_success['resp'] == true) {
+				$('#myModal').modal('hide');
+				$('#unidades').DataTable().ajax.reload();
+			}else{
+				 alerta('Alerta!','Error de conectividad de red UNIT-02');
+			}
+		},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-03');}
+	});
 }
 function accion_unidades(id_tabla){
 	$(document).ready(function() {
@@ -54,7 +53,7 @@ function accion_unidades(id_tabla){
 			$.ajax({
 				url: 'unidades/edita_unidad/' + id,
 				dataType: 'html',
-				success: function(resp_success){			
+				success: function(resp_success){
 					var modal =  resp_success;
 					$(modal).modal().on('shown.bs.modal',function(){
 						//console.log(modal);
@@ -62,7 +61,7 @@ function accion_unidades(id_tabla){
 						$(this).remove();
 					});
 				},
-				error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-04');}	
+				error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-04');}
 			});
 		} );
 	} );
@@ -93,7 +92,7 @@ function editar_vehiculo(){
 					alerta('Alerta!','Error de conectividad de red UNIT-05');
 				}
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-06');}		
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-06');}
 		});
 	} );
 }
@@ -103,11 +102,11 @@ function getModelos(){
 		$.ajax({
 			url: 'unidades/getModelos/' + id_marca,
 			dataType: 'html',
-			success: function(resp_success){			
+			success: function(resp_success){
 				$('#id_modelo').html(resp_success);
 				$("#id_modelo").removeAttr("readonly");
 			},
-			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-07');}	
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red UNIT-07');}
 		});
 	} );
 }
@@ -130,7 +129,7 @@ function asignarAutomovil(id_unidad) {
 					}
 				}
 			},
-			error: function(respuesta){alerta('Alerta!','Error de conectividad de red OPER-06');}	
+			error: function(respuesta){alerta('Alerta!','Error de conectividad de red OPER-06');}
 		});
 	} );
 }
