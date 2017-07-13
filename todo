@@ -1,2 +1,17 @@
 TODO: Movimientos financieros Operador
 TODO: Procesar individualmente hasta el ultimo viaje
+Checkbox en solicitud:
+       Viaje multiusuario
+       Viaje multidestino
+       Polanco Sta FE Excep
+Listados de checkbox pausado
+       Listado multiusuario
+       Listado multidestino
+       Polanco Sta FE Excep
+busqueda dentro de pop de tarifas
+dar de baja total play y/o obtener requisitos de baja
+
+Edicion de tarifas con borrado logico y carga de datos existentes
+
+buscar apariciones de redondo y reparar capacidades
+sincronizar los cambios en los operadores con el listado de c2

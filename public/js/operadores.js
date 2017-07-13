@@ -2,9 +2,9 @@ function activar_operador(id_usuario){
 	$(document).ready(function() {
 		$.ajax({
 			url: url_app + 'operadores/activar/' + id_usuario,
-			dataType: 'html',
+			dataType: 'json',
 			success: function(resp_success){
-				if(resp_success == 'ok'){
+				if(resp_success['resp'] == true){
 					$('#operadores').DataTable().ajax.reload();
 				}
 			},

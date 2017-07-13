@@ -579,11 +579,13 @@ class OperacionModel{
                   	tc.tabulado,
                   	c2.etiqueta AS tipo,
                      vi.id_tarifa_cliente,
-	              tc.cat_tipo_tarifa
+	              tc.cat_tipo_tarifa,
+                     vd.cat_revision
                   FROM
                   	vi_viaje AS vi
                   INNER JOIN cl_tarifas_clientes AS tc ON vi.id_tarifa_cliente = tc.id_tarifa_cliente
                   INNER JOIN cm_catalogo AS c2 ON tc.cat_tipo_tarifa = c2.id_cat
+                  INNER JOIN vi_viaje_detalle AS vd ON vd.id_viaje = vi.id_viaje
                   WHERE
                   	vi.id_viaje = $id_viaje
            ";
@@ -599,6 +601,7 @@ class OperacionModel{
                          $array['tipo'] = $row->tipo;
                          $array['cat_tipo_tarifa']=$row->cat_tipo_tarifa;
                          $array['id_tarifa_cliente'] = $row->id_tarifa_cliente;
+                         $array['revision'] = $row->cat_revision;
                   }
            }
 
@@ -609,7 +612,23 @@ class OperacionModel{
            }else{
                   $array['a2'] = false;
            }
-
+           D::bug($array['revision']);
+           if(!is_null($array['revision'])){
+                  switch($array['revision']){
+                         case '260': //Viaje redondo
+                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '264' WHERE id_viaje = ".$id_viaje);
+                         break;
+                         case '261': //Multi usuario
+                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '265' WHERE id_viaje = ".$id_viaje);
+                         break;
+                         case '262': //Multi destino
+                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '266' WHERE id_viaje = ".$id_viaje);
+                         break;
+                         case '263': //Excepción Polanco Sta Fe
+                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '267' WHERE id_viaje = ".$id_viaje);
+                         break;
+                  }
+           }
           if($array['tabulado'] == 1){
               $existe_c12 = self::existeEnViaje('C12',$id_viaje);
               $existe_t3 = self::existeEnViaje('T3',$id_viaje);
@@ -2403,14 +2422,14 @@ class OperacionModel{
 		return $this->db->lastInsertId();
 	}
 	function insert_detallesViaje($service){
-		$redondo = (isset($service->viaje_redondo))?'1':'0';
+		$cat_revision = (isset($service->revision))?$service->revision:NULL;
 		$apartado = (($service->temporicidad)==162)?'1':'0';
 		$sql = "
 			INSERT INTO `vi_viaje_detalle` (
 				`id_viaje`,
 				`fecha_solicitud`,
 				`fecha_requerimiento`,
-				`redondo`,
+				`cat_revision`,
 				`apartado`,
 				`observaciones`,
 				`msgPaqArray`,
@@ -2422,7 +2441,7 @@ class OperacionModel{
 					'".$service->id_viaje."',
 					'".date("Y-m-d H:i:s")."',
 					'".$service->fecha_hora."',
-					'".$redondo."',
+					'".$cat_revision."',
 					'".$apartado."',
 					'".$service->observaciones."',
 					'".$service->msgPaqArray."',

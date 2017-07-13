@@ -10,7 +10,7 @@ class EgresosoperadorModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-    function activarc12t3_do($id_viaje){
+    function quitarPausa_do($id_viaje){
               $qry = "UPDATE `vi_viaje` SET `cat_status_viaje` = 172 WHERE (`id_viaje` = $id_viaje);";
               $query = $this->db->prepare($qry);
               $query->execute();
@@ -490,7 +490,7 @@ class EgresosoperadorModel
                   $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
            );
     }
-    function tabuladosEnC12Get($array){
+    function serviciosPausados($array,$id){
            ini_set('memory_limit', '256M');
            $table = 'vi_viaje AS viv';
            $primaryKey = 'id_viaje';
@@ -583,13 +583,13 @@ class EgresosoperadorModel
                   INNER JOIN cr_numeq AS num_eq ON cr_operador_numeq.id_numeq = num_eq.id_numeq
            ';
            $where = '
-                  viv.cat_status_viaje = 247
+                  viv.cat_status_viaje = '.$id.'
            ';
            $orden = '
                   GROUP BY
                          viv.id_viaje
            ';
-           $render_table = new acciones_tabuladosEnC12;
+           $render_table = new acciones_serviciosPausados;
            return json_encode(
                   $render_table->complex( $array, $this->dbt, $table, $primaryKey, $columns, null, $where, $inner, null, $orden )
            );
@@ -597,7 +597,7 @@ class EgresosoperadorModel
 }
 
 
-class acciones_tabuladosEnC12 extends SSP{
+class acciones_serviciosPausados extends SSP{
 	static function data_output ( $columns, $data, $db )
 	{
 		$out = array();
@@ -624,7 +624,7 @@ class acciones_tabuladosEnC12 extends SSP{
                                           </a>
                                    ";
                                    $salida .= "
-                                          <a onclick='activarc12t3(".$id_viaje.")' data-rel='tooltip' data-original-title='Activar'>
+                                          <a onclick='quitarPausa(".$id_viaje.")' data-rel='tooltip' data-original-title='Activar'>
                                                  <i class='fa fa-play-circle-o' style='font-size:1.8em; color:green;'></i>
                                           </a>
                                    ";

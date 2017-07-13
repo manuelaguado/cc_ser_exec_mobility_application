@@ -162,15 +162,87 @@
 				<?php
 				}
 				?>
-
 				<?php
-				if($this->tiene_permiso('Egresosoperador|index')){
+				if(
+					($this->tiene_permiso('Egresosoperador|index')) OR
+					($this->tiene_permiso('Egresosoperador|multiusuario')) OR
+					($this->tiene_permiso('Egresosoperador|multidestino')) OR
+					($this->tiene_permiso('Egresosoperador|excepcion')) OR
+					($this->tiene_permiso('Egresosoperador|redondo'))
+				){
 				?>
-				<li>
-					<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/tabuladosEnC12');">
-						<i class="menu-icon fa fa-map-signs"></i>
-						<span class="menu-text"> Por revisar C12 y T3 </span>
+				<li class="">
+					<a href="#" class="dropdown-toggle">
+						<i class="menu-icon fa fa-caret-right"></i>
+
+						Revisión de viajes
+						<b class="arrow fa fa-angle-down"></b>
 					</a>
+
+					<b class="arrow"></b>
+
+					<ul class="submenu nav-show" style="display: none;">
+						<?php
+						if($this->tiene_permiso('Egresosoperador|index')){
+						?>
+						<li>
+							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/tabuladosEnC12');">
+								<i class="menu-icon fa fa-map-signs"></i>
+								<span class="menu-text"> Por revisar C12 y T3 </span>
+							</a>
+						</li>
+						<?php
+						}
+						?>
+						<?php
+						if($this->tiene_permiso('Egresosoperador|index')){
+						?>
+						<li>
+							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/pausadosMultiusuario');">
+								<i class="menu-icon fa fa-map-signs"></i>
+								<span class="menu-text"> Multi-Usuario </span>
+							</a>
+						</li>
+						<?php
+						}
+						?>
+						<?php
+						if($this->tiene_permiso('Egresosoperador|index')){
+						?>
+						<li>
+							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/pausadosMultidestino');">
+								<i class="menu-icon fa fa-map-signs"></i>
+								<span class="menu-text"> Multi-Destino </span>
+							</a>
+						</li>
+						<?php
+						}
+						?>
+						<?php
+						if($this->tiene_permiso('Egresosoperador|index')){
+						?>
+						<li>
+							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/pausadosExcepcionPolanco');">
+								<i class="menu-icon fa fa-map-signs"></i>
+								<span class="menu-text"> Polanco Sta FE Excep </span>
+							</a>
+						</li>
+						<?php
+						}
+						?>
+						<?php
+						if($this->tiene_permiso('Egresosoperador|index')){
+						?>
+						<li>
+							<a href="javascript:void(0)" onclick="carga_archivo('contenedor_principal','<?=URL_APP?>egresosoperador/pausadosRedondos');">
+								<i class="menu-icon fa fa-map-signs"></i>
+								<span class="menu-text"> Viajes Redondos </span>
+							</a>
+						</li>
+						<?php
+						}
+						?>
+					</ul>
 				</li>
 				<?php
 				}

@@ -13,7 +13,7 @@
 					<br><br>¿Está seguro de continuar con esta acción?
 			</div>
 			<div class="modal-footer">
-				<button onclick="activarc12t3_do(<?=$id_viaje?>)" class="btn btn-ar btn-success" type="button" id="add">Activar viaje</button>
+				<button onclick="quitarPausa_do(<?=$id_viaje?>)" class="btn btn-ar btn-success" type="button" id="add">Activar viaje</button>
 				<button  data-dismiss="modal" class="btn btn-ar btn-default" type="button">Cerrar</button>
 			</div>
 		</div>

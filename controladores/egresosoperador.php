@@ -6,24 +6,75 @@ class Egresosoperador extends Controlador
 	$this->se_requiere_logueo(true,'Egresosoperador|index');
        require URL_VISTA.'egresosoperador/index.php';
     }
-    public function activarc12t3($id_viaje){
+    public function quitarPausa($id_viaje){
            $this->se_requiere_logueo(true,'Egresosoperador|index');
-           require URL_VISTA.'modales/egresosoperador/activarc12t3.php';
+           require URL_VISTA.'modales/egresosoperador/quitarPausa.php';
     }
-    public function activarc12t3_do($id_viaje){
+    public function quitarPausa_do($id_viaje){
            $this->se_requiere_logueo(true,'Egresosoperador|index');
            $egresos = $this->loadModel('Egresosoperador');
-           print $egresos->activarc12t3_do($id_viaje);
+           print $egresos->quitarPausa_do($id_viaje);
     }
+
+
+
+
+
+
+
     public function tabuladosEnC12(){
            $this->se_requiere_logueo(true,'Egresosoperador|index');
            require URL_VISTA.'egresosoperador/tabuladosEnC12.php';
     }
+    public function pausadosRedondos(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           require URL_VISTA.'egresosoperador/pausadosRedondos.php';
+    }
+    public function pausadosMultiusuario(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           require URL_VISTA.'egresosoperador/pausadosMultiusuario.php';
+    }
+    public function pausadosMultidestino(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           require URL_VISTA.'egresosoperador/pausadosMultidestino.php';
+    }
+    public function pausadosExcepcionPolanco(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           require URL_VISTA.'egresosoperador/pausadosExcepcionPolanco.php';
+    }
+
+
     public function tabuladosEnC12Get(){
            $this->se_requiere_logueo(true,'Egresosoperador|index');
            $modelo = $this->loadModel('Egresosoperador');
-           print $modelo->tabuladosEnC12Get($_POST);
+           print $modelo->serviciosPausados($_POST,247);
     }
+    public function pausadosRedondosGet(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           $modelo = $this->loadModel('Egresosoperador');
+           print $modelo->serviciosPausados($_POST,264);
+    }
+    public function pausadosMultiusuarioGet(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           $modelo = $this->loadModel('Egresosoperador');
+           print $modelo->serviciosPausados($_POST,265);
+    }
+    public function pausadosMultidestinoGet(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           $modelo = $this->loadModel('Egresosoperador');
+           print $modelo->serviciosPausados($_POST,266);
+    }
+    public function pausadosExcepcionPolancoGet(){
+           $this->se_requiere_logueo(true,'Egresosoperador|index');
+           $modelo = $this->loadModel('Egresosoperador');
+           print $modelo->serviciosPausados($_POST,267);
+    }
+
+
+
+
+
+
     public function cron(){
            //exit();
            session_destroy();

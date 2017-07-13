@@ -9,7 +9,6 @@ class Operacion extends Controlador
 	public function cron(){
               //exit();
               session_destroy();
-
 		$share = $this->loadModel('Share');
 		$operacion = $this->loadModel('Operacion');
 

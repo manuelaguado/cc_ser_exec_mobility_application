@@ -122,9 +122,9 @@ function establecer_cobro(id_operador) {
 		});
 	} );
 }
-function activarc12t3(id_viaje){
+function quitarPausa(id_viaje){
 	$.ajax({
-		url: 'egresosoperador/activarc12t3/' + id_viaje,
+		url: 'egresosoperador/quitarPausa/' + id_viaje,
 		dataType: 'html',
 			success: function(resp_success){
 				var modal =  resp_success;
@@ -137,9 +137,9 @@ function activarc12t3(id_viaje){
 		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red EGOP-11');}
 	});
 }
-function activarc12t3_do(id_viaje){
+function quitarPausa_do(id_viaje){
 	$.ajax({
-		url: 'egresosoperador/activarc12t3_do/' + id_viaje,
+		url: 'egresosoperador/quitarPausa_do/' + id_viaje,
 		dataType: 'json',
 		success: function(resp_success){
 			if (resp_success['resp'] == true) {

@@ -416,7 +416,7 @@ class OperadoresModel
 			':user_alta' => $_SESSION['id_usuario'],
 			':fecha_alta' => date("Y-m-d H:i:s")
 		));
-		return $this->db->lastInsertId();
+              return $result? array('resp' => true,'id' => $this->db->lastInsertId()):array('resp' => false);
 	}
 	function noexisteOperador($id_usuario){
 		$sql="

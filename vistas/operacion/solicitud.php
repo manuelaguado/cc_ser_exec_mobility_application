@@ -102,10 +102,6 @@ span.input-icon > textarea {
 
 										<div class="col-sm-5">
 											<label style="position:relative; top:5px;">
-												<input value="1" name="viaje_redondo" id="viaje_redondo" class="ace ace-switch ace-switch-6" type="checkbox" />
-												<span class="lbl">&nbsp;Redondo</span>
-											</label>
-											<label style="position:relative; top:5px;">
 												<input onchange="apartadoActive()" value="1" name="tipo_temporicidad" id="tipo_temporicidad" class="ace ace-switch ace-switch-6" type="checkbox" />
 												<span class="lbl">&nbsp;Apartado</span>
 											</label>
@@ -190,6 +186,44 @@ span.input-icon > textarea {
 											<input readonly="" type="text" class="input-sm" id="spinDestino" name="spinDestino"/>
 										</div>
 									</div>
+
+                                                               <div class="radio">
+										<label for="viaje_redondo" class="col-sm-9 control-label no-padding-right">Redondo</label>
+                                                                      <div class="col-sm-3">
+                                                                             <label style="position:relative; top:5px;">
+                                                                                    <input value="260" name="revision" id="viaje_redondo" type="radio" class="ace input-lg" />
+                                                                                    <span class="lbl bigger-120">&nbsp;</span>
+                                                                             </label>
+                                                                      </div>
+									</div>
+                                                               <div class="radio">
+										<label for="multiusuario" class="col-sm-9 control-label no-padding-right">Multi-Usuario</label>
+                                                                      <div class="col-sm-3">
+                                                                             <label style="position:relative; top:5px;">
+                                                                                    <input value="261" name="revision" id="multiusuario" type="radio" class="ace input-lg" />
+                                                                                    <span class="lbl bigger-120">&nbsp;</span>
+                                                                             </label>
+                                                                      </div>
+									</div>
+                                                               <div class="radio">
+										<label for="multidestino" class="col-sm-9 control-label no-padding-right">Multi-Destino</label>
+                                                                      <div class="col-sm-3">
+                                                                             <label style="position:relative; top:5px;">
+                                                                                    <input value="262" name="revision" id="multidestino" type="radio" class="ace input-lg" />
+                                                                                    <span class="lbl bigger-120">&nbsp;</span>
+                                                                             </label>
+                                                                      </div>
+									</div>
+                                                               <div class="radio">
+										<label for="polanco_stafe" class="col-sm-9 control-label no-padding-right">Polanco-Sta FE Excepción</label>
+                                                                      <div class="col-sm-3">
+                                                                             <label style="position:relative; top:5px;">
+                                                                                    <input value="263" name="revision" id="polanco_stafe" type="radio" class="ace input-lg" />
+                                                                                    <span class="lbl bigger-120">&nbsp;</span>
+                                                                             </label>
+                                                                      </div>
+									</div>
+
 
 								</div>
 								<div class="col-sm-3">

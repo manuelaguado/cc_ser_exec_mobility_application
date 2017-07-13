@@ -1997,6 +1997,18 @@ class accionesviajes_pausados extends SSP{
                                           }elseif($status_viaje == 251){
                                                  $icon = "fa fa-play";
                                                  $t = 'Viaje pausado, no se procesará para pago';
+                                          }elseif($status_viaje == 264){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Redondo en pausa para revision con el operador';
+                                          }elseif($status_viaje == 265){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Multiusuario en pausa para revision con el operador';
+                                          }elseif($status_viaje == 266){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Multidestino en pausa para revision con el operador';
+                                          }elseif($status_viaje == 267){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Excepción Polanco-Sta Fe en pausa para revision con el operador';
                                           }
                                           $salida = '
                                           <div class="infobox infobox-green infobox-actions infobox-dark" >
@@ -2673,6 +2685,18 @@ class accionesviajes_operador extends SSP{
                                           }elseif($status_viaje == 251){
                                                  $icon = "fa fa-play";
                                                  $t = 'Viaje pausado, no se procesará para pago';
+                                          }elseif($status_viaje == 264){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Redondo en pausa para revision con el operador';
+                                          }elseif($status_viaje == 265){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Multiusuario en pausa para revision con el operador';
+                                          }elseif($status_viaje == 266){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Multidestino en pausa para revision con el operador';
+                                          }elseif($status_viaje == 267){
+                                                 $icon = "fa fa-play";
+                                                 $t = 'Excepción Polanco-Sta Fe en pausa para revision con el operador';
                                           }
                                           $salida = '
                                           <div class="infobox infobox-green infobox-actions infobox-dark" >

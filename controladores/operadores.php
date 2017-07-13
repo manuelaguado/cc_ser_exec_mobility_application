@@ -167,8 +167,8 @@ class Operadores extends Controlador
 		$this->se_requiere_logueo(true,'Operadores|edita_operador');
 		$operadores = $this->loadModel('Operadores');
 		$id_operador = $operadores->altaOperador($id_usuario);
-		$operadores->altaOperadornumeq($id_operador,$id_usuario);
-		echo "ok";
+		$ok = $operadores->altaOperadornumeq($id_operador,$id_usuario);
+		print json_encode($ok);
 	}
 	public function numero_economico($id_operador){
 		$this->se_requiere_logueo(true,'Operadores|numero_economico');
