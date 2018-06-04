@@ -1,6 +1,27 @@
 <?php
 error_reporting(0);
 class SSP {
+	static function data_output_alt ( $columns, $data )
+	{
+		$out = array();
+
+		for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+			$row = array();
+
+			for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+				$column = $columns[$j];
+				$real = $column['real'];
+				if ( isset( $column['formatter'] ) ) {
+					$row[$j] = $column['formatter']( $data[$i]->$real, $data[$i] );
+				}
+				else {
+					$row[$j] = $data[$i]->$real;
+				}
+			}
+			$out[] = $row;
+		}
+		return $out;
+	}
 	static function data_output ( $columns, $data )
 	{
 		$out = array();
