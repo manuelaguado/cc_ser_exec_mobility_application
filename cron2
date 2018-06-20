@@ -1,0 +1,33 @@
+*/1 * * * * curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 2s  && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 4s  && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 6s  && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 8s  && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 10s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 12s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 14s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 15s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 16s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 18s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 20s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 22s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 24s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 26s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 28s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 30s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 32s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 34s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 36s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 38s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 40s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 42s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 44s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 46s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 48s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 50s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 52s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 54s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 56s && curl -k https://centralcar.mx/operacion/cron
+*/1 * * * * sleep 58s && curl -k https://centralcar.mx/operacion/cron
+*/10 * * * * curl -k https://centralcar.mx/operacion/cron10
+15 3 * * * curl -k https://centralcar.mx/egresosoperador/cron

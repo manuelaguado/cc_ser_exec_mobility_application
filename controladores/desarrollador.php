@@ -4,29 +4,8 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
-	function costoFinal($metros,$minutos){
-              if(($minutos > 120)OR($metros > 30000)){
-                     $costo = 260;
-                     $costo_final = self::costoexcedente($metros-30000,$minutos-120,$costo);
-              }else{
-                     $costo_final = 260;
-              }
-              echo $costo_final;
-       }
-       function costoexcedente($metros,$minutos,$costo){
-              if(($minutos > 30)OR($metros > 7500)){
-                     $cost = $costo+65;
-                     $costo_final = self::costoexcedente($metros-7500,$minutos-30,$cost);
-              }else{
-                     $costo_final = $costo+65;
-              }
-              return $costo_final;
-       }
-	function diff(){
-
-		echo ceil((strtotime('00:39:47') - strtotime('00:00:00'))/60);
-	}
 	function replicar_tarifa($id_cliente){
+		ini_set('max_execution_time', 300);
 		$db = Controlador::direct_connectivity();
 		$sql = "
 			SELECT *
@@ -123,6 +102,71 @@ class Desarrollador extends Controlador
 				echo "insert ".$row->id_cliente.'->'.$lastInsertId."<br>";
 			}
 		}
+	}
+
+	public function getAutoCatalog(){
+		ini_set('max_execution_time', 300);
+		$remote = file_get_contents('http://www.autocosmos.com.mx/clasificados/getmarcas');
+		$marcas = json_decode($remote);
+		self::insertMarcas($marcas);
+	}
+	private function insertMarcas($marcas){
+		ini_set('max_execution_time', 300);
+		$conn = Controlador::direct_connectivity();
+		foreach($marcas as $marca){
+			$sql = "INSERT INTO cr_marcas (marca, slug) VALUES (:marca, :slug)";
+			$query = $conn->prepare($sql);
+			$result = $query->execute(array(':marca' => utf8_decode($marca->Text), ':slug' => self::slug($marca->Text)));
+			$id_marca = $conn->lastInsertId();
+			echo $marca->Text.'Init....<br>';
+			$remote = file_get_contents("http://www.autocosmos.com.mx/clasificados/getmodelos?id=".$marca->Value);
+			$modelos = json_decode($remote);
+			foreach($modelos as $modelo){
+				$sql = "INSERT INTO cr_modelos (id_marca, modelo, slug) VALUES (:id_marca, :modelo, :slug)";
+				$query = $conn->prepare($sql);
+				$query->execute(array(':id_marca' => $id_marca, ':modelo' => utf8_decode($modelo->Text), ':slug' => self::slug($modelo->Text)));
+				echo '        '.$modelo->Text.'  Insert ...<br>';
+			}
+			echo $marca->Text.'  -- Finish....<br>';
+		}
+
+	}
+	static public function slug($text)
+	{
+		$text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+		$text = trim($text, '-');
+		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+		$text = strtolower($text);
+		$text = preg_replace('~[^-\w]+~', '', $text);
+		if (empty($text))
+		{
+		return 'n-a';
+		}
+		return $text;
+	}
+
+
+	function costoFinal($metros,$minutos){
+              if(($minutos > 120)OR($metros > 30000)){
+                     $costo = 260;
+                     $costo_final = self::costoexcedente($metros-30000,$minutos-120,$costo);
+              }else{
+                     $costo_final = 260;
+              }
+              echo $costo_final;
+       }
+       function costoexcedente($metros,$minutos,$costo){
+              if(($minutos > 30)OR($metros > 7500)){
+                     $cost = $costo+65;
+                     $costo_final = self::costoexcedente($metros-7500,$minutos-30,$cost);
+              }else{
+                     $costo_final = $costo+65;
+              }
+              return $costo_final;
+       }
+	function diff(){
+
+		echo ceil((strtotime('00:39:47') - strtotime('00:00:00'))/60);
 	}
 	function selectone(){
 		$db = Controlador::direct_connectivity();
@@ -1277,52 +1321,6 @@ class Desarrollador extends Controlador
 
 
 		echo '>>>>'.date("Y-m-d H:i:s", time());
-	}
-	public function getAutoCatalog(){
-		$url = 'http://www.autocosmos.com.mx/clasificados/getmarcas';
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_URL,$url);
-		$marcas=curl_exec($ch);
-		$marcas = json_decode($marcas);
-		self::insertMarcas($marcas);
-	}
-	private function insertMarcas($marcas){
-		$conn = Controlador::direct_connectivity();
-		foreach($marcas as $marca){
-			$sql = "INSERT INTO AAAAMarca (marca, slug) VALUES (:marca, :slug)";
-			$query = $conn->prepare($sql);
-			$result = $query->execute(array(':marca' => $marca->Text, ':slug' => self::slug($marca->Text)));
-			$id_marca = $conn->lastInsertId();
-			echo $marca->Text.'Init....<br>';
-			$url = "http://www.autocosmos.com.mx/clasificados/getmodelos/".$marca->Value."";
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_URL,$url);
-			$modelos=curl_exec($ch);
-			$modelos = json_decode($modelos);
-			foreach($modelos as $modelo){
-				$sql = "INSERT INTO AAAAModelo (id_marca, modelo, slug) VALUES (:id_marca, :modelo, :slug)";
-				$query = $conn->prepare($sql);
-				$query->execute(array(':id_marca' => $id_marca, ':modelo' => $modelo->Text, ':slug' => self::slug($modelo->Text)));
-			}
-			echo $marca->Text.'Finish....<br>';
-		}
-	}
-	static public function slug($text)
-	{
-	  $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
-	  $text = trim($text, '-');
-	  $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-	  $text = strtolower($text);
-	  $text = preg_replace('~[^-\w]+~', '', $text);
-	  if (empty($text))
-	  {
-		return 'n-a';
-	  }
-	  return $text;
 	}
 	public function generar_numeros_economicos($cantidad){
 		for($i=1;$i<=$cantidad;$i++){

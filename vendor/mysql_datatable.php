@@ -200,7 +200,7 @@ class SSP {
 	static function sql_exec ( $db, $bindings, $sql=null )
 	{
 		//echo($sql);
-		D::dt($sql);
+		//D::dt($sql);
 		if ( $sql === null ) {
 			$sql = $bindings;
 		}
