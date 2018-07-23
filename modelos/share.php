@@ -11,8 +11,8 @@ class ShareModel
     }
        function setStatOper($setStat){
               foreach ($setStat as $key => $value) {
-			$this->$key = strip_tags($value);
-		}
+          			$this->$key = strip_tags($value);
+          		}
               if(!$_SESSION['id_usuario']){$user = 1;}else{$user = $_SESSION['id_usuario'];}
               $sql = "
                      INSERT INTO `cr_state` (

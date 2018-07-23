@@ -2646,7 +2646,7 @@ class accionesviajes_operador extends SSP{
                                           case 'mapsroutes':
                                           $salida = '
                                           <div class="infobox infobox-red infobox-alter infobox-dark" >
-							<div class="infobox-icon center" style="width: 60px;" data-rel="tooltip" data-original-title="Costos adicionales">
+							<div class="infobox-icon center" style="width: 60px;" data-rel="tooltip" data-original-title="Google maps">
                                                         <a href="https://www.google.com.mx/maps/dir/'.$id_viaje = $data[$i][ 'geo_origen' ].'/'.$id_viaje = $data[$i][ 'geo_destino' ].'/" target="_blank">
                                                                <i class="ace-icon fa fa-map-marker"></i>
                                                         </a>
@@ -2667,7 +2667,7 @@ class accionesviajes_operador extends SSP{
                                           case 'alternativas':
                                           $salida = '
                                           <div class="infobox infobox-pink infobox-alter infobox-dark" >
-							<div class="infobox-icon center" style="width: 60px;" onclick="variantes_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales">
+							<div class="infobox-icon center" style="width: 60px;" onclick="variantes_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="Variantes de ruta">
                                                         <i class="ace-icon fa fa-arrows-alt"></i>
 							</div>
                                                  <div style="text-align:center;">

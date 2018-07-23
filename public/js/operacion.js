@@ -1547,10 +1547,10 @@ function meteralCordon(id_operador_unidad,id_episodio,base,statuscordon){
 		});
 	} );
 }
-function selectClave(id_viaje){
+function selectClave(id_viaje, id_operador_unidad){
 	$(document).ready(function() {
 		$.ajax({
-			url: 'operacion/selectClave/' + id_viaje,
+			url: 'operacion/selectClave/' + id_viaje + '/' + id_operador_unidad,
 			dataType: 'html',
 				success: function(resp_success){
 					var modal =  resp_success;

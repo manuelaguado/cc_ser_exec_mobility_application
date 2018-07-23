@@ -1,23 +1,23 @@
 <?php
 class Operacion extends Controlador
 {
-    public function index()
-    {
-	$this->se_requiere_logueo(true,'Operacion|index');
-       require URL_VISTA.'operacion/index.php';
-    }
+  public function index()
+  {
+      $this->se_requiere_logueo(true,'Operacion|index');
+      require URL_VISTA.'operacion/index.php';
+  }
 	public function cron(){
-              //exit();
-              session_destroy();
-		$share = $this->loadModel('Share');
-		$operacion = $this->loadModel('Operacion');
+      //exit();
+      session_destroy();
+      $share = $this->loadModel('Share');
+      $operacion = $this->loadModel('Operacion');
 
-		if($operacion->cordon_hash(1)){$this->transmitir('doit','updcrd1');}
-		if($operacion->serv_cve_hash(179)){$this->transmitir('doit','updasignados');}
-		if($operacion->servicio_hash(170)){$this->transmitir('doit','updpendientes');}
-		if($operacion->servicio_hash(188)){$this->transmitir('doit','updpendientes');}
+      if($operacion->cordon_hash(1)){$this->transmitir('doit','updcrd1');}
+      if($operacion->serv_cve_hash(179)){$this->transmitir('doit','updasignados');}
+      if($operacion->servicio_hash(170)){$this->transmitir('doit','updpendientes');}
+      if($operacion->servicio_hash(188)){$this->transmitir('doit','updpendientes');}
 
-              $operacion->asignar_viajes(1,$share);
+      $operacion->asignar_viajes(1,$share);
 
 	}
 	public function cron10(){
@@ -26,7 +26,7 @@ class Operacion extends Controlador
 		$notificaciones = $operacion->notificacionesApartados();
 		$this->transmitir(json_encode($notificaciones),'notificarApartados');
 	}
-       public function modal_activar_c1($id_operador, $num){
+  public function modal_activar_c1($id_operador, $num){
 		$this->se_requiere_logueo(true,'Operacion|activar_c1');
 		$model = $this->loadModel('Operacion');
 		$vehiculos = $model->elegirVehiculo($id_operador);
@@ -814,14 +814,15 @@ class Operacion extends Controlador
 		$data = $operacion->dataViaje($id_viaje);
 		require URL_VISTA.'modales/operacion/dataViaje.php';
 	}
-       public function selectClave($id_viaje){
-              $this->se_requiere_logueo(true,'Operacion|solicitud');
-              $operacion = $this->loadModel('Operacion');
+      public function selectClave($id_viaje, $id_operador_unidad){
+          $this->se_requiere_logueo(true,'Operacion|solicitud');
+          $operacion = $this->loadModel('Operacion');
 
-		$claves = $operacion->selectClave();
+          $currentCve = $operacion->getCurrentCveOperador($id_operador_unidad);
+          $claves = $operacion->selectClave();
 
-		require URL_VISTA.'modales/operacion/selectClave.php';
-       }
+          require URL_VISTA.'modales/operacion/selectClave.php';
+      }
        public function setClaveNum($id_viaje,$clave){
               $this->se_requiere_logueo(true,'Operacion|solicitud');
               require URL_VISTA.'modales/operacion/setClaveNumConfirm.php';

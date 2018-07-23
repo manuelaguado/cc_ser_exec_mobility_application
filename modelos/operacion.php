@@ -9,6 +9,40 @@ class OperacionModel{
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    public function getCurrentCveOperador($id_operador_unidad){
+        $qry = "
+            SELECT
+            cr_state.state,
+            cm_catalogo.valor
+            FROM
+            cr_state
+            INNER JOIN cm_catalogo ON cr_state.state = cm_catalogo.etiqueta
+            WHERE
+            cr_state.id_operador_unidad = $id_operador_unidad
+            AND (
+            cr_state.flag2 = 'A10'
+            OR cr_state.flag2 = 'F15'
+            OR cr_state.flag2 = 'F13'
+            OR cr_state.flag2 = 'T1'
+            OR cr_state.flag2 = 'T2'
+            )
+            AND cm_catalogo.catalogo = 'clavesitio'
+            ORDER BY
+            cr_state.id_state DESC
+            LIMIT 0,
+            1
+        ";
+        $query = $this->db->prepare($qry);
+        $query->execute();
+        $array = array();
+        if($query->rowCount()>=1){
+            foreach ($query->fetchAll() as $row){
+                $array['clave']	=	$row->state;
+                $array['valor']	=	$row->valor;
+            }
+        }
+        return $array;
+    }
     function historia_viaje($id_viaje){
            $sql="
            SELECT
@@ -612,7 +646,7 @@ class OperacionModel{
            }else{
                   $array['a2'] = false;
            }
-           D::bug($array['revision']);
+
            if(!is_null($array['revision'])){
                   switch($array['revision']){
                          case '260': //Viaje redondo
@@ -626,6 +660,9 @@ class OperacionModel{
                          break;
                          case '263': //Excepción Polanco Sta Fe
                          $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '267' WHERE id_viaje = ".$id_viaje);
+                         break;
+                         case '269': //Normal
+                         // sin actualizaciones.
                          break;
                   }
            }
@@ -726,6 +763,7 @@ class OperacionModel{
            return $this->db->lastInsertId();
     }
     public function routesalternatives($origen,$destino,$id_statics,$id_viaje){
+
             $url='https://maps.googleapis.com/maps/api/directions/json?origin='.$origen.'&destination='.$destino.'&alternatives=true&key='.GOOGLE_DIRECTIONS;
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
@@ -747,7 +785,19 @@ class OperacionModel{
 
            foreach($decode->routes as $num=>$val){
                   $kapa = $val->overview_polyline->points;
-                  $result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
+
+                  //$result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS);
+
+                  $url='https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key='.GOOGLE_MAPS;
+  								$curl = curl_init();
+  								curl_setopt($curl, CURLOPT_URL, $url);
+  								curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  								curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+  								curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+  								$result = curl_exec($curl);
+  								curl_close($curl);
+
                   $imagen = Controller::token(6).".png";
                   chdir('../archivo');
                   $dir = $year."/".$mes."/".$dia."/".$id_viaje."/";
@@ -776,6 +826,7 @@ class OperacionModel{
                   $kms[$num] = $alt['km'];
                   $time[$num]= $alt['sec'];
                   if($num > 0){$img_main = ($kms[$num] > $kms[$num-1])?$image_main[$num]:$image_main[$num-1];}
+
            }
            if($num == 0){$img_main = $image_main[$num];}
            $upsSttcs['kmss_max'] = max($kms);
@@ -1070,7 +1121,7 @@ class OperacionModel{
 				vcl.id_cliente AS id_cliente
 			FROM
 				vi_viaje AS viv
-			INNER JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
+			LEFT JOIN vi_viaje_detalle AS vcd ON vcd.id_viaje = viv.id_viaje
 			INNER JOIN vi_viaje_clientes AS vcl ON vcl.id_viaje = viv.id_viaje
 			INNER JOIN cl_clientes AS clc ON vcl.id_cliente = clc.id_cliente
 			INNER JOIN cl_clientes AS clp ON clc.parent = clp.id_cliente
@@ -1853,106 +1904,104 @@ class OperacionModel{
 		}
 		if($alAire == 0){return false;}else{return true;}
 	}
-	function setear_status_viaje($post, ShareModel $share=NULL){
+  function setear_status_viaje($post, ShareModel $share=NULL){
 
-		$stat_process = true;
-		$qrymissing = array();
-		$id_operador_unidad = self::getIdOperadorUnidadViaje($post['id_viaje']);
-		switch($post['stat']){
-			case '170':
-				if(!isset($post['status_operador'])){
-					$qrymissing = array('qrymissing' => 'status_operador' );
-					$stat_process = false;
-				}
-				$sql = "UPDATE vi_viaje SET id_operador_unidad = NULL, id_episodio = NULL, id_cordon = NULL WHERE id_viaje = ".$post['id_viaje'];
-			break;
-			case '173':
-				if(!$post['cat_cancelaciones']){
-					$qrymissing = array('qrymissing' => 'cat_cancelaciones' );
-					$stat_process = false;
-				}
-				if(($post['origen'] == 'asignados')&&(!isset($post['status_operador']))){
-					$qrymissing = array('qrymissing' => 'status_operador' );
-					$stat_process = false;
-				}
-				$sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
-			break;
-		}
+        $stat_process = true;
+        $qrymissing = array();
+        $id_operador_unidad = self::getIdOperadorUnidadViaje($post['id_viaje']);
+        switch($post['stat']){
+              case '170':
+                  if(!isset($post['status_operador'])){
+                      $qrymissing = array('qrymissing' => 'status_operador' );
+                      $stat_process = false;
+                  }
+                  $sql = "UPDATE vi_viaje SET id_operador_unidad = NULL, id_episodio = NULL, id_cordon = NULL WHERE id_viaje = ".$post['id_viaje'];
+              break;
+              case '173':
+                  if(!$post['cat_cancelaciones']){
+                      $qrymissing = array('qrymissing' => 'cat_cancelaciones' );
+                      $stat_process = false;
+                  }
+                  if(($post['origen'] == 'asignados')&&(!isset($post['status_operador']))){
+                      $qrymissing = array('qrymissing' => 'status_operador' );
+                      $stat_process = false;
+                  }
+                  $sql = "UPDATE vi_viaje SET cat_cancelaciones =  ".$post['cat_cancelaciones']." WHERE id_viaje = ".$post['id_viaje'];
+              break;
+        }
 
-		if($stat_process){
-			$success = true;
-			try {
-				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if($stat_process){
+              $success = true;
+              try {
+                  $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                  $this->db->beginTransaction();
+                  $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '".$post['stat']."' WHERE id_viaje = ".$post['id_viaje']);
+                  if(isset($sql)){$this->db->exec($sql);}
+                  $this->db->commit();
+              } catch (Exception $e) {
+                  $this->db->rollBack();
+                  $success = false;
+              }
+        }else{
+              $success = false;
+        }
 
-				$this->db->beginTransaction();
-				$this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '".$post['stat']."' WHERE id_viaje = ".$post['id_viaje']);
-				if(isset($sql)){$this->db->exec($sql);}
-				$this->db->commit();
+        if($success){
+              $id_operador = $share->getIdOperador($id_operador_unidad);
+              $id_episodio = $share->getIdEpisodio($id_operador_unidad);
 
-			} catch (Exception $e) {
-				$this->db->rollBack();
-				$success = false;
-			}
+              switch($post['stat']){
+                  case '170':
+                      $token = 'SOL:'.Controller::token(60);
+                      switch($post['status_operador']){
+                          case 'suspender':
+                              /*Setear en suspendido*/
+                              self::setF6($id_operador);
+                              $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'F6','F6','NULL','NULL','NULL','VIAJE EN PROCESO',$post['id_viaje']);
+                          break;
+                          case 'omitir':
+                              $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C19','C1','C19','F11','NULL','CLIENTE REASIGNADO',$post['id_viaje']);
+                          break;
+                      }
+                  break;
+                  case '172':
+                      if($post['origen'] == 'cancelados'){
+                          $viaje = self::idensViaje($post['id_viaje']);
+                          self::procesarViajeFinalizado($viaje);
+                      }
+                  break;
+                  case '173':
+                      if($post['origen'] == 'asignados'){
+                          $token = 'SOL:'.Controller::token(60);
+                          switch($post['status_operador']){
+                              case 'segundo':
+                                  $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
+                                  /*se ingresa al cordon de segundo*/
+                                  $share->formarse_directo($id_episodio,$id_operador_unidad,'1','115');
+                              break;
+                              case 'cola':
+                                  $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
+                                  /*Se ingresa al cordon*/
+                                  $share->formarse_directo($id_episodio,$id_operador_unidad,'1','113');
+                              break;
+                              case 'omitir':
+                                  $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
+                              break;
+                          }
+                      }
+                  break;
+              }
 
-		}else{
-			$success = false;
-		}
+              $output = array('resp' => true , 'mensaje' => 'se seteo a '.$post['stat'].' satisfactoriamente' );
+              $print = $output + $qrymissing;
+              return json_encode($print);
+        }else{
+              $output = array('resp' => false , 'mensaje' => 'No se seteo a '.$post['stat'] );
+              $print = $output + $qrymissing;
+              return json_encode($print);
+        }
+  }
 
-		if($success){
-                     $id_operador = $share->getIdOperador($id_operador_unidad);
-                     $id_episodio = $share->getIdEpisodio($id_operador_unidad);
-			switch($post['stat']){
-				case '170':
-					$token = 'SOL:'.Controller::token(60);
-					switch($post['status_operador']){
-						case 'suspender':
-							/*Setear en suspendido*/
-							self::setF6($id_operador);
-                                                 $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'F6','F6','NULL','NULL','NULL','VIAJE EN PROCESO',$post['id_viaje']);
-						break;
-						case 'omitir':
-                                                 $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C19','C1','C19','F11','NULL','CLIENTE REASIGNADO',$post['id_viaje']);
-						break;
-					}
-				break;
-                            case '172':
-                                   if($post['origen'] == 'cancelados'){
-                                          $viaje = self::idensViaje($post['id_viaje']);
-                                          self::procesarViajeFinalizado($viaje);
-                                   }
-                            break;
-				case '173':
-					if($post['origen'] == 'asignados'){
-						$token = 'SOL:'.Controller::token(60);
-						switch($post['status_operador']){
-							case 'segundo':
-                                                        $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
-                                                        /*se ingresa al cordon de segundo*/
-                                                        $share->formarse_directo($id_episodio,$id_operador_unidad,'1','115');
-							break;
-							case 'cola':
-                                                        $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
-                                                        /*Se ingresa al cordon*/
-                                                        $share->formarse_directo($id_episodio,$id_operador_unidad,'1','113');
-							break;
-							case 'omitir':
-                                                        $share->setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'C6','C1','C6','F11','NULL','Se canceló el servicio',$post['id_viaje']);
-							break;
-						}
-
-					}
-				break;
-			}
-
-			$output = array('resp' => true , 'mensaje' => 'se seteo a '.$post['stat'].' satisfactoriamente' );
-			$print = $output + $qrymissing;
-			return json_encode($print);
-		}else{
-			$output = array('resp' => false , 'mensaje' => 'No se seteo a '.$post['stat'] );
-			$print = $output + $qrymissing;
-			return json_encode($print);
-		}
-	}
 	function cancel_apartado_set($post, ShareModel $share=NULL){
 
 		$stat_process = true;
@@ -2422,7 +2471,6 @@ class OperacionModel{
 		return $this->db->lastInsertId();
 	}
 	function insert_detallesViaje($service){
-		$cat_revision = (isset($service->revision))?$service->revision:NULL;
 		$apartado = (($service->temporicidad)==162)?'1':'0';
 		$sql = "
 			INSERT INTO `vi_viaje_detalle` (
@@ -2441,7 +2489,7 @@ class OperacionModel{
 					'".$service->id_viaje."',
 					'".date("Y-m-d H:i:s")."',
 					'".$service->fecha_hora."',
-					'".$cat_revision."',
+					'".$service->revision."',
 					'".$apartado."',
 					'".$service->observaciones."',
 					'".$service->msgPaqArray."',
@@ -2449,6 +2497,7 @@ class OperacionModel{
 					'".date("Y-m-d H:i:s")."'
 				);
 		";
+
 		$query = $this->db->prepare($sql);
 		$query->execute();
 	}
@@ -4752,7 +4801,7 @@ class acciones_asignados extends SSP{
 
 					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 
-                                   $salida .= '<a onclick="selectClave('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Establecer Clave"><i class="fa fa-sliders" style="font-size:1.4em; color:#b16500;"></i></a>&nbsp;&nbsp;';
+                                   $salida .= '<a onclick="selectClave('.$id_viaje.','.$id_operador_unidad.')" href="javascript:;" data-rel="tooltip" data-original-title="Establecer Clave"><i class="fa fa-sliders" style="font-size:1.4em; color:#b16500;"></i></a>&nbsp;&nbsp;';
 
 
 

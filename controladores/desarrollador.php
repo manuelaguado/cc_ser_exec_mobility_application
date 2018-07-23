@@ -4,6 +4,178 @@ class Desarrollador extends Controlador
 	function __construct(){
 		if(DEVELOPMENT == false){exit();}
 	}
+	public function initstate(){
+		$db = Controlador::direct_connectivity();
+		self::truncate_init();
+		$sql="
+		SELECT
+		op.id_operador,
+		opu.id_operador_unidad,
+		num.num,
+		op.cat_statusoperador
+		FROM
+		cr_operador AS op
+		INNER JOIN cr_operador_unidad AS opu ON opu.id_operador = op.id_operador
+		INNER JOIN cr_operador_celular AS opcel ON opcel.id_operador = op.id_operador
+		INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = op.id_operador
+		INNER JOIN cr_numeq AS num ON cr_operador_numeq.id_numeq = num.id_numeq
+		GROUP BY
+		opu.id_operador
+		ORDER BY
+		op.id_operador ASC
+
+		";
+		$stmt = $db->prepare($sql);
+		$stmt->execute();
+		$data = $stmt->fetchAll();
+
+		foreach ($data as $row) {
+			if($row->cat_statusoperador == 10){
+				$db->exec("UPDATE cr_operador SET cat_statusoperador = '10' WHERE id_operador = ".$row->id_operador);
+				$db->exec("UPDATE cr_operador_unidad SET status_operador_unidad = '199' WHERE id_operador = ".$row->id_operador);
+				$clave = 'F6';
+			}else{
+				$clave = 'c2';
+			}
+			$sql = "
+				INSERT INTO `cr_state` (
+					`id_operador`,
+					`id_operador_unidad`,
+					`numeq`,
+					`state`,
+					`flag1`,
+					`activo`
+				)
+				VALUES
+					(
+						'".$row->id_operador."',
+						'".$row->id_operador_unidad."',
+						'".$row->num."',
+						'".$clave."',
+						'".$clave."',
+						'1'
+					);
+			";
+			$populate = $db->prepare($sql);
+			$populate->execute();
+		}
+		chdir('../archivo');
+		self::delTree('2018');
+		self::delContent('papeletas');
+	}
+	public function truncate_init(){
+		$db = Controlador::direct_connectivity();
+		$sql="
+		SET FOREIGN_KEY_CHECKS=0;
+		TRUNCATE vi_viaje;
+		TRUNCATE vi_viaje_clientes;
+		TRUNCATE vi_viaje_detalle;
+		TRUNCATE vi_viaje_formapago;
+		TRUNCATE vi_viaje_incidencia;
+		TRUNCATE vi_viaje_alternativas;
+		TRUNCATE vi_viaje_statics;
+		TRUNCATE vi_costos_adicionales;
+		TRUNCATE it_direcciones;
+		TRUNCATE it_origenes;
+		TRUNCATE it_destinos;
+		TRUNCATE it_cliente_destino;
+		TRUNCATE it_cliente_origen;
+		TRUNCATE it_viaje_destino;
+		TRUNCATE fo_conceptos;
+		TRUNCATE fo_operador_conceptos;
+		TRUNCATE fo_concepto_adeudo;
+		TRUNCATE fo_conceptos_aplicaciones;
+		TRUNCATE fo_pagos_conceptos;
+		TRUNCATE fo_movimientos;
+		TRUNCATE fo_ingresos;
+		TRUNCATE fo_cobro_ingresos;
+		TRUNCATE fo_papeletas;
+		TRUNCATE fo_papeletas_viajes;
+		TRUNCATE cr_state;
+		TRUNCATE cr_episodios;
+		TRUNCATE cr_cordon;
+		TRUNCATE cr_apartados;
+		SET FOREIGN_KEY_CHECKS=1;
+		";
+		$stmt = $db->prepare($sql);
+		$stmt->execute();
+	}
+	function delTree($dir) {
+		if(file_exists($dir)){
+			$files = array_diff(scandir($dir), array('.','..'));
+			foreach ($files as $file) {
+			(is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+			}
+			return rmdir($dir);
+		}
+	}
+	function delContent($dir) {
+		if(file_exists($dir)){
+			$files = array_diff(scandir($dir), array('.','..'));
+			foreach ($files as $file) {
+				(is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+			}
+			$fp = fopen($dir.'/.gitkeep', 'w');
+			fwrite($fp, '');
+			fclose($fp);
+		}
+	}
+	public function rutas(){
+					$url='https://maps.googleapis.com/maps/api/directions/json?origin=19.37540541508781,-99.06292151629077&destination=19.430480272459064,-99.2177284816284&alternatives=true&key=AIzaSyAdtqG7TrwE0BDVoVUQ2_myIUcnCmQufEc';
+					$curl = curl_init();
+					curl_setopt($curl, CURLOPT_URL, $url);
+					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+					curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+					$result = curl_exec($curl);
+					curl_close($curl);
+					$decode = json_decode($result);
+
+					$date = date("Y-m-d H:i:s");
+					$year = substr($date,0,4);
+					$mes = substr($date,5,2);
+					$dia = substr($date,8,2);
+
+				 foreach($decode->routes as $num=>$val){
+								$kapa = $val->overview_polyline->points;
+
+							  //D::bug($kapa);
+
+								$url='https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key=AIzaSyAdtqG7TrwE0BDVoVUQ2_myIUcnCmQufEc';
+								$curl = curl_init();
+								curl_setopt($curl, CURLOPT_URL, $url);
+								curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+								curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+								curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+								$result = curl_exec($curl);
+								curl_close($curl);
+
+								//$result = file_get_contents('https://maps.googleapis.com/maps/api/staticmap?&size=650x350&scale=2&path=color:0x000000ff%7Cweight:2%7Cenc:'.$kapa.'&key=AIzaSyAdtqG7TrwE0BDVoVUQ2_myIUcnCmQufEc');
+
+								D::bug($result);
+
+								$imagen = Controller::token(6).".png";
+								chdir('../archivo');
+								$dir = $year."/".$mes."/".$dia."/20/";
+								$alt['ruta_file'] = $dir.$imagen;
+
+								if(!file_exists($year)){mkdir($year, 0777);}
+								chdir($year);
+								if(!file_exists($mes)){mkdir($mes, 0777);}
+								chdir($mes);
+								if(!file_exists($dia)){mkdir($dia, 0777);}
+								chdir($dia);
+								if(!file_exists(20)){mkdir(20, 0777);}
+								chdir('../../../');
+
+								$image_main[$num] = $alt['ruta_file'];
+								$fp = fopen($alt['ruta_file'], 'w');
+								fputs($fp, $result);
+								fclose($fp);
+				 }
+	}
 	function replicar_tarifa($id_cliente){
 		ini_set('max_execution_time', 300);
 		$db = Controlador::direct_connectivity();
@@ -247,124 +419,6 @@ class Desarrollador extends Controlador
 	}
 	public function actual(){
 		echo date("Y-m-d");
-	}
-	public function initstate(){
-		$db = Controlador::direct_connectivity();
-		self::truncate_init();
-		$sql="
-		SELECT
-		op.id_operador,
-		opu.id_operador_unidad,
-		num.num,
-		op.cat_statusoperador
-		FROM
-		cr_operador AS op
-		INNER JOIN cr_operador_unidad AS opu ON opu.id_operador = op.id_operador
-		INNER JOIN cr_operador_celular AS opcel ON opcel.id_operador = op.id_operador
-		INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = op.id_operador
-		INNER JOIN cr_numeq AS num ON cr_operador_numeq.id_numeq = num.id_numeq
-		GROUP BY
-		opu.id_operador
-		ORDER BY
-		op.id_operador ASC
-
-		";
-		$stmt = $db->prepare($sql);
-		$stmt->execute();
-		$data = $stmt->fetchAll();
-
-		foreach ($data as $row) {
-			if($row->cat_statusoperador == 10){
-				$db->exec("UPDATE cr_operador SET cat_statusoperador = '10' WHERE id_operador = ".$row->id_operador);
-		              $db->exec("UPDATE cr_operador_unidad SET status_operador_unidad = '199' WHERE id_operador = ".$row->id_operador);
-				$clave = 'F6';
-			}else{
-				$clave = 'c2';
-			}
-			$sql = "
-				INSERT INTO `cr_state` (
-					`id_operador`,
-					`id_operador_unidad`,
-					`numeq`,
-					`state`,
-					`flag1`,
-					`activo`
-				)
-				VALUES
-					(
-						'".$row->id_operador."',
-						'".$row->id_operador_unidad."',
-						'".$row->num."',
-						'".$clave."',
-						'".$clave."',
-						'1'
-					);
-			";
-			$populate = $db->prepare($sql);
-			$populate->execute();
-		}
-		chdir('../archivo');
-		self::delTree('2017');
-		self::delContent('papeletas');
-	}
-	function delTree($dir) {
-		if(file_exists($dir)){
-			$files = array_diff(scandir($dir), array('.','..'));
-			foreach ($files as $file) {
-			(is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
-			}
-			return rmdir($dir);
-		}
-	}
-	function delContent($dir) {
-		if(file_exists($dir)){
-			$files = array_diff(scandir($dir), array('.','..'));
-			foreach ($files as $file) {
-				(is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
-			}
-			$fp = fopen($dir.'/.gitkeep', 'w');
-			fwrite($fp, '');
-			fclose($fp);
-		}
-	}
-	public function truncate_init(){
-		$db = Controlador::direct_connectivity();
-		$sql="
-		SET FOREIGN_KEY_CHECKS=0;
-		TRUNCATE vi_viaje;
-		TRUNCATE vi_costos_adicionales;
-		TRUNCATE vi_viaje_clientes;
-		TRUNCATE vi_viaje_detalle;
-		TRUNCATE vi_viaje_formapago;
-		TRUNCATE vi_viaje_incidencia;
-		TRUNCATE cr_episodios;
-		TRUNCATE cr_cordon;
-		TRUNCATE cr_state;
-		TRUNCATE cr_apartados;
-		TRUNCATE it_direcciones;
-		TRUNCATE it_origenes;
-		TRUNCATE it_destinos;
-		TRUNCATE it_cliente_destino;
-		TRUNCATE it_cliente_origen;
-		TRUNCATE it_viaje_destino;
-		TRUNCATE vi_viaje_alternativas;
-		TRUNCATE vi_viaje_statics;
-		TRUNCATE fo_conceptos;
-		TRUNCATE fo_operador_conceptos;
-		TRUNCATE fo_concepto_adeudo;
-		TRUNCATE fo_conceptos_aplicaciones;
-		TRUNCATE fo_pagos_conceptos;
-		TRUNCATE fo_movimientos;
-		TRUNCATE fo_ingresos;
-		TRUNCATE fo_cobros_ingresos;
-		TRUNCATE fo_comisiones;
-		TRUNCATE fo_regla_comision;
-		TRUNCATE fo_papeletas;
-		TRUNCATE fo_papeletas_viajes;
-		SET FOREIGN_KEY_CHECKS=1;
-		";
-		$stmt = $db->prepare($sql);
-		$stmt->execute();
 	}
 	public function km($km){
 		if($km <= 4){

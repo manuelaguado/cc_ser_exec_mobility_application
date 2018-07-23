@@ -25,6 +25,8 @@
 										break;
 										case '263':
 										$stat = 'Excepción Polanco Sta Fe';
+										case '269':
+										$stat = 'Normal';
 										break;
 									}
 									echo '<tr>';

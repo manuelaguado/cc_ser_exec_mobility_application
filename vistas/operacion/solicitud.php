@@ -186,7 +186,15 @@ span.input-icon > textarea {
 											<input readonly="" type="text" class="input-sm" id="spinDestino" name="spinDestino"/>
 										</div>
 									</div>
-
+                                                              <div class="radio">
+                                            <label for="normal" class="col-sm-9 control-label no-padding-right">Normal</label>
+                                                                     <div class="col-sm-3">
+                                                                            <label style="position:relative; top:5px;">
+                                                                                   <input value="269" checked="checked" name="revision" id="normal" type="radio" class="ace input-lg" />
+                                                                                   <span class="lbl bigger-120">&nbsp;</span>
+                                                                            </label>
+                                                                     </div>
+                    </div>
                                                                <div class="radio">
 										<label for="viaje_redondo" class="col-sm-9 control-label no-padding-right">Redondo</label>
                                                                       <div class="col-sm-3">
