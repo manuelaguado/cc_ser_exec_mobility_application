@@ -1487,10 +1487,10 @@ class ClientesModel
 				'dt' => 5
 			),
 			array(
-				'db' => 'cli.id_cliente',
+				'db' => 'cli.id_cliente as client',
 				'dbj' => 'cli.id_cliente',
-				'alias' => 'cli.id_cliente',
-				'real' => 'id_cliente',
+				'alias' => 'client',
+				'real' => 'cli.id_cliente',
 				'typ' => 'int',
 				'acciones' => true,
 				'dt' => 6

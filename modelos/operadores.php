@@ -10,6 +10,39 @@ class OperadoresModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
 }
+    function start_for_c2($id_operador,$num,$id_operador_unidad){
+      $sql = "
+				INSERT INTO `cr_state` (
+					`id_operador`,
+					`id_operador_unidad`,
+          `id_episodio`,
+					`numeq`,
+					`state`,
+					`flag1`,
+					`activo`
+				)
+				VALUES
+					(
+						'".$id_operador."',
+						'".$id_operador_unidad."',
+            '1',
+						'".$num."',
+						'C2',
+						'C2',
+						'1'
+					);
+			";
+			$populate = $this->db->prepare($sql);
+			$query_resp = $populate->execute();
+
+      if($query_resp){
+        $respuesta = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
+      }else{
+        $respuesta = array('resp' => false , 'mensaje' => 'Error en el sistema.' , 'error' => 'Error al insertar registro.', 'query'=>$sql  );
+      }
+
+      return $respuesta;
+    }
     function insertStateByOper($post){
            foreach ($post as $key => $value) {
                   $this->$key = strip_tags($value);
@@ -1036,6 +1069,10 @@ class acciones_lista_opr extends SSP{
 					if(Controlador::tiene_permiso('Operadores|ver_direcciones')){
 						$salida .= '<a data-rel="tooltip" data-original-title="Direcciones del operador" class="green tooltip-success" onclick="modal_ver_direcciones('.$id_operador.');"><i class="fa fa-home bigger-130"></i></a>&nbsp;&nbsp;';
 					}
+          if(Controlador::tiene_permiso('Operadores|start_for_c2')){
+            $datopr = self::datopr($id_operador,$db);
+						$salida .= '<a data-rel="tooltip" data-original-title="Iniciar operador en funciones" class="green tooltip-success" onclick="modal_start_for_c2('.$id_operador.','.$datopr['num'].','.$datopr['id_operador_unidad'].');"><i class="fa fa-play-circle" bigger-150></i></a>&nbsp;&nbsp;';
+          }
 
 
 					$row[ $column['dt'] ] = $salida;
@@ -1047,29 +1084,35 @@ class acciones_lista_opr extends SSP{
 		}
 		return $out;
 	}
-	static function numeq($id_operador,$db){
+	static function datopr($id_operador,$db){
 		$query = "
-			SELECT
-				crn.num
-			FROM
-				cr_numeq AS crn
-			INNER JOIN cr_operador_numeq AS cron ON cron.id_numeq = crn.id_numeq
-			INNER JOIN cr_operador AS cro ON cron.id_operador = cro.id_operador
-			WHERE
-				cro.id_operador = $id_operador
+      SELECT
+      	crn.num,
+      	cr_operador_unidad.id_operador_unidad
+      FROM
+      	cr_numeq AS crn
+      	INNER JOIN cr_operador_numeq AS cron ON cron.id_numeq = crn.id_numeq
+      	INNER JOIN cr_operador AS cro ON cron.id_operador = cro.id_operador
+      	INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador = cro.id_operador
+      WHERE
+      	cro.id_operador = $id_operador
 		";
 
 		$query = $db->prepare($query);
 		$query->execute();
 		$result = $query->fetchAll();
 
+    $array = array();
 		if($query->rowCount()>=1){
 			foreach ($result as $row) {
-				return  $row['num'];
+        $array['num'] =  $row['num'];
+				$array['id_operador_unidad'] =  $row['id_operador_unidad'];
 			}
 		}else{
-				return 'NO ASIGNADO';
+				$array['num'] = 'NO ASIGNADO';
+        $array['id_operador_unidad'] =  'NO ASIGNADO';
 		}
+    return $array;
 	}
 	static function getOperador($id_usuario,$db){
 		$query = "SELECT `id_operador`,`cat_statusoperador` FROM `cr_operador` WHERE `id_usuario` = '$id_usuario'";

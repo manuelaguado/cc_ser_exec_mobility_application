@@ -35,7 +35,7 @@ class Desarrollador extends Controlador
 				$db->exec("UPDATE cr_operador_unidad SET status_operador_unidad = '199' WHERE id_operador = ".$row->id_operador);
 				$clave = 'F6';
 			}else{
-				$clave = 'c2';
+				$clave = 'C2';
 			}
 			$sql = "
 				INSERT INTO `cr_state` (

@@ -506,3 +506,36 @@ function setComisionDeault(id_operador){
 		error: function(respuesta){alerta('Alerta!','Error de conectividad de red OPER-34');}
 	});
 }
+function modal_start_for_c2(id_operador,num,id_operador_unidad){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operadores/modal_start_for_c2/' + id_operador + '/' + num + '/' + id_operador_unidad,
+			dataType: 'html',
+				success: function(resp_success){
+					var modal =  resp_success;
+					$(modal).modal().on('shown.bs.modal',function(){
+						//console.log(modal);
+					}).on('hidden.bs.modal',function(){
+						$(this).remove();
+					});
+				},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPER-35');}
+		});
+	} );
+}
+function start_for_c2(id_operador,num,id_operador_unidad){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operadores/start_for_c2/' + id_operador + '/' + num + '/' + id_operador_unidad,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#myModal').modal('hide');
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPER-36');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPER-37');}
+		});
+	} );
+}

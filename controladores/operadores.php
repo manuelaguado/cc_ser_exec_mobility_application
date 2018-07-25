@@ -24,6 +24,17 @@ class Operadores extends Controlador
 		$domicilios = $operadores->listadoDomicilios($id_operador);
 		require URL_VISTA.'modales/operadores/ver_direcciones.php';
 	}
+	public function modal_start_for_c2($id_operador,$num,$id_operador_unidad){
+		$this->se_requiere_logueo(true,'Operadores|start_for_c2');
+		$operadores = $this->loadModel('Operadores');
+		require URL_VISTA.'modales/operadores/start_for_c2.php';
+	}
+	public function start_for_c2($id_operador,$num,$id_operador_unidad){
+		$this->se_requiere_logueo(true,'Operadores|start_for_c2');
+		$operadores = $this->loadModel('Operadores');
+		$start_for_c2 = $operadores->start_for_c2($id_operador,$num,$id_operador_unidad);
+		print json_encode($start_for_c2);
+	}
 
 	public function modal_domicilios($id_operador){
 		$this->se_requiere_logueo(true,'Operadores|gestion_domicilios');
