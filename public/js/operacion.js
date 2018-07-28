@@ -688,11 +688,6 @@ function pop_alaire(){
 		});
 	} );
 }
-function asignarDirecto(id_operador_unidad){
-	$('#id_operador_unidad').val(id_operador_unidad);
-	$('#pulledApart').modal('hide');
-	$('#myModal').modal('hide');
-}
 function verifySalida(){
 	var type = $('#cat_tipo_salida').val();
 	if(type == 182){
@@ -754,6 +749,24 @@ function pop_paqueteria(){
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-50');}
 		});
 	} );
+}
+function asignarDirecto(id_operador_unidad,numero_economico,id_operador,nombre){
+	$.ajax({
+		url: 'operacion/asignarDirecto/' + id_operador_unidad,
+		dataType: 'json',
+		success: function(resp_success){
+			if (resp_success['resp'] == true) {
+				$('#id_operador_unidad').val(id_operador_unidad);
+				$('#pulledApart').modal('hide');
+				$('#myModal').modal('hide');
+				setIdens(numero_economico,id_operador,nombre);
+			}else{
+				$('#myModal').modal('hide');
+				alerta('Alerta!','El operador esta en proceso de asignación a otro servicio');
+			}
+		},
+		error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-56');}
+	});
 }
 function setIdens(numero_economico,id_operador,nombre){
 	$('#numero_economico').val(numero_economico);
@@ -1539,6 +1552,8 @@ function meteralCordon(id_operador_unidad,id_episodio,base,statuscordon){
 					if (resp_success['resp'] == true) {
 						$('#myModal').modal('hide');
 						$('#cordon_kpmg').DataTable().ajax.reload();
+					}else if(resp_success['resp'] == false){
+						alerta('Alerta!',resp_success['mensaje']);
 					}else{
 						alerta('Alerta!','Error de conectividad de red OPRN-96');
 					}
@@ -1812,6 +1827,79 @@ function cambiar_tarifa_do_post(id_tarifa_cliente,id_viaje){
 				}
 			},
 			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-115');}
+		});
+	} );
+}
+function reprocesar_c9(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/reprocesar_c9/' + id_viaje,
+			dataType: 'html',
+			success: function(resp_success){
+				var modal =  resp_success;
+				$(modal).modal().on('shown.bs.modal',function(){
+					//NOPE
+				}).on('hidden.bs.modal',function(){
+					$(this).remove();
+				});
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-117');}
+		});
+	} );
+}
+function reprocesar_c9_do(id_viaje){
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/reprocesar_c9_do/' + id_viaje,
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#viajes_operador').DataTable().ajax.reload();
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-118');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-119');}
+		});
+	} );
+}
+function aproximateTime(){
+	if(($('#geocoordenadas_origen').val() == "") || ($('#geocoordenadas_destino').val() == "")){
+		alerta('Datos faltantes','Es necesario que ingrese el origen y el destino antes de calcular el tiempo estimado');
+		return false;
+	}
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/aproximateTime/'  +  $('#geocoordenadas_origen').val() + '/' + $('#geocoordenadas_destino').val(),
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#aproximateTime').html(resp_success['time_max']);
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-120');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-121');}
+		});
+	} );
+}
+function aproximateTimeO(){
+	if($('#geocoordenadas_origen').val() == ""){
+		alerta('Datos faltantes','Es necesario que ingrese el origen antes de calcular el tiempo estimado de la llegada de la unidad');
+		return false;
+	}
+	$(document).ready(function() {
+		$.ajax({
+			url: 'operacion/aproximateTimeO/'  +  $('#geocoordenadas_origen').val(),
+			dataType: 'json',
+			success: function(resp_success){
+				if (resp_success['resp'] == true) {
+					$('#aproximateTimeO').html(resp_success['time_max']);
+				}else{
+					alerta('Alerta!','Error de conectividad de red OPRN-122');
+				}
+			},
+			error: function(respuesta){ alerta('Alerta!','Error de conectividad de red OPRN-123');}
 		});
 	} );
 }

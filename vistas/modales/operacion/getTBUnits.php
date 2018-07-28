@@ -30,7 +30,7 @@
 												<td>".$operador['nombre']."</td>
 												<td>".$operador['marca'].' '.$operador['modelo'].' '.$operador['color']."</td>
 												<td>
-													<button onclick='asignarDirecto(".$operador['id_operador_unidad']."); setIdens(".$operador['numeq'].",".$operador['id_operador'].",\"".$operador['nombre']."\");' class='btn btn-xs btn-success'>
+													<button onclick='asignarDirecto(".$operador['id_operador_unidad'].",".$operador['numeq'].",".$operador['id_operador'].",\"".$operador['nombre']."\");' class='btn btn-xs btn-success'>
 															Seleccionar
 														<i class='ace-icon fa fa-arrow-right icon-on-right'></i>
 													</button>

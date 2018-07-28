@@ -52,8 +52,8 @@ class ShareModel
               $query = $this->db->prepare($sql);
               $result = $query_resp = $query->execute();
               $lastInsertId = $this->db->lastInsertId();
-              if(!$result){D::bug('FAILED: '.$sql); error_log($sql);}
-              else{
+              if(!$result){D::bug('FAILED: '.$sql); error_log($sql);
+              }else{
                      $sqlc = "UPDATE cr_state SET activo = 0 WHERE id_operador = $this->id_operador AND id_state <> $lastInsertId ";
                      $queryc = $this->db->prepare($sqlc);
                      $query_respc = $queryc->execute();
@@ -409,6 +409,7 @@ class ShareModel
            $query_resp = $query->execute();
     }
     function formarse_directo($id_episodio,$id_operador_unidad,$id_base,$statuscordon){
+          if(self::turno($id_operador_unidad,$id_base) == 'No formado'){
            $sql = "
                   INSERT INTO cr_cordon (
                          id_operador_unidad,
@@ -441,6 +442,10 @@ class ShareModel
            );
            $id_operador = self::getIdOperador($id_operador_unidad);
            self::setstatlocal($id_operador,$id_operador_unidad,$id_episodio,'F12','C1','B1','NULL','NULL','NULL','NULL');
+           return array('resp' => true , 'mensaje' => 'El operador se formo correctamente.' );
+         }else{
+           return array('resp' => false , 'mensaje' => 'El operador ya estaba formado.' );
+         }
     }
     function setstatlocal($id_operador,$id_operador_unidad,$id_episodio,$state,$flag1,$flag2,$flag3,$flag4,$motivo,$id_viaje){
            $setStat['id_operador'] = $id_operador;

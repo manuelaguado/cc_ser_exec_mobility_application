@@ -131,6 +131,16 @@
 												/*NO PREVISTO*/
 												break;
 
+												case 'T3':
+													if(
+															($row["clave"] == 'A14')||
+															($row["clave"] == 'C10')||
+															($row["clave"] == 'C9')
+														){
+														echo $outprint;
+													}
+												break;
+
 
 												case 'C14':
 												/*NO PREVISTO*/

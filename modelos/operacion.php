@@ -9,6 +9,69 @@ class OperacionModel{
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
+    public function aproximateTime($origen,$destino){
+            $url='https://maps.googleapis.com/maps/api/directions/json?origin='.$origen.'&destination='.$destino.'&alternatives=true&key='.GOOGLE_DIRECTIONS;
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $result = curl_exec($curl);
+            curl_close($curl);
+            $decode = json_decode($result);
+
+           foreach($decode->routes as $num=>$val){
+                  foreach($val->legs as $elm){
+                         $alt['km'] = ($elm->distance->value)/1000;
+                         $alt['sec'] = ($elm->duration->value);
+                  }
+                  $alt['sumario'] = $val->summary;
+                  $kms[$num] = $alt['km'];
+                  $time[$num]= $alt['sec'];
+           }
+           $upsSttcs['time_max'] = self::seg_a_dhms(max($time));
+           $upsSttcs['time_min'] = self::seg_a_dhms(min($time));
+           $upsSttcs['time_pro'] = self::seg_a_dhms(self::avg($time));
+           $upsSttcs['resp'] = true;
+           return $upsSttcs;
+    }
+    function seg_a_dhms($seg) {
+        $d = floor($seg / 86400);
+        $h = floor(($seg - ($d * 86400)) / 3600);
+        $m = floor(($seg - ($d * 86400) - ($h * 3600)) / 60);
+        return $h.':'.$m;
+    }
+    public function getStatusIdle($id_operador_unidad){
+        $qry = "
+        SELECT
+        	cr_state.state,
+        	cm_catalogo.valor
+        FROM
+        	cr_state
+        	INNER JOIN cm_catalogo ON cr_state.state = cm_catalogo.etiqueta
+        WHERE
+        	cr_state.id_operador_unidad = $id_operador_unidad
+        	AND cr_state.flag1 = 'C20'
+        	AND cm_catalogo.catalogo = 'clavesitio'
+        	AND cr_state.fecha_alta > DATE_SUB( NOW( ), INTERVAL 3 MINUTE )
+        ORDER BY
+        	cr_state.id_state DESC
+        	LIMIT 0,
+        	1
+
+        ";
+        $query = $this->db->prepare($qry);
+        $query->execute();
+        $array = array();
+        if($query->rowCount()>=1){
+            foreach ($query->fetchAll() as $row){
+                $array['clave']	=	$row->state;
+                $array['valor']	=	$row->valor;
+            }
+        }
+        return $array;
+    }
     public function getCurrentCveOperador($id_operador_unidad){
         $qry = "
             SELECT
@@ -297,6 +360,84 @@ class OperacionModel{
            //ingresar costo en monedero de operador
                      self::insertMonedero($viaje,$costo_final);
 
+    }
+    public function updateStatic($id_statics,$viaje,$t1,$t2,$t3){
+           foreach ($arreglo as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $qry = "
+                  UPDATE `vi_viaje_statics`
+                  SET
+                      `cat_status_statics` = '222',
+                      `time_arribo` = '".$t1."',
+                      `time_espera` = '".$t2."',
+                      `time_viaje` = '".$t3."',
+                      `geo_origen` = '".$this->georigen."',
+                      `geo_destino` = '".$this->geodestino."',
+                      `user_alta` = '".$_SESSION['id_usuario']."',
+                      `fecha_alta` = '".date("Y-m-d H:i:s")."'
+                  WHERE
+                         (`id_viaje_statics` = $id_statics);
+           ";
+           $query = $this->db->prepare($qry);
+           $query->execute();
+    }
+    function getid_statics($id_viaje){
+      $sql="
+             SELECT
+                   id_viaje_statics
+             FROM
+                   vi_viaje_statics
+             WHERE
+                   id_viaje = $id_viaje
+      ";
+      $query = $this->db->prepare($sql);
+      $query->execute();
+      if($query->rowCount()>=1){
+             foreach ($query->fetchAll() as $row) {
+                    $id_statics = $row->id_viaje_statics;
+             }
+      }
+      return $id_statics;
+    }
+    function reprocesar_c9($viaje){
+           foreach ($viaje as $key => $value) {
+                  $this->$key = strip_tags($value);
+           }
+           $init_tds = self::init_tds($this->id_viaje);
+           $time_a11 = self::getDateClave($this->id_viaje,'A11');
+           $time_arribo = Controller::diferenciaFechas($init_tds,$time_a11);
+           $time_c8 = self::getDateClave($this->id_viaje,'C8');
+           $tiempo_espera = Controller::diferenciaFechas($time_a11,$time_c8);
+           $time_c9 = self::getDateClave($this->id_viaje,'C9');
+           $tiempo_viaje = Controller::diferenciaFechas($time_c8,$time_c9);
+
+           $id_statics = self::getid_statics($this->id_viaje);
+           self::updateStatic($id_statics,$viaje,$time_arribo,$tiempo_espera,$tiempo_viaje);
+
+           $upsSttcs = self::routesalternatives($this->georigen,$this->geodestino,$id_statics,$this->id_viaje);
+           $costoData = self::getCostViaje($this->id_viaje,$upsSttcs['kmss_max']);
+           if(($costoData['excedente'])&&(!$costoData['a2'])){
+                  $excedente = $costoData['excedente_adicional'];
+                  $updca['id_viaje']= $this->id_viaje;
+                  $updca['costo']= '$ '.$excedente * $costoData['km_adicional'];
+                  $updca['cat_concepto']= 248;
+                  $updca['descripcion']= $excedente . ' km adicionales';
+                  self::addCostoAdicional($updca);
+           }
+           if($costoData['a2']){
+                  $metros = ($upsSttcs['kmss_max']*1000);
+                  $tiempo_viaje_s = Controller::diferenciaSegundos($time_c8,$time_c9);
+                  $minutos = ceil($tiempo_viaje_s/60);
+                  $costo_final = self::costoFinal($metros,$minutos);
+           }else{
+                  $costo_final = $costoData['costo'];
+           }
+           self::addCostTiempoEspera($this->id_viaje,$tiempo_espera);
+           self::addCostTiempoEscala($this->id_viaje);
+           $adicional = self::getCostosAdicionales($this->id_viaje);
+           self::updateStaticsCosts($costo_final,$adicional,$id_statics,$costoData['id_tarifa_cliente']);
+           self::insertMonedero($viaje,$costo_final);
     }
     function costoFinal($metros,$minutos){
            $horasx2 = ((Controlador::getConfig(1,'costo_hora'))['valor'])*2;
@@ -1727,66 +1868,38 @@ class OperacionModel{
 	}
 	function getTBUnits(){
 		$qry = "
-                     SELECT
-                     	CONCAT(
-                     		usu.nombres,
-                     		' ',
-                     		usu.apellido_paterno,
-                     		' ',
-                     		usu.apellido_materno
-                     	) AS nombre,
-                     	cr_numeq.num,
-                     	cr_marcas.marca,
-                     	cr_modelos.modelo,
-                     	cr_unidades.color,
-                     	cr_unidades.placas,
-                     	stt.id_operador,
-                     	stt.id_operador_unidad,
-                     	stt.id_episodio,
-                     	stt.id_viaje
-                     FROM
-                     	cr_state AS stt
-                     INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
-                     INNER JOIN fw_usuarios AS usu ON cro.id_usuario = usu.id_usuario
-                     INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cro.id_operador
-                     INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
-                     INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador_unidad = stt.id_operador_unidad
-                     INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
-                     INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
-                     INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
-                     WHERE
-                     	(
-                     (
-              		stt.state = 'C1'
-              		AND stt.flag1 = 'C1'
-              		AND stt.flag2 = 'F11'
-              	)
-                     OR (
-                     	stt.state = 'C6'
-                     	AND stt.flag1 = 'C1'
-                     	AND stt.flag2 = 'C6'
-                     	AND stt.flag3 = 'F11'
-                     )
-                     OR (
-                     	stt.state = 'C9'
-                     	AND stt.flag1 = 'C1'
-                     	AND stt.flag2 = 'C9'
-                     	AND stt.flag3 = 'F11'
-                     )
-                     OR (
-                     	stt.state = 'C18'
-                     	AND stt.flag1 = 'C1'
-                     	AND stt.flag2 = 'C18'
-                            AND stt.flag3 = 'F11'
-                     )
-                     OR (
-                     	stt.state = 'C19'
-                     	AND stt.flag1 = 'C1'
-                     	AND stt.flag2 = 'C19'
-                            AND stt.flag3 = 'F11'
-                     )
-                     )
-                     AND stt.activo = 1
+    SELECT
+    	CONCAT( usu.nombres, ' ', usu.apellido_paterno, ' ', usu.apellido_materno ) AS nombre,
+    	cr_numeq.num,
+    	cr_marcas.marca,
+    	cr_modelos.modelo,
+    	cr_unidades.color,
+    	cr_unidades.placas,
+    	stt.id_operador,
+    	stt.id_operador_unidad,
+    	stt.id_episodio,
+    	stt.id_viaje,
+      stt.fecha_alta
+    FROM
+    	cr_state AS stt
+    	INNER JOIN cr_operador AS cro ON stt.id_operador = cro.id_operador
+    	INNER JOIN fw_usuarios AS usu ON cro.id_usuario = usu.id_usuario
+    	INNER JOIN cr_operador_numeq ON cr_operador_numeq.id_operador = cro.id_operador
+    	INNER JOIN cr_numeq ON cr_operador_numeq.id_numeq = cr_numeq.id_numeq
+    	INNER JOIN cr_operador_unidad ON cr_operador_unidad.id_operador_unidad = stt.id_operador_unidad
+    	INNER JOIN cr_unidades ON cr_operador_unidad.id_unidad = cr_unidades.id_unidad
+    	INNER JOIN cr_marcas ON cr_unidades.id_marca = cr_marcas.id_marca
+    	INNER JOIN cr_modelos ON cr_unidades.id_modelo = cr_modelos.id_modelo
+    WHERE
+    	(
+    		( stt.state = 'C1' AND stt.flag1 = 'C1' AND stt.flag2 = 'F11' )
+    		OR ( stt.state = 'C6' AND stt.flag1 = 'C1' AND stt.flag2 = 'C6' AND stt.flag3 = 'F11' )
+    		OR ( stt.state = 'C9' AND stt.flag1 = 'C1' AND stt.flag2 = 'C9' AND stt.flag3 = 'F11' )
+    		OR ( stt.state = 'C18' AND stt.flag1 = 'C1' AND stt.flag2 = 'C18' AND stt.flag3 = 'F11' )
+    		OR ( stt.state = 'C19' AND stt.flag1 = 'C1' AND stt.flag2 = 'C19' AND stt.flag3 = 'F11' )
+        OR ( stt.state = 'C20' AND stt.flag1 = 'C20' AND stt.fecha_alta < DATE_SUB( NOW( ), INTERVAL 3 MINUTE ))
+    	)
+    	AND stt.activo = 1
 		";
 		$query = $this->db->prepare($qry);
 		$query->execute();
@@ -1795,15 +1908,14 @@ class OperacionModel{
 		if($query->rowCount()>=1){
 			$data = $query->fetchAll();
 			foreach ($data as $row){
-				$operadores[$num]['numeq'] 				= $row->num;
-				$operadores[$num]['nombre'] 			= $row->nombre;
-				$operadores[$num]['marca'] 				= $row->marca;
-				$operadores[$num]['modelo'] 			= $row->modelo;
-				$operadores[$num]['color'] 				= $row->color;
-				$operadores[$num]['id_operador_unidad']          = $row->id_operador_unidad;
+				$operadores[$num]['numeq'] 				         = $row->num;
+				$operadores[$num]['nombre'] 			         = $row->nombre;
+				$operadores[$num]['marca'] 				         = $row->marca;
+				$operadores[$num]['modelo'] 			         = $row->modelo;
+				$operadores[$num]['color'] 				         = $row->color;
+				$operadores[$num]['id_operador_unidad']    = $row->id_operador_unidad;
 				$operadores[$num]['id_operador'] 		       = $row->id_operador;
-                            $operadores[$num]['id_episodio'] 		       = $row->id_episodio;
-
+        $operadores[$num]['id_episodio'] 		       = $row->id_episodio;
 				$num++;
 			}
 		}
@@ -4859,40 +4971,40 @@ class acciones_asignados extends SSP{
 		}
 		return $out;
 	}
-       static function getCurrentCveOperador($id_operador_unidad,$db){
-		$qry = "
-                     SELECT
-                     	cr_state.state,
-                     	cm_catalogo.valor
-                     FROM
-                     	cr_state
-                     INNER JOIN cm_catalogo ON cr_state.state = cm_catalogo.etiqueta
-                     WHERE
-                     	cr_state.id_operador_unidad = $id_operador_unidad
-                     AND (
-                     	cr_state.flag2 = 'A10'
-                     	OR cr_state.flag2 = 'F15'
-                     	OR cr_state.flag2 = 'F13'
-                     	OR cr_state.flag2 = 'T1'
-                     	OR cr_state.flag2 = 'T2'
-                     )
-                     AND cm_catalogo.catalogo = 'clavesitio'
-                     ORDER BY
-                     	cr_state.id_state DESC
-                     LIMIT 0,
-                      1
-		";
-		$query = $db->prepare($qry);
-		$query->execute();
-		$array = array();
-		if($query->rowCount()>=1){
-			foreach ($query->fetchAll() as $row){
-				$array['clave']	=	$row['state'];
-				$array['valor']	=	$row['valor'];
-			}
-		}
-		return $array;
-	}
+      static function getCurrentCveOperador($id_operador_unidad,$db){
+            $qry = "
+                SELECT
+                cr_state.state,
+                cm_catalogo.valor
+                FROM
+                cr_state
+                INNER JOIN cm_catalogo ON cr_state.state = cm_catalogo.etiqueta
+                WHERE
+                cr_state.id_operador_unidad = $id_operador_unidad
+                AND (
+                cr_state.flag2 = 'A10'
+                OR cr_state.flag2 = 'F15'
+                OR cr_state.flag2 = 'F13'
+                OR cr_state.flag2 = 'T1'
+                OR cr_state.flag2 = 'T2'
+                )
+                AND cm_catalogo.catalogo = 'clavesitio'
+                ORDER BY
+                cr_state.id_state DESC
+                LIMIT 0,
+                1
+            ";
+            $query = $db->prepare($qry);
+            $query->execute();
+            $array = array();
+            if($query->rowCount()>=1){
+                foreach ($query->fetchAll() as $row){
+                    $array['clave']	=	$row['state'];
+                    $array['valor']	=	$row['valor'];
+                }
+            }
+            return $array;
+      }
 
 }
 class acciones_completados extends SSP{

@@ -123,8 +123,8 @@ class Operacion extends Controlador
        public function meteralCordon($id_episodio,$id_operador_unidad,$id_base,$statuscordon){
               $this->se_requiere_logueo(true,'Operacion|solicitud');
               $share = $this->loadModel('Share');
-              $share->formarse_directo($id_episodio,$id_operador_unidad,$id_base,$statuscordon);
-              print json_encode(array('resp' => true , 'mensaje' => 'El operador se formo correctamente.' ));
+              $out = $share->formarse_directo($id_episodio,$id_operador_unidad,$id_base,$statuscordon);
+              print json_encode($out);
        }
 	public function viajeAlAire($id_viaje){
 		$this->se_requiere_logueo(true,'Operacion|solicitud');
@@ -132,6 +132,49 @@ class Operacion extends Controlador
 		$operadores = $model->getTBUnits();
 		require URL_VISTA.'modales/operacion/viajeAlAire.php';
 	}
+  public function aproximateTime($origen,$destino){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$time = $operacion->aproximateTime($origen,$destino);
+		print json_encode($time);
+	}
+  public function aproximateTimeO($origen){
+		$this->se_requiere_logueo(true,'Operacion|solicitud');
+		$operacion = $this->loadModel('Operacion');
+		$time = $operacion->aproximateTime($origen,'19.434751,-99.211984');
+		print json_encode($time);
+	}
+  public function asignarDirecto($id_operador_unidad){
+    $this->se_requiere_logueo(true,'Operacion|solicitud');
+    $share = $this->loadModel('Share');
+    $operacion = $this->loadModel('Operacion');
+    $getStatus = $operacion->getStatusIdle($id_operador_unidad);
+
+    D::bug($getStatus);
+    D::bug($getStatus['clave']);
+
+    if($getStatus['clave'] == 'C20'){
+        print json_encode(array('resp' => false , 'mensaje' => 'El operador esta en proceso de asignacion.' ));
+    }else{
+
+        $operador = $operacion->unidadalAire($id_operador_unidad);
+
+        $setStat['id_operador'] = $operador['id_operador'];
+        $setStat['id_operador_unidad'] = $id_operador_unidad;
+        $setStat['id_episodio'] = $operador['id_episodio'];
+        $setStat['id_viaje'] = 'NULL';
+        $setStat['num'] = $operador['num'];
+        $setStat['state'] = 'C20';
+        $setStat['flag1'] = 'C20';
+        $setStat['flag2'] = 'NULL';
+        $setStat['flag3'] = 'NULL';
+        $setStat['flag4'] = 'NULL';
+        $setStat['motivo'] = 'Se aparto al operador para asignacion directa';
+
+        $share->setStatOper($setStat);
+        print json_encode(array('resp' => true , 'mensaje' => 'El operador esta disponible.' ));
+    }
+  }
 	public function asignarViajeAlAire($id_operador_unidad, $id_operador, $id_viaje){
 
 		$operacion = $this->loadModel('Operacion');
@@ -323,32 +366,43 @@ class Operacion extends Controlador
 	}
 
 
-       public function costos_adicionales_post($id_viaje){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
+  public function costos_adicionales_post($id_viaje){
+    $this->se_requiere_logueo(true,'Operacion|solicitud');
 
-              $roles = $this->loadModel('Roles');
-              $cat_concepto = $roles->selectCostosByTipo($_SESSION['id_rol']);
+    $roles = $this->loadModel('Roles');
+    $cat_concepto = $roles->selectCostosByTipo($_SESSION['id_rol']);
 
-              require URL_VISTA.'modales/operacion/costos_adicionales_post.php';
-	}
-       public function costos_adicionales_get_post($id_viaje){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$operacion = $this->loadModel('Operacion');
-		print $operacion->queryCostosAdicionales_post($_POST,$id_viaje);
-	}
-       public function costos_adicionales_do_post(){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$operacion = $this->loadModel('Operacion');
-              $vars = $operacion->dataUpdateCosts($_POST['id_viaje']);
-		print json_encode($operacion->addCostoAdicionalPost($_POST,$vars));
-	}
-       public function eliminar_costoAdicionalPost($id_costos_adicionales,$id_viaje){
-		$this->se_requiere_logueo(true,'Operacion|solicitud');
-		$operacion = $this->loadModel('Operacion');
-              $vars = $operacion->dataUpdateCosts($id_viaje);
-		$ok = $operacion->eliminar_costoAdicionalPost($id_costos_adicionales,$vars);
-		print json_encode($ok);
-	}
+    require URL_VISTA.'modales/operacion/costos_adicionales_post.php';
+  }
+  public function reprocesar_c9($id_viaje){
+    $this->se_requiere_logueo(true,'Operacion|reprocesar_c9');
+    require URL_VISTA.'modales/operacion/reprocesar_c9.php';
+  }
+  public function reprocesar_c9_do($id_viaje){
+    $this->se_requiere_logueo(true,'Operacion|reprocesar_c9');
+    $operacion = $this->loadModel('Operacion');
+    $viaje = $operacion->idensViaje($id_viaje);
+    $operacion->reprocesar_c9($viaje);
+    print json_encode($array = array('resp' => true , 'mensaje' => 'Se regenero el viaje correctamente por c9.' ));
+  }
+  public function costos_adicionales_get_post($id_viaje){
+    $this->se_requiere_logueo(true,'Operacion|solicitud');
+    $operacion = $this->loadModel('Operacion');
+    print $operacion->queryCostosAdicionales_post($_POST,$id_viaje);
+  }
+  public function costos_adicionales_do_post(){
+    $this->se_requiere_logueo(true,'Operacion|solicitud');
+    $operacion = $this->loadModel('Operacion');
+    $vars = $operacion->dataUpdateCosts($_POST['id_viaje']);
+    print json_encode($operacion->addCostoAdicionalPost($_POST,$vars));
+  }
+  public function eliminar_costoAdicionalPost($id_costos_adicionales,$id_viaje){
+    $this->se_requiere_logueo(true,'Operacion|solicitud');
+    $operacion = $this->loadModel('Operacion');
+    $vars = $operacion->dataUpdateCosts($id_viaje);
+    $ok = $operacion->eliminar_costoAdicionalPost($id_costos_adicionales,$vars);
+    print json_encode($ok);
+  }
 
 
        public function cambiar_tarifa_post($id_viaje){
@@ -930,11 +984,11 @@ class Operacion extends Controlador
 		$operacion->insert_formaPago($service);
 		$operacion->insert_viajeDestino($service);
               ////////////////////////////////////////////////////////////////////si el viaje es una Cortesía
-              if($service->id_cliente_destino == 254){
-                     $id_tarifa_cliente = $operacion->getTarifaCortesia($service->id_cliente);
-                     if($id_tarifa_cliente != false){
-                            $operacion->setCortesia($id_tarifa_cliente,$id_viaje);
-                     }
+    if($service->id_cliente_destino == 254){
+           $id_tarifa_cliente = $operacion->getTarifaCortesia($service->id_cliente);
+           if($id_tarifa_cliente != false){
+                  $operacion->setCortesia($id_tarifa_cliente,$id_viaje);
+           }
 		}
 		////////////////////////////////////////////////////////////////////inserta clientes
 		foreach($clientes as $key => $id_cliente){

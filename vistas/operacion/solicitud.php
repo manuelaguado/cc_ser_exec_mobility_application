@@ -240,6 +240,7 @@ span.input-icon > textarea {
 											<i class="ace-icon fa fa-map-marker blue"></i>
 											Origen
 										</h4>
+                    <div id="aproximateTimeO" class="widget-title lighter" style="font-size:1.3em; position:relative; float:right;"><i onclick="aproximateTimeO()" class="ace-icon fa fa-clock-o blue"></i></div>
 									</div><br>
 
 									<div class="form-group">
@@ -307,6 +308,7 @@ span.input-icon > textarea {
 											<i class="ace-icon fa fa-map-marker blue"></i>
 											Destino
 										</h4>
+                    <div id="aproximateTime" class="widget-title lighter" style="font-size:1.3em; position:relative; float:right;"><i onclick="aproximateTime()" class="ace-icon fa fa-clock-o blue"></i></div>
 									</div><br>
 
 									<div class="form-group">

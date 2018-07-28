@@ -2698,24 +2698,32 @@ class accionesviajes_operador extends SSP{
                                                  $icon = "fa fa-play";
                                                  $t = 'Excepción Polanco-Sta Fe en pausa para revision con el operador';
                                           }
+                                          if(Controlador::tiene_permiso('Operacion|reprocesar_c9_dis')){
+                                              $repc9 = '<div class="infobox-icon" onclick="reprocesar_c9('.$id_viaje.')" data-rel="tooltip" data-original-title="Reprocesar C9">
+                                                               <i class="ace-icon icofont icofont-automation"></i>
+                                                        </div>';
+                                          }else{
+                                              $repc9 = '';
+                                          }
                                           $salida = '
-                                          <div class="infobox infobox-green infobox-actions infobox-dark" >
-							<div class="infobox-icon" onclick="costos_adicionales_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales">
-								<i class="ace-icon icofont icofont-money-bag"></i>
-							</div>
-                                                 <div class="infobox-icon" onclick="cambiar_tarifa_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa">
-                                                        <i class="ace-icon icofont icofont-exchange"></i>
-                                                 </div>
-                                                 <div class="infobox-icon" onclick="historia_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="Historia">
-                                                        <i class="ace-icon fa fa-clock-o"></i>
-                                                 </div>
-                                                 <div class="infobox-icon" onclick="pausar_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="'.$t.'">
-                                                        <i class="ace-icon '.$icon.'"></i>
-                                                 </div>
-                                                 <div style="text-align:center;">
-                                                        ACCIONES
-                                                 </div>
-						</div>';
+                                                <div class="infobox infobox-green infobox-actions infobox-dark" >
+                                                     '.$repc9.'
+                                      							 <div class="infobox-icon" onclick="costos_adicionales_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales">
+                                      								      <i class="ace-icon icofont icofont-money-bag"></i>
+                                      							 </div>
+                                                     <div class="infobox-icon" onclick="cambiar_tarifa_post('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa">
+                                                            <i class="ace-icon icofont icofont-exchange"></i>
+                                                     </div>
+                                                     <div class="infobox-icon" onclick="historia_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="Historia">
+                                                            <i class="ace-icon fa fa-clock-o"></i>
+                                                     </div>
+                                                     <div class="infobox-icon" onclick="pausar_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="'.$t.'">
+                                                            <i class="ace-icon '.$icon.'"></i>
+                                                     </div>
+                                                     <div style="text-align:center;">
+                                                            ACCIONES
+                                                     </div>
+						                                     </div>';
                                           break;
                                           default:
                                           break;

@@ -729,7 +729,7 @@ table#tb_act_oper tbody > tr > td{
        font-weight: bold;
 }
 .infobox-actions {
-    width: 195px;
+    width: auto;
     height: 73px;
     text-align: left;
     padding-bottom: 5px;
