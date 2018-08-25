@@ -49,7 +49,13 @@
 											?>
 											<div class="action-buttons">
 												<a style="cursor:default">
-													<i class="ace-icon fa fa-thumbs-o-up green bigger-125"></i>
+													<?php
+													if($capitulo['automan'] == 'auto'){
+														echo '<i class="ace-icon fa fa-thumbs-o-up green bigger-125"></i>';
+													}else{
+														echo '<i class="ace-icon fa fa-pencil green bigger-125"></i>';
+													}
+													?>
 													<?=$capitulo['autoriza']?>
 												</a>
 											</div>

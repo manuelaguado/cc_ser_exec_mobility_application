@@ -33,7 +33,7 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 		</div>
 		<div class="col-sm-12">
 			<div class="widget-box transparent" id="recent-box">
-	
+
 				<div class="widget-header">
 					<h4 class="widget-title lighter smaller">
 						<i class="ace-icon fa fa-car orange"></i>Status
@@ -42,29 +42,33 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 					<div class="widget-toolbar no-border">
 						<ul class="nav nav-tabs" id="recent-tab">
 							<li class="active">
+								<i class="fa fa-refresh fa-spin point_content contred" style="color:#ff0000; display:none;"></i>
 								<a style="border-top-color:#ff0000; opacity: 0.3;" data-toggle="tab" href="#trojo" aria-expanded="false">
 								<i class="fa fa-circle" style="color:#ff0000"></i>&nbsp;&nbsp;
 								- de 60 </a>
 							</li>
-							
+
 							<li class="">
+								<i class="fa fa-refresh fa-spin point_content contorange" style="color:#ff7b00; display:none;"></i>
 								<a style="border-top-color:#ff7b00; opacity: 0.3;" data-toggle="tab" href="#tnaranja" aria-expanded="false">
 								<i class="fa fa-circle" style="color:#ff7b00"></i>&nbsp;&nbsp;
 								+ de 60 y - de 90 </a>
 							</li>
-							
+
 							<li class="">
+								<i class="fa fa-refresh fa-spin point_content contyellow" style="color:#f3df02; display:none;"></i>
 								<a style="border-top-color:#f3df02; opacity: 0.3;" data-toggle="tab" href="#tamarillo" aria-expanded="false">
 								<i class="fa fa-circle" style="color:#f3df02"></i>&nbsp;&nbsp;
 								+ de 90 y - de 1 día</a>
 							</li>
-							
+
 							<li class="">
+								<i class="fa fa-refresh fa-spin point_content contverde" style="color:#c4e62b; display:none;"></i>
 								<a style="border-top-color:#c4e62b; opacity: 0.3;" data-toggle="tab" href="#tverde" aria-expanded="false">
 								<i class="fa fa-circle" style="color:#c4e62b"></i>&nbsp;&nbsp;
 								+ de 1 día</a>
 							</li>
-							
+
 							<li class="">
 								<a style="border-top-color:#bfbfbf; opacity: 0.3;" data-toggle="tab" href="#tgris" aria-expanded="false">
 								<i class="fa fa-circle" style="color:#bfbfbf"></i>&nbsp;&nbsp;
@@ -91,7 +95,7 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 											<th>Acciones</th>
 										</tr>
 									</thead>
-								</table>							
+								</table>
 							</div>
 							<div id="tnaranja" class="tab-pane">
 								<table id="naranja" class="display table table-striped" cellspacing="0" width="100%">
@@ -108,7 +112,7 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 											<th>Acciones</th>
 										</tr>
 									</thead>
-								</table>							
+								</table>
 							</div>
 							<div id="tamarillo" class="tab-pane">
 								<table id="amarillo" class="display table table-striped" cellspacing="0" width="100%">
@@ -125,7 +129,7 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 											<th>Acciones</th>
 										</tr>
 									</thead>
-								</table>							
+								</table>
 							</div>
 							<div id="tverde" class="tab-pane">
 								<table id="verde" class="display table table-striped" cellspacing="0" width="100%">
@@ -159,12 +163,12 @@ div.table-responsive div#programados_wrapper.dataTables_wrapper.form-inline.dt-b
 											<th>Acciones</th>
 										</tr>
 									</thead>
-								</table>							
+								</table>
 							</div>
 						</div>
 					</div>
 				</div>
-			
+
 			</div>
 		</div>
 
@@ -175,6 +179,10 @@ $(document).ready(function() {
 	$('#rojo').dataTable( {
 		"fnDrawCallback": function( oSettings ) {
 		  $('[data-rel=tooltip]').tooltip();
+			var oTable = $('#rojo').DataTable();
+			var info = oTable.page.info();
+			var count = info.recordsTotal;
+			if(count > 0){ $('.contred').css("display", ""); }
 		},
 		"processing": true,
 		"serverSide": true,
@@ -194,6 +202,10 @@ $(document).ready(function() {
 	$('#naranja').dataTable( {
 		"fnDrawCallback": function( oSettings ) {
 		  $('[data-rel=tooltip]').tooltip();
+			var oTable = $('#naranja').DataTable();
+			var info = oTable.page.info();
+			var count = info.recordsTotal;
+			if(count > 0){ $('.contorange').css("display", ""); }
 		},
 		"processing": true,
 		"serverSide": true,
@@ -213,6 +225,10 @@ $(document).ready(function() {
 	$('#amarillo').dataTable( {
 		"fnDrawCallback": function( oSettings ) {
 		  $('[data-rel=tooltip]').tooltip();
+			var oTable = $('#amarillo').DataTable();
+			var info = oTable.page.info();
+			var count = info.recordsTotal;
+			if(count > 0){ $('.contyellow').css("display", ""); }
 		},
 		"processing": true,
 		"serverSide": true,
@@ -232,6 +248,10 @@ $(document).ready(function() {
 	$('#verde').dataTable( {
 		"fnDrawCallback": function( oSettings ) {
 		  $('[data-rel=tooltip]').tooltip();
+			var oTable = $('#verde').DataTable();
+			var info = oTable.page.info();
+			var count = info.recordsTotal;
+			if(count > 0){ $('.contverde').css("display", ""); }
 		},
 		"processing": true,
 		"serverSide": true,

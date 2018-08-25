@@ -71,7 +71,7 @@
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/bootstrap-daterangepicker/daterangepicker.css" />
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" />
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
-		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/jquery-colorbox/example1/colorbox.css" />		
+		<link rel="stylesheet" href="<?=URL_PUBLIC?>components/jquery-colorbox/example1/colorbox.css" />
 
 		<!-- Fuente mediasite -->
 		<link rel="stylesheet" href="<?=URL_PUBLIC?>assets/css/mediasite.css" />

@@ -239,6 +239,7 @@ class Operadores extends Controlador
 			$setStat['flag3'] = 'NULL';
 			$setStat['flag4'] = 'NULL';
 			$setStat['motivo'] = 'NULL';
+			$setStat['automan'] = 'auto';
 
 			$operacion->setF6($_POST['id_operador']);
 			$share->setStatOper($setStat);

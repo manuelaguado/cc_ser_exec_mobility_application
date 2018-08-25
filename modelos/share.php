@@ -9,7 +9,9 @@ class ShareModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
     }
-       function setStatOper($setStat){
+       function setStatOper($setStat, $date = NULL ){
+              if ($date == NULL){$date = date("Y-m-d H:i:s");}
+              $date = base64_decode($date);
               foreach ($setStat as $key => $value) {
           			$this->$key = strip_tags($value);
           		}
@@ -27,6 +29,7 @@ class ShareModel
                            `flag3`,
                            `flag4`,
                            `motivo`,
+                           `automan`,
                            `activo`,
                            `user_alta`,
                            `fecha_alta`
@@ -44,11 +47,13 @@ class ShareModel
                                   '".$this->flag3."',
                                   '".$this->flag4."',
                                   '".$this->motivo."',
+                                  '".$this->automan."',
                                   '1',
                                   ".$user.",
-                                  '".date("Y-m-d H:i:s")."'
+                                  '".$date."'
                            );
               ";
+
               $query = $this->db->prepare($sql);
               $result = $query_resp = $query->execute();
               $lastInsertId = $this->db->lastInsertId();
@@ -459,6 +464,7 @@ class ShareModel
            $setStat['flag3'] = $flag3;
            $setStat['flag4'] = $flag4;
            $setStat['motivo'] = $motivo;
+           $setStat['automan'] = 'auto';
            self::setStatOper($setStat);
     }
     function getNumEq($id_operador_unidad){

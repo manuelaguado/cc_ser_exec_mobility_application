@@ -2720,6 +2720,9 @@ class accionesviajes_operador extends SSP{
                                                      <div class="infobox-icon" onclick="pausar_viaje('.$id_viaje.')" data-rel="tooltip" data-original-title="'.$t.'">
                                                             <i class="ace-icon '.$icon.'"></i>
                                                      </div>
+                                                     <div class="infobox-icon" onclick="dataViaje('.$id_viaje.')" data-rel="tooltip" data-original-title="Datos del viaje">
+                                                            <i class="ace-icon fa fa-question-circle"></i>
+                                                     </div>
                                                      <div style="text-align:center;">
                                                             ACCIONES
                                                      </div>

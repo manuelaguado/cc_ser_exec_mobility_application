@@ -761,3 +761,19 @@ table#tb_act_oper tbody > tr > td{
     -webkit-box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
     box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
 }
+.placa{
+      font-size: 1.3em;
+      border: 1px solid #000;
+      width: 50%;
+      text-align: center;
+      position: relative;
+      top: 5px;
+      border-radius: 4px;
+      font-weight: 800;
+      background-color: #efff00;
+}
+.point_content{
+    position: absolute;
+    top: 14px;
+    left: 13px;
+}

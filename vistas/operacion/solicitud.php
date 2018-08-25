@@ -240,7 +240,7 @@ span.input-icon > textarea {
 											<i class="ace-icon fa fa-map-marker blue"></i>
 											Origen
 										</h4>
-                    <div id="aproximateTimeO" class="widget-title lighter" style="font-size:1.3em; position:relative; float:right;"><i onclick="aproximateTimeO()" class="ace-icon fa fa-clock-o blue"></i></div>
+                    <div id="aproximateTimeO" class="widget-title lighter" style="font-size:1.3em; position:relative; float:right; padding-right:10px;"><i onclick="aproximateTimeO()" class="ace-icon fa fa-clock-o blue"></i></div>
 									</div><br>
 
 									<div class="form-group">
@@ -308,7 +308,7 @@ span.input-icon > textarea {
 											<i class="ace-icon fa fa-map-marker blue"></i>
 											Destino
 										</h4>
-                    <div id="aproximateTime" class="widget-title lighter" style="font-size:1.3em; position:relative; float:right;"><i onclick="aproximateTime()" class="ace-icon fa fa-clock-o blue"></i></div>
+                    <div id="aproximateTime" class="widget-title lighter" style="font-size:1.3em; position:relative; float:right; padding-right:10px;"><i onclick="aproximateTime()" class="ace-icon fa fa-clock-o blue"></i></div>
 									</div><br>
 
 									<div class="form-group">
@@ -421,7 +421,9 @@ span.input-icon > textarea {
 												<th>Modelo</th>
 												<th>Color</th>
 												<th>Llegada/Espera</th>
-												<th></th>
+                        <th></th>
+                        <th></th>
+
 											</tr>
 										</thead>
 									</table>
@@ -635,7 +637,7 @@ var solicitudInit = function () {
                      $('#cordon_kpmg').dataTable( {
                             "fnDrawCallback": function( oSettings ) {
                               $('[data-rel=tooltip]').tooltip();
-                              $('.dataTables_empty').attr('colspan',8);
+                              $('.dataTables_empty').attr('colspan',9);
                             },
                             "ordering": false,
                             "processing": true,
@@ -648,7 +650,7 @@ var solicitudInit = function () {
                             },
                             "columnDefs": [
                                    {
-                                          "targets": 8,
+                                          "targets": 9,
                                           "visible": false,
                                           "searchable":false
                                    }

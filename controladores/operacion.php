@@ -48,20 +48,33 @@ class Operacion extends Controlador
               $setStat['flag3'] = 'NULL';
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'NULL';
+              $setStat['automan'] = 'auto';
 
 		$share->setStatOper($setStat);
 		print json_encode(array('resp' => true , 'mensaje' => 'El operador inició operaciones correctamente.' ));
 	}
-       public function historia_viaje($id_viaje){
-              $this->se_requiere_logueo(true,'Operacion|solicitud');
-		$modelo = $this->loadModel('Operacion');
-		$historia = $modelo->historia_viaje($id_viaje);
-		require URL_VISTA.'modales/operacion/historia.php';
-       }
-       public function modal_activar_f6($id_operador, $num){
-		$this->se_requiere_logueo(true,'Operacion|activar_f6');
-		require URL_VISTA.'modales/operacion/activar_f06.php';
-	}
+  public function historia_viaje($id_viaje){
+      $this->se_requiere_logueo(true,'Operacion|solicitud');
+      $modelo = $this->loadModel('Operacion');
+      $historia = $modelo->historia_viaje($id_viaje);
+      require URL_VISTA.'modales/operacion/historia.php';
+  }
+  public function modificar_revision($id_viaje){
+      $this->se_requiere_logueo(true,'Operacion|solicitud');
+      $modelo = $this->loadModel('Operacion');
+      $revision_actual = $modelo->obtener_revision($id_viaje);
+      require URL_VISTA.'modales/operacion/modificar_revision.php';
+  }
+  public function modificar_revision_set($id_viaje){
+      $this->se_requiere_logueo(true,'Operacion|solicitud');
+      $modelo = $this->loadModel('Operacion');
+      $modelo->modificar_revision_set($_POST['revision'],$id_viaje);
+      print json_encode(array('resp' => true , 'mensaje' => 'Se modifico la revision para el viaje '.$id_viaje.' a '.$_POST['revision'] ));
+  }
+  public function modal_activar_f6($id_operador, $num){
+      $this->se_requiere_logueo(true,'Operacion|activar_f6');
+      require URL_VISTA.'modales/operacion/activar_f06.php';
+  }
 	public function activar_f6($id_operador,$num){
 		$this->se_requiere_logueo(true,'Operacion|activar_f6');
 		$share = $this->loadModel('Share');
@@ -78,6 +91,7 @@ class Operacion extends Controlador
               $setStat['flag3'] = 'NULL';
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'NULL';
+              $setStat['automan'] = 'auto';
 
               $operacion->setF6($id_operador);
 		$share->setStatOper($setStat);
@@ -103,6 +117,7 @@ class Operacion extends Controlador
               $setStat['flag3'] = 'NULL';
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'NULL';
+              $setStat['automan'] = 'auto';
 
               $operacion->unSetF6($id_operador);
 		$share->setStatOper($setStat);
@@ -170,6 +185,7 @@ class Operacion extends Controlador
         $setStat['flag3'] = 'NULL';
         $setStat['flag4'] = 'NULL';
         $setStat['motivo'] = 'Se aparto al operador para asignacion directa';
+        $setStat['automan'] = 'auto';
 
         $share->setStatOper($setStat);
         print json_encode(array('resp' => true , 'mensaje' => 'El operador esta disponible.' ));
@@ -655,6 +671,7 @@ class Operacion extends Controlador
               $setStat['flag3'] = 'NULL';
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'Se asignó el apartado al aire';
+              $setStat['automan'] = 'auto';
 
 		$share->setStatOper($setStat);
 
@@ -698,6 +715,7 @@ class Operacion extends Controlador
               $setStat['flag3'] = 'NULL';
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'Se asignó el apartado de forma normal';
+              $setStat['automan'] = 'auto';
 
 		$share->setStatOper($setStat);
 
@@ -763,10 +781,11 @@ class Operacion extends Controlador
 		require URL_VISTA.'modales/operacion/activar_c02.php';
 	}
 	public function aut_c02($id_operador_unidad,$id_operador,$num){
-		$this->se_requiere_logueo(true,'Operacion|activar_c2');
+		          $this->se_requiere_logueo(true,'Operacion|activar_c2');
               $share = $this->loadModel('Share');
               $share->cordonCompletado($_SESSION['id_usuario'],$id_operador_unidad,1);
               $id_episodio = $share->getIdEpisodio($id_operador_unidad);
+              //if($id_episodio==''){$id_episodio = 'NULL';}
               $share->cerrarEpisodio($id_episodio,$_SESSION['id_usuario']);
 
               $setStat['id_operador'] = $id_operador;
@@ -780,10 +799,11 @@ class Operacion extends Controlador
               $setStat['flag3'] = 'NULL';
               $setStat['flag4'] = 'NULL';
               $setStat['motivo'] = 'NULL';
+              $setStat['automan'] = 'auto';
 
-		$share->setStatOper($setStat);
+		          $share->setStatOper($setStat);
               $this->transmitir('doit','updateStatus');
-		print json_encode(array('resp' => true , 'mensaje' => 'El operador inició operaciones correctamente.' ));
+		          print json_encode(array('resp' => true , 'mensaje' => 'El operador cerró operaciones correctamente.' ));
 	}
 
 	public function modal_activar_f06($id_operador_unidad,$id_base){
@@ -881,11 +901,11 @@ class Operacion extends Controlador
               $this->se_requiere_logueo(true,'Operacion|solicitud');
               require URL_VISTA.'modales/operacion/setClaveNumConfirm.php';
        }
-       public function setClaveOk($id_viaje,$clave){
+       public function setClaveOk($id_viaje,$clave,$date,$automan){
               $this->se_requiere_logueo(true,'Operacion|solicitud');
               $operacion = $this->loadModel('Operacion');
               $share = $this->loadModel('Share');
-              $operacion->setClaveOk($id_viaje,$clave,$share);
+              $operacion->setClaveOk($id_viaje,$clave,$share,$date,$automan);
               print json_encode(array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' ));
        }
 	public function cordon_ejnal(){

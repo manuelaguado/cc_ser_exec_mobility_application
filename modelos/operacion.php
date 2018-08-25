@@ -42,6 +42,32 @@ class OperacionModel{
         $m = floor(($seg - ($d * 86400) - ($h * 3600)) / 60);
         return $h.':'.$m;
     }
+    public function modificar_revision_set($revision,$id_viaje){
+        $this->db->exec("UPDATE vi_viaje_detalle SET cat_revision = '".$revision."' WHERE id_viaje = ".$id_viaje);
+    }
+    public function obtener_revision($id_viaje){
+      $qry = "
+      SELECT
+      	cm_catalogo.etiqueta,
+      	cm_catalogo.id_cat
+      FROM
+      	vi_viaje
+      	INNER JOIN vi_viaje_detalle ON vi_viaje_detalle.id_viaje = vi_viaje.id_viaje
+      	INNER JOIN cm_catalogo ON vi_viaje_detalle.cat_revision = cm_catalogo.id_cat
+      WHERE
+      	vi_viaje.id_viaje = $id_viaje
+      ";
+      $query = $this->db->prepare($qry);
+      $query->execute();
+      $array = array();
+      if($query->rowCount()>=1){
+          foreach ($query->fetchAll() as $row){
+              $array['etiqueta']	=	$row->etiqueta;
+              $array['id_cat']	=	$row->id_cat;
+          }
+      }
+      return $array;
+    }
     public function getStatusIdle($id_operador_unidad){
         $qry = "
         SELECT
@@ -114,7 +140,8 @@ class OperacionModel{
                       	cm2.valor,
                       	stt.fecha_alta,
                       	fwu.usuario AS solicita,
-                      	fwu2.usuario AS autoriza
+                      	fwu2.usuario AS autoriza,
+                        stt.automan
            FROM
                       	cr_state AS stt
                       INNER JOIN cr_operador_unidad AS crou ON stt.id_operador_unidad = crou.id_operador_unidad
@@ -148,6 +175,7 @@ class OperacionModel{
                          $array[$num]['fecha_alta'] = $row->fecha_alta;
                          $array[$num]['solicita'] = $row->solicita;
                          $array[$num]['autoriza'] = $row->autoriza;
+                         $array[$num]['automan'] = $row->automan;
                          $num++;
                   }
            }
@@ -182,7 +210,8 @@ class OperacionModel{
                          cm3.etiqueta AS forma_pago,
                          emp.nombre AS empresa,
                          vid.cat_revision AS cat_revision,
-                         vid.apartado AS apartado
+                         vid.apartado AS apartado,
+                         vid.fecha_requerimiento
                   FROM
                          vi_viaje AS viv
                   INNER JOIN vi_viaje_detalle AS vid ON vid.id_viaje = viv.id_viaje
@@ -215,6 +244,7 @@ class OperacionModel{
                          $array['Tipo'] 			= $row->tipo_servicio;
                          $array['Solicitado el'] 			= $row->fecha_solicitud;
                          $array['Asignado el'] 			= $row->fecha_asignacion;
+                         $array['Fecha de requerimiento'] =$row->fecha_requerimiento;
                          $array['Forma de pago'] 			= $row->forma_pago;
                          $array['Revision'] 			= $row->cat_revision;
                          $array['Apartado'] 			= $row->apartado;
@@ -788,25 +818,25 @@ class OperacionModel{
                   $array['a2'] = false;
            }
 
-           if(!is_null($array['revision'])){
-                  switch($array['revision']){
-                         case '260': //Viaje redondo
-                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '264' WHERE id_viaje = ".$id_viaje);
-                         break;
-                         case '261': //Multi usuario
-                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '265' WHERE id_viaje = ".$id_viaje);
-                         break;
-                         case '262': //Multi destino
-                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '266' WHERE id_viaje = ".$id_viaje);
-                         break;
-                         case '263': //Excepción Polanco Sta Fe
-                         $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '267' WHERE id_viaje = ".$id_viaje);
-                         break;
-                         case '269': //Normal
-                         // sin actualizaciones.
-                         break;
-                  }
-           }
+
+            switch($array['revision']){
+                   case '260': //Viaje redondo
+                   $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '264' WHERE id_viaje = ".$id_viaje);
+                   break;
+                   case '261': //Multi usuario
+                   $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '265' WHERE id_viaje = ".$id_viaje);
+                   break;
+                   case '262': //Multi destino
+                   $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '266' WHERE id_viaje = ".$id_viaje);
+                   break;
+                   case '263': //Excepción Polanco Sta Fe
+                   $this->db->exec("UPDATE vi_viaje SET cat_status_viaje = '267' WHERE id_viaje = ".$id_viaje);
+                   break;
+                   case '269': //Normal
+                   // sin actualizaciones.
+                   break;
+            }
+
           if($array['tabulado'] == 1){
               $existe_c12 = self::existeEnViaje('C12',$id_viaje);
               $existe_t3 = self::existeEnViaje('T3',$id_viaje);
@@ -1081,7 +1111,7 @@ class OperacionModel{
                   }
            }
     }
-    function setClaveOk($id_viaje,$clave,ShareModel $share){
+    function setClaveOk($id_viaje,$clave,ShareModel $share, $date, $automan){
            $viaje = self::idensViaje($id_viaje);
            $tds = self::tipoServicio($viaje['id_operador_unidad']);
 
@@ -1096,8 +1126,9 @@ class OperacionModel{
            $setStat['flag3'] = $clave;
            $setStat['flag4'] = 'NULL';
            $setStat['motivo'] = 'NULL';
+           $setStat['automan'] = $automan;
 
-           $share->setStatOper($setStat);
+           $share->setStatOper($setStat, $date);
 
            switch($clave){
                   case 'C9':/*Servicio concluido*/
@@ -1114,8 +1145,9 @@ class OperacionModel{
                      $setStat['flag3'] = 'F11';
                      $setStat['flag4'] = 'NULL';
                      $setStat['motivo'] = 'Viaje Concluido';
+                     $setStat['automan'] = $automan;
 
-                     $share->setStatOper($setStat);
+                     $share->setStatOper($setStat, $date);
                      self::procesarViajeFinalizado($viaje);
                   break;
                   case 'A14':/*Abandono de servicio*/
@@ -1132,8 +1164,9 @@ class OperacionModel{
                      $setStat['flag3'] = 'NULL';
                      $setStat['flag4'] = 'NULL';
                      $setStat['motivo'] = 'Abandono';
+                     $setStat['automan'] = $automan;
 
-                     $share->setStatOper($setStat);
+                     $share->setStatOper($setStat, $date);
                   break;
                   default:
                   break;
@@ -1345,51 +1378,51 @@ class OperacionModel{
 		}
 		return $respuesta;
 	}
-       function addCostoAdicionalPost($arreglo,$vars){
-		foreach ($arreglo as $key => $value) {
-			$this->$key = strip_tags($value);
-		}
-		$sql = "
-			INSERT INTO vi_costos_adicionales (
-				id_viaje,
-				cat_concepto,
-				costo,
-				fecha,
-				user_alta,
-				user_mod,
-				fecha_alta
-			) VALUES (
-				:id_viaje,
-				:cat_concepto,
-				:costo,
-				:fecha,
-				:user_alta,
-				:user_mod,
-				:fecha_alta
-			)";
-              $costo = str_replace(',','',$this->costo);
-              $sign = substr($costo, 0,1);
-              $input = ($sign == '$')?substr($costo, 2):(substr($costo, 3)*-1);
-		$query = $this->db->prepare($sql);
-		$query_resp = $query->execute(
-			array(
-				':id_viaje' =>  $this->id_viaje ,
-				':cat_concepto' =>  $this->cat_concepto ,
-				':costo' =>  $input ,
-				':fecha' =>  date("Y-m-d H:i:s") ,
-				':user_alta' =>  $_SESSION['id_usuario'] ,
-				':user_mod' => $_SESSION['id_usuario'] ,
-				':fecha_alta' => date("Y-m-d H:i:s")
-			)
-		);
-		if($query_resp){
-                     self::updateCostosAdicionales($vars);
-			$respuesta = array('resp' => true);
-		}else{
-			$respuesta = array('resp' => false);
-		}
-		return $respuesta;
-	}
+        function addCostoAdicionalPost($arreglo,$vars){
+            foreach ($arreglo as $key => $value) {
+              $this->$key = strip_tags($value);
+            }
+            $sql = "
+                INSERT INTO vi_costos_adicionales (
+                  id_viaje,
+                  cat_concepto,
+                  costo,
+                  fecha,
+                  user_alta,
+                  user_mod,
+                  fecha_alta
+                ) VALUES (
+                  :id_viaje,
+                  :cat_concepto,
+                  :costo,
+                  :fecha,
+                  :user_alta,
+                  :user_mod,
+                  :fecha_alta
+            )";
+            $costo = str_replace(',','',$this->costo);
+            $sign = substr($costo, 0,1);
+            $input = ($sign == '$')?substr($costo, 2):(substr($costo, 3)*-1);
+            $query = $this->db->prepare($sql);
+            $query_resp = $query->execute(
+                array(
+                    ':id_viaje' =>  $this->id_viaje ,
+                    ':cat_concepto' =>  $this->cat_concepto ,
+                    ':costo' =>  $input ,
+                    ':fecha' =>  date("Y-m-d H:i:s") ,
+                    ':user_alta' =>  $_SESSION['id_usuario'] ,
+                    ':user_mod' => $_SESSION['id_usuario'] ,
+                    ':fecha_alta' => date("Y-m-d H:i:s")
+                )
+            );
+            if($query_resp){
+                self::updateCostosAdicionales($vars);
+                $respuesta = array('resp' => true);
+            }else{
+                $respuesta = array('resp' => false);
+            }
+            return $respuesta;
+        }
        function addIncidencia($arreglo){
               foreach ($arreglo as $key => $value) {
 			$this->$key = strip_tags($value);
@@ -1456,24 +1489,24 @@ class OperacionModel{
 		}
 		return $array;
 	}
-       function eliminar_costoAdicionalPost($id_costos_adicionales,$vars){
-		$qry = "
-			DELETE
-			FROM
-			vi_costos_adicionales
-			WHERE
-			id_costos_adicionales = '".$id_costos_adicionales."'
-		";
-		$query = $this->db->prepare($qry);
-		$ok = $query->execute();
-		if($ok){
-                     self::updateCostosAdicionales($vars);
-			$array = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
-		}else{
-			$array = array('false' => true , 'mensaje' => 'Registro guardado correctamente.' );
-		}
-		return $array;
-	}
+  function eliminar_costoAdicionalPost($id_costos_adicionales,$vars){
+      $qry = "
+          DELETE
+          FROM
+          vi_costos_adicionales
+          WHERE
+          id_costos_adicionales = '".$id_costos_adicionales."'
+      ";
+      $query = $this->db->prepare($qry);
+      $ok = $query->execute();
+      if($ok){
+          self::updateCostosAdicionales($vars);
+          $array = array('resp' => true , 'mensaje' => 'Registro guardado correctamente.' );
+      }else{
+          $array = array('false' => true , 'mensaje' => 'Registro guardado correctamente.' );
+      }
+      return $array;
+  }
 	function countApart($id_operador,$hit,$id_operador_turno){
 		if(!$hit){
 			self::setNoHit($id_operador_turno);
@@ -1508,24 +1541,24 @@ class OperacionModel{
 		}
 		print json_encode($respuesta);
 	}
-       function cambiar_tarifa_do_post($id_tarifa_cliente,$id_viaje,$vars){
-		$qry = "
-			UPDATE `vi_viaje`
-			SET
-			 `id_tarifa_cliente` = ".$id_tarifa_cliente."
-			WHERE
-				(`id_viaje` = ".$id_viaje.");
-		";
-		$query = $this->db->prepare($qry);
-		$query_resp = $query->execute();
-		if($query_resp){
-                     self::updateCostosAdicionales($vars);
-			$respuesta = array('resp' =>  true , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
-		}else{
-			$respuesta = array('resp' => false , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
-		}
-		print json_encode($respuesta);
-	}
+  function cambiar_tarifa_do_post($id_tarifa_cliente,$id_viaje,$vars){
+    $qry = "
+      UPDATE `vi_viaje`
+      SET
+      `id_tarifa_cliente` = ".$id_tarifa_cliente."
+      WHERE
+      (`id_viaje` = ".$id_viaje.");
+    ";
+    $query = $this->db->prepare($qry);
+    $query_resp = $query->execute();
+    if($query_resp){
+    self::updateCostosAdicionales($vars);
+      $respuesta = array('resp' =>  true , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
+    }else{
+      $respuesta = array('resp' => false , 'id_tarifa_cliente' => $id_tarifa_cliente, 'id_viaje' => $id_viaje);
+    }
+    print json_encode($respuesta);
+  }
 	function apartUpdate($id_operador,$hit){
 		$isHit = ($hit)?1:0;
 		$increment = self::resetOrIncrement($id_operador);
@@ -1921,17 +1954,15 @@ class OperacionModel{
 		}
 		return $operadores;
 	}
-	function asignar_viajes($base,ShareModel $share){
-		$operador            = self::unidades_formadas($base);
-		$viajes		= self::viajes_pendientes();
-		$array = array();
-		if(($operador['procesar'])&&($viajes['procesar'])){
-
-			self::asignar_viaje($viajes['id_viaje'],$operador);
-
-                     $share->cordonFinishSuccess($_SESSION['id_usuario'],$operador['id_operador_unidad'],$viajes['id_viaje']);
-		}
-	}
+  function asignar_viajes($base,ShareModel $share){
+      $operador = self::unidades_formadas($base);
+      $viajes		= self::viajes_pendientes();
+      $array    = array();
+      if(($operador['procesar'])&&($viajes['procesar'])){
+        self::asignar_viaje($viajes['id_viaje'],$operador);
+        $share->cordonFinishSuccess($_SESSION['id_usuario'],$operador['id_operador_unidad'],$viajes['id_viaje']);
+      }
+  }
 
 	function asignar_apartado($id_viaje,$id_operador_unidad){
 		self::relacionar_operador_apartado($id_viaje,$id_operador_unidad);
@@ -3430,6 +3461,15 @@ class OperacionModel{
 				'time_stat' => true,
 				'dt' => 6
 			),
+      array(
+				'db' => 'cru.placas AS placas',
+				'dbj' => 'cru.placas',
+				'real' => 'cru.placas',
+				'alias' => 'placas',
+				'typ' => 'txt',
+        'plates' => true,
+				'dt' => 7
+			),
 			array(
 				'db' => 'crc.id_cordon AS cordon',
 				'dbj' => 'crc.id_cordon',
@@ -3438,7 +3478,7 @@ class OperacionModel{
 				'typ' => 'int',
 				'acciones' => true,
 				'base' => $base,
-				'dt' => 7
+				'dt' => 8
 			),
 			array(
 				'db' => 'cro.id_operador AS id_operador',
@@ -3446,7 +3486,7 @@ class OperacionModel{
 				'real' => 'cro.id_operador',
 				'alias' => 'id_operador',
 				'typ' => 'int',
-				'dt' => 8
+				'dt' => 9
 			)
 		);
 		$inner = '
@@ -4892,76 +4932,70 @@ class acciones_asignados extends SSP{
 				$column = $columns[$j];
 				$name_column = ( isset($column['alias']) )? $column['alias'] : $column['db'] ;
 
-				if ( isset( $column['acciones'] ) ) {
+				if ( isset( $column['acciones'] ) )
+        {
 
-					$id_cliente = $data[$i][ 'id_cliente' ];
-					$id_viaje = $data[$i][ 'id_viaje' ];
-					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
+      					$id_cliente = $data[$i][ 'id_cliente' ];
+      					$id_viaje = $data[$i][ 'id_viaje' ];
+      					$id_operador_unidad = $data[$i][ 'id_operador_unidad' ];
 
-					$salida = '<div class="line_force">';
+                $salida = '<div class="line_force">';
 
-                                   $salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'asignados\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+                $salida .= '<a onclick="set_status_viaje('.$id_viaje.',173,\'asignados\')" data-rel="tooltip" data-original-title="Cancelar servicio"><i class="fa fa-trash" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
-                                   $salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
+                $salida .= '<a onclick="set_status_viaje('.$id_viaje.',170,\'asignados\')" data-rel="tooltip" data-original-title="Enviar a pendientes"><i class="fa fa-chain-broken" style="font-size:1.4em; color:#c40b0b;"></i></a>&nbsp;&nbsp;';
 
-                                   if(Controlador::tiene_permiso('Operacion|costos_adicionales')){
-					       $salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
-                                   }
-                                   $salida .= '<a href="javascript:;" onclick="nueva_incidencia('.$id_viaje.')" data-rel="tooltip" data-original-title="Incidencia"><i class="fa fa-exclamation-triangle" style="font-size:1.4em; color:#c39800;"></i></a>&nbsp;&nbsp;';
+                if(Controlador::tiene_permiso('Operacion|costos_adicionales')){
+                    $salida .= '<a href="javascript:;" onclick="costos_adicionales('.$id_viaje.')" data-rel="tooltip" data-original-title="Costos adicionales"><i class="icofont icofont-money-bag" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+                }
+                $salida .= '<a href="javascript:;" onclick="nueva_incidencia('.$id_viaje.')" data-rel="tooltip" data-original-title="Incidencia"><i class="fa fa-exclamation-triangle" style="font-size:1.4em; color:#c39800;"></i></a>&nbsp;&nbsp;';
 
-					$salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
+                $salida .= '<a href="javascript:;" onclick="cambiar_tarifa('.$id_viaje.')" data-rel="tooltip" data-original-title="Cambiar tarifa"><i class="icofont icofont-exchange" style="font-size:1.4em; color:#008c23;"></i></a>&nbsp;&nbsp;';
 
-					$salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
+                $salida .= '<a onclick="dataViaje('.$id_viaje.')" href="javascript:;" data-rel="tooltip" data-original-title="Datos del viaje"><i class="fa fa-question-circle" style="font-size:1.4em; color:#0080ff;"></i></a>&nbsp;&nbsp;';
 
-                                   $salida .= '<a onclick="selectClave('.$id_viaje.','.$id_operador_unidad.')" href="javascript:;" data-rel="tooltip" data-original-title="Establecer Clave"><i class="fa fa-sliders" style="font-size:1.4em; color:#b16500;"></i></a>&nbsp;&nbsp;';
+                $salida .= '<a onclick="selectClave('.$id_viaje.','.$id_operador_unidad.')" href="javascript:;" data-rel="tooltip" data-original-title="Establecer Clave"><i class="fa fa-sliders" style="font-size:1.4em; color:#b16500;"></i></a>&nbsp;&nbsp;';
 
+                $cveStat = self::getCurrentCveOperador($id_operador_unidad,$db);
 
+      					switch ($cveStat['clave']){
+      						case 'A10':	$color = '#9DBF00';	break;
+      						case 'F15':	$color = '#697F00';	break;
+      						case 'F13':	$color = '#001A40';	break;
+      						case 'T1':	$color = '#344000';	break;
+      						case 'T2':	$color = '#1a6600';	break;
+      						case 'A11':	$color = '#BF9A16';	break;
+      						case 'A14':	$color = '#403307';	break;
+      						case 'C8':	$color = '#E5B81A';	break;
+      						case 'A2':	$color = '#BF3000';	break;
+      						case 'C9':	$color = '#7F2000';	break;
+      						case 'C14':	$color = '#401000';	break;
+      						case 'C10':	$color = '#E53A00';	break;
+      						case 'C11':	$color = '#004EBF';	break;
+      						case 'C12':	$color = '#00347F';	break;
+      						default:	$color = '#000000';	break;
+      					}
 
+                $salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background:'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
+                $salida .= "
+                    <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
+                    <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
+                    </a>
+                ";
+                $salida .= "
+                    &nbsp;&nbsp;<a onclick='modificar_destino(".$id_viaje.")' data-rel='tooltip' data-original-title='Modificar destino'>
+                    <i class='fa fa-map-o' style='font-size:1.4em; color:green; position:relative; top:-5px;'><i class='fa-location-arrow fa_asub red'></i></i>
+                    </a>
+                ";
+                $typ = self::obtener_revision($id_viaje,$db);
+                $salida .= "
+                    <a onclick='modificar_revision(".$id_viaje.")' data-rel='tooltip' data-original-title='".$typ."'>
+                    <i class='fa fa-map-signs' style='font-size:1.4em; color:green; position:relative; top:-5px;'></i>
+                    </a>
+                ";
+                $salida .= '</div>';
 
-
-
-                                   $cveStat = self::getCurrentCveOperador($id_operador_unidad,$db);
-
-					switch ($cveStat['clave']){
-						case 'A10':	$color = '#9DBF00';	break;
-						case 'F15':	$color = '#697F00';	break;
-						case 'F13':	$color = '#001A40';	break;
-						case 'T1':	$color = '#344000';	break;
-						case 'T2':	$color = '#1a6600';	break;
-						case 'A11':	$color = '#BF9A16';	break;
-						case 'A14':	$color = '#403307';	break;
-						case 'C8':	$color = '#E5B81A';	break;
-						case 'A2':	$color = '#BF3000';	break;
-						case 'C9':	$color = '#7F2000';	break;
-						case 'C14':	$color = '#401000';	break;
-						case 'C10':	$color = '#E53A00';	break;
-						case 'C11':	$color = '#004EBF';	break;
-						case 'C12':	$color = '#00347F';	break;
-						default:	$color = '#000000';	break;
-					}
-
-					$salida .= '<a href="javascript:;" class="circle_num" data-rel="tooltip"  style="background:'.$color.';" data-original-title="'.$cveStat['clave'].' - '.$cveStat['valor'].'">'.$cveStat['clave'].'</a>&nbsp;&nbsp;';
-
-
-
-                                   $salida .= "
-                                          <a onclick='historia_viaje(".$id_viaje.")' data-rel='tooltip' data-original-title='Historia'>
-                                                 <i class='fa fa-clock-o' style='font-size:1.8em; color:green;'></i>
-                                          </a>
-                                   ";
-
-
-                                   $salida .= "
-                                          <a onclick='modificar_destino(".$id_viaje.")' data-rel='tooltip' data-original-title='Modificar destino'>
-                                                 <i class='fa fa-map-o' style='font-size:1.4em; color:green; position:relative; top:-5px;'><i class='fa-location-arrow fa_asub red'></i></i>
-                                          </a>
-                                   ";
-
-
-
-					$salida .= '</div>';
-
-					$row[ $column['dt'] ] = $salida;
+      					$row[ $column['dt'] ] = $salida;
 				}else{
 					$row[ $column['dt'] ] = $data[$i][$name_column];
 				}
@@ -4971,6 +5005,31 @@ class acciones_asignados extends SSP{
 		}
 		return $out;
 	}
+
+      static function obtener_revision($id_viaje,$db){
+        $qry = "
+        SELECT
+          cm_catalogo.etiqueta,
+          cm_catalogo.id_cat
+        FROM
+          vi_viaje
+          INNER JOIN vi_viaje_detalle ON vi_viaje_detalle.id_viaje = vi_viaje.id_viaje
+          INNER JOIN cm_catalogo ON vi_viaje_detalle.cat_revision = cm_catalogo.id_cat
+        WHERE
+          vi_viaje.id_viaje = $id_viaje
+        ";
+        $query = $db->prepare($qry);
+        $query->execute();
+        $array = array();
+        if($query->rowCount()>=1){
+            foreach ($query->fetchAll() as $row){
+                $array['etiqueta']	=	$row['etiqueta'];
+                $array['id_cat']	=	$row['id_cat'];
+            }
+        }
+        return $array['etiqueta'];
+      }
+
       static function getCurrentCveOperador($id_operador_unidad,$db){
             $qry = "
                 SELECT
@@ -5282,6 +5341,10 @@ class acciones_cordon extends SSP{
 					$row[ $column['dt'] ] = $salida;
 				}else if ( isset( $column['turno'] ) ){
 					$row[ $column['dt'] ] = self::turno($data[$i][ 'id_operador_unidad' ],$column['base'],$db);
+				}else if ( isset( $column['plates'] ) ){
+
+					$row[ $column['dt'] ] = '<p class="placa">'.$data[$i][ 'placas' ].'</p>';
+
 				}else if ( isset( $column['time_stat'] ) ){
 					$espera = Controller::diferenciaFechasD($data[$i]['llegada'],date("Y-m-d H:i:s"));
 
