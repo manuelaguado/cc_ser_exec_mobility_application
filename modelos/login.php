@@ -571,7 +571,7 @@ class LoginModel
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$permisos = $query->fetchAll();
-		$accesos = '';
+		$accesos = array();
 		if($query->rowCount()>=1){
 			foreach ($permisos as $num => $row) {
 				$accesos[$num] = $row->tercio;
@@ -586,7 +586,7 @@ class LoginModel
 		$query = $this->db->prepare($sql);
 		$query->execute();
 		$permisos = $query->fetchAll();
-		$accesos = '';
+		$accesos = array();
 		if($query->rowCount()>=1){
 			foreach ($permisos as $num => $row) {
 				$accesos[$num] = $row->controlador .'|'. $row->metodo;
