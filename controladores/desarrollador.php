@@ -2,7 +2,11 @@
 class Desarrollador extends Controlador
 {
 	function __construct(){
+		$this->se_requiere_logueo(true,'Desarrollador|tools');
 		if(DEVELOPMENT == false){exit();}
+	}
+	public function test(){
+			echo "ok";
 	}
 	public function initstate(){
 		$db = Controlador::direct_connectivity();

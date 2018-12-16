@@ -127,7 +127,7 @@ class Ingresosoperador extends Controlador
 
            $this->se_requiere_logueo(true,'Ingresosoperador|index');
            ini_set('memory_limit', '2048M');
-           ini_set('max_execution_time', 600); //10 minutos
+           ini_set('max_execution_time', 0); //600 = 10 minutos 0 = infinito
               $ingresos = $this->loadModel('Ingresosoperador');
               $opProcess = $ingresos->opProcess();
               $pdfURLProcess = self::generatePapeletas($opProcess);

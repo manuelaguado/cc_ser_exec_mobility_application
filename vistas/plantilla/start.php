@@ -103,7 +103,7 @@
 		</script>
 		<?php if(DEVELOPMENT){ ?>
 		<style>
-			.navbar {
+			/*.navbar {
 				background: #FF6C00;
 			}
 			.ace-nav > li.light-blue > a {
@@ -111,7 +111,7 @@
 			}
 			.ace-nav > li.light-blue > a:hover, .ace-nav > li.light-blue > a:focus, .ace-nav > li.open.light-blue > a {
 				background-color: #FF6C00;
-			}
+			}*/
 		</style>
 		<?php } ?>
 	</head>

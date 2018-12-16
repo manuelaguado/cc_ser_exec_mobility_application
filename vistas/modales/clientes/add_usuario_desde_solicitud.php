@@ -10,14 +10,14 @@
 			<div class="modal-body" id="modal_content">
 				<form role="form" id="nuevo_cliente_usr">
 					<div class="panel panel-primary">
-						<div class="panel-body">			
+						<div class="panel-body">
 							<div class="row">
 								<div class="col-md-12">
 									  <div class="form-group">
 										<label for="empresa">Empresa o Cliente</label>
 										<input type="hidden" id="padre" name="padre" value="">
 										<input type="text" value="" class="form-control text-field" id="empresa" name="empresa" placeholder="Empresa" autocomplete="off">
-									  </div>	
+									  </div>
 								</div>
 								<div class="col-md-6">
 									  <div class="form-group">
@@ -31,7 +31,7 @@
 										  <select class="form-control" id="id_rol" name ="id_rol">
 											<?php echo $roles; ?>
 										  </select>
-									  </div>	
+									  </div>
 								</div>
 								<div class="col-md-6">
 									  <div class="form-group">
@@ -43,7 +43,7 @@
 									  <div class="form-group">
 										<label for="nombre">Nombre</label>
 										<input type="text" class="form-control text-field" id="nombre" name="nombre" placeholder="Nombre(s)" autocomplete="off">
-									  </div>									  
+									  </div>
 								</div>
 							</div>
 						</div>
@@ -60,10 +60,10 @@
 					<script>
 						$('#empresa').autocomplete({
 							serviceUrl: 'operacion/listadoEmpresas',
-							minChars: 3,
+							minChars: 2,
 							onSelect: function (suggestion) {
 								$('#empresa').val(suggestion.value);
-								$('#padre').val(suggestion.data);	
+								$('#padre').val(suggestion.data);
 							},
 						});
 					</script>

@@ -10,12 +10,19 @@ class ShareModel
         }
     }
        function setStatOper($setStat, $date = NULL ){
-              if ($date == NULL){$date = date("Y-m-d H:i:s");}
-              $date = base64_decode($date);
+              if ($date == NULL){
+                  $date = date("Y-m-d H:i:s");
+              }else{
+                  $date = base64_decode($date);
+              }
               foreach ($setStat as $key => $value) {
           			$this->$key = strip_tags($value);
           		}
-              if(!$_SESSION['id_usuario']){$user = 1;}else{$user = $_SESSION['id_usuario'];}
+              if($this->user_alta){
+                  $user = $this->user_alta;
+              }else{
+                  if(!$_SESSION['id_usuario']){$user = 1;}else{$user = $_SESSION['id_usuario'];}
+              }
               $sql = "
                      INSERT INTO `cr_state` (
                            `id_operador`,
@@ -63,6 +70,25 @@ class ShareModel
                      $queryc = $this->db->prepare($sqlc);
                      $query_respc = $queryc->execute();
               }
+       }
+       function setstatlocal($id_operador,$id_operador_unidad,$id_episodio,$state,$flag1,$flag2,$flag3,$flag4,$motivo,$id_viaje,$user=NULL){
+              if($user == NULL){
+                    if(!$_SESSION['id_usuario']){$user = 1;}else{$user = $_SESSION['id_usuario'];}
+              }
+              $setStat['id_operador'] = $id_operador;
+              $setStat['id_operador_unidad'] = $id_operador_unidad;
+              $setStat['id_episodio'] = $id_episodio;
+              $setStat['id_viaje'] = $id_viaje;
+              $setStat['num'] = self::getNumEq($id_operador_unidad);
+              $setStat['state'] = $state;
+              $setStat['flag1'] = $flag1;
+              $setStat['flag2'] = $flag2;
+              $setStat['flag3'] = $flag3;
+              $setStat['flag4'] = $flag4;
+              $setStat['motivo'] = $motivo;
+              $setStat['automan'] = 'auto';
+              $setStat['user_alta'] = $user;
+              self::setStatOper($setStat);
        }
     function exitCordonFromLogin($id_usuario,$id_operador_unidad){
            $dataFull = "
@@ -451,21 +477,6 @@ class ShareModel
          }else{
            return array('resp' => false , 'mensaje' => 'El operador ya estaba formado.' );
          }
-    }
-    function setstatlocal($id_operador,$id_operador_unidad,$id_episodio,$state,$flag1,$flag2,$flag3,$flag4,$motivo,$id_viaje){
-           $setStat['id_operador'] = $id_operador;
-           $setStat['id_operador_unidad'] = $id_operador_unidad;
-           $setStat['id_episodio'] = $id_episodio;
-           $setStat['id_viaje'] = $id_viaje;
-           $setStat['num'] = self::getNumEq($id_operador_unidad);
-           $setStat['state'] = $state;
-           $setStat['flag1'] = $flag1;
-           $setStat['flag2'] = $flag2;
-           $setStat['flag3'] = $flag3;
-           $setStat['flag4'] = $flag4;
-           $setStat['motivo'] = $motivo;
-           $setStat['automan'] = 'auto';
-           self::setStatOper($setStat);
     }
     function getNumEq($id_operador_unidad){
            $qry = "

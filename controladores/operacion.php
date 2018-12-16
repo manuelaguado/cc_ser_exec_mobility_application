@@ -1038,20 +1038,17 @@ class Operacion extends Controlador
                      $operador['id_operador_unidad']=$service->id_operador_unidad;
                      $operador['id_episodio']=$id_episodio;
                      $operador['id_cordon']='';
-			$operacion->asignar_viaje($service->id_viaje,$operador);
-
+			               $operacion->asignar_viaje($service->id_viaje,$operador);
                      $share->setstatlocal($service->id_operador,$service->id_operador_unidad,$id_episodio,'F15','C1','F15','NULL','NULL','Servicio al aire desde solicitud',$service->id_viaje);
 		}
 
 		////////////////////////////////////////////////////////////////////salida por sitio
 		if($service->cat_tipo_salida == 182){
-			$operador = $operacion->unidadenSitio($service->sitio_select_oper,1);
-			$operacion->asignar_viaje($service->id_viaje,$operador);
-
-                     $share->cordonFinishSuccess($_SESSION['id_usuario'],$operador['id_operador_unidad'],$service->id_viaje);
-
-                     $share->setstatlocal($operador['id_operador'],$operador['id_operador_unidad'],$operador['id_episodio'],'F13','C1','F13','NULL','NULL','Salida por sitio',$service->id_viaje);
-
+			      $operador = $operacion->unidadenSitio($service->sitio_select_oper,1);
+			      $operacion->asignar_viaje($service->id_viaje,$operador);
+            $share->cordonFinishSuccess($_SESSION['id_usuario'],$operador['id_operador_unidad'],$service->id_viaje);
+            $share->setstatlocal($operador['id_operador'],$operador['id_operador_unidad'],$operador['id_episodio'],'F13','C1','F13','NULL','NULL','Salida por sitio',$service->id_viaje,1);
+            $share->setstatlocal($operador['id_operador'],$operador['id_operador_unidad'],$operador['id_episodio'],'C8','C1','F13','C8','NULL','Servicio abordo automático',$service->id_viaje,1);
 		}
 		print json_encode(array('resp' => true ));
 	}

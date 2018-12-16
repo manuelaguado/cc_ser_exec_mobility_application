@@ -417,6 +417,7 @@ span.input-icon > textarea {
 												<th>Turno</th>
 												<th>NUM&nbsp;EQ</th>
 												<th>Nombre</th>
+                        <th>Celular</th>
 												<th>Marca</th>
 												<th>Modelo</th>
 												<th>Color</th>
@@ -637,7 +638,7 @@ var solicitudInit = function () {
                      $('#cordon_kpmg').dataTable( {
                             "fnDrawCallback": function( oSettings ) {
                               $('[data-rel=tooltip]').tooltip();
-                              $('.dataTables_empty').attr('colspan',9);
+                              $('.dataTables_empty').attr('colspan',10);
                             },
                             "ordering": false,
                             "processing": true,
@@ -650,7 +651,7 @@ var solicitudInit = function () {
                             },
                             "columnDefs": [
                                    {
-                                          "targets": 9,
+                                          "targets": 10,
                                           "visible": false,
                                           "searchable":false
                                    }

@@ -10,7 +10,33 @@ class OperadoresModel
             exit('No se ha podido establecer la conexión a la base de datos.');
         }
 }
+    function set_inactive_c2($num){
+      $sql = "
+  			UPDATE cr_state
+  			SET
+  			 activo = :inactive,
+  			 user_mod = :user_mod
+  			WHERE
+  				state = :state
+          and
+          flag1 = :state
+          and
+          activo = :active
+          AND
+          numeq = :numeq
+  		";
+  		$query = $this->db->prepare($sql);
+      $data = array(
+        ':state' => 'C2',
+        ':inactive' => 0,
+        ':active' => 1,
+        ':numeq' => $num,
+        ':user_mod' => $_SESSION['id_usuario']
+      );
+  		$query->execute($data);
+    }
     function start_for_c2($id_operador,$num,$id_operador_unidad){
+      self::set_inactive_c2($num);
       $sql = "
 				INSERT INTO `cr_state` (
 					`id_operador`,
@@ -25,7 +51,7 @@ class OperadoresModel
 					(
 						'".$id_operador."',
 						'".$id_operador_unidad."',
-            '1',
+            NULL,
 						'".$num."',
 						'C2',
 						'C2',
@@ -43,6 +69,7 @@ class OperadoresModel
 
       return $respuesta;
     }
+
     function insertStateByOper($post){
            foreach ($post as $key => $value) {
                   $this->$key = strip_tags($value);

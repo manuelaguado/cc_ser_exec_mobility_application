@@ -150,14 +150,14 @@ class LoginModel
         $sql = "
 		SELECT fwu.id_usuario, fwu.id_rol, fwu.usuario, fwu.id_ubicacion, fwu.correo, fwc.aceptar_tyc FROM fw_usuarios as fwu
 		INNER JOIN fw_usuarios_config as fwc ON fwc.id_usuario = fwu.id_usuario
-		WHERE fwu.usuario='{$_POST['usuario']}' and fwu.password = '{$password_md5}' and cat_status = '3'";
+		WHERE fwu.usuario='{$_POST['usuario']}' and fwu.password = '{$password_md5}' and fwu.cat_status = '3'";
 		$query = $this->db->prepare($sql);
         $query->execute();
         $usuario = $query->fetchAll();
 		if($query->rowCount()>=1){
 
 			foreach ($usuario as $row) {
-				session_name(SITE_NAME);
+				//session_name(SITE_NAME);
 				$_SESSION['id_usuario']=$row->id_usuario;
 				$_SESSION['id_rol']=$row->id_rol;
 				$_SESSION['hora_acceso']= time();
